@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ActionCollection version="2" name="Scripts">
     <Actions category="Scripts">
-        <text>wojtryb Scripts</text>
+        <text>Tool Modifiers</text>
 
         <Action name="Freehand selection (toggle)">
         <icon></icon>
@@ -67,10 +67,10 @@
         <isCheckable>false</isCheckable>
         <statusTip></statusTip>
         </Action>
-        
-        <Action name="test">
+
+        <Action name="Eraser (toggle)">
         <icon></icon>
-        <text>test</text>
+        <text>Eraser (toggle)</text>
         <whatsThis></whatsThis>
         <toolTip></toolTip>
         <iconText></iconText>
@@ -80,6 +80,85 @@
         <isCheckable>false</isCheckable>
         <statusTip></statusTip>
         </Action>
+
+        <Action name="Alpha lock (toggle)">
+        <icon></icon>
+        <text>Alpha lock (toggle)</text>
+        <whatsThis></whatsThis>
+        <toolTip></toolTip>
+        <iconText></iconText>
+        <activationFlags>0</activationFlags>
+        <activationConditions>0</activationConditions>
+        <shortcut></shortcut>
+        <isCheckable>false</isCheckable>
+        <statusTip></statusTip>
+        </Action>
+
+        <Action name="Tool 1 (toggle)">
+        <icon></icon>
+        <text>Tool 1 (toggle)</text>
+        <whatsThis></whatsThis>
+        <toolTip></toolTip>
+        <iconText></iconText>
+        <activationFlags>0</activationFlags>
+        <activationConditions>0</activationConditions>
+        <shortcut></shortcut>
+        <isCheckable>false</isCheckable>
+        <statusTip></statusTip>
+        </Action>
+
+        <Action name="Tool 2 (toggle)">
+        <icon></icon>
+        <text>Tool 2 (toggle)</text>
+        <whatsThis></whatsThis>
+        <toolTip></toolTip>
+        <iconText></iconText>
+        <activationFlags>0</activationFlags>
+        <activationConditions>0</activationConditions>
+        <shortcut></shortcut>
+        <isCheckable>false</isCheckable>
+        <statusTip></statusTip>
+        </Action>
+
+        <Action name="Tool 3 (toggle)">
+        <icon></icon>
+        <text>Tool 3 (toggle)</text>
+        <whatsThis></whatsThis>
+        <toolTip></toolTip>
+        <iconText></iconText>
+        <activationFlags>0</activationFlags>
+        <activationConditions>0</activationConditions>
+        <shortcut></shortcut>
+        <isCheckable>false</isCheckable>
+        <statusTip></statusTip>
+        </Action>
+
+        <Action name="Tool 4 (toggle)">
+        <icon></icon>
+        <text>Tool 4 (toggle)</text>
+        <whatsThis></whatsThis>
+        <toolTip></toolTip>
+        <iconText></iconText>
+        <activationFlags>0</activationFlags>
+        <activationConditions>0</activationConditions>
+        <shortcut></shortcut>
+        <isCheckable>false</isCheckable>
+        <statusTip></statusTip>
+        </Action>
+
+        <Action name="Tool 5 (toggle)">
+        <icon></icon>
+        <text>Tool 5 (toggle)</text>
+        <whatsThis></whatsThis>
+        <toolTip></toolTip>
+        <iconText></iconText>
+        <activationFlags>0</activationFlags>
+        <activationConditions>0</activationConditions>
+        <shortcut></shortcut>
+        <isCheckable>false</isCheckable>
+        <statusTip></statusTip>
+        </Action>
+        
 
 
     </Actions>
