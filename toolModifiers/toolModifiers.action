@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ActionCollection version="2" name="Scripts">
     <Actions category="Scripts">
-        <text>wojtryb Scripts</text>
+        <text>Tool Modifiers</text>
 
         <Action name="Freehand selection (toggle)">
         <icon></icon>
-        <text>Freehand selection (toggle)</text>
+        <text>Temporarily switch to freehand selection</text>
         <whatsThis></whatsThis>
         <toolTip></toolTip>
         <iconText></iconText>
@@ -18,7 +18,7 @@
         
         <Action name="Gradient (toggle)">
         <icon></icon>
-        <text>Gradient (toggle)</text>
+        <text>Temporarily switch to gradient tool</text>
         <whatsThis></whatsThis>
         <toolTip></toolTip>
         <iconText></iconText>
@@ -31,7 +31,7 @@
         
         <Action name="Line tool (toggle)">
         <icon></icon>
-        <text>Line tool (toggle)</text>
+        <text>Temporarily switch to line tool</text>
         <whatsThis></whatsThis>
         <toolTip></toolTip>
         <iconText></iconText>
@@ -44,7 +44,7 @@
         
         <Action name="Transform tool (toggle)">
         <icon></icon>
-        <text>Transform tool (toggle)</text>
+        <text>Temporarily switch to transform tool</text>
         <whatsThis></whatsThis>
         <toolTip></toolTip>
         <iconText></iconText>
@@ -57,7 +57,7 @@
         
         <Action name="Move tool (toggle)">
         <icon></icon>
-        <text>Move tool (toggle)</text>
+        <text>Temporarily switch to move tool</text>
         <whatsThis></whatsThis>
         <toolTip></toolTip>
         <iconText></iconText>
@@ -67,10 +67,62 @@
         <isCheckable>false</isCheckable>
         <statusTip></statusTip>
         </Action>
-        
-        <Action name="test">
+
+        <Action name="Eraser (toggle)">
         <icon></icon>
-        <text>test</text>
+        <text>Temporarily switch to eraser (toggle)</text>
+        <whatsThis></whatsThis>
+        <toolTip></toolTip>
+        <iconText></iconText>
+        <activationFlags>0</activationFlags>
+        <activationConditions>0</activationConditions>
+        <shortcut></shortcut>
+        <isCheckable>false</isCheckable>
+        <statusTip></statusTip>
+        </Action>
+
+        <Action name="Preserve alpha (toggle)">
+        <icon></icon>
+        <text>Temporarily preserve alpha (toggle)</text>
+        <whatsThis></whatsThis>
+        <toolTip></toolTip>
+        <iconText></iconText>
+        <activationFlags>0</activationFlags>
+        <activationConditions>0</activationConditions>
+        <shortcut></shortcut>
+        <isCheckable>false</isCheckable>
+        <statusTip></statusTip>
+        </Action>
+
+        <Action name="Tool 1 (toggle)">
+        <icon></icon>
+        <text>Temporarily switch to custom tool 1</text>
+        <whatsThis></whatsThis>
+        <toolTip></toolTip>
+        <iconText></iconText>
+        <activationFlags>0</activationFlags>
+        <activationConditions>0</activationConditions>
+        <shortcut></shortcut>
+        <isCheckable>false</isCheckable>
+        <statusTip></statusTip>
+        </Action>
+
+        <Action name="Tool 2 (toggle)">
+        <icon></icon>
+        <text>Temporarily switch to custom tool 2</text>
+        <whatsThis></whatsThis>
+        <toolTip></toolTip>
+        <iconText></iconText>
+        <activationFlags>0</activationFlags>
+        <activationConditions>0</activationConditions>
+        <shortcut></shortcut>
+        <isCheckable>false</isCheckable>
+        <statusTip></statusTip>
+        </Action>
+
+        <Action name="Tool 3 (toggle)">
+        <icon></icon>
+        <text>Temporarily switch to custom tool 3</text>
         <whatsThis></whatsThis>
         <toolTip></toolTip>
         <iconText></iconText>

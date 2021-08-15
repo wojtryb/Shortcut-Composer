@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Service
+ServiceTypes=Krita/PythonPlugin
+X-KDE-Library=toolModifiers
+X-Python-2-Compatible=false
+Name= Tool Modifiers
+Comment= Toggle tools temporarily or pernamently with long and short key presses. 

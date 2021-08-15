@@ -1,3 +1,5 @@
+# courtesy of AkiR - https://krita-artists.org/t/discovering-which-toolbox-tool-is-active/10580
+
 from krita import Krita
 from PyQt5.QtWidgets import QWidget, QToolButton
 
