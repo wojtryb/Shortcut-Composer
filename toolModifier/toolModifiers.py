@@ -63,7 +63,7 @@ class toolModifiers(Extension):
 		'create an action for each of the tool toggle shortcuts'
 		for kritaName in TOOLS:
 			humanName = definedActions.get(kritaName, f'Tool {i} (toggle)') # get human-readable name, or default name, if its name isn't defined in actions
-			if kritaName.split(" ")[0] == "Tool": i += 1	 			    # raise counter for default tool name
+			if humanName.split(" ")[0] == "Tool": i += 1	 			    # raise counter for default tool name
 
 			self.createShortcut(
 				humanName=humanName,

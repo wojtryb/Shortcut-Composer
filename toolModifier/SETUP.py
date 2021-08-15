@@ -6,7 +6,11 @@ TOOLS = [
 	"KritaShape/KisToolLine",
 	"KisToolTransform",
 	"KritaTransform/KisToolMove",
+	"KisToolSelectOutline",
+	
+	"KisToolSelectRectangular",
 	"KisToolSelectContiguous",
+	"ToolReferenceImages",
 ]
 
 

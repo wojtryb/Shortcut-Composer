@@ -133,33 +133,6 @@
         <statusTip></statusTip>
         </Action>
 
-        <Action name="Tool 4 (toggle)">
-        <icon></icon>
-        <text>Tool 4 (toggle)</text>
-        <whatsThis></whatsThis>
-        <toolTip></toolTip>
-        <iconText></iconText>
-        <activationFlags>0</activationFlags>
-        <activationConditions>0</activationConditions>
-        <shortcut></shortcut>
-        <isCheckable>false</isCheckable>
-        <statusTip></statusTip>
-        </Action>
-
-        <Action name="Tool 5 (toggle)">
-        <icon></icon>
-        <text>Tool 5 (toggle)</text>
-        <whatsThis></whatsThis>
-        <toolTip></toolTip>
-        <iconText></iconText>
-        <activationFlags>0</activationFlags>
-        <activationConditions>0</activationConditions>
-        <shortcut></shortcut>
-        <isCheckable>false</isCheckable>
-        <statusTip></statusTip>
-        </Action>
-        
-
 
     </Actions>
 </ActionCollection>
