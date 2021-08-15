@@ -77,7 +77,7 @@ class toolModifiers(Extension):
 		self.createShortcut('Eraser (toggle)', '', toggleEraser, toggleEraser, isEraserActive)
 
 		'create action for alpha lock'
-		self.createShortcut('Alpha lock (toggle)', '', toggleAlphaLock, toggleAlphaLock, isAlphaLocked)
+		self.createShortcut('Preserve alpha (toggle)', '', toggleAlphaLock, toggleAlphaLock, isAlphaLocked)
 
 
 
