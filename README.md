@@ -1,5 +1,4 @@
-# kritaToolModifier
-krita plugin for switching tools temporarily
+# Temporary and pernament tool switching with one button - krita add-on
 
 ## Installation:
 ### Krita 5:
