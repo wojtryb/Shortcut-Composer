@@ -1,6 +1,5 @@
 from krita import Krita, Extension
 from .importCode.actions import (
-    ToolWrapper,
     EraserWrapper,
     AlphaWrapper,
     CyclicTool)
@@ -29,19 +28,13 @@ class toolModifiers(Extension):
         """
         creator = ActionCreator(window, self.event_filter)
 
-        for human_name, krita_name in tools.items():
-            tool = ToolWrapper(krita_name, human_name)
-            self.actions.append(creator.create_action(tool))
+        for action_name, tools_to_cycle in tools.items():
+            self.actions.append(creator.create_action(
+                CyclicTool(action_name, tools_to_cycle))
+            )
 
         self.actions.append(creator.create_action(EraserWrapper()))
         self.actions.append(creator.create_action(AlphaWrapper()))
-        self.actions.append(creator.create_action(CyclicTool([
-            "KritaShape/KisToolBrush",
-            "KisToolSelectOutline",
-            "KritaFill/KisToolGradient",
-            "KritaShape/KisToolLine",
-            "KisToolTransform",
-        ])))
 
 
 Krita.instance().addExtension(toolModifiers(Krita.instance()))

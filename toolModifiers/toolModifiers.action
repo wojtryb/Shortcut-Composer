@@ -133,9 +133,22 @@
         <statusTip></statusTip>
         </Action>
 
-        <Action name="Cyclic tool">
+        <Action name="Selections tools (cycle)">
         <icon></icon>
-        <text>Cyclic tool</text>
+        <text>Selection cyclic tool</text>
+        <whatsThis></whatsThis>
+        <toolTip></toolTip>
+        <iconText></iconText>
+        <activationFlags>0</activationFlags>
+        <activationConditions>0</activationConditions>
+        <shortcut></shortcut>
+        <isCheckable>false</isCheckable>
+        <statusTip></statusTip>
+        </Action>
+
+        <Action name="Misc tools (cycle)">
+        <icon></icon>
+        <text>Misc cyclic tool</text>
         <whatsThis></whatsThis>
         <toolTip></toolTip>
         <iconText></iconText>

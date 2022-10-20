@@ -26,8 +26,8 @@ class ActionCreator:
     def create_action(self, action: Action)\
             -> ActionContainer:
         krita_action: QWidgetAction = self.window.createAction(
-            action.human_name,
-            action.human_name,
+            action.action_name,
+            action.action_name,
             ""
         )
         shortcut = Shortcut(action)
