@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class Tools(Enum):
+class Tool(Enum):
     freehand_brush = "KritaShape/KisToolBrush"
     freehand_selection = "KisToolSelectOutline"
     gradient = "KritaFill/KisToolGradient"
@@ -13,6 +13,6 @@ class Tools(Enum):
     reference = "ToolReferenceImages"
 
 
-class BlendingModes(Enum):
+class BlendingMode(Enum):
     normal = "normal"
     overlay = "overlay"
