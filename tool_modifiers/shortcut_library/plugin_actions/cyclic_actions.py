@@ -8,9 +8,10 @@ from ._helpers import get_current_tool_name
 
 @dataclass
 class CyclicTool(CyclicPluginAction):
+
     action_name: str
-    values: List[str]
-    default_value: str = "KritaShape/KisToolBrush"
+    _values_to_cycle: List[str]
+    _default_value: str = "KritaShape/KisToolBrush"
 
     def _set_value(self, value: str) -> None:
         'activates a tool of passed name'

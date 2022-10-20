@@ -1,49 +1,43 @@
-from dataclasses import dataclass
 from krita import Krita
+from dataclasses import dataclass
 
-from ._interfaces import PluginAction
+from ._interfaces import TemporaryAction
 from ._helpers import get_current_tool_name
 from ...config import connected_toggles
 
 
 @dataclass
-class TemporaryTool(PluginAction):
+class TemporaryTool(TemporaryAction):
 
     action_name: str
-    krita_tool: str
-    default_tool: str = "KritaShape/KisToolBrush"
+    _krita_tool_name: str
+    _default_tool_name: str = "KritaShape/KisToolBrush"
 
-    def set_low(self):
-        self._set_tool(self.default_tool)
+    def _set_low(self):
+        Krita.instance().action(self._default_tool_name).trigger()
 
-    def set_high(self):
-        self._set_tool(self.krita_tool)
+    def _set_high(self):
+        Krita.instance().action(self._krita_tool_name).trigger()
 
-    def is_high_state(self):
+    def _is_high_state(self):
         'returns True if the passed tool is active'
-        return get_current_tool_name() == self.krita_tool
-
-    @staticmethod
-    def _set_tool(tool_name):
-        'activates a tool of passed name'
-        Krita.instance().action(tool_name).trigger()
+        return get_current_tool_name() == self._krita_tool_name
 
 
-class TemporaryEraser(PluginAction):
+class TemporaryEraser(TemporaryAction):
 
     def __init__(self):
         self.action_name = 'Eraser (toggle)'
 
-    def set_low(self):
+    def _set_low(self):
         self._toggle_eraser()
 
-    def set_high(self):
+    def _set_high(self):
         self._toggle_eraser()
 
-    def is_high_state(self):
+    def _is_high_state(self):
         'returns True if the passed tool is active'
-        krita_eraser_action = Krita.instance().action("erase_action")
-        return krita_eraser_action.isChecked()
+        Krita.instance().action("erase_action").isChecked()
 
     @staticmethod
     def _toggle_eraser():
@@ -53,21 +47,20 @@ class TemporaryEraser(PluginAction):
         Krita.instance().action("erase_action").trigger()
 
 
-class TemporaryAlphaLock(PluginAction):
+class TemporaryAlphaLock(TemporaryAction):
 
     def __init__(self):
         self.action_name = 'Preserve alpha (toggle)'
 
-    def set_low(self):
+    def _set_low(self):
         self._toggle_alpha_lock()
 
-    def set_high(self):
+    def _set_high(self):
         self._toggle_alpha_lock()
 
-    def is_high_state(self):
+    def _is_high_state(self):
         'returns True if the alpha is locked'
-        krita_preserve_alpha_action = Krita.instance().action("preserve_alpha")
-        return krita_preserve_alpha_action.isChecked()
+        return Krita.instance().action("preserve_alpha").isChecked()
 
     @staticmethod
     def _toggle_alpha_lock():

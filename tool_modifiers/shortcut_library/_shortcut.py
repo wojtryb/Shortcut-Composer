@@ -18,17 +18,17 @@ class Shortcut:
         'run when user presses a key assigned to this action'
         self.key_released = False
         self.last_press_time = time()
+        self.action.on_key_press()
 
-        self.state = self.action.is_high_state()
-        if not self.state:
-            self.action.set_high()
-
-    def on_key_release(self):
+    def _on_key_release(self):
         'run when user released a related key'
 
         self.key_released = True
-        if time() - self.last_press_time > interval or self.state:
-            self.action.set_low()
+        if time() - self.last_press_time < interval:
+            self.action.on_short_key_release()
+        else:
+            self.action.on_long_key_release()
+        self.action.on_every_key_release()
 
     def _is_event_key_release(self, event: QKeyEvent):
         return (
@@ -39,7 +39,7 @@ class Shortcut:
 
     def event_filter_callback(self, event: QKeyEvent):
         if self._is_event_key_release(event):
-            self.on_key_release()
+            self._on_key_release()
 
     @property
     def tool_shortcut(self):
