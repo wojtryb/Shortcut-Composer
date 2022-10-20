@@ -1,7 +1,6 @@
 from typing import Any
 
-from ..convenience_utils.krita_api_wrapper import Krita
-from ..convenience_utils.enums import Tool
+from ..convenience_utils import Krita, Tool
 
 
 class Controller:

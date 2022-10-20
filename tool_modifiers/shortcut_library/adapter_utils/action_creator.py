@@ -8,7 +8,7 @@ from typing import List
 
 from PyQt5.QtWidgets import QWidgetAction
 
-from ..plugin_actions.interfaces import PluginAction
+from ..plugin_actions import PluginAction
 from .event_filter import ReleaseKeyEventFilter
 from .shortcut_adapter import ShortcutAdapter
 
