@@ -1,58 +1,64 @@
+from dataclasses import dataclass
 from krita import *
 from PyQt5.QtCore import QEvent
 from time import time
 
 from ..SETUP import INTERVAL
 
-class keyFilter(QMdiArea):
-	'object that handles one shortcut, installed on krita window and catches all keyboard inputs waiting for the correct one'
 
-	def __init__(self, setLowFunction, setHighFunction, isHighStateFunction, relatedTool, addon, parent=None):
-		super().__init__(parent)
-
-		'reference to the whole addon holding time variable'
-		self.addon = addon
-
-		self.keyReleased = True									# is the pressed shortcut key already released?
-
-		self.setLowFunction = setLowFunction
-		self.setHighFunction = setHighFunction
-		self.isHighStateFunction = isHighStateFunction
-		self.relatedTool = relatedTool
-
-		self.state = False										# is handled action already active? 
-		
-
-	def keyPress(self):
-		'run when user presses a key assigned to this action'
-
-		self.keyReleased = False								# key just pressed 
-		self.addon.updateTime()									# remember the time of last key press of any modifier key
-
-		'if the handled action wasnt already active, activate it - else, do nothing'
-		self.state = self.isHighStateFunction(self.relatedTool[1]) 
-		if not self.state:
-			self.setHighFunction(self.relatedTool[1])
+@dataclass
+class ActionElements:
+    human_name: None
+    krita_name: None
+    set_low_function: None
+    set_high_function: None
+    is_high_state_function: None
 
 
-	def keyRelease(self):
-		'run when user released a related key'
+class KeyFilter(QMdiArea):
+    """
+    object that handles one shortcut, installed on krita window and
+    catches all keyboard inputs waiting for the correct one
+    """
 
-		self.keyReleased = True
+    def __init__(self, elements: ActionElements) -> None:
+        super().__init__(None)
+        self.elements = elements
+        self.key_released = True
+        self.last_press_time = time()
 
-		'if the key was pressed long time ago, and action is still active, deactivate it'
-		if time() - self.addon.t > INTERVAL or self.state:
-			self.setLowFunction()
+    def keyPress(self):
+        'run when user presses a key assigned to this action'
+        self.key_released = False
+        self.last_press_time = time()
 
-	def eventFilter(self, obj, e):
-		'activated each time user does anything - search for key releases'
+        # if the handled action wasnt already active, activate it
+        self.state = self.elements.is_high_state_function(
+            self.elements.krita_name
+        )
+        if not self.state:
+            self.elements.set_high_function(self.elements.krita_name)
 
-		if e.type() == QEvent.KeyRelease:						# user released a key
-			if (Krita.instance().action(self.relatedTool[0]).shortcut().matches(e.key()) > 0 # it was key for this action
-			and not e.isAutoRepeat()							# this event is not sent because of long key press 
-			and not self.keyReleased):							# user did not release key yet
-				self.keyRelease()
+    def keyRelease(self):
+        'run when user released a related key'
 
-		return False											# send this event further to krita
+        self.key_released = True
+        if time() - self.last_press_time > INTERVAL or self.state:
+            self.elements.set_low_function()
 
- 
+    def eventFilter(self, obj, e):
+        'activated each time user does anything - search for key releases'
+
+        if e.type() != QEvent.KeyRelease:
+            return False
+
+        # user did not release key yet
+        if (
+            Krita.instance().action(
+                self.elements.human_name).shortcut().matches(e.key()) > 0
+            and not e.isAutoRepeat()
+            and not self.key_released
+        ):
+            self.keyRelease()
+
+        return False
