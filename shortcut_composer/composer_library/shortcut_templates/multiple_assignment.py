@@ -2,7 +2,7 @@ from itertools import zip_longest
 from typing import Any, List
 from dataclasses import dataclass
 
-from ..krita_api.controller import Controller
+from ..krita_api.controllers import Controller
 from ..shortcut_connection_utils import PluginAction
 
 

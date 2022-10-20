@@ -1,7 +1,7 @@
 from typing import Any
 from dataclasses import dataclass
 
-from ..krita_api.controller import Controller
+from ..krita_api.controllers import Controller
 from ..shortcut_connection_utils import PluginAction
 
 
