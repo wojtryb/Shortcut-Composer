@@ -1,8 +1,13 @@
 from itertools import zip_longest
 from typing import Any, List
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+
+from threading import Thread
+from time import sleep
 
 from .controllers import Controller
+from .krita_api_wrapper import Krita
+from .handlers import Handler, EmptyHandler
 
 
 @dataclass
@@ -157,3 +162,35 @@ class CyclicAction(PluginAction):
             if tool == current_value:
                 self.controller.set_value(next_tool)
                 return
+
+
+@dataclass
+class MouseCycleAction(PluginAction):
+
+    action_name: str
+    horizontal_handler: Handler = field(default_factory=EmptyHandler)
+    vertical_handler: Handler = field(default_factory=EmptyHandler)
+    time_interval = 0.1
+
+    def __post_init__(self):
+        self.working = False
+        self.thread: Thread
+
+    def on_key_press(self):
+        self.thread = Thread(target=self.__loop, daemon=True)
+        self.thread.start()
+
+    def __loop(self):
+        cursor = Krita.get_cursor()
+
+        self.horizontal_handler.set_start_value(cursor.x)
+        self.vertical_handler.set_start_value(cursor.y)
+
+        self.working = True
+        while self.working:
+            self.horizontal_handler.update(cursor.x)
+            self.vertical_handler.update(cursor.y)
+            sleep(0.05)
+
+    def on_every_key_release(self):
+        self.working = False
