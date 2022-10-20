@@ -40,7 +40,7 @@ class Handler(EmptyHandler):
     ):
         self.__controller = controller
         self.__to_cycle = create_proxy(values_to_cycle, default_value)
-        self.__interpreter = Interpreter(self.__to_cycle, sensitivity)
+        self.interpreter = Interpreter(self.__to_cycle, sensitivity)
         self.mouse = MouseTracker()
 
     def set_start_value(self, mouse: int):
@@ -48,12 +48,12 @@ class Handler(EmptyHandler):
         self.mouse.last = mouse
 
         value = self.__get_current_value()
-        self.__interpreter.calibrate(mouse, value)
+        self.interpreter.calibrate(mouse, value)
 
     def handle(self, mouse: int):
         self.mouse.last = mouse
 
-        clipped_value = self.__interpreter.mouse_to_value(mouse)
+        clipped_value = self.interpreter.mouse_to_value(mouse)
         to_set = self.__to_cycle.at(clipped_value)
         self.__controller.set_value(to_set)
 
