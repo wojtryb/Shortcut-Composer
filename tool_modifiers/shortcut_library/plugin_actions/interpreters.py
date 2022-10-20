@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, List, Union
+from typing import Any, List, Optional, Union
 
 from .helpers import Range
 
@@ -28,21 +28,21 @@ class Interpreter(ABC):
     def at(self, mouse: int):
         pass
 
-    def calibrate(self, mouse: int, value: float = None):
+    def calibrate(self, mouse: int, value: Optional[float] = None):
         self.start_mouse = mouse
-        if value:
+        if value is not None:
             self.start_value = value
 
     def _clip(self, value):
-        delta = self.min - value
+        delta = (self.min - value)*self.sensitivity
         if delta > 0:
-            self.calibrate(self.start_mouse-delta)
+            self.calibrate(self.start_mouse+delta)
 
-        delta = self.max - value
+        delta = (self.max - value)*self.sensitivity
         if delta < 0:
-            self.calibrate(self.start_mouse-delta)
+            self.calibrate(self.start_mouse+delta)
 
-        return max(min(self.min, value), self.max)
+        return min(max(self.min, value), self.max)
 
 
 @dataclass
@@ -61,10 +61,10 @@ class RangeInterpreter(Interpreter):
 class ListInterpreter(Interpreter):
 
     def __post_init__(self):
-        self.min = 0
-        self.max = len(self.values_to_cycle)-1
+        self.min = -0.49
+        self.max = len(self.values_to_cycle)-0.51
 
     def at(self, mouse: int):
-        delta = round((self.start_mouse - mouse)/self.sensitivity)
-        index_to_set = self._clip(self.start_value + delta)
+        delta = (self.start_mouse - mouse)/self.sensitivity
+        index_to_set = round(self._clip(self.start_value + delta))
         return self.values_to_cycle[index_to_set]
