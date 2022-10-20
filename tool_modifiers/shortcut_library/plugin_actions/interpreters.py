@@ -24,14 +24,14 @@ class Interpreter:
     def _recalibrate(self, value):
         delta = (self.to_cycle.min - value)*self.sensitivity
         if delta > 0:
-            self.origin += delta
+            self.origin -= delta
 
         delta = (self.to_cycle.max - value)*self.sensitivity
         if delta < 0:
-            self.origin += delta
+            self.origin -= delta
 
     def _delta(self, mouse: int):
-        return (self.origin - mouse)/self.sensitivity
+        return (mouse - self.origin)/self.sensitivity
 
     def _clip(self, value):
         return min(
