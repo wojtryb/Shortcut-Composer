@@ -4,7 +4,6 @@ from PyQt5.QtGui import QKeyEvent
 
 from .plugin_actions.krita_api_wrapper import Krita
 from .plugin_actions._interfaces import PluginAction
-from ..config import interval
 
 
 class Shortcut:
@@ -24,7 +23,7 @@ class Shortcut:
         'run when user released a related key'
 
         self.key_released = True
-        if time() - self.last_press_time < interval:
+        if time() - self.last_press_time < self.action.time_interval:
             self.action.on_short_key_release()
         else:
             self.action.on_long_key_release()

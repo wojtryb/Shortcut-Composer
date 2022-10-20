@@ -9,6 +9,9 @@ class PluginAction(ABC):
 
     action_name: str
 
+    def __post_init__(self):
+        self.time_interval: float
+
     def on_key_press(self):
         pass
 
@@ -52,8 +55,8 @@ class TemporaryAction(PluginAction):
 @dataclass
 class CyclicPluginAction(PluginAction):
 
-    _values_to_cycle: List[str]
-    _default_value: str
+    values_to_cycle: List[str]
+    default_value: str
 
     _wait_for_release: bool = field(default=False, init=False)
 
@@ -67,13 +70,13 @@ class CyclicPluginAction(PluginAction):
 
     def on_key_press(self):
         current_value = self._get_current_value()
-        if current_value not in self._values_to_cycle:
-            self._set_value(self._values_to_cycle[0])
+        if current_value not in self.values_to_cycle:
+            self._set_value(self.values_to_cycle[0])
             self._wait_for_release = True
             return
 
-        if current_value == self._default_value:
-            self._set_value(self._values_to_cycle[0])
+        if current_value == self.default_value:
+            self._set_value(self.values_to_cycle[0])
             self._wait_for_release = True
 
     def on_short_key_release(self):
@@ -81,22 +84,22 @@ class CyclicPluginAction(PluginAction):
             self._set_next_value()
 
     def on_long_key_release(self):
-        self._set_value(self._default_value)
+        self._set_value(self.default_value)
 
     def on_every_key_release(self):
         self._wait_for_release = False
 
     def _set_starting_value(self):
         current_value = self._get_current_value()
-        if current_value not in self._values_to_cycle:
-            self._set_value(self._values_to_cycle[0])
+        if current_value not in self.values_to_cycle:
+            self._set_value(self.values_to_cycle[0])
 
     def _set_next_value(self):
         current_value = self._get_current_value()
         for tool, next_tool in zip_longest(
-                self._values_to_cycle,
-                self._values_to_cycle[1:],
-                fillvalue=self._values_to_cycle[0]):
+                self.values_to_cycle,
+                self.values_to_cycle[1:],
+                fillvalue=self.values_to_cycle[0]):
             if tool == current_value:
                 self._set_value(next_tool)
                 return

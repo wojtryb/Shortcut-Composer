@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import List
 
 from .krita_api_wrapper import Krita
 from ._interfaces import CyclicPluginAction
@@ -8,7 +7,8 @@ from ._interfaces import CyclicPluginAction
 @dataclass
 class CyclicTool(CyclicPluginAction):
 
-    _default_value: str = "KritaShape/KisToolBrush"
+    default_value: str = "KritaShape/KisToolBrush"
+    time_interval: float = 0.3
 
     def _set_value(self, value: str) -> None:
         'activates a tool of passed name'
@@ -18,7 +18,10 @@ class CyclicTool(CyclicPluginAction):
         return Krita.get_current_tool_name()
 
 
+@dataclass
 class CyclicPreset(CyclicPluginAction):
+
+    time_interval: float = 0.3
 
     def _set_value(self, value: str):
         presets = Krita.get_presets()
@@ -31,7 +34,8 @@ class CyclicPreset(CyclicPluginAction):
 @dataclass
 class CyclicBlendingModes(CyclicPluginAction):
 
-    _default_value: str = "normal"
+    default_value: str = "normal"
+    time_interval: float = 0.3
 
     def _set_value(self, value: str):
         print("setting", value)
@@ -41,17 +45,16 @@ class CyclicBlendingModes(CyclicPluginAction):
         return Krita.get_active_view().current_blending_mode()
 
 
+@dataclass
 class CyclicOpacity(CyclicPluginAction):
 
-    def __init__(
-        self,
-        action_name: str,
-        _values_to_cycle: List[float],
-        _default_value: float = 100.0
-    ):
-        self.action_name = action_name
-        self._values_to_cycle = [round(val/100, 4) for val in _values_to_cycle]
-        self._default_value = round(_default_value/100, 4)
+    default_value: float = 100.0
+    time_interval: float = 0.3
+
+    def __post_init__(self):
+        self.values_to_cycle = \
+            [round(val/100, 4) for val in self.values_to_cycle]
+        self.default_value = round(self.default_value/100, 4)
 
     def _set_value(self, value: float):
         Krita.get_active_view().set_opacity(value)
