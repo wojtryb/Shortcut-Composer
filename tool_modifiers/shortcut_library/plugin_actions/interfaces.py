@@ -170,6 +170,7 @@ class MouseCycleAction(PluginAction):
     action_name: str
     horizontal_handler: Handler = field(default_factory=EmptyHandler)
     vertical_handler: Handler = field(default_factory=EmptyHandler)
+    separate_handlers: bool = True
     time_interval = 0.1
 
     def __post_init__(self):
@@ -177,10 +178,14 @@ class MouseCycleAction(PluginAction):
         self.thread: Thread
 
     def on_key_press(self):
-        self.thread = Thread(target=self.__loop, daemon=True)
+        if self.separate_handlers:
+            target = self.__loop_separate
+        else:
+            target = self.__loop_common
+        self.thread = Thread(target=target, daemon=True)
         self.thread.start()
 
-    def __loop(self):
+    def __loop_common(self):
         cursor = Krita.get_cursor()
 
         self.horizontal_handler.set_start_value(cursor.x)
@@ -190,6 +195,25 @@ class MouseCycleAction(PluginAction):
         while self.working:
             self.horizontal_handler.update(cursor.x)
             self.vertical_handler.update(cursor.y)
+            sleep(0.05)
+
+    def __loop_separate(self):
+        cursor = Krita.get_cursor()
+
+        self.horizontal_handler.set_start_value(cursor.x)
+        self.vertical_handler.set_start_value(cursor.y)
+
+        self.working = True
+        while self.working:
+            if self.horizontal_handler.delta() > self.vertical_handler.delta():
+                to_set_x = cursor.x
+                to_set_y = self.vertical_handler.interpreter.start_mouse
+            else:
+                to_set_x = self.horizontal_handler.interpreter.start_mouse
+                to_set_y = cursor.y
+
+            self.horizontal_handler.update(to_set_x)
+            self.vertical_handler.update(to_set_y)
             sleep(0.05)
 
     def on_every_key_release(self):

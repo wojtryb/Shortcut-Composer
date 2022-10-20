@@ -23,6 +23,7 @@ actions = [
     TemporaryPreserveAlpha(),
     MouseCycleAction(
         action_name="Mouse cycle",
+        separate_handlers=True,
         horizontal_handler=Handler(
             controller=BlendingModeController,
             values_to_cycle=['overlay', 'normal', 'darken'],
