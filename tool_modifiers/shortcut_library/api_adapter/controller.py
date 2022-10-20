@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from enum import Enum
 from typing import Any
 
 from .krita_api import Krita, Node
@@ -12,6 +13,24 @@ class Controller(ABC):
     def get_value(self): ...
     @abstractmethod
     def set_value(self, value): ...
+
+
+class SetBrushStrategy(Enum):
+    @staticmethod
+    def __always(): ToolController.set_value(Tool.FREEHAND_BRUSH)
+
+    @staticmethod
+    def __never(): ...
+
+    @staticmethod
+    def __on_non_paintable():
+        current_tool = ToolController.get_value()
+        if not Tool.is_paintable(current_tool):
+            ToolController.set_value(Tool.FREEHAND_BRUSH)
+
+    ALWAYS = __always
+    NEVER = __never
+    ON_NON_PAINTABLE = __on_non_paintable
 
 
 class ToolController(Controller):
@@ -33,6 +52,12 @@ class PresetController(Controller):
 
     presets = Krita.get_presets()
 
+    def __init__(
+        self,
+        set_brush_strategy=SetBrushStrategy.ON_NON_PAINTABLE
+    ):
+        self.set_brush_strategy = set_brush_strategy
+
     @staticmethod
     def get_value() -> str:
         """Get currently active preset."""
@@ -40,6 +65,7 @@ class PresetController(Controller):
 
     def set_value(self, value: str):
         """Set a preset of passed name."""
+        self.set_brush_strategy()
         Krita.get_active_view().set_brush_preset(self.presets[value])
 
 
