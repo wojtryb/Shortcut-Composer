@@ -1,5 +1,5 @@
 from functools import partial
-from krita import *
+from krita import Krita, Extension
 
 from .importCode.action_wrapper import ActionCreator
 from .importCode.pass_functions import (
@@ -55,4 +55,4 @@ class toolModifiers(Extension):
         ))
 
 
-Application.addExtension(toolModifiers(Application))
+Krita.instance().addExtension(toolModifiers(Krita.instance()))
