@@ -205,19 +205,22 @@ class MouseCycleAction(PluginAction):
 
         self.working = True
         while self.working:
-            delta_hor = self.horizontal_handler.mouse.start - cursor.x
-            delta_ver = self.vertical_handler.mouse.start - cursor.y
-
-            if abs(delta_hor) > abs(delta_ver):
-                to_set_x = cursor.x
-                to_set_y = self.vertical_handler.interpreter.origin
-            else:
-                to_set_x = self.horizontal_handler.interpreter.origin
-                to_set_y = cursor.y
-
-            self.horizontal_handler.handle(to_set_x)
-            self.vertical_handler.handle(to_set_y)
+            delta_hor = abs(self.horizontal_handler.mouse.start - cursor.x)
+            delta_ver = abs(self.vertical_handler.mouse.start - cursor.y)
+            if abs(delta_hor - delta_ver) >= 10:
+                break
             sleep(0.05)
+
+        if delta_hor > delta_ver:
+            while self.working:
+                to_set_x = cursor.x
+                self.horizontal_handler.handle(to_set_x)
+                sleep(0.05)
+        else:
+            while self.working:
+                to_set_y = cursor.y
+                self.vertical_handler.handle(to_set_y)
+                sleep(0.05)
 
     def on_every_key_release(self):
         self.working = False
