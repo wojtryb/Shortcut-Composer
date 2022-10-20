@@ -9,11 +9,13 @@ from .shortcut_library.plugin_actions import (
     CyclicPreset,
     CyclicOpacity,
     CyclicBlendingModes,
+    MouseCycle,
 )
 
 actions = [
-    TemporaryEraser(),
-    TemporaryPreserveAlpha(),
+    TemporaryEraser(action_name="Eraser (toggle)"),
+    MouseCycle(action_name="Mouse cycle"),
+    TemporaryPreserveAlpha(action_name="Preserve alpha (toggle)"),
     TemporaryTool(
         action_name="Freehand selection (toggle)",
         krita_tool=Tool.freehand_selection,

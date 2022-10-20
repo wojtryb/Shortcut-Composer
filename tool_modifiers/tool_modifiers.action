@@ -198,5 +198,18 @@
         <statusTip></statusTip>
         </Action>
 
+        <Action name="Mouse cycle">
+        <icon></icon>
+        <text>Mouse cycle</text>
+        <whatsThis></whatsThis>
+        <toolTip></toolTip>
+        <iconText></iconText>
+        <activationFlags>0</activationFlags>
+        <activationConditions>0</activationConditions>
+        <shortcut></shortcut>
+        <isCheckable>false</isCheckable>
+        <statusTip></statusTip>
+        </Action>
+
     </Actions>
 </ActionCollection>

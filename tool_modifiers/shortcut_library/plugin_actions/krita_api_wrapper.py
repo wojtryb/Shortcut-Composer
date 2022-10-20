@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any
 
-from PyQt5.QtWidgets import QWidget, QToolButton
+from PyQt5.QtWidgets import QWidget, QToolButton, QMainWindow
 from krita import Krita as Api, Extension, QMdiArea
 
 
@@ -53,6 +53,9 @@ class Krita:
     @staticmethod
     def get_active_view() -> KritaView:
         return KritaView(Api.instance().activeWindow().activeView())
+
+    def get_active_qwindow() -> QMainWindow:
+        return Api.instance().activeWindow().qwindow()
 
     @staticmethod
     def add_extension(extension: Extension) -> None:
