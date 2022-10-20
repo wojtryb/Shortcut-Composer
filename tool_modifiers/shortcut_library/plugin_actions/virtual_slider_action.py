@@ -23,13 +23,13 @@ class VirtualSliderAction(PluginAction):
 
     def on_key_press(self):
         if self.separate_sliders:
-            target = self.__loop_separate
+            target = self._loop_separate
         else:
-            target = self.__loop_common
+            target = self._loop_common
         self.thread = Thread(target=target, daemon=True)
         self.thread.start()
 
-    def __loop_common(self):
+    def _loop_common(self):
         cursor = Krita.get_cursor()
 
         self.horizontal_slider.set_start_value(cursor.x)
@@ -41,7 +41,7 @@ class VirtualSliderAction(PluginAction):
             self.vertical_slider.handle(-cursor.y)
             sleep(0.05)
 
-    def __loop_separate(self):
+    def _loop_separate(self):
         cursor = Krita.get_cursor()
 
         self.horizontal_slider.set_start_value(cursor.x)
