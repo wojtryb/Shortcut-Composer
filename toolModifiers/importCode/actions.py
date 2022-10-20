@@ -1,3 +1,4 @@
+from typing import List
 from krita import Krita
 from abc import ABC
 from dataclasses import dataclass
@@ -34,6 +35,32 @@ class ToolWrapper(Action):
     def is_high_state(self):
         'returns True if the passed tool is active'
         return get_current_tool_name() == self.krita_name
+
+    @staticmethod
+    def _set_tool(tool_name):
+        'activates a tool of passed name'
+        Krita.instance().action(tool_name).trigger()
+
+
+class CyclicTool(Action):
+    def __init__(self, tools: List[str]):
+        self.tools = tools + [tools[0]]
+        self.krita_name = 'Cyclic tool'
+        self.human_name = 'Cyclic tool'
+
+    def set_low(self):
+        self._set_tool(self.tools[0])
+
+    def set_high(self):
+        current_tool = get_current_tool_name()
+        for tool, next_tool in zip(self.tools, self.tools[1:]):
+            if tool == current_tool:
+                self._set_tool(next_tool)
+                return
+
+    def is_high_state(self):
+        'returns True if the passed tool is active'
+        return get_current_tool_name() not in self.tools
 
     @staticmethod
     def _set_tool(tool_name):

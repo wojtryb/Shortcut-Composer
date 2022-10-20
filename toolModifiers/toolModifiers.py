@@ -1,5 +1,9 @@
 from krita import Krita, Extension
-from .importCode.actions import ToolWrapper, EraserWrapper, AlphaWrapper
+from .importCode.actions import (
+    ToolWrapper,
+    EraserWrapper,
+    AlphaWrapper,
+    CyclicTool)
 
 from .importCode.event_filter import ReleaseKeyEventFilter
 from .importCode.action_wrapper import ActionCreator
@@ -31,6 +35,13 @@ class toolModifiers(Extension):
 
         self.actions.append(creator.create_action(EraserWrapper()))
         self.actions.append(creator.create_action(AlphaWrapper()))
+        self.actions.append(creator.create_action(CyclicTool([
+            "KritaShape/KisToolBrush",
+            "KisToolSelectOutline",
+            "KritaFill/KisToolGradient",
+            "KritaShape/KisToolLine",
+            "KisToolTransform",
+        ])))
 
 
 Krita.instance().addExtension(toolModifiers(Krita.instance()))

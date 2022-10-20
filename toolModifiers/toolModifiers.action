@@ -133,6 +133,20 @@
         <statusTip></statusTip>
         </Action>
 
+        <Action name="Cyclic tool">
+        <icon></icon>
+        <text>Cyclic tool</text>
+        <whatsThis></whatsThis>
+        <toolTip></toolTip>
+        <iconText></iconText>
+        <activationFlags>0</activationFlags>
+        <activationConditions>0</activationConditions>
+        <shortcut></shortcut>
+        <isCheckable>false</isCheckable>
+        <statusTip></statusTip>
+        </Action>
+
+
 
     </Actions>
 </ActionCollection>
