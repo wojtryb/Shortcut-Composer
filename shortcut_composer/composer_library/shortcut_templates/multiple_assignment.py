@@ -2,12 +2,12 @@ from itertools import zip_longest
 from typing import Any, List
 from dataclasses import dataclass
 
-from ..api_adapter import Controller
-from ..plugin_action_utils import PluginAction
+from ..krita_api.controller import Controller
+from ..shortcut_connection_utils import PluginAction
 
 
 @dataclass
-class CyclicAction(PluginAction):
+class MultipleAssignment(PluginAction):
     """
     Abstract class with custom key event interface for cyclic actions
 

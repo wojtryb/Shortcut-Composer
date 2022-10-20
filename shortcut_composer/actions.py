@@ -1,30 +1,33 @@
 """File that acts as config - define all action objects here."""
 
-from .shortcut_library import plugin_actions as templates
-from .shortcut_library.plugin_actions import HideStrategy, PickStrategy
-from .shortcut_library.api_adapter import controller, Tool, Tag, BlendingMode
-from .shortcut_library.api_adapter.controller import SetBrushStrategy
-from .shortcut_library.plugin_actions.slider_utils import Slider, Range
+from .composer_library.krita_api import controller
+from .composer_library.krita_api.enums import BlendingMode, Tool
+from .composer_library.krita_api.wrappers import Tag
+from .composer_library.krita_api.controller.strategies import SetBrushStrategy
+from .composer_library import shortcut_templates
+from .composer_library.shortcut_templates.slider_utils import Slider, Range
+from .composer_library.shortcut_templates import HideStrategy, PickStrategy
+
 
 actions = [
-    templates.TemporaryAction(
+    shortcut_templates.TemporaryKey(
         action_name="Eraser (toggle)",
         controller=controller.EraserController(affect_preserve_alpha=True),
         low_value=False,
         high_value=True,
     ),
-    templates.TemporaryAction(
+    shortcut_templates.TemporaryKey(
         action_name="Preserve alpha (toggle)",
         controller=controller.PreserveAlphaController(affect_eraser=True),
         low_value=False,
         high_value=True,
     ),
-    templates.LayerPicker(
+    shortcut_templates.LayerPicker(
         action_name="Layer picker",
         hide_strategy=HideStrategy.MAKE_INVISIBLE,
         pick_strategy=PickStrategy.VISIBLE
     ),
-    templates.VirtualSliderAction(
+    shortcut_templates.MouseTracker(
         action_name="Brush size mouse",
         separate_sliders=True,
         horizontal_slider=Slider(
@@ -39,7 +42,7 @@ actions = [
             values_to_cycle=[50, 100, 200, 250, 500, 1000]
         ),
     ),
-    templates.VirtualSliderAction(
+    shortcut_templates.MouseTracker(
         action_name="Mouse cycle",
         separate_sliders=True,
         horizontal_slider=Slider(
@@ -75,7 +78,7 @@ actions = [
         #     sensitivity=50
         # ),
     ),
-    templates.VirtualSliderAction(
+    shortcut_templates.MouseTracker(
         action_name="Canvas slider",
         separate_sliders=True,
         horizontal_slider=Slider(
@@ -91,33 +94,33 @@ actions = [
             sensitivity=50
         ),
     ),
-    templates.TemporaryAction(
+    shortcut_templates.TemporaryKey(
         action_name="Freehand selection (toggle)",
         controller=controller.ToolController(),
         high_value=Tool.FREEHAND_SELECTION,
     ),
-    templates.TemporaryAction(
+    shortcut_templates.TemporaryKey(
         action_name="Gradient (toggle)",
         controller=controller.ToolController(),
         high_value=Tool.GRADIENT,
     ),
-    templates.TemporaryAction(
+    shortcut_templates.TemporaryKey(
         action_name="Line tool (toggle)",
         controller=controller.ToolController(),
         high_value=Tool.LINE,
     ),
-    templates.TemporaryAction(
+    shortcut_templates.TemporaryKey(
         action_name="Transform tool (toggle)",
         controller=controller.ToolController(),
         high_value=Tool.TRANSFORM,
         time_interval=1.0
     ),
-    templates.TemporaryAction(
+    shortcut_templates.TemporaryKey(
         action_name="Move tool (toggle)",
         controller=controller.ToolController(),
         high_value=Tool.MOVE,
     ),
-    templates.CyclicAction(
+    shortcut_templates.MultipleAssignment(
         action_name="Selections tools (cycle)",
         controller=controller.ToolController(),
         values_to_cycle=[
@@ -126,13 +129,13 @@ actions = [
             Tool.CONTIGUOUS_SELECTION,
         ],
     ),
-    templates.CyclicAction(
+    shortcut_templates.MultipleAssignment(
         action_name="Canvas cycle",
         controller=controller.CanvasRotationController(),
         default_value=0,
         values_to_cycle=[15, 30, 60, 90],
     ),
-    templates.CyclicAction(
+    shortcut_templates.MultipleAssignment(
         action_name="Misc tools (cycle)",
         controller=controller.ToolController(),
         values_to_cycle=[
@@ -142,7 +145,7 @@ actions = [
             Tool.REFERENCE,
         ],
     ),
-    templates.CyclicAction(
+    shortcut_templates.MultipleAssignment(
         action_name="Preset (cycle)",
         controller=controller.PresetController(
             set_brush_strategy=SetBrushStrategy.ON_NON_PAINTABLE
@@ -150,13 +153,13 @@ actions = [
         default_value="y) Texture Big",
         values_to_cycle=Tag("Digital")
     ),
-    templates.CyclicAction(
+    shortcut_templates.MultipleAssignment(
         action_name="Opacity (cycle)",
         controller=controller.OpacityController(),
         values_to_cycle=[75, 50, 20.3, 11.1],
         include_default_in_cycle=True,
     ),
-    templates.CyclicAction(
+    shortcut_templates.MultipleAssignment(
         action_name="Blending mode (cycle)",
         controller=controller.BlendingModeController(),
         values_to_cycle=[BlendingMode.OVERLAY],

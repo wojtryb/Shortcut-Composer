@@ -1,7 +1,7 @@
 from typing import Callable, List
 
 from PyQt5.QtCore import QEvent
-from ..api_adapter import QMdiArea
+from ..krita_api import QMdiArea
 
 
 EventCallback = Callable[[QEvent], None]

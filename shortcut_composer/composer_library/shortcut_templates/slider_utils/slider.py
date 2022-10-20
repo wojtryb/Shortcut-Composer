@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, List, Union
 
-from ...api_adapter import Controller
+from ...krita_api.controller import Controller
 from .mouse_interpreter import MouseInterpreter
 from .slider_values import create_slider_values, Range
 

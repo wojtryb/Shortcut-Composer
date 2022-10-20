@@ -2,15 +2,17 @@ from enum import Enum
 from time import sleep
 from typing import List
 
-from .virtual_slider_action import VirtualSliderAction
+from ..krita_api import Krita, controller
+from ..krita_api.wrappers import Document, Node
+
+from .mouse_tracker import MouseTracker
 from .slider_utils import EmptySlider, Slider
-from ..api_adapter import controller, Krita, KritaDocument, Node
 
 
 class HideStrategy(Enum):
 
     class __HideStrategyBase:
-        def __init__(self, _: KritaDocument): ...
+        def __init__(self, _: Document): ...
         def __enter__(self): return self
         def update(self) -> None: ...
         def __exit__(self, *_): ...
@@ -24,7 +26,7 @@ class HideStrategy(Enum):
             Krita.set_action_state("isolate_active_layer", False)
 
     class __MakeInvisibleStrategy(__HideStrategyBase):
-        def __init__(self, document: KritaDocument) -> None:
+        def __init__(self, document: Document) -> None:
             self.document = document
             self.last_node = self.document.current_node()
 
@@ -52,11 +54,11 @@ class HideStrategy(Enum):
 
 class PickStrategy(Enum):
     @staticmethod
-    def __pick_all(document: KritaDocument) -> List[Node]:
+    def __pick_all(document: Document) -> List[Node]:
         return document.all_nodes()
 
     @staticmethod
-    def __pick_visible(document: KritaDocument) -> List[Node]:
+    def __pick_visible(document: Document) -> List[Node]:
         nodes = document.all_nodes()
         current_node = document.current_node()
         return [node for node in nodes
@@ -66,7 +68,7 @@ class PickStrategy(Enum):
     VISIBLE = __pick_visible
 
 
-class LayerPicker(VirtualSliderAction):
+class LayerPicker(MouseTracker):
     def __init__(
         self,
         action_name: str,

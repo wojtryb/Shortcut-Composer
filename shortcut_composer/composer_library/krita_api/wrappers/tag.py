@@ -1,10 +1,10 @@
-from .krita_api import KritaDatabase
+from .database import Database
 
 
 class Tag:
     def __init__(self, tag: str) -> None:
         self.name = tag
-        with KritaDatabase() as database:
+        with Database() as database:
             preset_names = database.get_preset_names_from_tag(tag)
         self.data = sorted(set(preset_names))
 
