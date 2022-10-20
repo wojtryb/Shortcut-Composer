@@ -1,41 +1,42 @@
 from dataclasses import dataclass
 
-from .key_filter import ActionElements, KeyFilter
-from .shortcut import Shortcut
+from .event_filter import ReleaseKeyEventFilter
+from .shortcut import ActionElements, Shortcut
 
 
 @dataclass
-class ActionWrapper:
+class Action:
     action_name: str
     krita_action: None
     shortcut: Shortcut
 
+    def __post_init__(self):
+        self.krita_action.setAutoRepeat(False)
+        self.krita_action.triggered.connect(self.shortcut.on_key_press)
+
 
 class ActionCreator:
-    def __init__(self, window) -> None:
+    def __init__(self, window, event_filter: ReleaseKeyEventFilter):
         self.window = window
+        self.event_filter = event_filter
 
-    def create_shortcut(
+    def create_action(
         self,
         human_name,
         set_low_function,
         set_high_function,
         is_high_state_function
-    ) -> ActionWrapper:
+    ) -> Action:
         'creates a single shortcut action'
-        action = self.window.createAction(human_name, human_name, "")
-        action.setAutoRepeat(False)
+        krita_action = self.window.createAction(human_name, human_name, "")
+
         shortcut = Shortcut(ActionElements(
             human_name,
             set_low_function,
             set_high_function,
             is_high_state_function,
         ))
+        self.event_filter.register_release_callback(
+            shortcut.event_filter_callback)
 
-        action.triggered.connect(shortcut.on_key_press)
-
-        return ActionWrapper(
-            human_name,
-            action,
-            shortcut
-        )
+        return Action(human_name, krita_action, shortcut)
