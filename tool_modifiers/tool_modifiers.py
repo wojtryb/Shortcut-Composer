@@ -1,7 +1,7 @@
 from krita import Krita, Extension
 
-from .importCode import ReleaseKeyEventFilter, ActionCreator
-from .importCode.plugin_actions import (
+from .shortcut_library import ReleaseKeyEventFilter, ActionManager
+from .shortcut_library.plugin_actions import (
     TemporaryTool,
     TemporaryEraser,
     TemporaryAlphaLock,
@@ -21,20 +21,16 @@ class ToolModifiers(Extension):
         pass
 
     def createActions(self, window):
-        creator = ActionCreator(window, self.event_filter)
+        creator = ActionManager(window, self.event_filter)
 
         for action_name, krita_tool in temporary_tools.items():
-            self.actions.append(creator.create_action(
-                TemporaryTool(action_name, krita_tool))
-            )
+            creator.bind_action(TemporaryTool(action_name, krita_tool))
 
         for action_name, tools_to_cycle in cyclic_tools.items():
-            self.actions.append(creator.create_action(
-                CyclicTool(action_name, tools_to_cycle))
-            )
+            creator.bind_action(CyclicTool(action_name, tools_to_cycle))
 
-        self.actions.append(creator.create_action(TemporaryEraser()))
-        self.actions.append(creator.create_action(TemporaryAlphaLock()))
+        creator.bind_action(TemporaryEraser())
+        creator.bind_action(TemporaryAlphaLock())
 
 
 Krita.instance().addExtension(ToolModifiers(Krita.instance()))

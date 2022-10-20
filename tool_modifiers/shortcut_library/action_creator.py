@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import List
 
 from PyQt5.QtWidgets import QWidgetAction
 
@@ -19,21 +20,24 @@ class ActionContainer:
         self.krita_action.triggered.connect(self.shortcut.on_key_press)
 
 
-class ActionCreator:
+class ActionManager:
 
     def __init__(self, window, event_filter: ReleaseKeyEventFilter):
-        self.window = window
-        self.event_filter = event_filter
+        self._window = window
+        self._event_filter = event_filter
+        self._stored_actions: List[ActionContainer] = []
 
-    def create_action(self, action: PluginAction)\
-            -> ActionContainer:
-        krita_action: QWidgetAction = self.window.createAction(
+    def bind_action(self, action: PluginAction) -> ActionContainer:
+        krita_action: QWidgetAction = self._window.createAction(
             action.action_name,
             action.action_name,
             ""
         )
         shortcut = Shortcut(action)
-        self.event_filter.register_release_callback(
+        self._event_filter.register_release_callback(
             shortcut.event_filter_callback)
 
-        return ActionContainer(action, krita_action, shortcut)
+        container = ActionContainer(action, krita_action, shortcut)
+        self._stored_actions.append(container)
+
+        return container
