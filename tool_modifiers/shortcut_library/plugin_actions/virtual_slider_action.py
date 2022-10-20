@@ -21,8 +21,13 @@ class VirtualSliderAction(PluginAction):
         self.working = False
         self.thread: Thread
 
+    @property
+    def is_single_mode(self):
+        return (isinstance(self.horizontal_slider, EmptySlider)
+                or isinstance(self.vertical_slider, EmptySlider))
+
     def on_key_press(self):
-        if self.separate_sliders:
+        if self.separate_sliders and not self.is_single_mode:
             target = self._loop_separate
         else:
             target = self._loop_common
