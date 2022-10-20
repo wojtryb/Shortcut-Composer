@@ -2,11 +2,14 @@ import os.path
 from dataclasses import dataclass
 from typing import Any, List
 
+
 from PyQt5.QtWidgets import QWidget, QToolButton, QMainWindow
 from krita import Krita as Api, Extension, QMdiArea
 
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 from PyQt5.Qt import QStandardPaths
+
+from .enums import BlendingMode, Tool
 
 
 @dataclass
@@ -31,8 +34,8 @@ class KritaView:
     def current_brush_preset_name(self) -> str:
         return self.view.currentBrushPreset().name()
 
-    def current_blending_mode(self) -> str:
-        return self.view.currentBlendingMode()
+    def current_blending_mode(self) -> BlendingMode:
+        return BlendingMode(self.view.currentBlendingMode())
 
     def current_opacity(self) -> int:
         return self.view.paintingOpacity()
@@ -40,8 +43,8 @@ class KritaView:
     def set_brush_preset(self, preset):
         self.view.setCurrentBrushPreset(preset)
 
-    def set_blending_mode(self, mode_name: str):
-        self.view.setCurrentBlendingMode(mode_name)
+    def set_blending_mode(self, mode_name: BlendingMode):
+        self.view.setCurrentBlendingMode(mode_name.value)
 
     def set_opacity(self, opacity: int) -> None:
         self.view.setPaintingOpacity(opacity)
@@ -150,9 +153,9 @@ class Krita:
         Api.instance().addExtension(extension(Api.instance()))
 
     @classmethod
-    def get_current_tool_name(cls) -> str:
+    def get_current_tool(cls) -> Tool:
         tool = cls._find_my_current_tool()
-        return tool.objectName()
+        return Tool(tool.objectName())
 
     @classmethod
     def _find_my_current_tool(cls):
