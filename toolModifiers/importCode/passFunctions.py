@@ -11,11 +11,6 @@ def setTool(toolName):
     Application.instance().action(toolName).trigger()
 
 
-def setBrushTool():
-    'activates a freehand brush tool'
-    setTool("KritaShape/KisToolBrush")
-
-
 def isToolSelected(toolName):
     'returns True if the passed tool is active'
     return getCurrentTool() == toolName
@@ -23,14 +18,14 @@ def isToolSelected(toolName):
 # '------- eraser functions -------'
 
 
-def toggleEraser(arg=None):
+def toggleEraser():
     'changes the state of the eraser, may affect alpha lock'
     if CONNECTEDTOGGLES:
         Application.action("preserve_alpha").setChecked(False)
     Application.action("erase_action").trigger()
 
 
-def isEraserActive(arg=None):
+def isEraserActive():
     'returns True if the eraser is active'
     kritaEraserAction = Application.action("erase_action")
     return kritaEraserAction.isChecked()
@@ -38,14 +33,14 @@ def isEraserActive(arg=None):
 # '------- alpha functions -------'
 
 
-def toggleAlphaLock(arg=None):
+def toggleAlphaLock():
     'changes the state of the alpha lock, may affect the eraser'
     if CONNECTEDTOGGLES:
         Application.action("erase_action").setChecked(False)
     Application.action("preserve_alpha").trigger()
 
 
-def isAlphaLocked(arg=None):
+def isAlphaLocked():
     'returns True if the alpha is locked'
     kritaEraserAction = Application.action("preserve_alpha")
     return kritaEraserAction.isChecked()
