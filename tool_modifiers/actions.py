@@ -23,8 +23,23 @@ actions = [
     TemporaryPreserveAlpha(),
     MouseCycle(
         action_name="Mouse cycle",
-        horizontal_handler=Handler(),
-        vertical_handler=Handler(),
+        horizontal_handler=Handler(
+            controller=BlendingModeController,
+            values_to_cycle=['normal', 'overlay', 'darken'],
+            sensitivity=50
+        ),
+        vertical_handler=Handler(
+            controller=ToolController,
+            values_to_cycle=[
+                Tool.freehand_selection,
+                Tool.rectangular_selection,
+                Tool.contiquous_selection,
+                Tool.gradient,
+                Tool.line,
+                Tool.transform,
+                Tool.reference,
+            ],
+        ),
     ),
     TemporaryAction(
         action_name="Freehand selection (toggle)",

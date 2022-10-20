@@ -1,7 +1,7 @@
 from typing import Any
 
 from .krita_api_wrapper import Krita
-from .enums import Tool, BlendingMode
+from .enums import Tool
 
 
 class Controller:
@@ -46,17 +46,17 @@ class PresetController(Controller):
 
 class BlendingModeController(Controller):
 
-    default_value: BlendingMode = BlendingMode.normal
+    default_value = "normal"
 
     @staticmethod
-    def get_value() -> BlendingMode:
+    def get_value() -> str:
         """Get currently active blending mode."""
-        return BlendingMode(Krita.get_active_view().current_blending_mode())
+        return Krita.get_active_view().current_blending_mode()
 
     @staticmethod
-    def set_value(value: BlendingMode):
+    def set_value(value: str):
         """Set a passed blending mode."""
-        Krita.get_active_view().set_blending_mode(value.value)
+        Krita.get_active_view().set_blending_mode(value)
 
 
 class OpacityController(Controller):
