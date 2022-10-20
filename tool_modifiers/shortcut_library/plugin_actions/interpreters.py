@@ -28,6 +28,10 @@ class Interpreter(ABC):
     def at(self, mouse: int):
         pass
 
+    @abstractmethod
+    def get_value(self, value: Any) -> Any:
+        pass
+
     def calibrate(self, mouse: int, value: Optional[float] = None):
         self.start_mouse = mouse
         if value is not None:
@@ -54,7 +58,11 @@ class RangeInterpreter(Interpreter):
 
     def at(self, mouse: int) -> float:
         delta = (self.start_mouse - mouse)/self.sensitivity
+        print(delta)
         return self._clip(self.start_value + delta)
+
+    def get_value(self, value: Any) -> Any:
+        return value
 
 
 @dataclass
@@ -66,5 +74,9 @@ class ListInterpreter(Interpreter):
 
     def at(self, mouse: int):
         delta = (self.start_mouse - mouse)/self.sensitivity
+        print(delta)
         index_to_set = round(self._clip(self.start_value + delta))
         return self.values_to_cycle[index_to_set]
+
+    def get_value(self, value: Any) -> Any:
+        return self.values_to_cycle.index(value)
