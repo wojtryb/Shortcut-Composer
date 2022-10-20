@@ -1,32 +1,27 @@
 """Central file which defines extension class and adds it to krita."""
 
-from .shortcut_library.convenience_utils.krita_api_wrapper import (
-    Krita,
-    Extension
-)
-from .shortcut_library.adapter_utils.event_filter import ReleaseKeyEventFilter
-from .shortcut_library.adapter_utils.action_creator import ActionManager
-
+from .shortcut_library.api_adapter import Krita, Extension
+from .shortcut_library.plugin_action_utils import ActionManager
 from .actions import actions
 
 
 class ToolModifiers(Extension):
     """Krita extension that adds complex keyboard shortcuts."""
 
+    manager: ActionManager
+
     def __init__(self, parent):
         """Initialize extension, create single event filter."""
         super(ToolModifiers, self).__init__(parent)
-        self.event_filter = ReleaseKeyEventFilter()
 
     def setup(self):
         """Obligatory override of abstract class."""
-        pass
 
     def createActions(self, window):
         """Initialize manager of actions which binds them to event filter."""
-        manager = ActionManager(window, self.event_filter)
+        self.manager = ActionManager(window)
         for action in actions:
-            manager.bind_action(action)
+            self.manager.bind_action(action)
 
 
 # Add extension to krita

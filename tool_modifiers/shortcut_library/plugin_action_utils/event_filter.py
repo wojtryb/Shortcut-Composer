@@ -1,7 +1,7 @@
 from typing import Callable, List
 
 from PyQt5.QtCore import QEvent
-from ..convenience_utils import QMdiArea
+from ..api_adapter import QMdiArea
 
 
 EventCallback = Callable[[QEvent], None]

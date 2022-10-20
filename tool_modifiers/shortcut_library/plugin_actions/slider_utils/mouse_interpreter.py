@@ -1,11 +1,12 @@
 from dataclasses import dataclass
 
-from .value_proxy import ValuesProxy
+from .slider_values import SliderValues
 
 
 @dataclass
-class Interpreter:
-    to_cycle: ValuesProxy
+class MouseInterpreter:
+
+    to_cycle: SliderValues
     sensitivity: float
 
     def __post_init__(self):

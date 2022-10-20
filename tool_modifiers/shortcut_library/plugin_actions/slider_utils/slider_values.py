@@ -1,26 +1,36 @@
+from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from typing import Any
 
-from ..convenience_utils import Range
+
+@dataclass
+class Range:
+    min: float
+    max: float
 
 
-def create_proxy(values_to_cycle, default_value):
+def create_slider_values(values_to_cycle, default_value) -> 'SliderValues':
     if isinstance(values_to_cycle, list):
-        return ListValuesProxy(values_to_cycle, default_value)
+        return ListSliderValues(values_to_cycle, default_value)
     elif isinstance(values_to_cycle, Range):
-        return RangeValuesProxy(values_to_cycle, default_value)
+        return RangeSliderValues(values_to_cycle, default_value)
     raise RuntimeError(f"Wrong type: {values_to_cycle}")
 
 
-class ValuesProxy:
+class SliderValues(ABC):
     values_to_cycle: Any
     min: float
     max: float
+
+    @abstractmethod
     def at(self, value: float): ...
+
+    @abstractmethod
     def index(self, value: Any): ...
 
 
-class RangeValuesProxy(ValuesProxy):
-    def __init__(self, values_to_cycle: Range, default_value: Any):
+class RangeSliderValues(SliderValues):
+    def __init__(self, values_to_cycle: Range, default_value: float):
         self.values_to_cycle = values_to_cycle
         self.min = values_to_cycle.min
         self.max = values_to_cycle.max
@@ -33,7 +43,7 @@ class RangeValuesProxy(ValuesProxy):
         return value
 
 
-class ListValuesProxy(ValuesProxy):
+class ListSliderValues(SliderValues):
     def __init__(self, values_to_cycle: list, default_value: Any):
         self.values_to_cycle: list = values_to_cycle
         self.min = -0.49
