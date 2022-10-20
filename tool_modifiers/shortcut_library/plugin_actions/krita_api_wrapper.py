@@ -1,8 +1,12 @@
+import os.path
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, List
 
 from PyQt5.QtWidgets import QWidget, QToolButton, QMainWindow
 from krita import Krita as Api, Extension, QMdiArea
+
+from PyQt5.QtSql import QSqlDatabase, QSqlQuery
+from PyQt5.Qt import QStandardPaths
 
 
 @dataclass
@@ -19,8 +23,8 @@ class KritaView:
     def current_opacity(self) -> int:
         return self.view.paintingOpacity()
 
-    def set_brush_preset(self, preset_name: str):
-        self.view.setCurrentBrushPreset(preset_name)
+    def set_brush_preset(self, preset):
+        self.view.setCurrentBrushPreset(preset)
 
     def set_blending_mode(self, mode_name: str):
         self.view.setCurrentBlendingMode(mode_name)
@@ -47,7 +51,8 @@ class Krita:
         return Api.instance().action(action_name).setChecked(state)
 
     @staticmethod
-    def get_presets() -> list:
+    def get_presets() -> dict:
+        # print(Api.instance().resources('preset'))
         return Api.instance().resources('preset')
 
     @staticmethod
@@ -86,4 +91,53 @@ class Krita:
                 return qobj
 
 
-__all__ = ['Krita', 'Extension', 'QMdiArea']
+class KritaDatabase:
+    def __init__(self):
+        database_path = os.path.join(
+            QStandardPaths.standardLocations(QStandardPaths.DataLocation)[0],
+            'resourcecache.sqlite')
+
+        self.database = QSqlDatabase.addDatabase("QSQLITE", "dbResources")
+        self.database.setDatabaseName(database_path)
+
+    # def get_presets_from_tag(self, tag):
+    #     all_preset_objects = Krita.get_presets()
+    #     preset_names = self.get_preset_names_from_tag(tag)
+
+    #     return [preset_names[preset] for preset in all_preset_objects]
+
+    def get_preset_names_from_tag(self, tag) -> List[str]:
+        if not self.database.open():
+            return []
+
+        sql_query = f'''
+            SELECT r.name AS preset
+            from tags t
+                    join resource_tags rt
+                    on t.id=rt.tag_id
+                    join resources r
+                    on r.id = rt.resource_id
+            where t.name='{tag}'
+        '''
+        query_handler = QSqlQuery(self.database)
+        if not query_handler.exec(sql_query):
+            return []
+
+        preset_names = []
+        while query_handler.next():
+            preset_names.append(query_handler.value('preset'))
+
+        query_handler.finish()
+        return preset_names
+
+    def close(self):
+        self.database.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_):
+        self.close()
+
+
+__all__ = ['Krita', 'KritaDatabase', 'Extension', 'QMdiArea']

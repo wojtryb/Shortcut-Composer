@@ -32,16 +32,16 @@ class ToolController(Controller):
 
 class PresetController(Controller):
 
+    presets = Krita.get_presets()
+
     @staticmethod
     def get_value() -> str:
         """Get currently active preset."""
         return Krita.get_active_view().current_brush_preset_name()
 
-    @staticmethod
-    def set_value(value: str):
+    def set_value(self, value: str):
         """Set a preset of passed name."""
-        presets = Krita.get_presets()
-        Krita.get_active_view().set_brush_preset(presets[value])
+        Krita.get_active_view().set_brush_preset(self.presets[value])
 
 
 class BlendingModeController(Controller):
