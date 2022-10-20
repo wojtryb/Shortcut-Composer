@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ActionCollection version="2" name="Scripts">
     <Actions category="Scripts">
-        <text>Tool Modifiers</text>
+        <text>Shortcut Composer</text>
 
         <Action name="Layer picker">
         <text>Pick a layer</text>
