@@ -1,19 +1,16 @@
-from abc import ABC, abstractmethod
 from typing import Any
 
 from .krita_api_wrapper import Krita
 from .enums import Tool, BlendingMode
 
 
-class Controller(ABC):
+class Controller:
 
     default_value: Any = None
 
-    @abstractmethod
     def get_value(self):
         pass
 
-    @abstractmethod
     def set_value(self, value):
         pass
 
