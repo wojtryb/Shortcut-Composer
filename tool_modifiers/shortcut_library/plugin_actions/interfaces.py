@@ -6,8 +6,8 @@ from threading import Thread
 from time import sleep
 
 from .controllers import Controller
-from .krita_api_wrapper import Krita
-from .handlers import Handler, EmptyHandler
+from ..convenience_utils.krita_api_wrapper import Krita
+from ..slider_utils.handlers import Handler, EmptyHandler
 
 
 @dataclass

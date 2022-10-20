@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from typing import Any, List, Union
 
-from .controllers import Controller
-from .helpers import Range
+from ..plugin_actions.controllers import Controller
+from ..convenience_utils.helpers import Range
 from .interpreters import Interpreter
 from .value_proxy import create_proxy
 
