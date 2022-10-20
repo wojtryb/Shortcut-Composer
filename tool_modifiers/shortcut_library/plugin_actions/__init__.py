@@ -1,7 +1,7 @@
 from .temporary_actions import (
     TemporaryTool,
     TemporaryEraser,
-    TemporaryAlphaLock,
+    TemporaryPreserveAlpha,
 )
 from .cyclic_actions import (
     CyclicTool,
@@ -14,7 +14,7 @@ from .cyclic_actions import (
 __all__ = [
     'TemporaryTool',
     'TemporaryEraser',
-    'TemporaryAlphaLock',
+    'TemporaryPreserveAlpha',
     'CyclicTool',
     'CyclicPreset',
     'CyclicBlendingModes',
