@@ -49,6 +49,10 @@ class Slider:
         except ValueError:
             return self.__to_cycle.default_value
 
+    def _change_values(self, values: List[Any]):
+        self.__to_cycle.values_to_cycle = values
+        self.__to_cycle.max = len(values) - 0.51
+
 
 class EmptySlider(Slider):
 

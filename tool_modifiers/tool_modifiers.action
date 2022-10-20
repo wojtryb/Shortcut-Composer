@@ -3,6 +3,10 @@
     <Actions category="Scripts">
         <text>Tool Modifiers</text>
 
+        <Action name="Layer picker">
+        <text>Pick a layer</text>
+        </Action>
+
         <Action name="Freehand selection (toggle)">
         <text>Temporarily switch to freehand selection</text>
         </Action>
