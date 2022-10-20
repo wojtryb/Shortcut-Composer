@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import List
 
 from .krita_api_wrapper import Krita
-from ._interfaces import CyclicPluginAction
+from .interfaces import CyclicPluginAction
 from .enums import Tool, BlendingMode
 
 
