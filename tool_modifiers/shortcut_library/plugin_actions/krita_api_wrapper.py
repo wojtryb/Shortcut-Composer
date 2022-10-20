@@ -1,14 +1,14 @@
 from dataclasses import dataclass
+from typing import Any
 
 from PyQt5.QtWidgets import QWidget, QToolButton
-from krita import Extension, QMdiArea
-from krita import Krita as Api
+from krita import Krita as Api, Extension, QMdiArea
 
 
 @dataclass
 class KritaView:
 
-    view: None
+    view: Any
 
     def current_brush_preset_name(self) -> str:
         return self.view.currentBrushPreset().name()
@@ -81,3 +81,6 @@ class Krita:
         for qobj in qwindow.findChildren(QWidget):
             if qobj.metaObject().className() == "KoToolBox":
                 return qobj
+
+
+__all__ = ['Krita', 'Extension', 'QMdiArea']
