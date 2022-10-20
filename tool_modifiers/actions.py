@@ -23,10 +23,10 @@ actions = [
     TemporaryPreserveAlpha(),
     MouseCycleAction(
         action_name="Mouse cycle",
-        separate_handlers=True,
+        separate_handlers=False,
         horizontal_handler=Handler(
             controller=OpacityController,
-            default_value=1.0,
+            default_value=0.5,
             values_to_cycle=Range(0.1, 0.9)
             # values_to_cycle=[0.2, 0.3, 0.5, 0.9, 1.0]
         ),
@@ -43,12 +43,12 @@ actions = [
         #         Tool.reference,
         #     ],
         # ),
-        # vertical_handler=Handler(
-        #     controller=BlendingModeController,
-        #     values_to_cycle=['overlay', 'normal', 'darken'],
-        #     default_value='normal',
-        #     sensitivity=50
-        # ),
+        vertical_handler=Handler(
+            controller=BlendingModeController,
+            values_to_cycle=['overlay', 'normal', 'darken'],
+            default_value='normal',
+            sensitivity=50
+        ),
     ),
     TemporaryAction(
         action_name="Freehand selection (toggle)",

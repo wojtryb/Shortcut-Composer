@@ -1,8 +1,10 @@
+from dataclasses import dataclass
 from typing import Any, List, Union
 
 from .controllers import Controller
 from .helpers import Range
-from .interpreters import create_interpreter
+from .interpreters import Interpreter
+from .value_proxy import create_proxy
 
 
 class EmptyHandler:
@@ -14,8 +16,18 @@ class EmptyHandler:
     def set_start_value(self, mouse: int):
         pass
 
-    def update(self, mouse: int):
+    def handle(self, mouse: int):
         pass
+
+
+@dataclass
+class MouseTracker:
+    start: float = .0
+    last: float = .0
+
+    @property
+    def delta(self):
+        return self.start - self.last
 
 
 class Handler(EmptyHandler):
@@ -27,24 +39,26 @@ class Handler(EmptyHandler):
         sensitivity: int = 50
     ):
         self.__controller = controller
-        self.interpreter = create_interpreter(values_to_cycle, sensitivity)
-        self.__default_value = self.interpreter.get_value(default_value)
+        self.__to_cycle = create_proxy(values_to_cycle, default_value)
+        self.__interpreter = Interpreter(self.__to_cycle, sensitivity)
+        self.mouse = MouseTracker()
 
     def set_start_value(self, mouse: int):
-        self.last_mouse = mouse
+        self.mouse.start = mouse
+        self.mouse.last = mouse
 
+        value = self.__get_current_value()
+        self.__interpreter.calibrate(mouse, value)
+
+    def handle(self, mouse: int):
+        self.mouse.last = mouse
+
+        clipped_value = self.__interpreter.mouse_to_value(mouse)
+        to_set = self.__to_cycle.at(clipped_value)
+        self.__controller.set_value(to_set)
+
+    def __get_current_value(self):
         try:
-            current_value = self.interpreter.get_value(
-                self.__controller.get_value())
+            return self.__to_cycle.index(self.__controller.get_value())
         except ValueError:
-            current_value = self.__default_value
-
-        self.interpreter.calibrate(mouse, current_value)
-
-    def update(self, mouse: int):
-        self.last_mouse = mouse
-        value_to_set = self.interpreter.at(mouse)
-        self.__controller.set_value(value_to_set)
-
-    def delta(self):
-        return self.interpreter.start_mouse - self.last_mouse
+            return self.__to_cycle.default_value

@@ -193,8 +193,8 @@ class MouseCycleAction(PluginAction):
 
         self.working = True
         while self.working:
-            self.horizontal_handler.update(cursor.x)
-            self.vertical_handler.update(cursor.y)
+            self.horizontal_handler.handle(cursor.x)
+            self.vertical_handler.handle(cursor.y)
             sleep(0.05)
 
     def __loop_separate(self):
@@ -205,15 +205,16 @@ class MouseCycleAction(PluginAction):
 
         self.working = True
         while self.working:
-            if self.horizontal_handler.delta() > self.vertical_handler.delta():
+            if self.horizontal_handler.mouse.delta \
+                    > self.vertical_handler.mouse.delta:
                 to_set_x = cursor.x
-                to_set_y = self.vertical_handler.interpreter.start_mouse
+                to_set_y = self.vertical_handler.mouse.start
             else:
-                to_set_x = self.horizontal_handler.interpreter.start_mouse
+                to_set_x = self.horizontal_handler.mouse.start
                 to_set_y = cursor.y
 
-            self.horizontal_handler.update(to_set_x)
-            self.vertical_handler.update(to_set_y)
+            self.horizontal_handler.handle(to_set_x)
+            self.vertical_handler.handle(to_set_y)
             sleep(0.05)
 
     def on_every_key_release(self):
