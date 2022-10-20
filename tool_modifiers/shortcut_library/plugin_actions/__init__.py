@@ -8,6 +8,7 @@ from .cyclic_actions import (
     CyclicPreset,
 )
 
+
 __all__ = [
     'TemporaryTool',
     'TemporaryEraser',

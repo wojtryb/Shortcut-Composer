@@ -1,5 +1,7 @@
-from krita import Krita, Extension
-
+from .shortcut_library.plugin_actions.krita_api_wrapper import (
+    Krita,
+    Extension
+)
 from .shortcut_library import ReleaseKeyEventFilter, ActionManager
 from .shortcut_library.plugin_actions import (
     TemporaryTool,
@@ -46,4 +48,4 @@ class ToolModifiers(Extension):
         ))
 
 
-Krita.instance().addExtension(ToolModifiers(Krita.instance()))
+Krita.add_extension(ToolModifiers)

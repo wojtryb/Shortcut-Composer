@@ -1,8 +1,7 @@
-from krita import Krita
 from dataclasses import dataclass
 
+from .krita_api_wrapper import Krita
 from ._interfaces import TemporaryAction
-from ._helpers import get_current_tool_name
 from ...config import connected_toggles
 
 
@@ -14,14 +13,14 @@ class TemporaryTool(TemporaryAction):
     _default_tool_name: str = "KritaShape/KisToolBrush"
 
     def _set_low(self):
-        Krita.instance().action(self._default_tool_name).trigger()
+        Krita.trigger_action(self._default_tool_name)
 
     def _set_high(self):
-        Krita.instance().action(self._krita_tool_name).trigger()
+        Krita.trigger_action(self._krita_tool_name)
 
     def _is_high_state(self):
         'returns True if the passed tool is active'
-        return get_current_tool_name() == self._krita_tool_name
+        return Krita.get_current_tool_name() == self._krita_tool_name
 
 
 class TemporaryEraser(TemporaryAction):
@@ -37,14 +36,14 @@ class TemporaryEraser(TemporaryAction):
 
     def _is_high_state(self):
         'returns True if the passed tool is active'
-        Krita.instance().action("erase_action").isChecked()
+        Krita.get_action_state("erase_action")
 
     @staticmethod
     def _toggle_eraser():
         'changes the state of the eraser, may affect alpha lock'
         if connected_toggles:
-            Krita.instance().action("preserve_alpha").setChecked(False)
-        Krita.instance().action("erase_action").trigger()
+            Krita.set_action_state("preserve_alpha", False)
+        Krita.trigger_action("erase_action")
 
 
 class TemporaryAlphaLock(TemporaryAction):
@@ -60,11 +59,11 @@ class TemporaryAlphaLock(TemporaryAction):
 
     def _is_high_state(self):
         'returns True if the alpha is locked'
-        return Krita.instance().action("preserve_alpha").isChecked()
+        Krita.get_action_state("preserve_alpha")
 
     @staticmethod
     def _toggle_alpha_lock():
         'changes the state of the alpha lock, may affect the eraser'
         if connected_toggles:
-            Krita.instance().action("erase_action").setChecked(False)
-        Krita.instance().action("preserve_alpha").trigger()
+            Krita.set_action_state("erase_action", False)
+        Krita.trigger_action("preserve_alpha")

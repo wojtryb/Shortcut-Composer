@@ -1,9 +1,8 @@
 from dataclasses import dataclass
 from typing import List
-from krita import Krita
 
+from .krita_api_wrapper import Krita
 from ._interfaces import CyclicPluginAction
-from ._helpers import get_current_tool_name
 
 
 @dataclass
@@ -18,7 +17,7 @@ class CyclicTool(CyclicPluginAction):
         Krita.instance().action(value).trigger()
 
     def _get_current_value(self) -> str:
-        return get_current_tool_name()
+        return Krita.get_current_tool_name()
 
 
 @dataclass
@@ -29,14 +28,11 @@ class CyclicPreset(CyclicPluginAction):
     _default_value: str
 
     def _set_value(self, value: str):
-        presets = Krita.instance().resources('preset')
-
-        current_view = Krita.instance().activeWindow().activeView()
-        current_view.setCurrentBrushPreset(presets[value])
+        presets = Krita.get_presets()
+        Krita.get_active_view().set_brush_preset(presets[value])
 
     def _get_current_value(self) -> str:
-        current_view = Krita.instance().activeWindow().activeView()
-        return current_view.currentBrushPreset().name()
+        return Krita.get_active_view().current_brush_preset_name()
 
 
 class CyclicBlendingModes(CyclicPluginAction):
@@ -46,12 +42,10 @@ class CyclicBlendingModes(CyclicPluginAction):
     _default_value: str
 
     def _set_value(self, value: str):
-        current_view = Krita.instance().activeWindow().activeView()
-        current_view.setCurrentBlendingMode(value)
+        Krita.get_active_view().set_blending_mode(value)
 
     def _get_current_value(self) -> str:
-        current_view = Krita.instance().activeWindow().activeView()
-        return current_view.currentBlendingMode()
+        return Krita.get_active_view().current_blending_mode()
 
 
 class CyclicOpacity(CyclicPluginAction):
@@ -61,9 +55,7 @@ class CyclicOpacity(CyclicPluginAction):
     _default_value: int
 
     def _set_value(self, value: int):
-        current_view = Krita.instance().activeWindow().activeView()
-        current_view.setPaintingOpacity(value)
+        Krita.get_active_view().set_opacity(value)
 
     def _get_current_value(self) -> int:
-        current_view = Krita.instance().activeWindow().activeView()
-        return current_view.paintingOpacity()
+        return Krita.get_active_view().current_opacity()
