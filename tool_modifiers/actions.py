@@ -25,7 +25,8 @@ actions = [
         action_name="Mouse cycle",
         horizontal_handler=Handler(
             controller=BlendingModeController,
-            values_to_cycle=['normal', 'overlay', 'darken'],
+            values_to_cycle=['overlay', 'normal', 'darken'],
+            default_value='normal',
             sensitivity=50
         ),
         vertical_handler=Handler(
