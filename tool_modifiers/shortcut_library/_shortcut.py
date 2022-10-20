@@ -43,4 +43,4 @@ class Shortcut:
 
     @property
     def tool_shortcut(self):
-        Krita.get_action_shortcut(self.action.action_name)
+        return Krita.get_action_shortcut(self.action.action_name)
