@@ -2,35 +2,6 @@ from dataclasses import dataclass
 
 from .krita_api_wrapper import Krita
 from .interfaces import TemporaryAction
-from .enums import Tool
-
-
-@dataclass
-class TemporaryTool(TemporaryAction):
-    """
-    Temporary switches to certain tool. By default goes back to freehand brush.
-
-    action_name: name of action in settings
-    krita_tool: tool to switch too
-    default_tool (optional): tool to go back to
-    time_interval (optional): time after which key press is considered long
-    """
-
-    krita_tool: Tool
-    default_tool: Tool = Tool.freehand_brush
-    time_interval: float = 0.3
-
-    def _set_low(self):
-        """Pick a default tool."""
-        Krita.trigger_action(self.default_tool.value)
-
-    def _set_high(self):
-        """Pick a tool that the action handles."""
-        Krita.trigger_action(self.krita_tool.value)
-
-    def _is_high_state(self):
-        """Return True when the handled action is active."""
-        return Tool(Krita.get_current_tool_name()) == self.krita_tool
 
 
 @dataclass
@@ -43,9 +14,15 @@ class TemporaryEraser(TemporaryAction):
     time_interval (optional): time after which key press is considered long
     """
 
-    action_name = 'Eraser (toggle)'
-    affect_preserve_alpha: bool = True
-    time_interval: float = 0.3
+    def __init__(
+        self,
+        action_name: str = 'Eraser (toggle)',
+        affect_preserve_alpha: bool = True,
+        time_interval: float = 0.3
+    ):
+        self.action_name = action_name
+        self.affect_preserve_alpha = affect_preserve_alpha
+        self.time_interval = time_interval
 
     def _set_low(self):
         """Turn off the eraser."""
@@ -76,9 +53,15 @@ class TemporaryPreserveAlpha(TemporaryAction):
     time_interval (optional): time after which key press is considered long
     """
 
-    action_name: str = 'Preserve alpha (toggle)'
-    affect_eraser: bool = True
-    time_interval: float = 0.3
+    def __init__(
+        self,
+        action_name: str = 'Preserve alpha (toggle)',
+        affect_eraser: bool = True,
+        time_interval: float = 0.3
+    ):
+        self.action_name = action_name
+        self.affect_eraser = affect_eraser
+        self.time_interval = time_interval
 
     def _set_low(self):
         """Turn off preserve_alpha."""
