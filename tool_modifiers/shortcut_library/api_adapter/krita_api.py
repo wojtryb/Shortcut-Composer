@@ -37,11 +37,11 @@ class KritaView:
     def current_blending_mode(self) -> BlendingMode:
         return BlendingMode(self.view.currentBlendingMode())
 
-    def current_opacity(self) -> float:
-        return self.view.paintingOpacity()
+    def current_opacity(self) -> int:
+        return round(100*self.view.paintingOpacity())
 
-    def current_flow(self) -> float:
-        return self.view.paintingFlow()
+    def current_flow(self) -> int:
+        return round(100*self.view.paintingFlow())
 
     def current_brush_size(self) -> float:
         return self.view.brushSize()
@@ -52,11 +52,11 @@ class KritaView:
     def set_blending_mode(self, mode_name: BlendingMode):
         self.view.setCurrentBlendingMode(mode_name.value)
 
-    def set_opacity(self, opacity: float):
-        self.view.setPaintingOpacity(opacity)
+    def set_opacity(self, opacity: int):
+        self.view.setPaintingOpacity(0.01*round(opacity))
 
-    def set_flow(self, flow: float):
-        self.view.setPaintingFlow(flow)
+    def set_flow(self, flow: int):
+        self.view.setPaintingFlow(0.01*round(flow))
 
     def set_brush_size(self, brush_size: float):
         self.view.setBrushSize(brush_size)

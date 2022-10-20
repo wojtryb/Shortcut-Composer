@@ -44,14 +44,14 @@ actions = [
         separate_sliders=True,
         horizontal_slider=Slider(
             controller=controller.OpacityController(),
-            default_value=0.5,
-            values_to_cycle=Range(0.1, 0.9)
+            default_value=50,
+            values_to_cycle=Range(10, 90)
         ),
-        # vertical_slider=Slider(
-        #     controller=controller.OpacityController(),
-        #     default_value=0.5,
-        #     values_to_cycle=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
-        # ),
+        vertical_slider=Slider(
+            controller=controller.OpacityController(),
+            default_value=50,
+            values_to_cycle=[10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+        ),
         # horizontal_slider=Slider(
         #     controller=controller.ToolController,
         #     default_value=Tool.FREEHAND_SELECTION,
@@ -65,15 +65,15 @@ actions = [
         #         Tool.REFERENCE,
         #     ],
         # ),
-        vertical_slider=Slider(
-            controller=controller.BlendingModeController(),
-            values_to_cycle=[
-                BlendingMode.OVERLAY,
-                BlendingMode.NORMAL,
-                BlendingMode.DARKEN],
-            default_value=BlendingMode.NORMAL,
-            sensitivity=50
-        ),
+        # vertical_slider=Slider(
+        #     controller=controller.BlendingModeController(),
+        #     values_to_cycle=[
+        #         BlendingMode.OVERLAY,
+        #         BlendingMode.NORMAL,
+        #         BlendingMode.DARKEN],
+        #     default_value=BlendingMode.NORMAL,
+        #     sensitivity=50
+        # ),
     ),
     templates.VirtualSliderAction(
         action_name="Canvas slider",
@@ -153,7 +153,7 @@ actions = [
     templates.CyclicAction(
         action_name="Opacity (cycle)",
         controller=controller.OpacityController(),
-        values_to_cycle=[0.75, 0.50],
+        values_to_cycle=[75, 50, 20.3, 11.1],
         include_default_in_cycle=True,
     ),
     templates.CyclicAction(

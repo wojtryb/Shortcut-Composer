@@ -86,15 +86,15 @@ class BlendingModeController(Controller):
 
 class OpacityController(Controller):
 
-    default_value: int = 1.0
+    default_value: int = 100
 
     @staticmethod
-    def get_value() -> float:
+    def get_value() -> int:
         """Get current brush opacity."""
         return Krita.get_active_view().current_opacity()
 
     @staticmethod
-    def set_value(value: float):
+    def set_value(value: int):
         """Set passed brush opacity."""
         Krita.get_active_view().set_opacity(value)
 
@@ -147,16 +147,22 @@ class PreserveAlphaController(Controller):
 
 
 class FlowController(Controller):
+
+    default_value: int = 100
+
     @staticmethod
-    def get_value() -> float:
+    def get_value() -> int:
         return Krita.get_active_view().current_flow()
 
     @staticmethod
-    def set_value(value: float):
+    def set_value(value: int):
         Krita.get_active_view().set_flow(value)
 
 
 class BrushSizeController(Controller):
+
+    default_value: int = 100
+
     @staticmethod
     def get_value() -> float:
         return Krita.get_active_view().current_brush_size()
@@ -167,6 +173,9 @@ class BrushSizeController(Controller):
 
 
 class CanvasZoomController(Controller):
+
+    default_value: int = 1.0
+
     @staticmethod
     def get_value() -> float:
         return Krita.get_active_canvas().zoom()
@@ -177,6 +186,9 @@ class CanvasZoomController(Controller):
 
 
 class CanvasRotationController(Controller):
+
+    default_value: int = 0.0
+
     @staticmethod
     def get_value() -> float:
         return Krita.get_active_canvas().rotation()
