@@ -7,8 +7,18 @@ from .shortcut_library.api_adapter.controller import SetBrushStrategy
 from .shortcut_library.plugin_actions.slider_utils import Slider, Range
 
 actions = [
-    templates.TemporaryEraser(),
-    templates.TemporaryPreserveAlpha(),
+    templates.TemporaryAction(
+        action_name="Eraser (toggle)",
+        controller=controller.EraserController(affect_preserve_alpha=True),
+        low_value=False,
+        high_value=True,
+    ),
+    templates.TemporaryAction(
+        action_name="Preserve alpha (toggle)",
+        controller=controller.PreserveAlphaController(affect_eraser=True),
+        low_value=False,
+        high_value=True,
+    ),
     templates.LayerPicker(
         action_name="Layer picker",
         hide_strategy=HideStrategy.MAKE_INVISIBLE,

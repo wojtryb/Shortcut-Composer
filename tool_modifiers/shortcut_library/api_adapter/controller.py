@@ -110,3 +110,37 @@ class LayerController(Controller):
     def set_value(value: Node):
         """Set passed node as current."""
         Krita.get_active_document().set_current_node(value)
+
+
+class EraserController(Controller):
+
+    default_value: bool = False
+
+    def __init__(self, affect_preserve_alpha: bool = True):
+        self.affect_preserve_alpha = affect_preserve_alpha
+
+    @staticmethod
+    def get_value() -> Node:
+        return Krita.get_action_state("erase_action")
+
+    def set_value(self, value: bool):
+        if self.affect_preserve_alpha:
+            Krita.set_action_state("preserve_alpha", False)
+        Krita.set_action_state("erase_action", value)
+
+
+class PreserveAlphaController(Controller):
+
+    default_value: bool = False
+
+    def __init__(self, affect_eraser: bool = True):
+        self.affect_eraser = affect_eraser
+
+    @staticmethod
+    def get_value() -> Node:
+        return Krita.get_action_state("preserve_alpha")
+
+    def set_value(self, value: bool):
+        if self.affect_eraser:
+            Krita.set_action_state("erase_action", False)
+        Krita.set_action_state("preserve_alpha", value)
