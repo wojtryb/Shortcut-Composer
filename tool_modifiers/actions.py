@@ -1,13 +1,14 @@
 """File that acts as config - define all action objects here."""
 
 from .shortcut_library import plugin_actions as templates
+from .shortcut_library.plugin_actions import HideStrategy
 from .shortcut_library.api_adapter import controller, Tool, Tag
 from .shortcut_library.plugin_actions.slider_utils import Slider, Range
 
 actions = [
     templates.TemporaryEraser(),
     templates.TemporaryPreserveAlpha(),
-    templates.LayerPicker(),
+    templates.LayerPicker(strategy=HideStrategy.MAKE_INVISIBLE),
     templates.VirtualSliderAction(
         action_name="Mouse cycle",
         separate_sliders=True,
