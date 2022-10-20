@@ -35,7 +35,7 @@ class CyclicAction(PluginAction):
         If default_value should be taken into consideration, it's simply
         added to the end of cycle list.
         """
-        if not self.default_value:
+        if self.default_value is None:
             self.default_value = self.controller.default_value
 
         self._cycling_just_started: bool = False

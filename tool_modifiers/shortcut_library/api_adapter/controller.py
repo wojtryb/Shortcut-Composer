@@ -144,3 +144,27 @@ class PreserveAlphaController(Controller):
         if self.affect_eraser:
             Krita.set_action_state("erase_action", False)
         Krita.set_action_state("preserve_alpha", value)
+
+
+class FlowController(Controller):
+    pass
+
+
+class BrushSizeController(Controller):
+    pass
+
+
+class CanvasZoomController(Controller):
+    def get_value(self) -> float:
+        return Krita.get_active_canvas().zoom()
+
+    def set_value(self, value: float):
+        Krita.get_active_canvas().set_zoom(value)
+
+
+class CanvasRotationController(Controller):
+    def get_value(self) -> float:
+        return Krita.get_active_canvas().rotation()
+
+    def set_value(self, value: float):
+        Krita.get_active_canvas().set_rotation(value)

@@ -51,12 +51,28 @@ actions = [
         #     ],
         # ),
         vertical_slider=Slider(
-            controller=controller.BlendingModeController,
+            controller=controller.BlendingModeController(),
             values_to_cycle=[
                 BlendingMode.OVERLAY,
                 BlendingMode.NORMAL,
                 BlendingMode.DARKEN],
             default_value=BlendingMode.NORMAL,
+            sensitivity=50
+        ),
+    ),
+    templates.VirtualSliderAction(
+        action_name="Canvas slider",
+        separate_sliders=True,
+        horizontal_slider=Slider(
+            controller=controller.CanvasRotationController(),
+            default_value=0,
+            values_to_cycle=Range(1, 90),
+            sensitivity=50
+        ),
+        vertical_slider=Slider(
+            controller=controller.CanvasZoomController(),
+            default_value=1,
+            values_to_cycle=Range(0.25, 4),
             sensitivity=50
         ),
     ),
@@ -94,6 +110,12 @@ actions = [
             Tool.RECTANGULAR_SELECTION,
             Tool.CONTIGUOUS_SELECTION,
         ],
+    ),
+    templates.CyclicAction(
+        action_name="Canvas cycle",
+        controller=controller.CanvasRotationController(),
+        default_value=0,
+        values_to_cycle=[15, 30, 60, 90],
     ),
     templates.CyclicAction(
         action_name="Misc tools (cycle)",
