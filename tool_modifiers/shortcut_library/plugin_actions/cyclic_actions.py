@@ -2,21 +2,22 @@ from dataclasses import dataclass
 
 from .krita_api_wrapper import Krita
 from ._interfaces import CyclicPluginAction
+from .enums import Tools, BlendingModes
 
 
 @dataclass
 class CyclicTool(CyclicPluginAction):
 
-    default_value: str = "KritaShape/KisToolBrush"
+    default_value: str = Tools.freehand_brush
     time_interval: float = 0.3
     include_default_in_cycle: bool = False
 
-    def _set_value(self, value: str) -> None:
+    def _set_value(self, value: Tools) -> None:
         'activates a tool of passed name'
-        Krita.trigger_action(value)
+        Krita.trigger_action(value.value)
 
     def _get_current_value(self) -> str:
-        return Krita.get_current_tool_name()
+        return Tools(Krita.get_current_tool_name())
 
 
 @dataclass
@@ -36,16 +37,15 @@ class CyclicPreset(CyclicPluginAction):
 @dataclass
 class CyclicBlendingModes(CyclicPluginAction):
 
-    default_value: str = "normal"
+    default_value: str = BlendingModes.normal
     time_interval: float = 0.3
     include_default_in_cycle: bool = True
 
-    def _set_value(self, value: str):
-        print("setting", value)
-        Krita.get_active_view().set_blending_mode(value)
+    def _set_value(self, value: BlendingModes):
+        Krita.get_active_view().set_blending_mode(value.value)
 
     def _get_current_value(self) -> str:
-        return Krita.get_active_view().current_blending_mode()
+        return Tools(Krita.get_active_view().current_blending_mode())
 
 
 @dataclass

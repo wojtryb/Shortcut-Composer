@@ -1,7 +1,7 @@
 from itertools import zip_longest
-from typing import List
+from typing import Any, List
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 @dataclass
@@ -56,18 +56,18 @@ class TemporaryAction(PluginAction):
 class CyclicPluginAction(PluginAction):
 
     values_to_cycle: List[str]
-    default_value: str
+    default_value: Any
 
     def __post_init__(self):
         self.include_default_in_cycle: bool
         self._wait_for_release: bool = False
 
     @abstractmethod
-    def _set_value(self, value: str) -> None:
+    def _set_value(self, value: Any) -> None:
         pass
 
     @abstractmethod
-    def _get_current_value(self) -> str:
+    def _get_current_value(self) -> Any:
         pass
 
     def on_key_press(self):
