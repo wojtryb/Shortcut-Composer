@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from typing import Callable
 
 from krita import Krita
+from .actions import Action
 
 from ..config import interval
 
@@ -18,8 +19,8 @@ class ActionElements:
 
 class Shortcut:
 
-    def __init__(self, elements: ActionElements):
-        self.elements = elements
+    def __init__(self, action: Action):
+        self.action = action
         self.key_released = True
         self.last_press_time = time()
 
@@ -28,16 +29,16 @@ class Shortcut:
         self.key_released = False
         self.last_press_time = time()
 
-        self.state = self.elements.is_high_state_function()
+        self.state = self.action.is_high_state()
         if not self.state:
-            self.elements.set_high_function()
+            self.action.set_high()
 
     def on_key_release(self):
         'run when user released a related key'
 
         self.key_released = True
         if time() - self.last_press_time > interval or self.state:
-            self.elements.set_low_function()
+            self.action.set_low()
 
     def _is_event_key_release(self, event):
         return (
@@ -52,4 +53,4 @@ class Shortcut:
 
     @property
     def tool_shortcut(self):
-        return Krita.instance().action(self.elements.human_name).shortcut()
+        return Krita.instance().action(self.action.human_name).shortcut()
