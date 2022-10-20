@@ -1,17 +1,18 @@
 from enum import Enum
 from time import sleep
+from typing import List
 
 from .virtual_slider_action import VirtualSliderAction
 from .slider_utils import EmptySlider, Slider
-from ..api_adapter import controller, Krita, KritaDocument
+from ..api_adapter import controller, Krita, KritaDocument, Node
 
 
 class HideStrategy(Enum):
 
     class __HideStrategyBase:
-        def __init__(self, document: KritaDocument): ...
-        def __enter__(self): ...
-        def update(self): ...
+        def __init__(self, _: KritaDocument): ...
+        def __enter__(self): return self
+        def update(self) -> None: ...
         def __exit__(self, *_): ...
 
     class __IsolateLayerStrategy(__HideStrategyBase):
@@ -44,30 +45,53 @@ class HideStrategy(Enum):
             self.last_node.toggle_visible()
             self.document.refresh()
 
+    NONE = __HideStrategyBase
     ISOLATE_LAYER = __IsolateLayerStrategy
     MAKE_INVISIBLE = __MakeInvisibleStrategy
 
 
+class PickStrategy(Enum):
+    @staticmethod
+    def __pick_all(document: KritaDocument) -> List[Node]:
+        return document.all_nodes()
+
+    @staticmethod
+    def __pick_visible(document: KritaDocument) -> List[Node]:
+        nodes = document.all_nodes()
+        current_node = document.current_node()
+        return [node for node in nodes
+                if node.is_visible() or node == current_node]
+
+    ALL = __pick_all
+    VISIBLE = __pick_visible
+
+
 class LayerPicker(VirtualSliderAction):
-    def __init__(self, strategy: HideStrategy):
+    def __init__(
+        self,
+        action_name: str,
+        hide_strategy: HideStrategy = HideStrategy.ISOLATE_LAYER,
+        pick_strategy: PickStrategy = PickStrategy.ALL,
+        sensitivity: float = 50.0
+    ):
         super().__init__(
-            action_name="Layer picker",
+            action_name=action_name,
             separate_sliders=False,
             horizontal_slider=EmptySlider(),
             vertical_slider=Slider(
                 controller=controller.LayerController(),
                 values_to_cycle=[0],
                 default_value=0,
-                sensitivity=50
-            ),
-        )
-        self.strategy = strategy
+                sensitivity=sensitivity
+            ))
+        self.hide_strategy = hide_strategy
+        self.pick_strategy = pick_strategy
 
     def _loop_common(self):
         document = Krita.get_active_document()
 
-        with self.strategy.value(document) as hider:
-            self.vertical_slider._change_values(document.all_nodes())
+        with self.hide_strategy.value(document) as hider:
+            self.vertical_slider._change_values(self.pick_strategy(document))
 
             cursor = Krita.get_cursor()
             self.vertical_slider.set_start_value(-cursor.y)
