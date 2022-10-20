@@ -17,7 +17,7 @@ class KritaView:
     def current_brush_preset_name(self) -> str:
         return self.view.currentBrushPreset().name()
 
-    def current_blending_mode(self):
+    def current_blending_mode(self) -> str:
         return self.view.currentBlendingMode()
 
     def current_opacity(self) -> int:
