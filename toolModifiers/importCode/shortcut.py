@@ -1,20 +1,9 @@
-from time import time
-from dataclasses import dataclass
-from typing import Callable
-
 from krita import Krita
+
+from time import time
 from .actions import Action
 
 from ..config import interval
-
-
-@dataclass
-class ActionElements:
-    # methods written explicitly, not passed from somewhere?
-    human_name: str
-    set_low_function: Callable[[], None]
-    set_high_function: Callable[[], None]
-    is_high_state_function: Callable[[], None]
 
 
 class Shortcut:
