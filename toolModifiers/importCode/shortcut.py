@@ -1,8 +1,9 @@
 from krita import Krita
-
 from time import time
-from .actions import Action
 
+from PyQt5.QtGui import QKeyEvent
+
+from .actions import Action
 from ..config import interval
 
 
@@ -29,14 +30,14 @@ class Shortcut:
         if time() - self.last_press_time > interval or self.state:
             self.action.set_low()
 
-    def _is_event_key_release(self, event):
+    def _is_event_key_release(self, event: QKeyEvent):
         return (
             self.tool_shortcut.matches(event.key()) > 0
             and not event.isAutoRepeat()
             and not self.key_released
         )
 
-    def event_filter_callback(self, event):
+    def event_filter_callback(self, event: QKeyEvent):
         if self._is_event_key_release(event):
             self.on_key_release()
 
