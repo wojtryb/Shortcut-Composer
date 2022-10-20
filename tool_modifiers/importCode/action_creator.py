@@ -2,14 +2,15 @@ from dataclasses import dataclass
 
 from PyQt5.QtWidgets import QWidgetAction
 
-from .actions import Action
+from .plugin_actions._interfaces import PluginAction
 from .event_filter import ReleaseKeyEventFilter
-from .shortcut import Shortcut
+from ._shortcut import Shortcut
 
 
 @dataclass
 class ActionContainer:
-    action: Action
+
+    action: PluginAction
     krita_action: QWidgetAction
     shortcut: Shortcut
 
@@ -19,11 +20,12 @@ class ActionContainer:
 
 
 class ActionCreator:
+
     def __init__(self, window, event_filter: ReleaseKeyEventFilter):
         self.window = window
         self.event_filter = event_filter
 
-    def create_action(self, action: Action)\
+    def create_action(self, action: PluginAction)\
             -> ActionContainer:
         krita_action: QWidgetAction = self.window.createAction(
             action.action_name,

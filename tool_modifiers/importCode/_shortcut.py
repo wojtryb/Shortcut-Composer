@@ -3,13 +3,13 @@ from time import time
 
 from PyQt5.QtGui import QKeyEvent
 
-from .actions import Action
+from .plugin_actions._interfaces import PluginAction
 from ..config import interval
 
 
 class Shortcut:
 
-    def __init__(self, action: Action):
+    def __init__(self, action: PluginAction):
         self.action = action
         self.key_released = True
         self.last_press_time = time()
