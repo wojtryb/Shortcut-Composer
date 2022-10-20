@@ -70,6 +70,15 @@ class ListInterpreter(Interpreter):
         return self.values_to_cycle[index_to_set]
 
 
+class EmptyHandler:
+
+    def set_start_value(self, mouse: int):
+        pass
+
+    def update(self, mouse: int):
+        pass
+
+
 class Handler:
     def __init__(
         self,
@@ -100,27 +109,28 @@ class Handler:
 class MouseCycle(PluginAction):
 
     action_name: str
-    horizontal_handler: Handler
-    vertical_handler: Handler
+    horizontal_handler: Handler = field(default_factory=EmptyHandler)
+    vertical_handler: Handler = field(default_factory=EmptyHandler)
     time_interval = 0.1
 
-    working: bool = field(init=True, default=False)
-    thread: Thread = field(init=False)
+    def __post_init__(self):
+        self.working = False
+        self.thread: Thread
 
     def on_key_press(self):
-        self.thread = Thread(target=self.__loop)
+        self.thread = Thread(target=self.__loop, daemon=True)
         self.thread.start()
 
     def __loop(self):
-        qwin = Krita.get_active_qwindow()
+        cursor = Krita.get_cursor()
 
-        self.horizontal_handler.set_start_value(qwin.cursor().pos().x())
-        self.vertical_handler.set_start_value(qwin.cursor().pos().y())
+        self.horizontal_handler.set_start_value(cursor.x)
+        self.vertical_handler.set_start_value(cursor.y)
 
         self.working = True
         while self.working:
-            self.horizontal_handler.update(qwin.cursor().pos().x())
-            self.vertical_handler.update(qwin.cursor().pos().y())
+            self.horizontal_handler.update(cursor.x)
+            self.vertical_handler.update(cursor.y)
             sleep(0.05)
 
     def on_every_key_release(self):

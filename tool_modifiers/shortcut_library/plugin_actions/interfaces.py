@@ -20,7 +20,7 @@ class PluginAction:
 
     action_name: str
 
-    def __post_init__(self):
+    def __pre_init__(self):
         self.time_interval: float
 
     def on_key_press(self):
@@ -57,7 +57,6 @@ class TemporaryAction(PluginAction):
     time_interval: float = 0.3
 
     def __post_init__(self):
-        super().__post_init__()
         if not self.default_value:
             self.default_value = self.controller.default_value
 
