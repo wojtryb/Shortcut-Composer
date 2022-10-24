@@ -38,16 +38,17 @@ class Tool(Enum):
     CALLIGRAPHY = "KarbonCalligraphyTool"
     POLYGONAL_SELECTION = "KisToolSelectPolygonal"
 
-    __PAINTABLE = {
-        FREEHAND_BRUSH,
-        LINE,
-        ELLIPSE,
-        DYNAMIC_BRUSH,
-        RECTANGLE,
-        MULTI_BRUSH,
-        POLYLINE,
-    }
+    @staticmethod
+    def is_paintable(tool: 'Tool'):
+        return tool in _PAINTABLE
 
-    @classmethod
-    def is_paintable(cls, tool: 'Tool'):
-        return tool in cls.__PAINTABLE.value
+
+_PAINTABLE = {
+    Tool.FREEHAND_BRUSH,
+    Tool.LINE,
+    Tool.ELLIPSE,
+    Tool.DYNAMIC_BRUSH,
+    Tool.RECTANGLE,
+    Tool.MULTI_BRUSH,
+    Tool.POLYLINE,
+}
