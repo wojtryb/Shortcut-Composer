@@ -43,8 +43,7 @@ actions = [
         action_name="Opacity (cycle)",
         controller=controllers.OpacityController(),
         default_value=100,
-        values_to_cycle=[70, 50, 30],
-        include_default_in_cycle=True,
+        values_to_cycle=[70, 50, 30, 100],
     ),
     shortcut_templates.MultipleAssignment(
         action_name="Selection tools (cycle)",
