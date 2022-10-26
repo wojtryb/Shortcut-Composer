@@ -4,13 +4,17 @@ key_release events.
 """
 
 from dataclasses import dataclass
-from typing import List
+from typing import List, Protocol
 
 from PyQt5.QtWidgets import QWidgetAction
 
 from .plugin_action import PluginAction
 from .event_filter import ReleaseKeyEventFilter
 from .shortcut_adapter import ShortcutAdapter
+
+
+class Window(Protocol):
+    def createAction(*, name: str, description: str, menu: str) -> None: ...
 
 
 class ActionManager:
@@ -40,7 +44,7 @@ class ActionManager:
             self.krita_action.setAutoRepeat(False)
             self.krita_action.triggered.connect(self.shortcut.on_key_press)
 
-    def __init__(self, window):
+    def __init__(self, window: Window):
         """
         Store objects needed for creating action components:
 

@@ -29,27 +29,27 @@ class Slider:
         self.interpreter = MouseInterpreter(self.__to_cycle, sensitivity)
         self.mouse = self.MouseTracker()
 
-    def set_start_value(self, mouse: int):
+    def set_start_value(self, mouse: int) -> None:
         self.mouse.start = mouse
         self.mouse.last = mouse
 
         value = self.__get_current_value()
         self.interpreter.calibrate(mouse, value)
 
-    def handle(self, mouse: int):
+    def handle(self, mouse: int) -> None:
         self.mouse.last = mouse
 
         clipped_value = self.interpreter.mouse_to_value(mouse)
         to_set = self.__to_cycle.at(clipped_value)
         self.__controller.set_value(to_set)
 
-    def __get_current_value(self):
+    def __get_current_value(self) -> Any:
         try:
             return self.__to_cycle.index(self.__controller.get_value())
         except ValueError:
             return self.__to_cycle.default_value
 
-    def _change_values(self, values: List[Any]):
+    def _change_values(self, values: List[Any]) -> None:
         self.__to_cycle.values_to_cycle = values
         self.__to_cycle.max = len(values) - 0.51
 

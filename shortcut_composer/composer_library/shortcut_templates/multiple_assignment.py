@@ -40,21 +40,21 @@ class MultipleAssignment(PluginAction):
         if self.default_value is None:
             self.default_value = self.controller.default_value
 
-    def on_key_press(self):
+    def on_key_press(self) -> None:
         """Use key press event only for switching to first value."""
         current_value = self.controller.get_value()
         if current_value != self._last_value:
             self._reset_iterator()
         self._set_value(next(self._iterator))
 
-    def on_long_key_release(self):
+    def on_long_key_release(self) -> None:
         """All long releases set default value."""
         self._set_value(self.default_value)
         self._reset_iterator()
 
-    def _set_value(self, value: Any):
+    def _set_value(self, value: Any) -> None:
         self._last_value = value
         self.controller.set_value(value)
 
-    def _reset_iterator(self):
+    def _reset_iterator(self) -> None:
         self._iterator = cycle(self.values_to_cycle)

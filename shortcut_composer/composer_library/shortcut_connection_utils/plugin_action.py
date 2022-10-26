@@ -19,14 +19,14 @@ class PluginAction:
     def __pre_init__(self):
         self.time_interval: float
 
-    def on_key_press(self):
+    def on_key_press(self) -> None:
         """Called on each press of key specified in settings."""
 
-    def on_long_key_release(self):
+    def on_long_key_release(self) -> None:
         """Called when related key was released after a long time."""
 
-    def on_short_key_release(self):
+    def on_short_key_release(self) -> None:
         """Called when related key was released shortly after press."""
 
-    def on_every_key_release(self):
+    def on_every_key_release(self) -> None:
         """Called on each release of related key, after short/long callback."""

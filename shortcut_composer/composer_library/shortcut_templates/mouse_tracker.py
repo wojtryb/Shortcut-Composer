@@ -22,11 +22,11 @@ class MouseTracker(PluginAction):
         self.thread: Thread
 
     @property
-    def is_single_mode(self):
+    def is_single_mode(self) -> bool:
         return (isinstance(self.horizontal_slider, EmptySlider)
                 or isinstance(self.vertical_slider, EmptySlider))
 
-    def on_key_press(self):
+    def on_key_press(self) -> None:
         if self.separate_sliders and not self.is_single_mode:
             target = self._loop_separate
         else:
@@ -34,7 +34,7 @@ class MouseTracker(PluginAction):
         self.thread = Thread(target=target, daemon=True)
         self.thread.start()
 
-    def _loop_common(self):
+    def _loop_common(self) -> None:
         cursor = Krita.get_cursor()
 
         self.horizontal_slider.set_start_value(cursor.x)
@@ -46,7 +46,7 @@ class MouseTracker(PluginAction):
             self.vertical_slider.handle(-cursor.y)
             sleep(0.05)
 
-    def _loop_separate(self):
+    def _loop_separate(self) -> None:
         cursor = Krita.get_cursor()
 
         self.horizontal_slider.set_start_value(cursor.x)
@@ -71,5 +71,5 @@ class MouseTracker(PluginAction):
                 self.vertical_slider.handle(-to_set_y)
                 sleep(0.05)
 
-    def on_every_key_release(self):
+    def on_every_key_release(self) -> None:
         self.working = False

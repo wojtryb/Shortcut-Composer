@@ -1,6 +1,7 @@
 from time import time
 
 from PyQt5.QtGui import QKeyEvent
+from PyQt5.QtGui import QKeySequence
 
 from ..krita_api import Krita
 from .plugin_action import PluginAction
@@ -27,13 +28,13 @@ class ShortcutAdapter:
         self.key_released = True
         self.last_press_time = time()
 
-    def on_key_press(self):
+    def on_key_press(self) -> None:
         """Callback to run when krita action is triggered."""
         self.key_released = False
         self.last_press_time = time()
         self.action.on_key_press()
 
-    def _on_key_release(self):
+    def _on_key_release(self) -> None:
         """Run when key event is recognised as release of related key."""
         self.key_released = True
         if time() - self.last_press_time < self.action.time_interval:
@@ -42,17 +43,17 @@ class ShortcutAdapter:
             self.action.on_long_key_release()
         self.action.on_every_key_release()
 
-    def _is_event_key_release(self, event: QKeyEvent):
+    def _is_event_key_release(self, event: QKeyEvent) -> None:
         return (
             self.tool_shortcut.matches(event.key()) > 0
             and not event.isAutoRepeat()
             and not self.key_released
         )
 
-    def event_filter_callback(self, event: QKeyEvent):
+    def event_filter_callback(self, event: QKeyEvent) -> None:
         if self._is_event_key_release(event):
             self._on_key_release()
 
     @property
-    def tool_shortcut(self):
+    def tool_shortcut(self) -> QKeySequence:
         return Krita.get_action_shortcut(self.action.action_name)
