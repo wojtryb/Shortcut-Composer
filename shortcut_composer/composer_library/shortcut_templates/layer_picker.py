@@ -6,7 +6,7 @@ from ..krita_api import Krita, controllers
 from ..krita_api.wrappers import Document, Node
 
 from .mouse_tracker import MouseTracker
-from .slider_utils import EmptySlider, Slider
+from .slider_utils import Slider
 
 
 class HideStrategy(Enum):
@@ -78,8 +78,7 @@ class LayerPicker(MouseTracker):
     ):
         super().__init__(
             action_name=action_name,
-            separate_sliders=False,
-            horizontal_slider=EmptySlider(),
+            horizontal_slider=None,
             vertical_slider=Slider(
                 controller=controllers.LayerController(),
                 values_to_cycle=[0],
@@ -89,7 +88,8 @@ class LayerPicker(MouseTracker):
         self.hide_strategy = hide_strategy
         self.pick_strategy = pick_strategy
 
-    def _loop_common(self) -> None:
+    def _loop(self) -> None:
+        # TODO: fix this method...
         document = Krita.get_active_document()
 
         with self.hide_strategy.value(document) as hider:
@@ -100,6 +100,6 @@ class LayerPicker(MouseTracker):
 
             self.working = True
             while self.working:
-                self.vertical_slider.handle(-cursor.y)
+                self.vertical_slider._handle(-cursor.y)
                 hider.update()
                 sleep(0.05)

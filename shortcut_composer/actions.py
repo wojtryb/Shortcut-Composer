@@ -119,7 +119,6 @@ actions = [
     ),
     shortcut_templates.MouseTracker(
         action_name="Contiguous brush settings (tracker)",
-        separate_sliders=False,
         horizontal_slider=Slider(
             controller=controllers.BrushSizeController(),
             default_value=100,

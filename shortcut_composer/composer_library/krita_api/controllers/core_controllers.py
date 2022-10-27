@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from ..core_api import Krita
 from ..wrappers import Node
@@ -27,7 +27,8 @@ class EraserController(Controller):
 
     affect_preserve_alpha: bool = True
     set_brush_strategy: SetBrushStrategy = SetBrushStrategy.ON_NON_PAINTABLE
-    default_value: bool = field(init=False, default=False)
+
+    default_value = False
 
     @staticmethod
     def get_value() -> Node:
@@ -45,7 +46,8 @@ class PreserveAlphaController(Controller):
 
     affect_eraser: bool = True
     set_brush_strategy: SetBrushStrategy = SetBrushStrategy.ON_NON_PAINTABLE
-    default_value: bool = field(init=False, default=False)
+
+    default_value = False
 
     @staticmethod
     def get_value() -> Node:

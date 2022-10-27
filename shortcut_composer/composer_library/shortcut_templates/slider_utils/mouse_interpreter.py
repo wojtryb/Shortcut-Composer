@@ -1,41 +1,34 @@
 from dataclasses import dataclass
 
-from .slider_values import SliderValues
-
 
 @dataclass
 class MouseInterpreter:
 
-    to_cycle: SliderValues
+    min: float
+    max: float
+    mouse_origin: float
+    start_value: float
     sensitivity: float
-
-    def __post_init__(self):
-        self.origin: float
-        self.start_value: float
 
     def mouse_to_value(self, mouse: int) -> float:
         value = self.start_value + self._delta(mouse)
         self._recalibrate(value)
         return self._clip(value)
 
-    def calibrate(self, mouse: int, value: float) -> None:
-        self.origin = mouse
-        self.start_value = value
-
     def _recalibrate(self, value) -> None:
-        delta = (self.to_cycle.min - value)*self.sensitivity
+        delta = (self.min - value)*self.sensitivity
         if delta > 0:
-            self.origin -= delta
+            self.mouse_origin -= delta
 
-        delta = (self.to_cycle.max - value)*self.sensitivity
+        delta = (self.max - value)*self.sensitivity
         if delta < 0:
-            self.origin -= delta
+            self.mouse_origin -= delta
 
     def _delta(self, mouse: int) -> float:
-        return (mouse - self.origin)/self.sensitivity
+        return (mouse - self.mouse_origin)/self.sensitivity
 
     def _clip(self, value) -> float:
         return min(
-            max(self.to_cycle.min, value),
-            self.to_cycle.max
+            max(self.min, value),
+            self.max
         )
