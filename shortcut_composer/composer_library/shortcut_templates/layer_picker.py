@@ -3,7 +3,6 @@ from typing import List
 
 from ..krita_api import Krita, controllers
 from ..krita_api.wrappers import Document, Node
-
 from .mouse_tracker import SingleAxisTracker
 from .slider_utils import Slider, HideStrategy
 
@@ -48,5 +47,4 @@ class LayerPicker(SingleAxisTracker):
     def on_key_press(self) -> None:
         document = Krita.get_active_document()
         self.slider.set_values_to_cycle(self.pick_strategy(document))
-        cursor = Krita.get_cursor()
-        return self.slider.start(lambda: self.sign*cursor.y())
+        super().on_key_press()
