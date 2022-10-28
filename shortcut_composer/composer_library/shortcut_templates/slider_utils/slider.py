@@ -24,6 +24,9 @@ class Slider:
 
         self.__interpreter: MouseInterpreter
 
+    def set_values_to_cycle(self, values_to_cycle: List[Any]) -> None:
+        return create_slider_values(values_to_cycle, self.__default_value)
+
     def start(self, mouse_getter: Callable[[], int]) -> None:
         self.__working = True
         self.__interpreter = MouseInterpreter(
@@ -35,6 +38,9 @@ class Slider:
         )
         Thread(target=self._loop, args=[mouse_getter], daemon=True).start()
 
+    def stop(self):
+        self.__working = False
+
     def _loop(self, mouse_getter: Callable[[], int]) -> None:
         while self.__working:
             self._handle(mouse_getter())
@@ -44,12 +50,6 @@ class Slider:
         clipped_value = self.__interpreter.mouse_to_value(mouse)
         to_set = self.__to_cycle.at(clipped_value)
         self.__controller.set_value(to_set)
-
-    def stop(self):
-        self.__working = False
-
-    def set_values_to_cycle(self, values_to_cycle: List[Any]) -> None:
-        return create_slider_values(values_to_cycle, self.__default_value)
 
     def __get_current_value(self) -> Any:
         try:
