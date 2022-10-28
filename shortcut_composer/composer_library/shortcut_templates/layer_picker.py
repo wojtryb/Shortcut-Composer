@@ -1,12 +1,15 @@
 from enum import Enum
 from time import sleep
-from typing import List
+from typing import Any, Callable, List, Type, Union
+
 
 from ..krita_api import Krita, controllers
 from ..krita_api.wrappers import Document, Node
+from ..krita_api.controllers.base import Controller
 
-from .mouse_tracker import MouseTracker
+from .mouse_tracker import SingleAxisTracker
 from .slider_utils import Slider
+from .slider_utils.slider_values import Range
 
 
 class HideStrategy(Enum):
@@ -68,7 +71,7 @@ class PickStrategy(Enum):
     VISIBLE = __pick_visible
 
 
-class LayerPicker(MouseTracker):
+class LayerPicker(SingleAxisTracker):
     def __init__(
         self,
         action_name: str,
@@ -78,28 +81,41 @@ class LayerPicker(MouseTracker):
     ):
         super().__init__(
             action_name=action_name,
-            horizontal_slider=None,
-            vertical_slider=Slider(
+            sign=-1,
+            slider=HiderSlider(
                 controller=controllers.LayerController(),
                 values_to_cycle=[0],
-                default_value=0,
+                default_value=None,
+                hider=hide_strategy.value,
                 sensitivity=sensitivity
             ))
         self.hide_strategy = hide_strategy
         self.pick_strategy = pick_strategy
 
-    def _loop(self) -> None:
-        # TODO: fix this method...
+    def on_key_press(self) -> None:
         document = Krita.get_active_document()
+        self.slider.set_values_to_cycle(self.pick_strategy(document))
+        cursor = Krita.get_cursor()
+        return self.slider.start(lambda: self.sign*cursor.y())
 
-        with self.hide_strategy.value(document) as hider:
-            self.vertical_slider._change_values(self.pick_strategy(document))
 
-            cursor = Krita.get_cursor()
-            self.vertical_slider.set_start_value(-cursor.y)
+class HiderSlider(Slider):
+    def __init__(
+        self,
+        controller: Controller,
+        values_to_cycle: Union[List[Any], Range],
+        default_value: Any,
+        hider: Type[HideStrategy],
+        sensitivity: int = 50
+    ):
+        super().__init__(controller, values_to_cycle, default_value,
+                         sensitivity)
+        self.hider = hider
 
-            self.working = True
-            while self.working:
-                self.vertical_slider._handle(-cursor.y)
+    def _loop(self, mouse_getter: Callable[[], int]) -> None:
+        document = Krita.get_active_document()
+        with self.hider(document) as hider:
+            while self._working:
+                self._handle(mouse_getter())
                 hider.update()
                 sleep(0.05)
