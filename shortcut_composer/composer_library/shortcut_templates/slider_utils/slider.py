@@ -5,6 +5,7 @@ from typing import Any, Callable, List, Union
 from ...krita_api.controllers import Controller
 from .mouse_interpreter import MouseInterpreter
 from .slider_values import create_slider_values, Range
+from .additional_instructions import AdditionalInstruction
 
 
 class Slider:
@@ -14,12 +15,14 @@ class Slider:
         controller: Controller,
         values_to_cycle: Union[List[Any], Range],
         default_value: Any,
+        additional_instruction=AdditionalInstruction,
         sensitivity: int = 50
     ):
         self.__controller = controller
         self.__default_value = default_value
         self.__to_cycle = self.set_values_to_cycle(values_to_cycle)
         self.__sensitivity = sensitivity
+        self.__additional_instruction = additional_instruction
         self._working = False
 
         self.__interpreter: MouseInterpreter
@@ -44,9 +47,11 @@ class Slider:
         self._working = False
 
     def _loop(self, mouse_getter: Callable[[], int]) -> None:
-        while self._working:
-            self._handle(mouse_getter())
-            sleep(0.05)
+        with self.__additional_instruction() as additional_instruction:
+            while self._working:
+                self._handle(mouse_getter())
+                additional_instruction.update()
+                sleep(0.05)
 
     def _handle(self, mouse: int) -> None:
         clipped_value = self.__interpreter.mouse_to_value(mouse)
