@@ -1,12 +1,10 @@
 from typing import Any, List
-from dataclasses import dataclass, field
 from itertools import cycle
 
 from ..components import Controller, InstructionHolder, Instruction
 from ..connection_utils import PluginAction
 
 
-@dataclass
 class MultipleAssignment(PluginAction):
     """
     Abstract class with custom key event interface for cyclic actions
@@ -22,14 +20,24 @@ class MultipleAssignment(PluginAction):
     - get_current_value
     """
 
-    controller: Controller
-    values_to_cycle: List[Any]
-    default_value: Any = None
-    additional_instructions: List[Instruction] = field(default_factory=list)
-    time_interval: float = 0.3
+    def __init__(self, *,
+                 action_name: str,
+                 time_interval: float = 0.3,
+                 controller: Controller,
+                 values_to_cycle: List[Any],
+                 default_value: Any = None,
+                 additional_instructions: List[Instruction] = []) -> None:
+        super().__init__(
+            action_name=action_name,
+            time_interval=time_interval,
+            controller=controller,
+            additional_instructions=additional_instructions)
 
-    _last_value = None
-    _iterator = None
+        self.values_to_cycle = values_to_cycle
+        self.default_value = self._read_default_value(default_value)
+
+        self._last_value = None
+        self._iterator = None
 
     def __post_init__(self):
         """

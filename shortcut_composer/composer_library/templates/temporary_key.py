@@ -1,11 +1,9 @@
 from typing import Any, List
-from dataclasses import dataclass, field
 
-from ..components import Controller, InstructionHolder, Instruction
+from ..components import Controller, Instruction
 from ..connection_utils import PluginAction
 
 
-@dataclass
 class TemporaryKey(PluginAction):
     """
     TODO: this docstring is no longer right
@@ -17,20 +15,22 @@ class TemporaryKey(PluginAction):
     - ending a long press ensures low state
     """
 
-    controller: Controller
-    high_value: Any
-    low_value: Any = None
-    additional_instructions: List[Instruction] = field(default_factory=list)
-    time_interval: float = 0.3
+    def __init__(self, *,
+                 action_name: str,
+                 time_interval: float = 0.3,
+                 controller: Controller,
+                 low_value: Any = None,
+                 high_value: Any,
+                 additional_instructions: List[Instruction] = []) -> None:
+        super().__init__(
+            action_name=action_name,
+            time_interval=time_interval,
+            controller=controller,
+            additional_instructions=additional_instructions)
 
-    _was_high_before_press = False
-
-    def __post_init__(self):
-        if not self.low_value:
-            self.low_value = self.controller.default_value
-
-        self.additional_instructions: InstructionHolder = InstructionHolder(
-            self.additional_instructions)
+        self.low_value = self._read_default_value(low_value)
+        self.high_value = high_value
+        self._was_high_before_press = False
 
     def _set_low(self) -> None:
         """Defines how to switch to low state."""
