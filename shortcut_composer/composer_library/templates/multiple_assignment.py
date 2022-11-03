@@ -1,8 +1,8 @@
 from typing import Any, List
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from itertools import cycle
 
-from ..components import Controller
+from ..components import Controller, InstructionHolder, Instruction
 from ..connection_utils import PluginAction
 
 
@@ -25,6 +25,7 @@ class MultipleAssignment(PluginAction):
     controller: Controller
     values_to_cycle: List[Any]
     default_value: Any = None
+    additional_instructions: List[Instruction] = field(default_factory=list)
     time_interval: float = 0.3
 
     _last_value = None
@@ -40,8 +41,12 @@ class MultipleAssignment(PluginAction):
         if self.default_value is None:
             self.default_value = self.controller.default_value
 
+        self.additional_instructions: InstructionHolder = InstructionHolder(
+            self.additional_instructions)
+
     def on_key_press(self) -> None:
         """Use key press event only for switching to first value."""
+        self.additional_instructions.enter()
         current_value = self.controller.get_value()
         if current_value != self._last_value:
             self._reset_iterator()
@@ -51,6 +56,9 @@ class MultipleAssignment(PluginAction):
         """All long releases set default value."""
         self._set_value(self.default_value)
         self._reset_iterator()
+
+    def on_every_key_release(self) -> None:
+        self.additional_instructions.exit()
 
     def _set_value(self, value: Any) -> None:
         self._last_value = value

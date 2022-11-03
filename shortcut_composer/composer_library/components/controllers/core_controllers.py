@@ -4,7 +4,6 @@ from ...api import Krita
 from ...api.wrappers import Node
 from ...api.enums import Tool
 from ..controller_base import Controller
-from .strategies.set_brush_strategy import SetBrushStrategy
 
 
 class ToolController(Controller):
@@ -24,10 +23,6 @@ class ToolController(Controller):
 
 @dataclass
 class EraserController(Controller):
-
-    affect_preserve_alpha: bool = True
-    set_brush_strategy: SetBrushStrategy = SetBrushStrategy.ON_NON_PAINTABLE
-
     default_value = False
 
     @staticmethod
@@ -35,18 +30,11 @@ class EraserController(Controller):
         return Krita.get_action_state("erase_action")
 
     def set_value(self, value: bool) -> None:
-        self.set_brush_strategy()
-        if self.affect_preserve_alpha:
-            Krita.set_action_state("preserve_alpha", False)
         Krita.set_action_state("erase_action", value)
 
 
 @dataclass
 class PreserveAlphaController(Controller):
-
-    affect_eraser: bool = True
-    set_brush_strategy: SetBrushStrategy = SetBrushStrategy.ON_NON_PAINTABLE
-
     default_value = False
 
     @staticmethod
@@ -54,7 +42,4 @@ class PreserveAlphaController(Controller):
         return Krita.get_action_state("preserve_alpha")
 
     def set_value(self, value: bool) -> None:
-        self.set_brush_strategy()
-        if self.affect_eraser:
-            Krita.set_action_state("erase_action", False)
         Krita.set_action_state("preserve_alpha", value)

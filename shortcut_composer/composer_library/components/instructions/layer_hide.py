@@ -3,7 +3,7 @@ from ..instruction_base import Instruction
 
 
 class IsolateLayer(Instruction):
-    def enter(self) -> None:
+    def enter(self) -> 'IsolateLayer':
         Krita.set_action_state("isolate_active_layer", True)
         return self
 
@@ -12,7 +12,7 @@ class IsolateLayer(Instruction):
 
 
 class ToggleLayerVisibility(Instruction):
-    def enter(self) -> None:
+    def enter(self) -> 'ToggleLayerVisibility':
         self.document = Krita.get_active_document()
         self.last_node = self.document.current_node()
         self.last_node.toggle_visible()
