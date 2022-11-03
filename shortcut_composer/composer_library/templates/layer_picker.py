@@ -1,11 +1,11 @@
 from enum import Enum
 from typing import List
 
-from ..krita_api import Krita, controllers
-from ..krita_api.wrappers import Document, Node
+from ..api import Krita
+from ..api.wrappers import Document, Node
+from ..components import Instruction, controllers
 from .mouse_tracker import SingleAxisTracker
 from .slider_utils import Slider
-from .instructions.layer_hide import Instruction
 
 
 class PickStrategy(Enum):

@@ -1,6 +1,6 @@
-from ..core_api import Krita
-from ..enums import BlendingMode
-from .base import Controller
+from ...api import Krita
+from ...api.enums import BlendingMode
+from ..controller_base import Controller
 from .strategies.set_brush_strategy import SetBrushStrategy
 
 

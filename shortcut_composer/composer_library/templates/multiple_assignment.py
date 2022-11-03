@@ -2,8 +2,8 @@ from typing import Any, List
 from dataclasses import dataclass
 from itertools import cycle
 
-from ..krita_api.controllers import Controller
-from ..shortcut_connection_utils import PluginAction
+from ..components import Controller
+from ..connection_utils import PluginAction
 
 
 @dataclass

@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 
-from ..core_api import Krita
-from ..wrappers import Node
-from ..enums import Tool
-from .base import Controller
+from ...api import Krita
+from ...api.wrappers import Node
+from ...api.enums import Tool
+from ..controller_base import Controller
 from .strategies.set_brush_strategy import SetBrushStrategy
 
 

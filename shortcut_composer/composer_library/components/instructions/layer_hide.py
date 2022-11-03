@@ -1,5 +1,5 @@
-from ...krita_api import Krita
-from .instruction import Instruction
+from ...api import Krita
+from ..instruction_base import Instruction
 
 
 class IsolateLayer(Instruction):
