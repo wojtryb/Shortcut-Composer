@@ -5,8 +5,8 @@ from .composer_library.krita_api.enums import BlendingMode, Tool
 from .composer_library.krita_api.wrappers import Tag
 from .composer_library.krita_api.controllers.strategies import SetBrushStrategy
 from .composer_library import shortcut_templates
+from .composer_library.shortcut_templates import instructions, PickStrategy
 from .composer_library.shortcut_templates.slider_utils import Slider, Range
-from .composer_library.shortcut_templates import HideStrategy, PickStrategy
 
 
 actions = [
@@ -74,12 +74,12 @@ actions = [
     ),
     shortcut_templates.LayerPicker(
         action_name="Layer scraper - isolate",
-        hide_strategy=HideStrategy.ISOLATE_LAYER,
+        additional_instructions=[instructions.IsolateLayer()],
         pick_strategy=PickStrategy.ALL
     ),
     shortcut_templates.LayerPicker(
         action_name="Layer scraper - visibility",
-        hide_strategy=HideStrategy.MAKE_INVISIBLE,
+        additional_instructions=[instructions.ToggleLayerVisibility()],
         pick_strategy=PickStrategy.VISIBLE
     ),
     shortcut_templates.MouseTracker(

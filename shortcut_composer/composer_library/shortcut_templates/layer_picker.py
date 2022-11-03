@@ -4,7 +4,8 @@ from typing import List
 from ..krita_api import Krita, controllers
 from ..krita_api.wrappers import Document, Node
 from .mouse_tracker import SingleAxisTracker
-from .slider_utils import Slider, HideStrategy
+from .slider_utils import Slider
+from .instructions.layer_hide import Instruction
 
 
 class PickStrategy(Enum):
@@ -27,7 +28,7 @@ class LayerPicker(SingleAxisTracker):
     def __init__(
         self,
         action_name: str,
-        hide_strategy: HideStrategy = HideStrategy.ISOLATE_LAYER,
+        additional_instructions: List[Instruction],
         pick_strategy: PickStrategy = PickStrategy.ALL,
         sensitivity: float = 50.0
     ):
@@ -38,10 +39,10 @@ class LayerPicker(SingleAxisTracker):
                 controller=controllers.LayerController(),
                 values_to_cycle=[0],
                 default_value=None,
-                additional_instruction=hide_strategy.value,
+                additional_instructions=additional_instructions,
                 sensitivity=sensitivity
             ))
-        self.hide_strategy = hide_strategy
+        self.hide_strategy = additional_instructions
         self.pick_strategy = pick_strategy
 
     def on_key_press(self) -> None:
