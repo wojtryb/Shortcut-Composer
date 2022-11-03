@@ -14,15 +14,14 @@ class Slider:
         controller: Controller,
         values_to_cycle: Union[List[Any], Range],
         default_value: Any,
-        additional_instructions: List[Instruction] = [],
+        instructions: List[Instruction] = [],
         sensitivity: int = 50
     ):
         self.__controller = controller
         self.__default_value = default_value
         self.__to_cycle = self.set_values_to_cycle(values_to_cycle)
         self.__sensitivity = sensitivity
-        self.__additional_instructions = InstructionHolder(
-            additional_instructions)
+        self.__instructions = InstructionHolder(instructions)
         self.__working = False
 
         self.__interpreter: MouseInterpreter
@@ -47,10 +46,10 @@ class Slider:
         self.__working = False
 
     def _loop(self, mouse_getter: Callable[[], int]) -> None:
-        with self.__additional_instructions:
+        with self.__instructions:
             while self.__working:
                 self._handle(mouse_getter())
-                self.__additional_instructions.update()
+                self.__instructions.update()
                 sleep(0.05)
 
     def _handle(self, mouse: int) -> None:

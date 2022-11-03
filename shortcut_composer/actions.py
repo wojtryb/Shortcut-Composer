@@ -27,7 +27,7 @@ actions = [
         controller=controllers.EraserController(),
         low_value=False,
         high_value=True,
-        additional_instructions=[
+        instructions=[
             instructions.SetBrushOnNonPaintable(),
             instructions.UnlockAlpha(),
         ],
@@ -37,7 +37,7 @@ actions = [
         controller=controllers.PreserveAlphaController(),
         low_value=False,
         high_value=True,
-        additional_instructions=[
+        instructions=[
             instructions.SetBrushOnNonPaintable(),
             instructions.TurnOffEraser(),
         ],
@@ -72,16 +72,16 @@ actions = [
         controller=controllers.PresetController(),
         default_value="b) Basic-5 Size Opacity",
         values_to_cycle=Tag("Digital"),
-        additional_instructions=[instructions.SetBrushOnNonPaintable()],
+        instructions=[instructions.SetBrushOnNonPaintable()],
     ),
     templates.LayerPicker(
         action_name="Layer scraper - isolate",
-        additional_instructions=[instructions.IsolateLayer()],
+        instructions=[instructions.IsolateLayer()],
         pick_strategy=PickStrategy.ALL
     ),
     templates.LayerPicker(
         action_name="Layer scraper - visibility",
-        additional_instructions=[instructions.ToggleLayerVisibility()],
+        instructions=[instructions.ToggleLayerVisibility()],
         pick_strategy=PickStrategy.VISIBLE
     ),
     templates.MouseTracker(
