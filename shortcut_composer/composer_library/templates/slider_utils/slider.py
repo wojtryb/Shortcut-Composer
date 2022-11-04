@@ -4,7 +4,7 @@ from typing import Any, Callable, List, Union
 
 from ...components import Controller, InstructionHolder
 from .mouse_interpreter import MouseInterpreter
-from .slider_values import create_slider_values, Range
+from .slider_values import create_slider_values, Range, SliderValues
 
 
 class Slider:
@@ -25,7 +25,7 @@ class Slider:
         self.__instructions: InstructionHolder
         self.__interpreter: MouseInterpreter
 
-    def set_values_to_cycle(self, values_to_cycle: List[Any]) -> None:
+    def set_values_to_cycle(self, values_to_cycle: List[Any]) -> SliderValues:
         values = create_slider_values(values_to_cycle, self.__default_value)
         self.__to_cycle = values
         return values

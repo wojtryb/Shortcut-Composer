@@ -25,6 +25,9 @@ class Node():
     def is_collapsed(self) -> bool:
         return self.node.collapsed()
 
+    def is_animated(self) -> bool:
+        return self.node.animated()
+
     def child_nodes(self) -> List['Node']:
         return [Node(node) for node in self.node.childNodes()]
 
