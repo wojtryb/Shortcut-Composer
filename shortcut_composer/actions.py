@@ -77,7 +77,7 @@ actions = [
     templates.LayerPicker(
         action_name="Layer scraper - isolate",
         instructions=[instructions.TemporaryOn(Toggle.ISOLATE_LAYER)],
-        pick_strategy=PickStrategy.ALL
+        pick_strategy=PickStrategy.CURRENT_VISIBILITY
     ),
     templates.LayerPicker(
         action_name="Layer scraper - visibility",

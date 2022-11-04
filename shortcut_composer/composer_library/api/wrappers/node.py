@@ -22,6 +22,9 @@ class Node():
     def is_group_layer(self) -> bool:
         return self.node.type() == "grouplayer"
 
+    def is_collapsed(self) -> bool:
+        return self.node.collapsed()
+
     def child_nodes(self) -> List['Node']:
         return [Node(node) for node in self.node.childNodes()]
 
