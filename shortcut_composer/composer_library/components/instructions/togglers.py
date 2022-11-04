@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from functools import partialmethod
 
 from ...api import Krita
-from ..instruction_base import Instruction
 from ...api.enums import Toggle
+from ..instruction_base import Instruction
 
 
 def _set_toggle(self, state: bool, *_) -> Instruction:
