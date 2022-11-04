@@ -4,8 +4,11 @@ from .composer_library.api.enums import BlendingMode, Tool, Toggle
 from .composer_library.api.wrappers import Tag
 
 from .composer_library import templates
-from .composer_library.templates import PickStrategy
-from .composer_library.templates.slider_utils import Slider, Range
+from .composer_library.templates.slider_utils import (
+    CurrentLayerStack,
+    PickStrategy,
+    Slider,
+    Range,)
 
 from .composer_library.components import instructions, controllers
 
@@ -74,15 +77,33 @@ actions = [
         values_to_cycle=Tag("Digital"),
         instructions=[instructions.SetBrushOnNonPaintable()],
     ),
-    templates.LayerPicker(
+    templates.MouseTracker(
         action_name="Layer scraper - isolate",
         instructions=[instructions.TemporaryOn(Toggle.ISOLATE_LAYER)],
-        pick_strategy=PickStrategy.CURRENT_VISIBILITY
+        vertical_slider=Slider(
+            controller=controllers.LayerController(),
+            values_to_cycle=CurrentLayerStack(PickStrategy.CURRENT_VISIBILITY),
+            default_value=None,
+        ),
+        horizontal_slider=Slider(
+            controller=controllers.TimeController(),
+            values_to_cycle=Range(0, float('inf')),
+            default_value=1,
+        ),
     ),
-    templates.LayerPicker(
+    templates.MouseTracker(
         action_name="Layer scraper - visibility",
         instructions=[instructions.ToggleLayerVisibility()],
-        pick_strategy=PickStrategy.VISIBLE
+        vertical_slider=Slider(
+            controller=controllers.LayerController(),
+            values_to_cycle=CurrentLayerStack(PickStrategy.VISIBLE),
+            default_value=None,
+        ),
+        horizontal_slider=Slider(
+            controller=controllers.TimeController(),
+            values_to_cycle=Range(0, float('inf')),
+            default_value=1,
+        ),
     ),
     templates.MouseTracker(
         action_name="Blending mode (tracker)",

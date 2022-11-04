@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Iterable
 
 
 @dataclass
@@ -10,8 +10,8 @@ class Range:
 
 
 def create_slider_values(values_to_cycle, default_value) -> 'SliderValues':
-    if isinstance(values_to_cycle, list):
-        return ListSliderValues(values_to_cycle, default_value)
+    if isinstance(values_to_cycle, Iterable):
+        return IterableSliderValues(values_to_cycle, default_value)
     elif isinstance(values_to_cycle, Range):
         return RangeSliderValues(values_to_cycle, default_value)
     raise RuntimeError(f"Wrong type: {values_to_cycle}")
@@ -43,12 +43,15 @@ class RangeSliderValues(SliderValues):
         return value
 
 
-class ListSliderValues(SliderValues):
+class IterableSliderValues(SliderValues):
     def __init__(self, values_to_cycle: list, default_value: Any):
         self.values_to_cycle: list = values_to_cycle
         self.min = -0.49
-        self.max = len(values_to_cycle) - 0.51
         self.default_value = self._get_default(default_value)
+
+    @property
+    def max(self):
+        return len(self.values_to_cycle) - 0.51
 
     def at(self, value: float) -> Any:
         return self.values_to_cycle[round(value)]
