@@ -1,5 +1,4 @@
 from typing import List
-from dataclasses import dataclass
 
 
 class Instruction:
@@ -10,9 +9,10 @@ class Instruction:
     def __exit__(self, *_) -> None: self.exit()
 
 
-@dataclass
 class InstructionHolder:
-    __instructions: List[Instruction]
+
+    def __init__(self, instructions: List[Instruction] = []) -> None:
+        self.__instructions = instructions
 
     def enter(self) -> 'InstructionHolder':
         for instruction in self.__instructions:
