@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from ...api import Krita
 from ...api.wrappers import Node
-from ...api.enums import Tool
+from ...api.enums import Tool, Toggle
 from ..controller_base import Controller
 
 
@@ -22,24 +22,13 @@ class ToolController(Controller):
 
 
 @dataclass
-class EraserController(Controller):
+class ToggleController(Controller):
+
+    toggle: Toggle
     default_value = False
 
-    @staticmethod
-    def get_value() -> Node:
-        return Krita.get_action_state("erase_action")
+    def get_value(self) -> Node:
+        return Krita.get_toggle_state(self.toggle)
 
     def set_value(self, value: bool) -> None:
-        Krita.set_action_state("erase_action", value)
-
-
-@dataclass
-class PreserveAlphaController(Controller):
-    default_value = False
-
-    @staticmethod
-    def get_value() -> Node:
-        return Krita.get_action_state("preserve_alpha")
-
-    def set_value(self, value: bool) -> None:
-        Krita.set_action_state("preserve_alpha", value)
+        Krita.set_toggle_state(self.toggle, value)

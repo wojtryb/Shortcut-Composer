@@ -2,15 +2,6 @@ from ...api import Krita
 from ..instruction_base import Instruction
 
 
-class IsolateLayer(Instruction):
-    def enter(self) -> 'IsolateLayer':
-        Krita.set_action_state("isolate_active_layer", True)
-        return self
-
-    def exit(self, *_) -> None:
-        Krita.set_action_state("isolate_active_layer", False)
-
-
 class ToggleLayerVisibility(Instruction):
     def enter(self) -> 'ToggleLayerVisibility':
         self.document = Krita.get_active_document()

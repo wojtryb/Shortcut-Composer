@@ -1,12 +1,20 @@
-from .layer_hide import ToggleLayerVisibility, IsolateLayer
+from .layer_hide import ToggleLayerVisibility
 from .set_brush_strategy import SetBrush, SetBrushOnNonPaintable
-from .togglers import TurnOffEraser, UnlockAlpha
+from .togglers import (
+    TemporaryToggle,
+    TemporaryOff,
+    TemporaryOn,
+    TurnOff,
+    TurnOn,
+)
 
 __all__ = [
     'SetBrushOnNonPaintable',
     'ToggleLayerVisibility',
-    'TurnOffEraser',
-    'IsolateLayer',
-    'UnlockAlpha',
+    'TemporaryToggle',
+    'TemporaryOff',
+    'TemporaryOn',
     'SetBrush',
+    'TurnOff',
+    'TurnOn',
 ]

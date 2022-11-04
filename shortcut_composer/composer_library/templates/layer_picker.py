@@ -28,7 +28,7 @@ class LayerPicker(SingleAxisTracker):
     def __init__(
         self,
         action_name: str,
-        instructions: List[Instruction],
+        instructions: List[Instruction] = [],
         pick_strategy: PickStrategy = PickStrategy.ALL,
         sensitivity: float = 50.0
     ):
