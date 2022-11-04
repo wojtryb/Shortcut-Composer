@@ -1,64 +1,39 @@
 from dataclasses import dataclass
+from functools import partialmethod
 
 from ...api import Krita
 from ..instruction_base import Instruction
 from ...api.enums import Toggle
 
 
-@dataclass
-class TemporaryToggle(Instruction):
-
-    toggle: Toggle
-
-    def enter(self) -> 'TurnOff':
-        Krita.trigger_action(self.toggle)
-        return self
-
-    def exit(self, *_) -> None:
-        Krita.trigger_action(self.toggle)
+def _set_toggle(self, state: bool, *_) -> Instruction:
+    Krita.set_toggle_state(self.toggle, state)
+    return self
 
 
 @dataclass
-class TurnOn(Instruction):
+class _ToggleInstruction(Instruction):
 
     toggle: Toggle
 
-    def enter(self) -> 'TurnOn':
-        Krita.set_toggle_state(self.toggle, True)
-        return self
+
+class TurnOn(_ToggleInstruction):
+
+    enter = partialmethod(_set_toggle, state=True)
 
 
-@dataclass
-class TurnOff(Instruction):
+class TurnOff(_ToggleInstruction):
 
-    toggle: Toggle
-
-    def enter(self) -> 'TurnOff':
-        Krita.set_toggle_state(self.toggle, False)
-        return self
+    enter = partialmethod(_set_toggle, state=False)
 
 
-@dataclass
-class TemporaryOn(Instruction):
+class TemporaryOn(_ToggleInstruction):
 
-    toggle: Toggle
-
-    def enter(self) -> 'TurnOff':
-        Krita.set_toggle_state(self.toggle, True)
-        return self
-
-    def exit(self, *_) -> None:
-        Krita.set_toggle_state(self.toggle, False)
+    enter = partialmethod(_set_toggle, state=True)
+    exit = partialmethod(_set_toggle, state=False)
 
 
-@dataclass
-class TemporaryOff(Instruction):
+class TemporaryOff(_ToggleInstruction):
 
-    toggle: Toggle
-
-    def enter(self) -> 'TurnOff':
-        Krita.set_toggle_state(self.toggle, False)
-        return self
-
-    def exit(self, *_) -> None:
-        Krita.set_toggle_state(self.toggle, True)
+    enter = partialmethod(_set_toggle, state=False)
+    exit = partialmethod(_set_toggle, state=True)
