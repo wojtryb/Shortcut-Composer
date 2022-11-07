@@ -8,7 +8,7 @@ from .composer_library.templates.slider_utils import (
     CurrentLayerStack,
     PickStrategy,
     Slider,
-    Range,)
+    Range)
 
 from .composer_library.components import instructions, controllers
 

@@ -3,6 +3,12 @@ from ..controller_base import Controller
 
 
 class CanvasZoomController(Controller):
+    """
+    Gives access to zoom.
+
+    - Operates on floats
+    - Defaults to 1.0
+    """
 
     default_value: int = 1.0
 
@@ -16,6 +22,12 @@ class CanvasZoomController(Controller):
 
 
 class CanvasRotationController(Controller):
+    """
+    Gives access to canvas rotation in degrees.
+
+    - Operates on floats [0-360]
+    - Defaults to 0.0
+    """
 
     default_value: int = 0.0
 

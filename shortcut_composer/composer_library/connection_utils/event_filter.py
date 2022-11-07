@@ -2,6 +2,7 @@ from typing import Callable, List
 
 from PyQt5.QtCore import QEvent
 from PyQt5.QtGui import QKeyEvent
+
 from ..api import QMdiArea
 
 EventCallback = Callable[[QEvent], None]

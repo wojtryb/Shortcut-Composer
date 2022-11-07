@@ -4,6 +4,13 @@ from ..controller_base import Controller
 
 
 class LayerController(Controller):
+    """
+    Gives access to nodes (layers, masks etc.) from layer stack.
+
+    - Operates on internal Layer objects. Use `CurrentLayerStack()` to
+      always use current layer stack
+    - Does not have a default
+    """
 
     @staticmethod
     def get_value() -> Node:
@@ -17,6 +24,14 @@ class LayerController(Controller):
 
 
 class TimeController(Controller):
+    """
+    Gives access to animation timeline.
+
+    - Operates on positive integers representing frame numbers
+    - Defaults to 0
+    """
+
+    default_value = 0
 
     @staticmethod
     def get_value() -> Node:
