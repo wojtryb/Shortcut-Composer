@@ -1,7 +1,7 @@
 """Central file which defines extension class and adds it to krita."""
 
 from api_krita import Krita, Extension
-from connection_utils import ActionManager
+from input_adapter import ActionManager
 from .actions import actions
 
 

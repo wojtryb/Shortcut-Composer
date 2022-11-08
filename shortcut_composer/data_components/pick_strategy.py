@@ -5,6 +5,7 @@ from api_krita.wrappers import Document, Node
 
 
 class PickStrategy(Enum):
+
     @staticmethod
     def __pick_all(document: Document) -> List[Node]:
         return document.all_nodes()

@@ -1,7 +1,7 @@
 from typing import Any, List, Union
 from dataclasses import dataclass
 
-from components import Controller
+from core_components import Controller
 from .range import Range
 
 

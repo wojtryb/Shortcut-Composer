@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, Iterable
 
-from components.helpers import Range
+from data_components import Range
 
 
 def create_slider_values(slider_values, default_value) -> 'SliderValues':

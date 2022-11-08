@@ -2,8 +2,8 @@ from threading import Thread
 from time import sleep
 from typing import Any, Callable
 
-from components import InstructionHolder
-from components.helpers import Slider
+from core_components import InstructionHolder
+from data_components import Slider
 from .mouse_interpreter import MouseInterpreter
 from .slider_values import create_slider_values
 

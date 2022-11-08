@@ -2,10 +2,12 @@ from PyQt5.QtWidgets import QWidget, QToolButton, QMainWindow
 from PyQt5.QtGui import QKeySequence
 from krita import Krita as Api, Extension
 
-from .wrappers.document import Document
-from .wrappers.canvas import Canvas
-from .wrappers.view import View
-from .wrappers.cursor import Cursor
+from .wrappers import (
+    Document,
+    Canvas,
+    Cursor,
+    View,
+)
 from .enums import Tool, Toggle
 
 
