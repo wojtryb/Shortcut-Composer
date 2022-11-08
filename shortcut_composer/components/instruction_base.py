@@ -2,6 +2,13 @@ from typing import List
 
 
 class Instruction:
+    """
+    Component that allows to perform additional tasks outside the main logic.
+
+    Depending on the picked instruction, tasks can be performed on key
+    press, release, or in a loop while the key is pressed.
+    """
+
     def enter(self) -> 'Instruction': return self
     def update(self) -> None: ...
     def exit(self, *_) -> None: ...

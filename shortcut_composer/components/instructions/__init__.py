@@ -1,5 +1,5 @@
 """
-Component that allows to perform additional tasks outside the main logic.
+Components that allow to perform additional tasks outside the main logic.
 
 Depending on the picked instruction, tasks can be performed on key
 press, release, or in a loop while the key is pressed.

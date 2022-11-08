@@ -1,5 +1,5 @@
 """
-Module contains action templates.
+Templates allowing to create actions using logic related to key events.
 
 Available templates:
 - `TemporaryKey`
