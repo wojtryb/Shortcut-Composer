@@ -10,7 +10,7 @@ class CanvasZoomController(Controller):
     - Defaults to 1.0
     """
 
-    default_value: int = 1.0
+    default_value: float = 1.0
 
     @staticmethod
     def get_value() -> float:
@@ -29,7 +29,7 @@ class CanvasRotationController(Controller):
     - Defaults to 0.0
     """
 
-    default_value: int = 0.0
+    default_value: float = 0.0
 
     @staticmethod
     def get_value() -> float:

@@ -1,13 +1,22 @@
 from dataclasses import dataclass
-from typing import Any, List
+from typing import List, Protocol
 
-from .node import Node
+from .node import Node, KritaNode
+
+
+class KritaDocument(Protocol):
+    def activeNode(self) -> KritaNode: ...
+    def setActiveNode(self, node: KritaNode): ...
+    def topLevelNodes(self) -> List[KritaNode]: ...
+    def currentTime(self) -> int: ...
+    def setCurrentTime(self, time: int) -> None: ...
+    def refreshProjection(self) -> None: ...
 
 
 @dataclass
 class Document:
 
-    document: Any
+    document: KritaDocument
 
     def current_node(self) -> Node:
         return Node(self.document.activeNode())
