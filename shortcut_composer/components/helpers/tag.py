@@ -1,4 +1,4 @@
-from .database import Database
+from api_krita.wrappers import Database
 
 
 class Tag:

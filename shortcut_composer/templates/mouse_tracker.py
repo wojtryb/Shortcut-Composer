@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from threading import Thread
 from time import sleep
 from typing import List, Literal, Optional
@@ -6,7 +6,8 @@ from typing import List, Literal, Optional
 from api_krita import Krita
 from connection_utils import PluginAction
 from components import Instruction, InstructionHolder
-from .slider_utils import Slider
+from components.helpers import Slider
+from .mouse_tracker_utils import SliderHandler
 
 
 class MouseTracker:
@@ -53,66 +54,74 @@ class MouseTracker:
         vertical_slider: Optional[Slider] = None,
         instructions: List[Instruction] = [],
     ) -> PluginAction:
+        instructions_holder = InstructionHolder(instructions)
         if horizontal_slider and not vertical_slider:
             return SingleAxisTracker(
                 action_name=action_name,
-                slider=horizontal_slider,
-                instructions=InstructionHolder(instructions),
-                sign=1
+                sign=1,
+                instructions=instructions_holder,
+                handler=SliderHandler(
+                    slider=horizontal_slider,
+                    instructions=instructions_holder
+                ),
             )
         if not horizontal_slider and vertical_slider:
             return SingleAxisTracker(
                 action_name=action_name,
-                slider=vertical_slider,
-                instructions=InstructionHolder(instructions),
-                sign=-1
+                sign=-1,
+                instructions=instructions_holder,
+                handler=SliderHandler(
+                    slider=vertical_slider,
+                    instructions=instructions_holder,
+                )
             )
         if horizontal_slider and vertical_slider:
             return DoubleAxisTracker(
                 action_name=action_name,
-                horizontal_slider=horizontal_slider,
-                vertical_slider=vertical_slider,
-                instructions=InstructionHolder(instructions)
+                instructions=instructions_holder,
+                horizontal_handler=SliderHandler(
+                    slider=horizontal_slider,
+                    instructions=instructions_holder,
+                ),
+                vertical_handler=SliderHandler(
+                    slider=vertical_slider,
+                    instructions=instructions_holder,
+                )
             )
         raise ValueError("At least one slider needed.")
 
 
 @dataclass
 class SingleAxisTracker(PluginAction):
+
     action_name: str
-    slider: Slider
+    handler: SliderHandler
     instructions: InstructionHolder
     sign: Literal[1, -1] = 1
 
     _time_interval = 0.1
     _working = False
 
-    def __post_init__(self):
-        self.slider.set_instructions(self.instructions)
-
     def on_key_press(self) -> None:
         self.instructions.enter()
         cursor = Krita.get_cursor()
-        return self.slider.start(lambda: self.sign*cursor.y())
+        return self.handler.start(lambda: self.sign*cursor.y())
 
     def on_every_key_release(self) -> None:
-        self.slider.stop()
+        self.handler.stop()
         self.instructions.exit()
 
 
 @dataclass
 class DoubleAxisTracker(PluginAction):
+
     action_name: str
-    horizontal_slider: Slider
-    vertical_slider: Slider
-    instructions: InstructionHolder = field(default_factory=list)
+    horizontal_handler: SliderHandler
+    vertical_handler: SliderHandler
+    instructions: InstructionHolder
 
     _time_interval = 0.1
     _working = False
-
-    def __post_init__(self):
-        self.horizontal_slider.set_instructions(self.instructions)
-        self.vertical_slider.set_instructions(self.instructions)
 
     def on_key_press(self) -> None:
         self.instructions.enter()
@@ -129,11 +138,11 @@ class DoubleAxisTracker(PluginAction):
             sleep(0.05)
 
         if delta_hor > delta_ver:
-            self.horizontal_slider.start(cursor.x)
+            self.horizontal_handler.start(cursor.x)
         else:
-            self.vertical_slider.start(lambda: -cursor.y())
+            self.vertical_handler.start(lambda: -cursor.y())
 
     def on_every_key_release(self) -> None:
-        self.horizontal_slider.stop()
-        self.vertical_slider.stop()
+        self.horizontal_handler.stop()
+        self.vertical_handler.stop()
         self.instructions.exit()

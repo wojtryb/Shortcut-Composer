@@ -1,7 +1,6 @@
 from enum import Enum
-from typing import Any, List
+from typing import List
 
-from api_krita import Krita
 from api_krita.wrappers import Document, Node
 
 
@@ -28,30 +27,3 @@ class PickStrategy(Enum):
     ALL = __pick_all
     VISIBLE = __pick_visible
     CURRENT_VISIBILITY = __pick_current_visibility
-
-
-class CurrentLayerStack:
-    def __init__(
-        self,
-        pick_strategy: PickStrategy = PickStrategy.ALL
-    ) -> None:
-        self.pick_strategy = pick_strategy
-        self.layers = self.get_layers()
-
-    def get_layers(self):
-        if document := Krita.get_active_document():
-            return self.pick_strategy(document)
-        return []
-
-    def __iter__(self):
-        return iter(self.layers)
-
-    def __getitem__(self, index: int):
-        return self.layers[index]
-
-    def __len__(self):
-        self.layers = self.get_layers()
-        return len(self.layers)
-
-    def index(self, value: Any):
-        return self.layers.index(value)
