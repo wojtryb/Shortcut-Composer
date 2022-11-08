@@ -3,7 +3,7 @@ from time import time
 from PyQt5.QtGui import QKeyEvent
 from PyQt5.QtGui import QKeySequence
 
-from ..api import Krita
+from api_krita import Krita
 from .plugin_action import PluginAction
 
 

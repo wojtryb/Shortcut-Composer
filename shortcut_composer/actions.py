@@ -1,16 +1,16 @@
 """File that acts as config - define all action objects here."""
 
-from .composer_library.api.enums import BlendingMode, Tool, Toggle
-from .composer_library.api.wrappers import Tag
+import templates
+from components import instructions, controllers
 
-from .composer_library import templates
-from .composer_library.templates.slider_utils import (
+from api_krita.enums import BlendingMode, Tool, Toggle
+from api_krita.wrappers import Tag
+
+from templates.slider_utils import (
     CurrentLayerStack,
     PickStrategy,
     Slider,
     Range)
-
-from .composer_library.components import instructions, controllers
 
 
 actions = [

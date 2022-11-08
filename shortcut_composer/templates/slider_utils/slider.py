@@ -2,7 +2,7 @@ from threading import Thread
 from time import sleep
 from typing import Any, Callable, List, Union
 
-from ...components import Controller, InstructionHolder
+from components import Controller, InstructionHolder
 from .mouse_interpreter import MouseInterpreter
 from .slider_values import create_slider_values, Range
 

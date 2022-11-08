@@ -1,5 +1,5 @@
-from ...api import Krita
-from ...api.enums import Tool
+from api_krita import Krita
+from api_krita.enums import Tool
 from ..instruction_base import Instruction
 
 

@@ -1,8 +1,8 @@
 from enum import Enum
 from typing import Any, List
 
-from ...api import Krita
-from ...api.wrappers import Document, Node
+from api_krita import Krita
+from api_krita.wrappers import Document, Node
 
 
 class PickStrategy(Enum):

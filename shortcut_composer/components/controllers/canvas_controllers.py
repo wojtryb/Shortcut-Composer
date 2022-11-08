@@ -1,4 +1,4 @@
-from ...api import Krita
+from api_krita import Krita
 from ..controller_base import Controller
 
 
