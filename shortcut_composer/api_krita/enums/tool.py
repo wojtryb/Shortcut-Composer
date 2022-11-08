@@ -2,6 +2,49 @@ from enum import Enum
 
 
 class Tool(Enum):
+    """
+    Contains all known tools from krita toolbox.
+
+    Example usage: `Tool.FREEHAND_BRUSH`
+
+    Available tools:
+    - `FREEHAND_BRUSH`
+    - `FREEHAND_SELECTION`
+    - `GRADIENT`
+    - `LINE`
+    - `TRANSFORM`
+    - `MOVE`
+    - `RECTANGULAR_SELECTION`
+    - `CONTIGUOUS_SELECTION`
+    - `REFERENCE`
+    - `CROP`
+    - `BEZIER_PATH`
+    - `FREEHAND_PATH`
+    - `POLYLINE`
+    - `SHAPE_SELECT`
+    - `ASSISTANTS`
+    - `COLOR_SAMPLER`
+    - `POLYGON`
+    - `MEASUREMENT`
+    - `TEXT`
+    - `ELLIPSE`
+    - `FILL`
+    - `BEZIER_SELECTION`
+    - `DYNAMIC_BRUSH`
+    - `RECTANGLE`
+    - `PAN`
+    - `MULTI_BRUSH`
+    - `EDIT_SHAPES`
+    - `ELIPTICAL_SELECTION`
+    - `SMART_PATCH`
+    - `COLORIZE_MASK`
+    - `SIMILAR_COLOR_SELECTION`
+    - `ZOOM`
+    - `MAGNETIC_SELECTION`
+    - `CALLIGRAPHY`
+    - `POLYGONAL_SELECTION`
+    """
+
     FREEHAND_BRUSH = "KritaShape/KisToolBrush"
     FREEHAND_SELECTION = "KisToolSelectOutline"
     GRADIENT = "KritaFill/KisToolGradient"
@@ -40,6 +83,7 @@ class Tool(Enum):
 
     @staticmethod
     def is_paintable(tool: 'Tool'):
+        """Is the user able to paint when the given tool is activated."""
         return tool in _PAINTABLE
 
 
