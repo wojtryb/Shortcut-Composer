@@ -8,22 +8,20 @@ class PickStrategy(Enum):
 
     @staticmethod
     def __pick_all(document: Document) -> List[Node]:
-        return document.all_nodes()
+        return document.get_all_nodes()
 
     @staticmethod
     def __pick_visible(document: Document) -> List[Node]:
-        nodes = document.all_nodes()
-        current_node = document.current_node()
+        nodes = document.get_all_nodes()
         return [node for node in nodes
-                if node.is_visible() or node == current_node]
+                if node.visible or node == document.active_node]
 
     @staticmethod
     def __pick_current_visibility(document: Document) -> List[Node]:
-        nodes = document.all_nodes()
-        current_node = document.current_node()
-        current_visibility = current_node.is_visible()
+        nodes = document.get_all_nodes()
+        current_visibility = document.active_node.visible
         return [node for node in nodes
-                if node.is_visible() == current_visibility]
+                if node.visible == current_visibility]
 
     ALL = __pick_all
     VISIBLE = __pick_visible

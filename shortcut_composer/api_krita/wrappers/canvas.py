@@ -14,14 +14,18 @@ class Canvas:
 
     canvas: KritaCanvas
 
+    @property
     def rotation(self) -> float:
         return self.canvas.rotation()
 
-    def set_rotation(self, angle_deg: float) -> None:
+    @rotation.setter
+    def rotation(self, angle_deg: float) -> None:
         self.canvas.setRotation(angle_deg)
 
+    @property
     def zoom(self) -> float:
         return self.canvas.zoomLevel()
 
-    def set_zoom(self, zoom: int) -> None:
+    @zoom.setter
+    def zoom(self, zoom: int) -> None:
         self.canvas.setZoomLevel(zoom)

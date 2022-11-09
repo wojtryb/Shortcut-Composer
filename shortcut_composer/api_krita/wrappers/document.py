@@ -18,29 +18,33 @@ class Document:
 
     document: KritaDocument
 
-    def current_node(self) -> Node:
+    @property
+    def active_node(self) -> Node:
         return Node(self.document.activeNode())
 
-    def set_current_node(self, node: Node) -> None:
+    @active_node.setter
+    def active_node(self, node: Node) -> None:
         self.document.setActiveNode(node.node)
 
-    def top_nodes(self) -> List[Node]:
-        return [Node(node) for node in self.document.topLevelNodes()]
-
-    def all_nodes(self) -> List[Node]:
-        def recursive_search(nodes: List[Node], found_so_far: List[Node]):
-            for node in nodes:
-                if node.is_group_layer() and not node.is_collapsed():
-                    recursive_search(node.child_nodes(), found_so_far)
-                found_so_far.append(node)
-            return found_so_far
-        return recursive_search(self.top_nodes(), [])
-
+    @property
     def current_time(self) -> int:
         return self.document.currentTime()
 
-    def set_current_time(self, time: int) -> None:
+    @current_time.setter
+    def current_time(self, time: int) -> None:
         self.document.setCurrentTime(time)
+
+    def get_top_nodes(self) -> List[Node]:
+        return [Node(node) for node in self.document.topLevelNodes()]
+
+    def get_all_nodes(self) -> List[Node]:
+        def recursive_search(nodes: List[Node], found_so_far: List[Node]):
+            for node in nodes:
+                if node.is_group_layer and not node.is_collapsed:
+                    recursive_search(node.get_child_nodes(), found_so_far)
+                found_so_far.append(node)
+            return found_so_far
+        return recursive_search(self.get_top_nodes(), [])
 
     def refresh(self) -> None:
         self.document.refreshProjection()
