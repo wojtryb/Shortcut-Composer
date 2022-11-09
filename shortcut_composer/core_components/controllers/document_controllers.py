@@ -3,7 +3,13 @@ from api_krita.wrappers import Node
 from ..controller_base import Controller
 
 
-class LayerController(Controller):
+class DocumentBasedController(Controller):
+
+    def refresh(self):
+        self.document = Krita.get_active_document()
+
+
+class LayerController(DocumentBasedController):
     """
     Gives access to nodes (layers, masks etc.) from layer stack.
 
@@ -12,18 +18,16 @@ class LayerController(Controller):
     - Does not have a default
     """
 
-    @staticmethod
-    def get_value() -> Node:
+    def get_value(self) -> Node:
         """Get current node."""
-        return Krita.get_active_document().active_node
+        return self.document.active_node
 
-    @staticmethod
-    def set_value(value: Node) -> None:
+    def set_value(self, value: Node) -> None:
         """Set passed node as current."""
-        Krita.get_active_document().active_node = value
+        self.document.active_node = value
 
 
-class TimeController(Controller):
+class TimeController(DocumentBasedController):
     """
     Gives access to animation timeline.
 
@@ -33,12 +37,10 @@ class TimeController(Controller):
 
     default_value = 0
 
-    @staticmethod
-    def get_value() -> int:
-        return Krita.get_active_document().current_time
+    def get_value(self) -> int:
+        return self.document.current_time
 
-    @staticmethod
-    def set_value(value: int) -> None:
-        document = Krita.get_active_document()
+    def set_value(self, value: int) -> None:
+        document = self.document
         if document.active_node.is_animated:
             document.current_time = value

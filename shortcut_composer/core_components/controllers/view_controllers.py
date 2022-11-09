@@ -3,11 +3,13 @@ from api_krita.enums import BlendingMode
 from ..controller_base import Controller
 
 
-class KritaPreset:
-    ...
+class ViewBasedController(Controller):
+
+    def refresh(self):
+        self.view = Krita.get_active_view()
 
 
-class PresetController(Controller):
+class PresetController(ViewBasedController):
     """
     Gives access to presets.
 
@@ -15,19 +17,16 @@ class PresetController(Controller):
     - Does not have a default
     """
 
-    presets = Krita.get_presets()
-
-    @staticmethod
-    def get_value() -> str:
+    def get_value(self) -> str:
         """Get currently active preset."""
-        return Krita.get_active_view().brush_preset
+        return self.view.brush_preset
 
     def set_value(self, value: str) -> None:
         """Set a preset of passed name."""
-        Krita.get_active_view().brush_preset = value
+        self.view.brush_preset = value
 
 
-class BrushSizeController(Controller):
+class BrushSizeController(ViewBasedController):
     """
     Gives access to brush size.
 
@@ -37,16 +36,14 @@ class BrushSizeController(Controller):
 
     default_value: int = 100
 
-    @staticmethod
-    def get_value() -> int:
-        return Krita.get_active_view().brush_size
+    def get_value(self) -> int:
+        return self.view.brush_size
 
-    @staticmethod
-    def set_value(value: int) -> None:
-        Krita.get_active_view().brush_size = value
+    def set_value(self, value: int) -> None:
+        self.view.brush_size = value
 
 
-class BlendingModeController(Controller):
+class BlendingModeController(ViewBasedController):
     """
     Gives access to brush blending mode.
 
@@ -56,18 +53,16 @@ class BlendingModeController(Controller):
 
     default_value = BlendingMode.NORMAL
 
-    @staticmethod
-    def get_value() -> BlendingMode:
+    def get_value(self) -> BlendingMode:
         """Get currently active blending mode."""
-        return Krita.get_active_view().blending_mode
+        return self.view.blending_mode
 
-    @staticmethod
-    def set_value(value: BlendingMode) -> None:
+    def set_value(self, value: BlendingMode) -> None:
         """Set a passed blending mode."""
-        Krita.get_active_view().blending_mode = value
+        self.view.blending_mode = value
 
 
-class OpacityController(Controller):
+class OpacityController(ViewBasedController):
     """
     Gives access to brush opacity in %.
 
@@ -77,18 +72,16 @@ class OpacityController(Controller):
 
     default_value: int = 100
 
-    @staticmethod
-    def get_value() -> int:
+    def get_value(self) -> int:
         """Get current brush opacity."""
-        return Krita.get_active_view().opacity
+        return self.view.opacity
 
-    @staticmethod
-    def set_value(value: int) -> None:
+    def set_value(self, value: int) -> None:
         """Set passed brush opacity."""
-        Krita.get_active_view().opacity = value
+        self.view.opacity = value
 
 
-class FlowController(Controller):
+class FlowController(ViewBasedController):
     """
     Gives access to brush flow in %.
 
@@ -98,10 +91,8 @@ class FlowController(Controller):
 
     default_value: int = 100
 
-    @staticmethod
-    def get_value() -> int:
-        return Krita.get_active_view().current_flow
+    def get_value(self) -> int:
+        return self.view.current_flow
 
-    @staticmethod
-    def set_value(value: int) -> None:
-        Krita.get_active_view().set_flow = value
+    def set_value(self, value: int) -> None:
+        self.view.set_flow = value

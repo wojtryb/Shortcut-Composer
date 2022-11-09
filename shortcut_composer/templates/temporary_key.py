@@ -80,6 +80,7 @@ class TemporaryKey(PluginAction):
 
     def on_key_press(self) -> None:
         """Set high state only if state before press was low."""
+        self._controller.refresh()
         self._instructions.enter()
         self._was_high_before_press = self._is_high_state()
         if not self._was_high_before_press:

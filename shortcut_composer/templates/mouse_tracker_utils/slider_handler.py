@@ -21,6 +21,7 @@ class SliderHandler:
 
     def start(self, mouse_getter: Callable[[], int]) -> None:
         self.__working = True
+        self.__slider.controller.refresh()
         self.__interpreter = MouseInterpreter(
             min=self.to_cycle.min,
             max=self.to_cycle.max,

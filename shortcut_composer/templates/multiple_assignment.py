@@ -69,6 +69,7 @@ class MultipleAssignment(PluginAction):
 
     def on_key_press(self) -> None:
         """Use key press event only for switching to first value."""
+        self._controller.refresh()
         self._instructions.enter()
         current_value = self._controller.get_value()
         if current_value != self._last_value:
