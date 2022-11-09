@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from threading import Thread
+from threading import Thread, Lock
 from time import sleep
 from typing import List, Literal, Optional
 
@@ -100,9 +100,10 @@ class SingleAxisTracker(PluginAction):
     sign: Literal[1, -1] = 1
 
     _time_interval = 0.1
-    _working = False
+    _lock = Lock()
 
     def on_key_press(self) -> None:
+        self._lock.acquire()
         self.instructions.enter()
         cursor = Krita.get_cursor()
         return self.handler.start(lambda: self.sign*cursor.y())
@@ -110,6 +111,7 @@ class SingleAxisTracker(PluginAction):
     def on_every_key_release(self) -> None:
         self.handler.stop()
         self.instructions.exit()
+        self._lock.release()
 
 
 @dataclass
@@ -121,13 +123,14 @@ class DoubleAxisTracker(PluginAction):
     instructions: InstructionHolder
 
     _time_interval = 0.1
-    _working = False
+    _lock = Lock()
 
     def on_key_press(self) -> None:
-        self.instructions.enter()
         Thread(target=self._pick_slider, daemon=True).start()
 
     def _pick_slider(self) -> None:
+        self._lock.acquire()
+        self.instructions.enter()
         cursor = Krita.get_cursor()
         start_point = (cursor.x(), cursor.y())
         while True:
@@ -146,3 +149,4 @@ class DoubleAxisTracker(PluginAction):
         self.horizontal_handler.stop()
         self.vertical_handler.stop()
         self.instructions.exit()
+        self._lock.release()
