@@ -5,54 +5,80 @@
 
         <Action name="Move tool (temporary)">
         <text>Move tool (temporary)</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Transform tool (temporary)">
         <text>Transform tool (temporary)</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Eraser (temporary)">
         <text>Eraser (temporary)</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Preserve alpha (temporary)">
         <text>Preserve alpha (temporary)</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Opacity (cycle)">
         <text>Opacity (cycle)</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Selection tools (cycle)">
         <text>Selection tools (cycle)</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Misc tools (cycle)">
         <text>Misc tools (cycle)</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Preset (cycle)">
         <text>Preset (cycle)</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Layer scraper - isolate">
-        <text>Layer scraper - isolate</text>
+        <Action name="Layer scraper (tracker)">
+        <text>Layer scraper (tracker)</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Layer scraper - visibility">
         <text>Layer scraper - visibility</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Timeline scraper (tracker)">
         <text>Timeline scraper (tracker)</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Blending mode (tracker)">
         <text>Blending mode (tracker)</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Brush basic settings (tracker)">
         <text>Brush basic settings (tracker)</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
         </Action>
 
     </Actions>
