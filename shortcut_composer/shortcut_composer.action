@@ -43,16 +43,16 @@
         <text>Layer scraper - visibility</text>
         </Action>
 
+        <Action name="Timeline scraper (tracker)">
+        <text>Timeline scraper (tracker)</text>
+        </Action>
+
         <Action name="Blending mode (tracker)">
         <text>Blending mode (tracker)</text>
         </Action>
 
-        <Action name="Discrete brush settings (tracker)">
-        <text>Discrete brush settings (tracker)</text>
-        </Action>
-
-        <Action name="Contiguous brush settings (tracker)">
-        <text>Contiguous brush settings (tracker)</text>
+        <Action name="Brush basic settings (tracker)">
+        <text>Brush basic settings (tracker)</text>
         </Action>
 
     </Actions>

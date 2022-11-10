@@ -77,16 +77,12 @@ actions = [
         instructions=[instructions.SetBrushOnNonPaintable()],
     ),
     templates.MouseTracker(
-        action_name="Layer scraper - isolate",
+        action_name="Layer scraper (tracker)",
         instructions=[instructions.TemporaryOn(Toggle.ISOLATE_LAYER)],
         vertical_slider=Slider(
             controller=controllers.LayerController(),
-            values=CurrentLayerStack(PickStrategy.CURRENT_VISIBILITY),
-        ),
-        horizontal_slider=Slider(
-            controller=controllers.TimeController(),
-            values=Range(0, float('inf')),
-        ),
+            values=CurrentLayerStack(PickStrategy.ALL),
+        )
     ),
     templates.MouseTracker(
         action_name="Layer scraper - visibility",
@@ -94,11 +90,14 @@ actions = [
         vertical_slider=Slider(
             controller=controllers.LayerController(),
             values=CurrentLayerStack(PickStrategy.VISIBLE),
-        ),
+        )
+    ),
+    templates.MouseTracker(
+        action_name="Timeline scraper (tracker)",
         horizontal_slider=Slider(
             controller=controllers.TimeController(),
             values=Range(0, float('inf')),
-        ),
+        )
     ),
     templates.MouseTracker(
         action_name="Blending mode (tracker)",
@@ -117,26 +116,15 @@ actions = [
         ),
     ),
     templates.MouseTracker(
-        action_name="Discrete brush settings (tracker)",
+        action_name="Brush basic settings (tracker)",
         horizontal_slider=Slider(
             controller=controllers.BrushSizeController(),
             values=[
-                0.7, 1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7, 8, 9,
+                1, 2, 3, 4, 5, 6, 7, 8, 9,
                 10, 12, 14, 16, 20, 25, 30, 35, 40, 50, 60, 70, 80,
                 100, 120, 160, 200, 250, 300, 350, 400, 450,
                 500, 600, 700, 800, 900, 1000
             ]
-        ),
-        vertical_slider=Slider(
-            controller=controllers.OpacityController(),
-            values=[10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-        ),
-    ),
-    templates.MouseTracker(
-        action_name="Contiguous brush settings (tracker)",
-        horizontal_slider=Slider(
-            controller=controllers.BrushSizeController(),
-            values=Range(50, 1000)
         ),
         vertical_slider=Slider(
             controller=controllers.OpacityController(),
