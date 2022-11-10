@@ -11,9 +11,7 @@ from .slider_values import create_slider_values
 class SliderHandler:
     def __init__(self, slider: Slider, instructions: InstructionHolder):
         self.__slider = slider
-        self.to_cycle = create_slider_values(
-            self.__slider.slider_values,
-            self.__slider.default_value)
+        self.to_cycle = create_slider_values(self.__slider.values)
         self.__instructions = instructions
         self.__working = False
 
