@@ -18,7 +18,7 @@ class PluginAction:
     def __init__(self, *,
                  action_name: str,
                  time_interval: float = 0.3,
-                 controller: Controller,
+                 controller: Controller = Controller(),
                  instructions: List[Instruction] = []) -> None:
         self.action_name = action_name
         self._time_interval = time_interval

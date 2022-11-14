@@ -31,7 +31,7 @@ class Krita:
         return Canvas(Api.instance().activeWindow().activeView().canvas())
 
     @staticmethod
-    def trigger_action(action_name) -> None:
+    def trigger_action(action_name: str) -> None:
         return Api.instance().action(action_name).trigger()
 
     @staticmethod
