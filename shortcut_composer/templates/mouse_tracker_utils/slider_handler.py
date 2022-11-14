@@ -13,7 +13,7 @@ MouseGetter = Callable[[], MouseInput]
 class SliderHandler:
     def __init__(self, slider: Slider):
         self.__slider = slider
-        self.to_cycle = create_slider_values(self.__slider.values)
+        self.__to_cycle = create_slider_values(self.__slider.values)
         self.__working = False
 
         self.__interpreter: MouseInterpreter
@@ -22,8 +22,8 @@ class SliderHandler:
         self.__working = True
         self.__slider.controller.refresh()
         self.__interpreter = MouseInterpreter(
-            min=self.to_cycle.min,
-            max=self.to_cycle.max,
+            min=self.__to_cycle.min,
+            max=self.__to_cycle.max,
             mouse_origin=mouse_getter(),
             start_value=self.__get_current_value(),
             sensitivity=self.__slider.sensitivity,
@@ -40,11 +40,11 @@ class SliderHandler:
 
     def _handle(self, mouse: MouseInput) -> None:
         clipped_value = self.__interpreter.interpret(mouse)
-        to_set = self.to_cycle.at(clipped_value)
+        to_set = self.__to_cycle.at(clipped_value)
         self.__slider.controller.set_value(to_set)
 
     def __get_current_value(self) -> Interpreted:
         try:
-            return self.to_cycle.index(self.__slider.controller.get_value())
+            return self.__to_cycle.index(self.__slider.controller.get_value())
         except ValueError:
-            return self.to_cycle.default_value
+            return self.__to_cycle.default

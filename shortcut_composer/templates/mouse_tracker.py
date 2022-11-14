@@ -26,7 +26,7 @@ class MouseTracker:
 
     ### Arguments:
 
-    - `action_name`       -- unique name of action. Must match the definition
+    - `name`              -- unique name of action. Must match the definition
                               in shortcut_composer.action file
     - `horizontal_slider` -- defines what to do on horizontal mouse movement
     - `vertical_slider`   -- defines what to do on vertical mouse movement
@@ -37,11 +37,11 @@ class MouseTracker:
 
     ```python
     MouseTracker(
-        action_name="Horizontal axis tracker",
+        name="Horizontal axis tracker",
         horizontal_slider=Slider(...), # See slider documentation
     )
     MouseTracker(
-        action_name="Double axis tracker",
+        name="Double axis tracker",
         horizontal_slider=Slider(...),
         vertical_slider=Slider(...),
     )
@@ -49,7 +49,7 @@ class MouseTracker:
     """
     def __new__(
         cls,
-        action_name: str,
+        name: str,
         horizontal_slider: Optional[Slider] = None,
         vertical_slider: Optional[Slider] = None,
         instructions: List[Instruction] = [],
@@ -57,21 +57,21 @@ class MouseTracker:
         instructions_holder = InstructionHolder(instructions)
         if horizontal_slider and not vertical_slider:
             return SingleAxisTracker(
-                action_name=action_name,
+                name=name,
                 sign=1,
                 instructions=instructions_holder,
                 handler=SliderHandler(horizontal_slider)
             )
         if not horizontal_slider and vertical_slider:
             return SingleAxisTracker(
-                action_name=action_name,
+                name=name,
                 sign=-1,
                 instructions=instructions_holder,
                 handler=SliderHandler(vertical_slider)
             )
         if horizontal_slider and vertical_slider:
             return DoubleAxisTracker(
-                action_name=action_name,
+                name=name,
                 instructions=instructions_holder,
                 horizontal_handler=SliderHandler(horizontal_slider),
                 vertical_handler=SliderHandler(vertical_slider)
@@ -82,12 +82,12 @@ class MouseTracker:
 @dataclass
 class SingleAxisTracker(PluginAction):
 
-    action_name: str
+    name: str
     handler: SliderHandler
     instructions: InstructionHolder
     sign: Literal[1, -1] = 1
 
-    _time_interval = 0.1
+    _time_interval = 0
     _lock = Lock()
 
     def on_key_press(self) -> None:
@@ -105,12 +105,12 @@ class SingleAxisTracker(PluginAction):
 @dataclass
 class DoubleAxisTracker(PluginAction):
 
-    action_name: str
+    name: str
     horizontal_handler: SliderHandler
     vertical_handler: SliderHandler
     instructions: InstructionHolder
 
-    _time_interval = 0.1
+    _time_interval = 0
     _lock = Lock()
 
     def on_key_press(self) -> None:

@@ -43,17 +43,17 @@ class ShortcutAdapter:
             self.action.on_long_key_release()
         self.action.on_every_key_release()
 
-    def _is_event_key_release(self, event: QKeyEvent) -> None:
+    def _is_event_key_release(self, release_event: QKeyEvent) -> None:
         return (
-            self.tool_shortcut.matches(event.key()) > 0
-            and not event.isAutoRepeat()
+            self.tool_shortcut.matches(release_event.key()) > 0
+            and not release_event.isAutoRepeat()
             and not self.key_released
         )
 
-    def event_filter_callback(self, event: QKeyEvent) -> None:
-        if self._is_event_key_release(event):
+    def event_filter_callback(self, release_event: QKeyEvent) -> None:
+        if self._is_event_key_release(release_event):
             self._on_key_release()
 
     @property
     def tool_shortcut(self) -> QKeySequence:
-        return Krita.get_action_shortcut(self.action.action_name)
+        return Krita.get_action_shortcut(self.action.name)

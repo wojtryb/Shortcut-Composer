@@ -9,10 +9,10 @@ T = TypeVar('T')
 class RawInstructions(PluginAction):
 
     def __init__(self, *,
-                 action_name: str,
+                 name: str,
                  instructions: List[Instruction]) -> None:
         super().__init__(
-            action_name=action_name,
+            name=name,
             instructions=instructions,
             time_interval=0.0)
 

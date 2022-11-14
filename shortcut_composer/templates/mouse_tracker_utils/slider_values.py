@@ -1,14 +1,15 @@
 from abc import ABC, abstractmethod
-from typing import Any, List, Iterable, Union, Protocol
+from typing import Iterable, Union, Protocol
 
 from data_components import Range
 from .new_types import Interpreted, Controlled
 
 
 class ListLike(Protocol):
-    def index(self, __value: Any) -> int: ...
-    def __getitem__(self, item: int) -> Any: ...
+    def index(self, __value: Controlled) -> int: ...
+    def __getitem__(self, item: int) -> Controlled: ...
     def __iter__(self) -> Iterable: ...
+    def __len__(self) -> int: ...
 
 
 def create_slider_values(slider_values: Union[ListLike, Range])\
@@ -24,7 +25,7 @@ class SliderValues(ABC):
     
     min: Interpreted
     max: Interpreted
-    default_value: Interpreted
+    default: Interpreted
 
     @abstractmethod
     def at(self, value: Interpreted) -> Controlled: ...
@@ -37,9 +38,11 @@ class RangeSliderValues(SliderValues):
     def __init__(self, values: Range):
         self.min = Interpreted(values.min)
         self.max = Interpreted(values.max)
-        self.default_value = Interpreted((self.min + self.max)*0.5)
+        self.default = Interpreted((self.min + self.max)*0.5)
 
     def at(self, value: Interpreted) -> Controlled:
+        if not self.min <= value <= self.max:
+            raise ValueError("Value not in range")
         return Controlled(value)
 
     def index(self, value: Controlled) -> Interpreted:
@@ -49,10 +52,10 @@ class RangeSliderValues(SliderValues):
 
 
 class ListSliderValues(SliderValues):
-    def __init__(self, values: List[Controlled]):
+    def __init__(self, values: ListLike):
         self.__values = values
         self.min = Interpreted(-0.49)
-        self.default_value = Interpreted(0)
+        self.default = Interpreted(0)
 
     @property
     def max(self) -> Interpreted:

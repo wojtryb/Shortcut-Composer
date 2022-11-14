@@ -20,8 +20,7 @@ class ReleaseKeyEventFilter(QMdiArea):
         """Add new callback to list, so it gets executed on each KeyRelease."""
         self._release_callbacks.append(callback)
 
-    def eventFilter(self, _, event: QKeyEvent) -> bool:
-        """Everrides QMdiArea method - executed on every krita event."""
+    def eventFilter(self, _, event: QKeyEvent) -> Literal[False]:
         if event.type() == QEvent.KeyRelease:
             for callback in self._release_callbacks:
                 callback(event)
