@@ -54,6 +54,13 @@ class MouseTracker:
         vertical_slider: Optional[Slider] = None,
         instructions: List[Instruction] = [],
     ) -> PluginAction:
+        """
+        Pick and create correct tracker based on provided sliders.
+
+        Horizontal slider requires SingleAxisTracker.
+        Vertical slider requires SingleAxisTracker with negated axis.
+        Both sliders require DoubleAxisTracker.
+        """
         instructions_holder = InstructionHolder(instructions)
         if horizontal_slider and not vertical_slider:
             return SingleAxisTracker(
@@ -81,6 +88,13 @@ class MouseTracker:
 
 @dataclass
 class SingleAxisTracker(PluginAction):
+    """
+    Track the mouse along one axis to switch values.
+
+    Tracking is performed as long as the key is pressed.
+    This class only grants the PluginAction interface, while the main
+    logic is located in passed SliderHandler.
+    """
 
     name: str
     handler: SliderHandler
@@ -91,12 +105,14 @@ class SingleAxisTracker(PluginAction):
     _lock = Lock()
 
     def on_key_press(self) -> None:
+        """Start tracking with handler."""
         self._lock.acquire()
         self.instructions.enter()
         cursor = Krita.get_cursor()
         return self.handler.start(lambda: self.sign*cursor.y())
 
     def on_every_key_release(self) -> None:
+        """End tracking with handler."""
         self.handler.stop()
         self.instructions.exit()
         self._lock.release()
@@ -104,6 +120,13 @@ class SingleAxisTracker(PluginAction):
 
 @dataclass
 class DoubleAxisTracker(PluginAction):
+    """
+    Track the mouse along the axis which had the biggest initial movement.
+
+    Tracking is performed as long as the key is pressed.
+    This class only grants the PluginAction interface, while the main
+    logic is located in passed SliderHandler.
+    """
 
     name: str
     horizontal_handler: SliderHandler
@@ -114,9 +137,11 @@ class DoubleAxisTracker(PluginAction):
     _lock = Lock()
 
     def on_key_press(self) -> None:
+        """Start a thread which decides which handler to start."""
         Thread(target=self._pick_slider, daemon=True).start()
 
     def _pick_slider(self) -> None:
+        """Wait for inital movement to activate the right handler."""
         self._lock.acquire()
         self.instructions.enter()
         cursor = Krita.get_cursor()
@@ -134,6 +159,7 @@ class DoubleAxisTracker(PluginAction):
             self.vertical_handler.start(lambda: -cursor.y())
 
     def on_every_key_release(self) -> None:
+        """End tracking with handler, regardless of which one was started."""
         self.horizontal_handler.stop()
         self.vertical_handler.stop()
         self.instructions.exit()

@@ -77,18 +77,21 @@ class MultipleAssignment(PluginAction):
         self._set_value(next(self._iterator))
 
     def on_long_key_release(self) -> None:
-        """All long releases set default value."""
+        """Long releases set default value."""
         self._set_value(self.default_value)
         self._reset_iterator()
 
     def on_every_key_release(self) -> None:
+        """All releases end the additional instructions."""
         self._instructions.exit()
 
     def _set_value(self, value: Any) -> None:
+        """Set the value using the controller, and remember it."""
         self._last_value = value
         self._controller.set_value(value)
 
     def _reset_iterator(self) -> None:
+        """Replace the iterator with new cyclic iterator over cycled values."""
         self._iterator = cycle(self.values_to_cycle)
 
     def _read_default_value(self, value: Any):

@@ -1,4 +1,10 @@
-"""File that acts as config - define all action objects here."""
+"""
+Implementation of all plugin actions.
+
+Remember to define every action under exactly the same name in the
+`shortcut_composer.action` file. Otherwise the action will not be
+visible in `keyboard shortcuts` menu in krita settings.
+"""
 
 import templates
 from api_krita.enums import BlendingMode, Tool, Toggle

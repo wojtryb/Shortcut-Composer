@@ -20,10 +20,16 @@ class Window(Protocol):
 
 class ActionManager:
     """
-    Creates and stores plugin action containers.
+    Creates ActionContainers from custom PluginAction and stores them.
 
-    Stores each custom plugin action with its newly created components:
-    shortcut binding and krita action.
+    ActionContainer holds all elements of the action being:
+    - `PluginAction` implementing the action, used to create the container.
+    - `QWidgetAction` recognised by krita, which PluginAction implements.
+    - `ShortcutAdapter` which runs proper elements of PluginAction
+      interface at proper time.
+
+    Elements other than PluginAction are created and stored in container
+    by using the bind_action() method.
     """
 
     @dataclass
@@ -43,12 +49,10 @@ class ActionManager:
 
     def bind_action(self, plugin_action: PluginAction) -> 'ActionContainer':
         """
-        Store objects needed for creating action components:
+        Create action components and stores them together.
 
-        - krita window -- on which krita actions are created
-        - event filter -- to which they are connected
-        - stored_actions -- list that protects all actions from garbage
-          collector.
+        The container is stored in internal list to protect it from
+        garbage collector.
         """
         container = self.ActionContainer(
             plugin_action=plugin_action,
@@ -60,6 +64,7 @@ class ActionManager:
 
     def _create_krita_action(self, plugin_action: PluginAction)\
             -> QWidgetAction:
+        """Create QWidgetAction recognised by krita."""
         krita_action = self._window.createAction(
             plugin_action.name,
             plugin_action.name,
@@ -70,6 +75,11 @@ class ActionManager:
 
     def _create_shortcut_adapter(self, action: PluginAction)\
             -> ShortcutAdapter:
+        """
+        Create ShortcutAdapter which runs elements of PluginAction interface.
+
+        Adapter require registering its callback in event filter.
+        """
         shortcut = ShortcutAdapter(action)
         self._event_filter.register_release_callback(
             shortcut.event_filter_callback)

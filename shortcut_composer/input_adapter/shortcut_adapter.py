@@ -12,8 +12,8 @@ class ShortcutAdapter:
     Adds additional key events based on krita's key press and release.
 
     Krita events:
-    - on_key_press (recognised when krita action is triggered)
-    - on_key_release (found by event filter)
+    - on_key_press (connected to trigger of krita action)
+    - on_key_release (intercepted with event filter)
 
     Custom action events:
     - on_key_press
@@ -23,19 +23,18 @@ class ShortcutAdapter:
     """
 
     def __init__(self, action: PluginAction):
-        """Store action which will be steered, and time counting objects."""
         self.action = action
         self.key_released = True
         self.last_press_time = time()
 
     def on_key_press(self) -> None:
-        """Callback to run when krita action is triggered."""
+        """Run action's on_key_press() and remember the time of it."""
         self.key_released = False
         self.last_press_time = time()
         self.action.on_key_press()
 
     def _on_key_release(self) -> None:
-        """Run when key event is recognised as release of related key."""
+        """Run proper key release methods based on time elapsed from press."""
         self.key_released = True
         if time() - self.last_press_time < self.action._time_interval:
             self.action.on_short_key_release()
@@ -44,6 +43,7 @@ class ShortcutAdapter:
         self.action.on_every_key_release()
 
     def _is_event_key_release(self, release_event: QKeyEvent) -> None:
+        """Decide if the key release event is matches shortcut and is valid."""
         return (
             self.tool_shortcut.matches(release_event.key()) > 0
             and not release_event.isAutoRepeat()
@@ -51,9 +51,11 @@ class ShortcutAdapter:
         )
 
     def event_filter_callback(self, release_event: QKeyEvent) -> None:
+        """Handle key release if the event is related to the action."""
         if self._is_event_key_release(release_event):
             self._on_key_release()
 
     @property
     def tool_shortcut(self) -> QKeySequence:
+        """Return shortcut assigned to shortcut red from krita settings."""
         return Krita.get_action_shortcut(self.action.name)

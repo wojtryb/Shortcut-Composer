@@ -2,6 +2,12 @@ from api_krita.wrappers import Database
 
 
 class Tag:
+    """
+    List-like container representating presets in a tag.
+
+    Created using tag's name, gets filled with preset names.
+    Does not update in runtime as the tag gets edited.
+    """
 
     def __init__(self, tag_name: str) -> None:
         self.name = tag_name
