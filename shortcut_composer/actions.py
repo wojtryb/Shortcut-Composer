@@ -48,6 +48,10 @@ actions = [
         action_name="Toggle visibility (temporary)",
         instructions=[instructions.ToggleLayerVisibility()],
     ),
+    templates.RawInstructions(
+        action_name="Toggle show below (temporary)",
+        instructions=[instructions.ToggleShowBelow()],
+    ),
     templates.MultipleAssignment(
         action_name="Opacity (cycle)",
         controller=controllers.OpacityController(),

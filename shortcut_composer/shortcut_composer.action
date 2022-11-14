@@ -27,6 +27,18 @@
         <activationConditions>1</activationConditions>
         </Action>
 
+        <Action name="Toggle visibility (temporary)">
+        <text>Toggle visibility (temporary)</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
+        </Action>
+
+        <Action name="Toggle show below (temporary)">
+        <text>Toggle show below (temporary)</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
+        </Action>
+
         <Action name="Opacity (cycle)">
         <text>Opacity (cycle)</text>
         <activationFlags>1</activationFlags>
