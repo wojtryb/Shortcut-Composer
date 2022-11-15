@@ -92,6 +92,7 @@ actions = [
     ),
     templates.MouseTracker(
         name="Undo scraper (tracker)",
+        instructions=[instructions.UndoOnShortPress()],
         horizontal_slider=Slider(
             controller=controllers.UndoController(),
             values=Range(float('-inf'), float('inf')),
