@@ -4,21 +4,20 @@ from ..instruction_base import Instruction
 
 class ToggleLayerVisibility(Instruction):
 
-    def enter(self) -> 'ToggleLayerVisibility':
+    def on_key_press(self) -> None:
         self.document = Krita.get_active_document()
         self.affected_node = self.document.active_node
         self.affected_node.toggle_visility()
         self.document.refresh()
-        return self
 
-    def exit(self, *_) -> None:
+    def on_every_key_release(self, *_) -> None:
         self.affected_node.toggle_visility()
         self.document.refresh()
 
 
 class ToggleShowBelow(Instruction):
 
-    def enter(self) -> 'ToggleShowBelow':
+    def on_key_press(self) -> None:
         self.document = Krita.get_active_document()
         all_nodes = self.document.get_all_nodes()
 
@@ -32,7 +31,7 @@ class ToggleShowBelow(Instruction):
         self.document.refresh()
         return self
 
-    def exit(self, *_) -> None:
+    def on_every_key_release(self, *_) -> None:
         for node in self.visible_nodes:
             node.visible = True
         self.document.refresh()
