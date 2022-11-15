@@ -3,7 +3,7 @@ from typing import TypeVar, Optional
 T = TypeVar('T')
 
 
-class Controller():
+class Controller:
     """Component that allows to get and set a specific property of krita."""
 
     default_value: Optional[T] = None

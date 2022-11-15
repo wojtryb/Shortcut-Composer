@@ -19,6 +19,7 @@ from .document_controllers import LayerController, TimeController
 from .core_controllers import (
     ToggleController,
     ToolController,
+    UndoController,
 )
 from .view_controllers import (
     BlendingModeController,
@@ -43,5 +44,6 @@ __all__ = [
     "LayerController",
     "TimeController",
     "ToolController",
+    "UndoController",
     "FlowController",
 ]

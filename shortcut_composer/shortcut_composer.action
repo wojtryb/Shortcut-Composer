@@ -63,6 +63,12 @@
         <activationConditions>1</activationConditions>
         </Action>
 
+        <Action name="Undo scraper (tracker)">
+        <text>Undo scraper (tracker)</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
+        </Action>
+
         <Action name="Layer scraper (tracker)">
         <text>Layer scraper (tracker)</text>
         <activationFlags>1</activationFlags>
