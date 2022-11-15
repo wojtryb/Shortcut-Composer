@@ -1,7 +1,6 @@
 from time import time
 
-from PyQt5.QtGui import QKeyEvent
-from PyQt5.QtGui import QKeySequence
+from PyQt5.QtGui import QKeyEvent, QKeySequence
 
 from api_krita import Krita
 from .plugin_action import PluginAction
@@ -44,8 +43,12 @@ class ShortcutAdapter:
 
     def _is_event_key_release(self, release_event: QKeyEvent) -> None:
         """Decide if the key release event is matches shortcut and is valid."""
+        event_string = QKeySequence(
+            release_event.modifiers() |
+            release_event.key()
+        ).toString()
         return (
-            self.tool_shortcut.matches(release_event.key()) > 0
+            event_string == self.tool_shortcut.toString()
             and not release_event.isAutoRepeat()
             and not self.key_released
         )
