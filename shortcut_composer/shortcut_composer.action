@@ -3,92 +3,92 @@
     <Actions category="Scripts">
         <text>Shortcut Composer</text>
 
-        <Action name="Move tool (temporary)">
-        <text>Move tool (temporary)</text>
+        <Action name="Scroll isolated layers">
+        <text>Scroll isolated layers</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Transform tool (temporary)">
-        <text>Transform tool (temporary)</text>
+        <Action name="Scroll undo stack">
+        <text>Scroll undo stack</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Eraser (temporary)">
-        <text>Eraser (temporary)</text>
+        <Action name="Scroll timeline or animated layers">
+        <text>Scroll timeline or animated layers</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Preserve alpha (temporary)">
-        <text>Preserve alpha (temporary)</text>
+        <Action name="Scroll brush size or opacity">
+        <text>Scroll brush size or opacity</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Toggle visibility (temporary)">
-        <text>Toggle visibility (temporary)</text>
+        <Action name="Scroll brush presets">
+        <text>Scroll brush presets</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Toggle show below (temporary)">
-        <text>Toggle show below (temporary)</text>
+        <Action name="Preview current layer visibility">
+        <text>Preview current layer visibility</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Opacity (cycle)">
-        <text>Opacity (cycle)</text>
+        <Action name="Preview projection below">
+        <text>Preview projection below</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Selection tools (cycle)">
-        <text>Selection tools (cycle)</text>
+        <Action name="Temporary eraser">
+        <text>Temporary eraser</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Misc tools (cycle)">
-        <text>Misc tools (cycle)</text>
+        <Action name="Temporary preserve alpha">
+        <text>Temporary preserve alpha</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Preset (cycle)">
-        <text>Preset (cycle)</text>
+        <Action name="Temporary move tool">
+        <text>Temporary move tool</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Undo scraper (tracker)">
-        <text>Undo scraper (tracker)</text>
+        <Action name="Temporary transform tool">
+        <text>Temporary transform tool</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Layer scraper (tracker)">
-        <text>Layer scraper (tracker)</text>
+        <Action name="Cycle painting opacity">
+        <text>Cycle painting opacity</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Timeline scraper (tracker)">
-        <text>Timeline scraper (tracker)</text>
+        <Action name="Cycle selection tools">
+        <text>Cycle selection tools</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Blending mode (tracker)">
-        <text>Blending mode (tracker)</text>
+        <Action name="Cycle misc tools">
+        <text>Cycle misc tools</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Brush basic settings (tracker)">
-        <text>Brush basic settings (tracker)</text>
+        <Action name="Cycle painting blending modes">
+        <text>Cycle painting blending modes</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>

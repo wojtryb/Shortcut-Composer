@@ -20,18 +20,18 @@ from data_components import (
 
 actions = [
     templates.TemporaryKey(
-        name="Move tool (temporary)",
+        name="Temporary move tool",
         controller=controllers.ToolController(),
         high_value=Tool.MOVE,
     ),
     templates.TemporaryKey(
-        name="Transform tool (temporary)",
+        name="Temporary transform tool",
         controller=controllers.ToolController(),
         high_value=Tool.TRANSFORM,
         time_interval=1.0
     ),
     templates.TemporaryKey(
-        name="Eraser (temporary)",
+        name="Temporary eraser",
         controller=controllers.ToggleController(Toggle.ERASER),
         low_value=False,
         high_value=True,
@@ -41,7 +41,7 @@ actions = [
         ],
     ),
     templates.TemporaryKey(
-        name="Preserve alpha (temporary)",
+        name="Temporary preserve alpha",
         controller=controllers.ToggleController(Toggle.PRESERVE_ALPHA),
         low_value=False,
         high_value=True,
@@ -51,21 +51,21 @@ actions = [
         ],
     ),
     templates.RawInstructions(
-        name="Toggle visibility (temporary)",
+        name="Preview current layer visibility",
         instructions=[instructions.ToggleLayerVisibility()],
     ),
     templates.RawInstructions(
-        name="Toggle show below (temporary)",
+        name="Preview projection below",
         instructions=[instructions.ToggleShowBelow()],
     ),
     templates.MultipleAssignment(
-        name="Opacity (cycle)",
+        name="Cycle painting opacity",
         controller=controllers.OpacityController(),
         default_value=100,
         values_to_cycle=[70, 50, 30, 100],
     ),
     templates.MultipleAssignment(
-        name="Selection tools (cycle)",
+        name="Cycle selection tools",
         controller=controllers.ToolController(),
         values_to_cycle=[
             Tool.FREEHAND_SELECTION,
@@ -74,7 +74,7 @@ actions = [
         ],
     ),
     templates.MultipleAssignment(
-        name="Misc tools (cycle)",
+        name="Cycle misc tools",
         controller=controllers.ToolController(),
         values_to_cycle=[
             Tool.CROP,
@@ -84,14 +84,30 @@ actions = [
         ],
     ),
     templates.MultipleAssignment(
-        name="Preset (cycle)",
-        controller=controllers.PresetController(),
-        default_value="b) Basic-5 Size Opacity",
-        values_to_cycle=Tag("Digital"),
-        instructions=[instructions.SetBrushOnNonPaintable()],
+        name="Cycle painting blending modes",
+        controller=controllers.BlendingModeController(),
+        values_to_cycle=[
+            BlendingMode.OVERLAY,
+            BlendingMode.MULTIPLY,
+            BlendingMode.COLOR,
+            BlendingMode.ADD,
+            BlendingMode.BEHIND,
+            BlendingMode.DARKEN,
+            BlendingMode.LIGHTEN,
+            BlendingMode.NORMAL,
+        ],
     ),
     templates.MouseTracker(
-        name="Undo scraper (tracker)",
+        name="Scroll brush presets",
+        controller=controllers.PresetController(),
+        instructions=[instructions.SetBrushOnNonPaintable()],
+        horizontal_slider=Slider(
+            controller=controllers.UndoController(),
+            values=Tag("Digital"),
+        )
+    ),
+    templates.MouseTracker(
+        name="Scroll undo stack",
         instructions=[instructions.UndoOnShortPress()],
         horizontal_slider=Slider(
             controller=controllers.UndoController(),
@@ -99,7 +115,7 @@ actions = [
         )
     ),
     templates.MouseTracker(
-        name="Layer scraper (tracker)",
+        name="Scroll isolated layers",
         instructions=[instructions.TemporaryOn(Toggle.ISOLATE_LAYER)],
         vertical_slider=Slider(
             controller=controllers.LayerController(),
@@ -107,7 +123,7 @@ actions = [
         )
     ),
     templates.MouseTracker(
-        name="Timeline scraper (tracker)",
+        name="Scroll timeline or animated layers",
         instructions=[instructions.TemporaryOn(Toggle.ISOLATE_LAYER)],
         horizontal_slider=Slider(
             controller=controllers.TimeController(),
@@ -119,23 +135,7 @@ actions = [
         )
     ),
     templates.MouseTracker(
-        name="Blending mode (tracker)",
-        horizontal_slider=Slider(
-            controller=controllers.BlendingModeController(),
-            values=[
-                BlendingMode.NORMAL,
-                BlendingMode.OVERLAY,
-                BlendingMode.MULTIPLY,
-                BlendingMode.COLOR,
-                BlendingMode.ADD,
-                BlendingMode.BEHIND,
-                BlendingMode.DARKEN,
-                BlendingMode.LIGHTEN,
-            ],
-        ),
-    ),
-    templates.MouseTracker(
-        name="Brush basic settings (tracker)",
+        name="Scroll brush size or opacity",
         horizontal_slider=Slider(
             controller=controllers.BrushSizeController(),
             values=[
