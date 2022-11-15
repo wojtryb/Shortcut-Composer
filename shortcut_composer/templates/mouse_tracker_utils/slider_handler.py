@@ -60,7 +60,4 @@ class SliderHandler:
         raise RuntimeError(f"Wrong type: {values}")
 
     def __get_current_value(self) -> Interpreted:
-        try:
-            return self.__to_cycle.index(self.__slider.controller.get_value())
-        except ValueError:
-            return self.__to_cycle.default
+        return self.__to_cycle.index(self.__slider.controller.get_value())
