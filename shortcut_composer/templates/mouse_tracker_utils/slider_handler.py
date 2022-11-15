@@ -1,19 +1,24 @@
 from threading import Thread
 from time import sleep
-from typing import Callable
+from typing import Callable, Iterable
 
-from data_components import Slider
-from .mouse_interpreter import MouseInterpreter
-from .slider_values import create_slider_values
+from data_components import Slider, Range
 from .new_types import MouseInput, Interpreted
-
-MouseGetter = Callable[[], MouseInput]
+from .mouse_interpreter import MouseInterpreter
+from .slider_values import (
+    RangeSliderValues,
+    ListSliderValues,
+    SliderValues,
+)
 
 
 class SliderHandler:
+
+    MouseGetter = Callable[[], MouseInput]
+
     def __init__(self, slider: Slider):
         self.__slider = slider
-        self.__to_cycle = create_slider_values(self.__slider.values)
+        self.__to_cycle = self.__create_slider_values()
         self.__working = False
 
         self.__interpreter: MouseInterpreter
@@ -42,6 +47,17 @@ class SliderHandler:
         clipped_value = self.__interpreter.interpret(mouse)
         to_set = self.__to_cycle.at(clipped_value)
         self.__slider.controller.set_value(to_set)
+
+    def __create_slider_values(self) -> SliderValues:
+        """Return the right values adapter based on passed data type."""
+        values = self.__slider.values
+
+        if isinstance(values, Iterable):
+            return ListSliderValues(values)
+        elif isinstance(values, Range):
+            return RangeSliderValues(values)
+
+        raise RuntimeError(f"Wrong type: {values}")
 
     def __get_current_value(self) -> Interpreted:
         try:

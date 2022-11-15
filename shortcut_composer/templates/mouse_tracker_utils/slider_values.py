@@ -1,25 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Iterable, Union, Protocol
 
 from data_components import Range
 from .new_types import Interpreted, Controlled
-
-
-class ListLike(Protocol):
-    def index(self, __value: Controlled) -> int: ...
-    def __getitem__(self, item: int) -> Controlled: ...
-    def __iter__(self) -> Iterable: ...
-    def __len__(self) -> int: ...
-
-
-def create_slider_values(slider_values: Union[ListLike, Range])\
-        -> 'SliderValues':
-    """Return the right values adapter based on passed data type."""
-    if isinstance(slider_values, Iterable):
-        return ListSliderValues(slider_values)
-    elif isinstance(slider_values, Range):
-        return RangeSliderValues(slider_values)
-    raise RuntimeError(f"Wrong type: {slider_values}")
 
 
 class SliderValues(ABC):
@@ -83,7 +65,7 @@ class ListSliderValues(SliderValues):
     Controlled values may change over time.
     """
 
-    def __init__(self, values: ListLike):
+    def __init__(self, values: list):
         self.__values = values
         self.min = Interpreted(-0.49)
         self.default = Interpreted(0)
