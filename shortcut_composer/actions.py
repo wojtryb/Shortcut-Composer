@@ -99,10 +99,9 @@ actions = [
     ),
     templates.MouseTracker(
         name="Scroll brush presets",
-        controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
         horizontal_slider=Slider(
-            controller=controllers.UndoController(),
+            controller=controllers.PresetController(),
             values=Tag("Digital"),
         )
     ),
