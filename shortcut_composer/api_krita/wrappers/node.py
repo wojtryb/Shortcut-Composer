@@ -8,9 +8,11 @@ class KritaNode(Protocol):
     def setVisible(self, visibility: bool) -> None: ...
     def type(self) -> str: ...
     def collapsed(self) -> bool: ...
+    def setCollapsed(self, value: bool) -> None: ...
     def animated(self) -> bool: ...
     def uniqueId(self) -> str: ...
     def childNodes(self) -> List['KritaNode']: ...
+    def parentNode(self) -> 'KritaNode': ...
 
 
 @dataclass
@@ -28,18 +30,22 @@ class Node():
 
     @visible.setter
     def visible(self, value: bool) -> None:
-        return self.node.setVisible(value)
+        self.node.setVisible(value)
 
     def toggle_visility(self) -> None:
         self.visible = not self.visible
 
     @property
-    def is_group_layer(self) -> bool:
-        return self.node.type() == "grouplayer"
+    def collapsed(self) -> bool:
+        return self.node.collapsed()
+
+    @collapsed.setter
+    def collapsed(self, value: bool) -> None:
+        self.node.setCollapsed(value)
 
     @property
-    def is_collapsed(self) -> bool:
-        return self.node.collapsed()
+    def is_group_layer(self) -> bool:
+        return self.node.type() == "grouplayer"
 
     @property
     def is_animated(self) -> bool:
@@ -47,6 +53,9 @@ class Node():
 
     def get_child_nodes(self) -> List['Node']:
         return [Node(node) for node in self.node.childNodes()]
+
+    def get_parent_node(self) -> 'Node':
+        return Node(self.node.parentNode())
 
     @property
     def unique_id(self) -> str:
