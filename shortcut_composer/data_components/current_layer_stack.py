@@ -11,7 +11,7 @@ class CurrentLayerStack:
 
     def get_layers(self):
         if document := Krita.get_active_document():
-            return self.pick_strategy(document)
+            return self.pick_strategy.value(document)
         return []
 
     def __iter__(self):

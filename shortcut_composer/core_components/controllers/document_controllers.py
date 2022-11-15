@@ -41,6 +41,4 @@ class TimeController(DocumentBasedController):
         return self.document.current_time
 
     def set_value(self, value: int) -> None:
-        document = self.document
-        if document.active_node.is_animated:
-            document.current_time = value
+        self.document.current_time = value
