@@ -60,8 +60,8 @@ class UndoController(Controller):
         if value == self.state:
             return
         elif value > self.state:
-            Krita.trigger_action("edit_undo")
+            Krita.trigger_action("edit_redo")
             self.state += 1
         else:
-            Krita.trigger_action("edit_redo")
+            Krita.trigger_action("edit_undo")
             self.state -= 1

@@ -64,14 +64,14 @@ class MouseTracker:
         if horizontal_slider and not vertical_slider:
             return SingleAxisTracker(
                 name=name,
-                sign=1,
+                is_horizontal=True,
                 instructions=instructions,
                 handler=SliderHandler(horizontal_slider)
             )
         if not horizontal_slider and vertical_slider:
             return SingleAxisTracker(
                 name=name,
-                sign=-1,
+                is_horizontal=False,
                 instructions=instructions,
                 handler=SliderHandler(vertical_slider)
             )
