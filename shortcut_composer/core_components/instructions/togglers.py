@@ -6,7 +6,7 @@ from api_krita.enums import Toggle
 from ..instruction_base import Instruction
 
 
-def _set_toggle(self, state: bool, *_) -> None:
+def _set_toggle(self, state: bool) -> None:
     Krita.set_toggle_state(self.toggle, state)
 
 
