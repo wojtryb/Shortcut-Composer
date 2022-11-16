@@ -108,6 +108,7 @@ actions = [
     templates.MouseTracker(
         name="Scroll undo stack",
         instructions=[instructions.UndoOnShortPress()],
+        deadzone=50,
         horizontal_slider=Slider(
             controller=controllers.UndoController(),
             values=Range(float('-inf'), float('inf')),

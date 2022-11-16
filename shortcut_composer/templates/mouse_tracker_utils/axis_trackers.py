@@ -1,6 +1,6 @@
 from threading import Thread, Lock
 from time import sleep
-from typing import Literal, List
+from typing import List
 
 from api_krita import Krita
 from input_adapter import PluginAction
@@ -22,6 +22,7 @@ class SingleAxisTracker(PluginAction):
                  handler: SliderHandler,
                  is_horizontal: bool,
                  instructions: List[Instruction] = [],
+                 deadzone: int = 10,
                  time_interval: float = 0.3) -> None:
         super().__init__(
             name=name,
@@ -30,19 +31,32 @@ class SingleAxisTracker(PluginAction):
 
         self._is_horizontal = is_horizontal
         self._handler = handler
+        self._deadzone = deadzone
         self._lock = Lock()
+        self._is_working = False
 
     def on_key_press(self) -> None:
         """Start tracking with handler."""
-        self._lock.acquire()
         super().on_key_press()
-        return self._handler.start(self._get_mouse_getter())
+        Thread(target=self._start_after_deadzone, daemon=True).start()
+
+    def _start_after_deadzone(self) -> None:
+        mouse_getter = self._get_mouse_getter()
+        start_point = mouse_getter()
+        with self._lock:
+            self._is_working = True
+            while abs(start_point - mouse_getter()) <= self._deadzone:
+                if not self._is_working:
+                    return
+                sleep(0.05)
+            self._handler.start(mouse_getter)
 
     def on_every_key_release(self) -> None:
         """End tracking with handler."""
         super().on_every_key_release()
-        self._handler.stop()
-        self._lock.release()
+        self._is_working = False
+        with self._lock:
+            self._handler.stop()
 
     def _get_mouse_getter(self):
         cursor = Krita.get_cursor()
@@ -66,8 +80,8 @@ class DoubleAxisTracker(PluginAction):
                  horizontal_handler: SliderHandler,
                  vertical_handler: SliderHandler,
                  instructions: List[Instruction] = [],
-                 sign: Literal[1, -1] = 1,
-                 time_interval=0.3) -> None:
+                 deadzone: int = 10,
+                 time_interval: float = 0.3) -> None:
         super().__init__(
             name=name,
             time_interval=time_interval,
@@ -75,34 +89,40 @@ class DoubleAxisTracker(PluginAction):
 
         self._horizontal_handler = horizontal_handler
         self._vertical_handler = vertical_handler
-        self._sign = sign
+        self._deadzone = deadzone
         self._lock = Lock()
+        self._is_working = False
 
     def on_key_press(self) -> None:
         """Start a thread which decides which handler to start."""
+        super().on_key_press()
         Thread(target=self._pick_slider, daemon=True).start()
 
     def _pick_slider(self) -> None:
         """Wait for inital movement to activate the right handler."""
-        self._lock.acquire()
-        super().on_key_press()
         cursor = Krita.get_cursor()
         start_point = (cursor.x(), cursor.y())
-        while True:
-            delta_hor = abs(start_point[0] - cursor.x())
-            delta_ver = abs(start_point[1] - cursor.y())
-            if abs(delta_hor - delta_ver) >= 10:
-                break
-            sleep(0.05)
+        with self._lock:
+            self._is_working = True
+            while self._is_working:
+                delta_hor = abs(start_point[0] - cursor.x())
+                delta_ver = abs(start_point[1] - cursor.y())
+                if abs(delta_hor - delta_ver) >= self._deadzone:
+                    break
+                sleep(0.05)
 
-        if delta_hor > delta_ver:
-            self._horizontal_handler.start(cursor.x)
-        else:
-            self._vertical_handler.start(lambda: -cursor.y())
+            if not self._is_working:
+                return
+
+            if delta_hor > delta_ver:
+                self._horizontal_handler.start(cursor.x)
+            else:
+                self._vertical_handler.start(lambda: -cursor.y())
 
     def on_every_key_release(self) -> None:
         """End tracking with handler, regardless of which one was started."""
         super().on_every_key_release()
-        self._horizontal_handler.stop()
-        self._vertical_handler.stop()
-        self._lock.release()
+        self._is_working = False
+        with self._lock:
+            self._horizontal_handler.stop()
+            self._vertical_handler.stop()
