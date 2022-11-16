@@ -54,3 +54,4 @@ class Slider:
     controller: Controller
     values: Union[List[Any], Range]
     sensitivity: int = 50
+    deadzone: int = 10

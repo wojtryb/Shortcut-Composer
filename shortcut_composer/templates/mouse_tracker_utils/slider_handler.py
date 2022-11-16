@@ -26,6 +26,13 @@ class SliderHandler:
     def start(self, mouse_getter: MouseGetter) -> None:
         self.__working = True
         self.__slider.controller.refresh()
+        Thread(target=self._loop, args=[mouse_getter], daemon=True).start()
+
+    def stop(self):
+        self.__working = False
+
+    def _loop(self, mouse_getter: MouseGetter) -> None:
+        self._block_until_deadzone(mouse_getter)
         self.__interpreter = MouseInterpreter(
             min=self.__to_cycle.min,
             max=self.__to_cycle.max,
@@ -33,14 +40,15 @@ class SliderHandler:
             start_value=self.__get_current_value(),
             sensitivity=self.__slider.sensitivity,
         )
-        Thread(target=self._loop, args=[mouse_getter], daemon=True).start()
-
-    def stop(self):
-        self.__working = False
-
-    def _loop(self, mouse_getter: MouseGetter) -> None:
         while self.__working:
             self._handle(mouse_getter())
+            sleep(0.05)
+
+    def _block_until_deadzone(self, mouse_getter: MouseGetter) -> None:
+        start_point = mouse_getter()
+        while abs(start_point - mouse_getter()) <= self.__slider.deadzone:
+            if not self.__working:
+                return
             sleep(0.05)
 
     def _handle(self, mouse: MouseInput) -> None:

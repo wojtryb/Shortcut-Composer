@@ -108,10 +108,10 @@ actions = [
     templates.MouseTracker(
         name="Scroll undo stack",
         instructions=[instructions.UndoOnShortPress()],
-        deadzone=50,
         horizontal_slider=Slider(
             controller=controllers.UndoController(),
             values=Range(float('-inf'), float('inf')),
+            deadzone=100,
         )
     ),
     templates.MouseTracker(
@@ -138,6 +138,7 @@ actions = [
         name="Scroll brush size or opacity",
         horizontal_slider=Slider(
             controller=controllers.BrushSizeController(),
+            deadzone=50,
             values=[
                 1, 2, 3, 4, 5, 6, 7, 8, 9,
                 10, 12, 14, 16, 20, 25, 30, 35, 40, 50, 60, 70, 80,

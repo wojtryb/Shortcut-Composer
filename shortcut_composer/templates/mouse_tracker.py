@@ -53,7 +53,6 @@ class MouseTracker:
         horizontal_slider: Optional[Slider] = None,
         vertical_slider: Optional[Slider] = None,
         instructions: List[Instruction] = [],
-        deadzone: int = 10,
     ) -> PluginAction:
         """
         Pick and create correct tracker based on provided sliders.
@@ -68,7 +67,6 @@ class MouseTracker:
                 is_horizontal=True,
                 instructions=instructions,
                 handler=SliderHandler(horizontal_slider),
-                deadzone=deadzone
             )
         if not horizontal_slider and vertical_slider:
             return SingleAxisTracker(
@@ -76,7 +74,6 @@ class MouseTracker:
                 is_horizontal=False,
                 instructions=instructions,
                 handler=SliderHandler(vertical_slider),
-                deadzone=deadzone
             )
         if horizontal_slider and vertical_slider:
             return DoubleAxisTracker(
@@ -84,6 +81,5 @@ class MouseTracker:
                 instructions=instructions,
                 horizontal_handler=SliderHandler(horizontal_slider),
                 vertical_handler=SliderHandler(vertical_slider),
-                deadzone=deadzone
             )
         raise ValueError("At least one slider needed.")
