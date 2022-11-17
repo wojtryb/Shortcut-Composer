@@ -38,7 +38,7 @@ class SliderHandler:
             max=self.__to_cycle.max,
             mouse_origin=mouse_getter(),
             start_value=self.__get_current_value(),
-            sensitivity=self.__slider.sensitivity,
+            pixels_in_unit=self.__slider.pixels_in_unit,
         )
         while self.__working:
             self._handle(mouse_getter())
