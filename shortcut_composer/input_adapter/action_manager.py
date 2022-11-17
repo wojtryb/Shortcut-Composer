@@ -14,8 +14,19 @@ from .shortcut_adapter import ShortcutAdapter
 
 
 class Window(Protocol):
-    def createAction(name: str, description: str, menu: str, /)\
+    def createAction(self, name: str, description: str, menu: str, /)\
         -> QWidgetAction: ...
+
+
+@dataclass
+class ActionContainer:
+    plugin_action: PluginAction
+    krita_action: QWidgetAction
+    shortcut: ShortcutAdapter
+
+    def __post_init__(self):
+        """Bind key_press method to action 'trigger' event."""
+        self.krita_action.triggered.connect(self.shortcut.on_key_press)
 
 
 class ActionManager:
@@ -32,20 +43,10 @@ class ActionManager:
     by using the bind_action() method.
     """
 
-    @dataclass
-    class ActionContainer:
-        plugin_action: PluginAction
-        krita_action: QWidgetAction
-        shortcut: ShortcutAdapter
-
-        def __post_init__(self):
-            """Bind key_press method to action 'trigger' event."""
-            self.krita_action.triggered.connect(self.shortcut.on_key_press)
-
     def __init__(self, window: Window):
         self._window = window
         self._event_filter = ReleaseKeyEventFilter()
-        self._stored_actions: List[self.ActionContainer] = []
+        self._stored_actions: List[ActionContainer] = []
 
     def bind_action(self, plugin_action: PluginAction) -> 'ActionContainer':
         """
@@ -54,7 +55,7 @@ class ActionManager:
         The container is stored in internal list to protect it from
         garbage collector.
         """
-        container = self.ActionContainer(
+        container = ActionContainer(
             plugin_action=plugin_action,
             krita_action=self._create_krita_action(plugin_action),
             shortcut=self._create_shortcut_adapter(plugin_action)
@@ -82,5 +83,6 @@ class ActionManager:
         """
         shortcut = ShortcutAdapter(action)
         self._event_filter.register_release_callback(
-            shortcut.event_filter_callback)
+            shortcut.event_filter_callback
+        )
         return shortcut

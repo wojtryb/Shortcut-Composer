@@ -1,3 +1,5 @@
+from typing import Any
+
 from PyQt5.QtWidgets import QWidget, QToolButton, QMainWindow
 from PyQt5.QtGui import QKeySequence
 from krita import Krita as Api, Extension
@@ -70,13 +72,13 @@ class Krita:
             self.toolbox = self._find_toolbox()
 
         @classmethod
-        def _find_toolbox(cls):
+        def _find_toolbox(cls) -> Any:
             qwindow = Api.instance().activeWindow().qwindow()
             for qobj in qwindow.findChildren(QWidget):
                 if qobj.metaObject().className() == "KoToolBox":
                     return qobj
 
-        def find_my_current_tool(self):
+        def find_my_current_tool(self) -> Any:
             for qobj in self.toolbox.findChildren(QToolButton):
                 if qobj.metaObject().className() == "KoToolBoxButton":
                     if qobj.isChecked():

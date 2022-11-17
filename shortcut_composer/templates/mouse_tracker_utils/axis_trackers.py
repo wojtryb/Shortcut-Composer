@@ -6,6 +6,7 @@ from api_krita import Krita
 from input_adapter import PluginAction
 from core_components import Instruction
 from .slider_handler import SliderHandler
+from .new_types import MouseInput
 
 
 class SingleAxisTracker(PluginAction):
@@ -46,8 +47,8 @@ class SingleAxisTracker(PluginAction):
         cursor = Krita.get_cursor()
 
         if self._is_horizontal:
-            return cursor.x
-        return lambda: -cursor.y()
+            return lambda: MouseInput(cursor.x())
+        return lambda: MouseInput(-cursor.y())
 
 
 class DoubleAxisTracker(PluginAction):
@@ -96,9 +97,9 @@ class DoubleAxisTracker(PluginAction):
                 sleep(0.05)
 
             if delta_hor > delta_ver:
-                self._horizontal_handler.start(cursor.x)
+                self._horizontal_handler.start(lambda: MouseInput(cursor.x()))
             else:
-                self._vertical_handler.start(lambda: -cursor.y())
+                self._vertical_handler.start(lambda: MouseInput(-cursor.y()))
 
     def on_every_key_release(self) -> None:
         """End tracking with handler, regardless of which one was started."""

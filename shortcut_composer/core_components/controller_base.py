@@ -1,13 +1,11 @@
-from typing import TypeVar, Optional
-
-T = TypeVar('T')
+from typing import Any
 
 
 class Controller:
     """Component that allows to get and set a specific property of krita."""
 
-    default_value: Optional[T] = None
+    default_value: Any = None
 
     def refresh(self) -> None: ...
-    def get_value(self) -> T: ...
-    def set_value(self, value: T) -> None: ...
+    def get_value(self) -> Any: ...
+    def set_value(self, value: Any) -> None: ...

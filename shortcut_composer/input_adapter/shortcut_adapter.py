@@ -41,10 +41,11 @@ class ShortcutAdapter:
             self.action.on_long_key_release()
         self.action.on_every_key_release()
 
-    def _is_event_key_release(self, release_event: QKeyEvent) -> None:
+    def _is_event_key_release(self, release_event: QKeyEvent) -> bool:
         """Decide if the key release event is matches shortcut and is valid."""
         event_sequence = QKeySequence(
-            release_event.modifiers() | release_event.key())
+            release_event.modifiers() | release_event.key()  # type: ignore
+        )
         return (
             not release_event.isAutoRepeat()
             and not self.key_released

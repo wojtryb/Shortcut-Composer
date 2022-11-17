@@ -1,9 +1,8 @@
 from typing import Callable, List, Literal
 
 from PyQt5.QtCore import QEvent
-from PyQt5.QtGui import QKeyEvent
 
-from api_krita import QMdiArea
+from api_krita import QMdiArea  # type: ignore
 
 EventCallback = Callable[[QEvent], None]
 
@@ -20,7 +19,7 @@ class ReleaseKeyEventFilter(QMdiArea):
         """Register callback, so it can get executed on each KeyRelease."""
         self._release_callbacks.append(callback)
 
-    def eventFilter(self, _, event: QKeyEvent) -> Literal[False]:
+    def eventFilter(self, _, event: QEvent) -> Literal[False]:
         """
         Override filtering method, executed by Qt on every event.
 
