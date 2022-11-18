@@ -5,6 +5,7 @@ from typing import List
 from api_krita import Krita
 from input_adapter import PluginAction
 from core_components import Instruction
+from data_components import Slider
 from .slider_handler import SliderHandler
 from .new_types import MouseInput
 
@@ -20,7 +21,7 @@ class SingleAxisTracker(PluginAction):
 
     def __init__(self, *,
                  name: str,
-                 handler: SliderHandler,
+                 slider: Slider,
                  is_horizontal: bool,
                  instructions: List[Instruction] = [],
                  time_interval: float = 0.3) -> None:
@@ -30,7 +31,7 @@ class SingleAxisTracker(PluginAction):
             instructions=instructions)
 
         self._is_horizontal = is_horizontal
-        self._handler = handler
+        self._handler = SliderHandler(slider)
 
     def on_key_press(self) -> None:
         """Start tracking with handler."""
@@ -57,13 +58,13 @@ class DoubleAxisTracker(PluginAction):
 
     Tracking is performed as long as the key is pressed.
     This class only grants the PluginAction interface, while the main
-    logic is located in passed SliderHandler.
+    logic is located in SliderHandler which uses passed Slider.
     """
 
     def __init__(self, *,
                  name: str,
-                 horizontal_handler: SliderHandler,
-                 vertical_handler: SliderHandler,
+                 horizontal_slider: Slider,
+                 vertical_slider: Slider,
                  instructions: List[Instruction] = [],
                  time_interval: float = 0.3) -> None:
         super().__init__(
@@ -71,8 +72,8 @@ class DoubleAxisTracker(PluginAction):
             time_interval=time_interval,
             instructions=instructions)
 
-        self._horizontal_handler = horizontal_handler
-        self._vertical_handler = vertical_handler
+        self._horizontal_handler = SliderHandler(horizontal_slider)
+        self._vertical_handler = SliderHandler(vertical_slider)
         self._lock = Lock()
         self._is_working = False
 

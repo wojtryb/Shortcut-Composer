@@ -83,6 +83,6 @@ class ActionManager:
         """
         shortcut = ShortcutAdapter(action)
         self._event_filter.register_release_callback(
-            shortcut.event_filter_callback
+            shortcut.event_filter_callback  # type: ignore
         )
         return shortcut
