@@ -83,16 +83,16 @@ class DoubleAxisTracker(PluginAction):
 
     def _start_after_picking_slider(self) -> None:
         """Wait for inital movement to activate the right handler."""
-        comparer = self.MouseComparator()
+        comparator = self.MouseComparator()
         with self._lock:
             self._is_working = True
-            while comparer.delta_x <= 10 and comparer.delta_y <= 10:
+            while comparator.delta_x <= 10 and comparator.delta_y <= 10:
                 if not self._is_working:
                     return
                 sleep(0.05)
 
-            mouse_getter = pick_mouse_getter(comparer.is_horizontal)
-            if comparer.is_horizontal:
+            mouse_getter = pick_mouse_getter(comparator.is_horizontal)
+            if comparator.is_horizontal:
                 self._horizontal_handler.start(mouse_getter)
             else:
                 self._vertical_handler.start(mouse_getter)
