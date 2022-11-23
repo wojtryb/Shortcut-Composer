@@ -1,3 +1,4 @@
 from .axis_trackers import SingleAxisTracker, DoubleAxisTracker
+from .slider_handler import SliderHandler
 
-__all__ = ["SingleAxisTracker", "DoubleAxisTracker"]
+__all__ = ["SingleAxisTracker", "DoubleAxisTracker", "SliderHandler"]

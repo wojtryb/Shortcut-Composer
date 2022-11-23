@@ -2,6 +2,7 @@ from threading import Thread
 from time import sleep
 from typing import Callable, Iterable
 
+from api_krita import Krita
 from data_components import Slider, Range
 from .new_types import MouseInput, Interpreted
 from .mouse_interpreter import MouseInterpreter
@@ -14,21 +15,22 @@ from .slider_values import (
 
 class SliderHandler:
 
-    def __init__(self, slider: Slider):
+    def __init__(self, slider: Slider, is_horizontal: bool):
         self.__slider = slider
-        self.__to_cycle = self.__init_slider_values(slider)
+        self.__to_cycle = self.__create_slider_values(slider)
         self.__working = False
+        self.__is_horizontal = is_horizontal
 
-        self.__interpreter: MouseInterpreter
         self.__mouse_getter: Callable[[], MouseInput]
+        self.__interpreter: MouseInterpreter
 
     def read_mouse(self) -> MouseInput:
         return self.__mouse_getter()
 
-    def start(self, mouse_getter: Callable[[], MouseInput]) -> None:
+    def start(self) -> None:
         self.__working = True
         self.__slider.controller.refresh()
-        self.__mouse_getter = mouse_getter
+        self.__mouse_getter = self.__pick_mouse_getter()
         Thread(target=self._start_after_deadzone, daemon=True).start()
 
     def stop(self) -> None:
@@ -63,8 +65,14 @@ class SliderHandler:
         controller_value = self.__slider.controller.get_value()
         return self.__to_cycle.index(controller_value)
 
+    def __pick_mouse_getter(self):
+        cursor = Krita.get_cursor()
+        if self.__is_horizontal:
+            return lambda: MouseInput(cursor.x())
+        return lambda: MouseInput(-cursor.y())
+
     @staticmethod
-    def __init_slider_values(slider: Slider) -> SliderValues:
+    def __create_slider_values(slider: Slider) -> SliderValues:
         """Return the right values adapter based on passed data type."""
         if isinstance(slider.values, Iterable):
             return ListSliderValues(slider.values)

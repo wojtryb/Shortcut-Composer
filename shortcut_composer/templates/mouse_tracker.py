@@ -6,6 +6,7 @@ from data_components import Slider
 from .mouse_tracker_utils import (
     SingleAxisTracker,
     DoubleAxisTracker,
+    SliderHandler,
 )
 
 
@@ -64,23 +65,33 @@ class MouseTracker:
         if horizontal_slider and not vertical_slider:
             return SingleAxisTracker(
                 name=name,
-                is_horizontal=True,
                 instructions=instructions,
-                slider=horizontal_slider,
+                slider_handler=SliderHandler(
+                    slider=horizontal_slider,
+                    is_horizontal=True,
+                )
             )
         if not horizontal_slider and vertical_slider:
             return SingleAxisTracker(
                 name=name,
-                is_horizontal=False,
                 instructions=instructions,
-                slider=vertical_slider,
+                slider_handler=SliderHandler(
+                    slider=vertical_slider,
+                    is_horizontal=False,
+                )
             )
         if horizontal_slider and vertical_slider:
             return DoubleAxisTracker(
                 name=name,
                 instructions=instructions,
-                horizontal_slider=horizontal_slider,
-                vertical_slider=vertical_slider,
+                horizontal_handler=SliderHandler(
+                    slider=horizontal_slider,
+                    is_horizontal=True,
+                ),
+                vertical_handler=SliderHandler(
+                    slider=vertical_slider,
+                    is_horizontal=False,
+                )
             )
         raise ValueError("At least one slider needed.")
 

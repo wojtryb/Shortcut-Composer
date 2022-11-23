@@ -5,16 +5,7 @@ from typing import List
 from api_krita import Krita
 from input_adapter import PluginAction
 from core_components import Instruction
-from data_components import Slider
 from .slider_handler import SliderHandler
-from .new_types import MouseInput
-
-
-def pick_mouse_getter(is_horizontal: bool):
-    cursor = Krita.get_cursor()
-    if is_horizontal:
-        return lambda: MouseInput(cursor.x())
-    return lambda: MouseInput(-cursor.y())
 
 
 class SingleAxisTracker(PluginAction):
@@ -28,8 +19,7 @@ class SingleAxisTracker(PluginAction):
 
     def __init__(self, *,
                  name: str,
-                 slider: Slider,
-                 is_horizontal: bool,
+                 slider_handler: SliderHandler,
                  instructions: List[Instruction] = [],
                  time_interval: float = 0.3) -> None:
         super().__init__(
@@ -37,13 +27,12 @@ class SingleAxisTracker(PluginAction):
             time_interval=time_interval,
             instructions=instructions)
 
-        self._is_horizontal = is_horizontal
-        self._handler = SliderHandler(slider)
+        self._handler = slider_handler
 
     def on_key_press(self) -> None:
         """Start tracking with handler."""
         super().on_key_press()
-        self._handler.start(pick_mouse_getter(self._is_horizontal))
+        self._handler.start()
 
     def on_every_key_release(self) -> None:
         """End tracking with handler."""
@@ -62,8 +51,8 @@ class DoubleAxisTracker(PluginAction):
 
     def __init__(self, *,
                  name: str,
-                 horizontal_slider: Slider,
-                 vertical_slider: Slider,
+                 horizontal_handler: SliderHandler,
+                 vertical_handler: SliderHandler,
                  instructions: List[Instruction] = [],
                  time_interval: float = 0.3) -> None:
         super().__init__(
@@ -71,8 +60,8 @@ class DoubleAxisTracker(PluginAction):
             time_interval=time_interval,
             instructions=instructions)
 
-        self._horizontal_handler = SliderHandler(horizontal_slider)
-        self._vertical_handler = SliderHandler(vertical_slider)
+        self._horizontal_handler = horizontal_handler
+        self._vertical_handler = vertical_handler
         self._lock = Lock()
         self._is_working = False
 
@@ -91,11 +80,10 @@ class DoubleAxisTracker(PluginAction):
                     return
                 sleep(0.05)
 
-            mouse_getter = pick_mouse_getter(comparator.is_horizontal)
             if comparator.is_horizontal:
-                self._horizontal_handler.start(mouse_getter)
+                self._horizontal_handler.start()
             else:
-                self._vertical_handler.start(mouse_getter)
+                self._vertical_handler.start()
 
     def on_every_key_release(self) -> None:
         """End tracking with handler, regardless of which one was started."""
