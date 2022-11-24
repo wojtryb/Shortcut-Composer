@@ -18,7 +18,7 @@ class ToggleLayerVisibility(Instruction):
         self.document.refresh()
 
 
-class ToggleShowBelow(Instruction):
+class ToggleVisibilityAbove(Instruction):
     """Changes visibility of layers above on key press and release."""
 
     def on_key_press(self) -> None:

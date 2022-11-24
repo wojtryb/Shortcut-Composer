@@ -56,7 +56,7 @@ actions = [
     ),
     templates.RawInstructions(
         name="Preview projection below",
-        instructions=[instructions.ToggleShowBelow()],
+        instructions=[instructions.ToggleVisibilityAbove()],
     ),
     templates.MultipleAssignment(
         name="Cycle painting opacity",
