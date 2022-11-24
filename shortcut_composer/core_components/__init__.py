@@ -1,5 +1,7 @@
 """
-Package contains components that can be used in configuration of templates.
+Contains core components that can be used in configuration of templates.
+
+Core components are obligatory elements for every action.
 
 Abstract base classes are directly available from the module, while
 concrete implementations are stored in respective packages.

@@ -17,11 +17,18 @@ class Instruction:
 
 
 class InstructionHolder:
+    """
+    Instruction container.
+
+    Has the same interface as Instruction. Each method runs the
+    respective method in every stored Instruction.
+    """
 
     def __init__(self, instructions: List[Instruction] = []) -> None:
         self.__instructions = instructions
 
     def _template(self, method_name: str) -> None:
+        """Perform method `method_name` of each held instruction."""
         for instruction in self.__instructions:
             getattr(instruction, method_name)()
 

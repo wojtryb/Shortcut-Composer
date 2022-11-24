@@ -3,21 +3,26 @@ from ..instruction_base import Instruction
 
 
 class ToggleLayerVisibility(Instruction):
+    """Changes the active layer visibility on key press and release."""
 
     def on_key_press(self) -> None:
+        """Change the active layer visibility."""
         self.document = Krita.get_active_document()
         self.affected_node = self.document.active_node
         self.affected_node.toggle_visility()
         self.document.refresh()
 
     def on_every_key_release(self, *_) -> None:
+        """Change visibility of layer which was active on key press."""
         self.affected_node.toggle_visility()
         self.document.refresh()
 
 
 class ToggleShowBelow(Instruction):
+    """Changes visibility of layers above on key press and release."""
 
     def on_key_press(self) -> None:
+        """Remember visibility of layers above, and turn them off."""
         self.document = Krita.get_active_document()
         all_nodes = self.document.get_all_nodes()
 
@@ -31,6 +36,7 @@ class ToggleShowBelow(Instruction):
         self.document.refresh()
 
     def on_every_key_release(self) -> None:
+        """Recover visibility of layers above from before key press"""
         for node in self.visible_nodes:
             node.visible = True
         self.document.refresh()

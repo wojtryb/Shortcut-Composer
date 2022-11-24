@@ -1,4 +1,4 @@
-from typing import Any, List, Optional, TypeVar
+from typing import Any, List, TypeVar
 
 from core_components import Controller, Instruction
 from input_adapter import PluginAction
@@ -52,7 +52,7 @@ class TemporaryKey(PluginAction):
     def __init__(self, *,
                  name: str,
                  controller: Controller,
-                 low_value: Optional[T] = None,
+                 low_value: T = None,
                  high_value: T,
                  instructions: List[Instruction] = [],
                  time_interval: float = 0.3) -> None:

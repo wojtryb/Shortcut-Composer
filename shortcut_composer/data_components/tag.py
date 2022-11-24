@@ -7,6 +7,13 @@ class Tag(list):
 
     Created using tag's name, gets filled with preset names.
     Does not update in runtime as the tag gets edited.
+
+    ### Example usage:
+
+    Fetch all brush presets from tag named `Digital`:
+    ```python
+    Tag("Digital")
+    ```
     """
 
     def __init__(self, name: str) -> None:

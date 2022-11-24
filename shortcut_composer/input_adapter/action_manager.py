@@ -13,13 +13,17 @@ from .event_filter import ReleaseKeyEventFilter
 from .shortcut_adapter import ShortcutAdapter
 
 
-class Window(Protocol):
-    def createAction(self, name: str, description: str, menu: str, /)\
-        -> QWidgetAction: ...
-
-
 @dataclass
 class ActionContainer:
+    """
+    Holds action elements together.
+
+    - `PluginAction` is the action implementation.
+    - `QWidgetAction` krita representation, which PluginAction implements.
+    - `ShortcutAdapter` manages running elements of PluginAction
+      interface at right time.
+
+    """
     plugin_action: PluginAction
     krita_action: QWidgetAction
     shortcut: ShortcutAdapter
@@ -31,17 +35,16 @@ class ActionContainer:
 
 class ActionManager:
     """
-    Creates ActionContainers from custom PluginAction and stores them.
+    Creates and stores `ActionContainers` from `PluginActions`.
 
-    ActionContainer holds all elements of the action being:
-    - `PluginAction` implementing the action, used to create the container.
-    - `QWidgetAction` recognised by krita, which PluginAction implements.
-    - `ShortcutAdapter` which runs proper elements of PluginAction
-      interface at proper time.
-
-    Elements other than PluginAction are created and stored in container
-    by using the bind_action() method.
+    `QWidgetAction` and `ShortcutAdapter` are created and stored in
+    container along with passed `PluginAction` by using the
+    bind_action() method.
     """
+
+    class Window(Protocol):
+        def createAction(self, name: str, description: str, menu: str, /)\
+            -> QWidgetAction: ...
 
     def __init__(self, window: Window):
         self._window = window

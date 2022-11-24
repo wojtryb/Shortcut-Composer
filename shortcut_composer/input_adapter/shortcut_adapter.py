@@ -66,4 +66,5 @@ class ShortcutAdapter:
 
     @staticmethod
     def _match_shortcuts(_a: str, _b: str, /) -> bool:
+        """Custom match pattern - one string is preset in another one."""
         return _a in _b or _b in _a

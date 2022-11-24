@@ -3,6 +3,7 @@ from typing import Protocol
 
 
 class KritaCanvas(Protocol):
+    """Krita `Canvas` object API."""
     def rotation(self) -> float: ...
     def setRotation(self, angle_deg: float) -> None: ...
     def zoomLevel(self) -> float: ...
@@ -16,16 +17,20 @@ class Canvas:
 
     @property
     def rotation(self) -> float:
+        """Settable property with rotation in degrees between `0` and `360`."""
         return self.canvas.rotation()
 
     @rotation.setter
     def rotation(self, angle_deg: float) -> None:
-        self.canvas.setRotation(angle_deg)
+        """Set canvas rotation with float representing angle in degrees."""
+        self.canvas.setRotation(angle_deg % 360)
 
     @property
     def zoom(self) -> float:
-        return self.canvas.zoomLevel()
+        """Settable property with zoom level expressed in %."""
+        return self.canvas.zoomLevel() * 100
 
     @zoom.setter
     def zoom(self, zoom: float) -> None:
-        self.canvas.setZoomLevel(zoom)
+        """Set zoom of canvas by providing zoom level expressed in %."""
+        self.canvas.setZoomLevel(zoom * 0.01)

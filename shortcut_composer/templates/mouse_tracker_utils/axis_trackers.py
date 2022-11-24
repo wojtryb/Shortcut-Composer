@@ -94,14 +94,25 @@ class DoubleAxisTracker(PluginAction):
             self._vertical_handler.stop()
 
     class MouseComparator:
+        """Compares current mouse position with position from init phase."""
+
         def __init__(self) -> None:
+            """Store cursor position provider and store starting position."""
             self.cursor = Krita.get_cursor()
             self.start_x = self.cursor.x()
             self.start_y = self.cursor.y()
 
         @property
-        def delta_x(self): return abs(self.start_x - self.cursor.x())
+        def delta_x(self):
+            """Offset of current position from starting one in x axis."""
+            return abs(self.start_x - self.cursor.x())
+
         @property
-        def delta_y(self): return abs(self.start_y - self.cursor.y())
+        def delta_y(self):
+            """Offset of current position from starting one in y axis."""
+            return abs(self.start_y - self.cursor.y())
+
         @property
-        def is_horizontal(self) -> bool: return self.delta_x > self.delta_y
+        def is_horizontal(self) -> bool:
+            """Is offset in x axis bigger than in y axis."""
+            return self.delta_x > self.delta_y
