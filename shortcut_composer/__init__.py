@@ -10,6 +10,6 @@ main packages instead of using relative imports.
 import sys
 import os
 
-sys.path.append(os.path.dirname(__file__))
-
+sys.path.append(directory := os.path.dirname(__file__))
 from .shortcut_composer import *
+sys.path.remove(directory)

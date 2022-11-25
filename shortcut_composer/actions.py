@@ -156,7 +156,7 @@ actions = [
         ),
     ),
 
-    # Scroll all active layer by sliding the cursor vertically
+    # Scroll all active layers by sliding the cursor vertically
     # Use TemporaryOn instruction to temporarily isolate active layer
     templates.MouseTracker(
         name="Scroll isolated layers",
@@ -184,7 +184,7 @@ actions = [
         ),
     ),
 
-    # Scroll brush size by sliding the cursor horizontally or
+    # Scroll brush sizes by sliding the cursor horizontally or
     # brush opacity layers by sliding it vertically
 
     # Opacity is contiguous from 10% to 100%, sizes come from a list
