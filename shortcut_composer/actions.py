@@ -180,7 +180,7 @@ actions = [
         ),
         vertical_slider=Slider(
             controller=controllers.ActiveLayerController(),
-            values=CurrentLayerStack(PickStrategy.ANIMATED),
+            values=CurrentLayerStack(PickStrategy.PINNED),
         ),
     ),
 

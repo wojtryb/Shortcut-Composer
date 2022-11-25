@@ -36,6 +36,8 @@ class PickStrategy(Enum):
         as the active node.
     - `ANIMATED`- picks active node and all the nodes that have animation
         frames.
+    - `PINNED` - picks active node and all the nodes that are pinned to
+        timeline.
 
 
     ### Usage Example:
@@ -48,3 +50,4 @@ class PickStrategy(Enum):
     VISIBLE = partial(_pick_node_attribute, attribute="visible")
     CURRENT_VISIBILITY = partial(_pick_current_visibility)
     ANIMATED = partial(_pick_node_attribute, attribute="is_animated")
+    PINNED = partial(_pick_node_attribute, attribute="pinned_to_timeline")
