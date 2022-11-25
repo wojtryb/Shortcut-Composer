@@ -80,13 +80,33 @@ class ListSliderValues(SliderValues):
         return Interpreted(len(self.__values) - 0.51)
 
     def at(self, value: Interpreted) -> Controlled:
-        """Return element of list by rounding input to get list index."""
+        """
+        Return element of list by rounding input to get list index.
+
+        For values from outside the range, use the right range limit.
+        """
         if not self.min <= value <= self.max:
-            value = Interpreted(0)
+            value = Interpreted(sorted((self.min, value, self.max))[1])
         return Controlled(self.__values[round(value)])
 
     def index(self, value: Controlled) -> Interpreted:
         """Return index of list element directly from it."""
         if value not in self.__values:
-            value = Controlled(self.__values[0])
+            value = self._handle_nonpresent_element(value)
         return Interpreted(self.__values.index(value))
+
+    def _handle_nonpresent_element(self, value: Controlled) -> Controlled:
+        """
+        Swap given controlled value, if it does not belong to values list.
+
+        If the handled list elements are not sortable, return first element.
+        For sortable elements, snap given value to closest element in a list.
+        """
+        if not isinstance(value, (int, float)):
+            return Controlled(self.__values[0])
+
+        for list_element in sorted(self.__values):
+            if list_element >= value:
+                return list_element
+
+        return self.__values[-1]
