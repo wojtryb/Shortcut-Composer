@@ -11,7 +11,7 @@ class DocumentBasedController(Controller):
         self.document = Krita.get_active_document()
 
 
-class LayerController(DocumentBasedController):
+class ActiveLayerController(DocumentBasedController):
     """
     Gives access to nodes (layers, groups, masks...) from layer stack.
 

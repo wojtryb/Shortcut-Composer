@@ -9,17 +9,22 @@ Available controllers:
     - `FlowController`
     - `PresetController`
     - `TimeController`
-    - `LayerController`
+    - `ActiveLayerController`
+    - `LayerVisibilityController`
+    - `LayerBlendingModeController`,
+    - `LayerOpacityController`,
     - `CanvasRotationController`
     - `CanvasZoomController`
     - `ToggleController`
 """
 
-from .document_controllers import LayerController, TimeController
-from .core_controllers import (
-    ToggleController,
-    ToolController,
-    UndoController,
+from .document_controllers import (
+    ActiveLayerController,
+    TimeController,
+)
+from .canvas_controllers import (
+    CanvasRotationController,
+    CanvasZoomController,
 )
 from .view_controllers import (
     BlendingModeController,
@@ -28,20 +33,29 @@ from .view_controllers import (
     PresetController,
     FlowController,
 )
-from .canvas_controllers import (
-    CanvasRotationController,
-    CanvasZoomController,
+from .node_controllers import (
+    LayerBlendingModeController,
+    LayerVisibilityController,
+    LayerOpacityController,
+)
+from .core_controllers import (
+    ToggleController,
+    ToolController,
+    UndoController,
 )
 
 __all__ = [
+    "LayerBlendingModeController",
+    "LayerVisibilityController",
     "CanvasRotationController",
     "BlendingModeController",
+    "LayerOpacityController",
+    "ActiveLayerController",
     "CanvasZoomController",
     "BrushSizeController",
     "OpacityController",
     "ToggleController",
     "PresetController",
-    "LayerController",
     "TimeController",
     "ToolController",
     "UndoController",

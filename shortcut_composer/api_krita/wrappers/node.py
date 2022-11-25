@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import List, Protocol
+from ..enums import BlendingMode
 
 
 class KritaNode(Protocol):
@@ -9,6 +10,10 @@ class KritaNode(Protocol):
     def setName(self, name: str) -> None: ...
     def visible(self) -> bool: ...
     def setVisible(self, visibility: bool) -> None: ...
+    def opacity(self) -> int: ...
+    def setOpacity(self, opacity: int) -> None: ...
+    def blendingMode(self) -> str: ...
+    def setBlendingMode(self, mode: str) -> None: ...
     def type(self) -> str: ...
     def collapsed(self) -> bool: ...
     def setCollapsed(self, value: bool) -> None: ...
@@ -47,6 +52,26 @@ class Node():
     def toggle_visility(self) -> None:
         """Change visibility of this node to the opposite one."""
         self.visible = not self.visible
+
+    @property
+    def opacity(self) -> int:
+        """Settable property with opacity of this node."""
+        return round(self.node.opacity()/2.55)
+
+    @opacity.setter
+    def opacity(self, opacity: int) -> None:
+        """Set opacity of this node."""
+        self.node.setOpacity(round(2.55*opacity))
+
+    @property
+    def blending_mode(self) -> BlendingMode:
+        """Settable property with blending_mode of this node."""
+        return BlendingMode(self.node.blendingMode())
+
+    @blending_mode.setter
+    def blending_mode(self, blending_mode: BlendingMode) -> None:
+        """Set blending_mode of this node."""
+        self.node.setBlendingMode(blending_mode.value)
 
     @property
     def collapsed(self) -> bool:
