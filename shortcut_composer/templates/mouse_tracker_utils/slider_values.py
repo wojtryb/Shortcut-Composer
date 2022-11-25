@@ -73,7 +73,6 @@ class ListSliderValues(SliderValues):
     def __init__(self, values: list):
         self.__values = values
         self.min = Interpreted(-0.49)
-        self.__default = Interpreted(0)
 
     @property
     def max(self) -> Interpreted:
@@ -83,11 +82,11 @@ class ListSliderValues(SliderValues):
     def at(self, value: Interpreted) -> Controlled:
         """Return element of list by rounding input to get list index."""
         if not self.min <= value <= self.max:
-            value = self.__default
+            value = Interpreted(0)
         return Controlled(self.__values[round(value)])
 
     def index(self, value: Controlled) -> Interpreted:
         """Return index of list element directly from it."""
         if value not in self.__values:
-            value = self.__default
+            value = Controlled(self.__values[0])
         return Interpreted(self.__values.index(value))
