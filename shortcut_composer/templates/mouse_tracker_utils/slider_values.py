@@ -1,10 +1,14 @@
+from typing import Any, List, Generic, TypeVar
 from abc import ABC, abstractmethod
 
 from data_components import Range
-from .new_types import Interpreted, Controlled
+from .new_types import Interpreted
+
+Controlled = TypeVar("Controlled")
+"""Value compatibile with handled controller."""
 
 
-class SliderValues(ABC):
+class SliderValues(ABC, Generic[Controlled]):
     """
     Converts between interpreted values and those compatibile with controller.
 
@@ -43,20 +47,20 @@ class RangeSliderValues(SliderValues):
         self.max = Interpreted(values.max)
         self.__default = Interpreted((self.min + self.max)*0.5)
 
-    def at(self, value: Interpreted) -> Controlled:
+    def at(self, value: Interpreted) -> float:
         """Check if element belongs to the range, and return it as is."""
         if not self.min <= value <= self.max:
-            return Controlled(self.__default)
-        return Controlled(value)
+            return self.__default
+        return value
 
-    def index(self, value: Controlled) -> Interpreted:
+    def index(self, value: float) -> Interpreted:
         """Check if element belongs to the range, and return it as is."""
         if not self.min <= value <= self.max:
-            return Controlled(self.__default)
+            return self.__default
         return Interpreted(value)
 
 
-class ListSliderValues(SliderValues):
+class ListSliderValues(SliderValues, Generic[Controlled]):
     """
     Allows to fetch values from list or other class with similar interface.
 
@@ -70,7 +74,7 @@ class ListSliderValues(SliderValues):
     Controlled values may change over time.
     """
 
-    def __init__(self, values: list):
+    def __init__(self, values: List[Controlled]):
         self.__values = values
         self.min = Interpreted(-0.49)
 
@@ -87,7 +91,7 @@ class ListSliderValues(SliderValues):
         """
         if not self.min <= value <= self.max:
             value = Interpreted(sorted((self.min, value, self.max))[1])
-        return Controlled(self.__values[round(value)])
+        return self.__values[round(value)]
 
     def index(self, value: Controlled) -> Interpreted:
         """Return index of list element directly from it."""
@@ -103,10 +107,11 @@ class ListSliderValues(SliderValues):
         For sortable elements, snap given value to closest element in a list.
         """
         if not isinstance(value, (int, float)):
-            return Controlled(self.__values[0])
+            return self.__values[0]
 
-        for list_element in sorted(self.__values):
+        sorted_values: List[Any] = sorted(self.__values)
+        for list_element in sorted_values:
             if list_element >= value:
                 return list_element
 
-        return self.__values[-1]
+        return sorted_values[-1]

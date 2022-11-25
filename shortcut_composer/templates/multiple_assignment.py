@@ -1,4 +1,4 @@
-from typing import Any, List, Iterator, TypeVar
+from typing import List, Iterator, TypeVar, Generic, Optional
 from itertools import cycle
 
 from core_components import Controller, Instruction
@@ -7,7 +7,7 @@ from input_adapter import PluginAction
 T = TypeVar('T')
 
 
-class MultipleAssignment(PluginAction):
+class MultipleAssignment(PluginAction, Generic[T]):
     """
     Cycle multiple values (short press) or return to default (long press).
 
@@ -54,7 +54,7 @@ class MultipleAssignment(PluginAction):
                  name: str,
                  controller: Controller,
                  values_to_cycle: List[T],
-                 default_value: T = None,
+                 default_value: Optional[T] = None,
                  instructions: List[Instruction] = [],
                  time_interval: float = 0.3) -> None:
         super().__init__(
@@ -66,15 +66,14 @@ class MultipleAssignment(PluginAction):
         self.values_to_cycle = values_to_cycle
         self.default_value = self._read_default_value(default_value)
 
-        self._last_value = None
-        self._iterator: Iterator[Any]
+        self._last_value: Optional[T] = None
+        self._iterator: Iterator[T]
 
     def on_key_press(self) -> None:
         """Use key press event only for switching to first value."""
         self._controller.refresh()
         super().on_key_press()
-        current_value = self._controller.get_value()
-        if current_value != self._last_value:
+        if self._controller.get_value() != self._last_value:
             self._reset_iterator()
         self._set_value(next(self._iterator))
 
@@ -84,7 +83,7 @@ class MultipleAssignment(PluginAction):
         self._set_value(self.default_value)
         self._reset_iterator()
 
-    def _set_value(self, value: Any) -> None:
+    def _set_value(self, value: T) -> None:
         """Set the value using the controller, and remember it."""
         self._last_value = value
         self._controller.set_value(value)
@@ -93,6 +92,6 @@ class MultipleAssignment(PluginAction):
         """Replace the iterator with new cyclic iterator over cycled values."""
         self._iterator = cycle(self.values_to_cycle)
 
-    def _read_default_value(self, value: Any):
+    def _read_default_value(self, value: Optional[T]) -> T:
         """Read value from controller if it was not given."""
         return value if value else self._controller.default_value

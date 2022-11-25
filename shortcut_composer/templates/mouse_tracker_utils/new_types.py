@@ -1,4 +1,4 @@
-from typing import Any, NewType
+from typing import NewType
 
 
 MouseInput = NewType("MouseInput", int)
@@ -6,6 +6,3 @@ MouseInput = NewType("MouseInput", int)
 
 Interpreted = NewType("Interpreted", float)
 """Float in SliderValues domain."""
-
-Controlled = NewType("Controlled", Any)
-"""Value compatibile with handled controller."""

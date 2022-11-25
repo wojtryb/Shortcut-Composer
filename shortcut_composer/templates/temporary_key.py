@@ -1,4 +1,4 @@
-from typing import Any, List, TypeVar
+from typing import List, TypeVar, Generic, Optional
 
 from core_components import Controller, Instruction
 from input_adapter import PluginAction
@@ -6,7 +6,7 @@ from input_adapter import PluginAction
 T = TypeVar('T')
 
 
-class TemporaryKey(PluginAction):
+class TemporaryKey(PluginAction, Generic[T]):
     """
     Temporarily activate (long press) a value or toggle it (short press).
 
@@ -52,7 +52,7 @@ class TemporaryKey(PluginAction):
     def __init__(self, *,
                  name: str,
                  controller: Controller,
-                 low_value: T = None,
+                 low_value: Optional[T] = None,
                  high_value: T,
                  instructions: List[Instruction] = [],
                  time_interval: float = 0.3) -> None:
@@ -74,7 +74,7 @@ class TemporaryKey(PluginAction):
         """Defines how to switch to high state."""
         self._controller.set_value(self.high_value)
 
-    def _is_high_state(self) -> Any:
+    def _is_high_state(self) -> bool:
         """Defines how to determine that current state is high."""
         return self._controller.get_value() == self.high_value
 
@@ -97,6 +97,6 @@ class TemporaryKey(PluginAction):
         super().on_long_key_release()
         self._set_low()
 
-    def _read_default_value(self, value: Any):
+    def _read_default_value(self, value: Optional[T]):
         """Read value from controller if it was not given."""
         return value if value else self._controller.default_value
