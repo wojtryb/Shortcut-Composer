@@ -145,10 +145,10 @@ actions = [
 
     # Control undo and redo actions by sliding the cursor horizontally
     # Start triggering the actions after passing a deadzone of 100 px
-    # Use UndoOnShortPress instruction to trigger undo on short press
+    # Use UndoOnPress instruction to trigger undo key press
     templates.MouseTracker(
         name="Scroll undo stack",
-        instructions=[instructions.UndoOnShortPress()],
+        instructions=[instructions.UndoOnPress()],
         horizontal_slider=Slider(
             controller=controllers.UndoController(),
             values=Range(float('-inf'), float('inf')),

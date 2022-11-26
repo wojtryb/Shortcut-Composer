@@ -9,6 +9,7 @@ Available instructions:
     - `SetBrushOnNonPaintable`
     - `ToggleLayerVisibility`
     - `ToggleVisibilityAbove`
+    - `UndoOnPress`
     - `EnsureOn`
     - `EnsureOff`
     - `TemporaryOn`
@@ -23,16 +24,16 @@ from .togglers import (
     EnsureOff,
     EnsureOn,
 )
-from .undo import UndoOnShortPress
+from .undo import UndoOnPress
 
 __all__ = [
     'SetBrushOnNonPaintable',
     'ToggleLayerVisibility',
     'ToggleVisibilityAbove',
-    'UndoOnShortPress',
     'TemporaryOff',
     'TemporaryOn',
-    'SetBrush',
+    'UndoOnPress',
     'EnsureOff',
     'EnsureOn',
+    'SetBrush',
 ]

@@ -2,15 +2,15 @@ from api_krita import Krita
 from ..instruction_base import Instruction
 
 
-class UndoOnShortPress(Instruction):
+class UndoOnPress(Instruction):
     """
-    Undo last activity when key press was short.
+    Undo last activity when key was pressed.
 
     ### Example usage:
     ```python
-    instructions.UndoOnShortPress()
+    instructions.UndoOnPress()
     ```
     """
 
-    def on_short_key_release(self) -> None:
+    def on_key_press(self) -> None:
         Krita.trigger_action("edit_undo")
