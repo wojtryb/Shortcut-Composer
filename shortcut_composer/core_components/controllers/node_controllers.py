@@ -8,7 +8,8 @@ class NodeBasedController(Controller):
 
     def refresh(self):
         """Refresh currently stored active node."""
-        self.active_node = Krita.get_active_document().active_node
+        self.active_document = Krita.get_active_document()
+        self.active_node = self.active_document.active_node
 
 
 class LayerOpacityController(NodeBasedController):
@@ -65,4 +66,6 @@ class LayerVisibilityController(NodeBasedController):
 
     def set_value(self, visibility: bool) -> None:
         """Set passed brush opacity."""
-        self.active_node.visible = visibility
+        if self.active_node.visible != visibility:
+            self.active_node.visible = visibility
+            self.active_document.refresh()
