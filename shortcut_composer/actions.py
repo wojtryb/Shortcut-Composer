@@ -85,7 +85,7 @@ actions = [
         name="Cycle painting opacity",
         controller=controllers.OpacityController(),
         default_value=100,
-        values_to_cycle=[70, 50, 30, 100],
+        values=[70, 50, 30, 100],
     ),
 
     # Cycle between selection tools from values_to_cycle list.
@@ -94,7 +94,7 @@ actions = [
         name="Cycle selection tools",
         controller=controllers.ToolController(),
         default_value=Tool.FREEHAND_BRUSH,
-        values_to_cycle=[
+        values=[
             Tool.FREEHAND_SELECTION,
             Tool.RECTANGULAR_SELECTION,
             Tool.CONTIGUOUS_SELECTION,
@@ -107,7 +107,7 @@ actions = [
         name="Cycle misc tools",
         controller=controllers.ToolController(),
         default_value=Tool.FREEHAND_BRUSH,
-        values_to_cycle=[
+        values=[
             Tool.CROP,
             Tool.REFERENCE,
             Tool.GRADIENT,
@@ -121,7 +121,7 @@ actions = [
         name="Cycle painting blending modes",
         controller=controllers.BlendingModeController(),
         default_value=BlendingMode.NORMAL,
-        values_to_cycle=[
+        values=[
             BlendingMode.OVERLAY,
             BlendingMode.MULTIPLY,
             BlendingMode.COLOR,
@@ -139,7 +139,7 @@ actions = [
         name="Cycle brush presets",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        values_to_cycle=Tag("Digital"),
+        values=Tag("Digital"),
         default_value="b) Basic-5 Size Opacity",
     ),
 

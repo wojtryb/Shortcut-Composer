@@ -43,13 +43,11 @@ class PluginAction:
     def __init__(
         self, *,
         name: str,
+        instructions: List[Instruction] = [],
         short_vs_long_press_time: float = SHORT_VS_LONG_PRESS_TIME,
-        controller: Controller = Controller(),
-        instructions: List[Instruction] = []
     ) -> None:
         self.name = name
-        self._short_vs_long_press_time = short_vs_long_press_time
-        self._controller = controller
+        self.short_vs_long_press_time = short_vs_long_press_time
         self._instructions = InstructionHolder(instructions)
 
     def on_key_press(self) -> None:

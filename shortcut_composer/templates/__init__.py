@@ -14,7 +14,7 @@ Each template implements different logic based pressing and releasing of
 the related keys.
 """
 
-from input_adapter import PluginAction as RawInstructions
+from .raw_instructions import RawInstructions
 from .multiple_assignment import MultipleAssignment
 from .temporary_key import TemporaryKey
 from .mouse_tracker import MouseTracker

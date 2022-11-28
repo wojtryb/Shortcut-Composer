@@ -55,7 +55,7 @@ class MultipleAssignment(PluginAction, Generic[T]):
         self, *,
         name: str,
         controller: Controller,
-        values_to_cycle: List[T],
+        values: List[T],
         default_value: Optional[T] = None,
         instructions: List[Instruction] = [],
         short_vs_long_press_time: float = SHORT_VS_LONG_PRESS_TIME
@@ -63,11 +63,11 @@ class MultipleAssignment(PluginAction, Generic[T]):
         super().__init__(
             name=name,
             short_vs_long_press_time=short_vs_long_press_time,
-            controller=controller,
             instructions=instructions)
 
-        self.values_to_cycle = values_to_cycle
-        self.default_value = self._read_default_value(default_value)
+        self._controller = controller
+        self._values_to_cycle = values
+        self._default_value = self._read_default_value(default_value)
 
         self._last_value: Optional[T] = None
         self._iterator: Iterator[T]
@@ -83,7 +83,7 @@ class MultipleAssignment(PluginAction, Generic[T]):
     def on_long_key_release(self) -> None:
         """Long releases set default value."""
         super().on_long_key_release()
-        self._set_value(self.default_value)
+        self._set_value(self._default_value)
         self._reset_iterator()
 
     def _set_value(self, value: T) -> None:
@@ -93,7 +93,7 @@ class MultipleAssignment(PluginAction, Generic[T]):
 
     def _reset_iterator(self) -> None:
         """Replace the iterator with new cyclic iterator over cycled values."""
-        self._iterator = cycle(self.values_to_cycle)
+        self._iterator = cycle(self._values_to_cycle)
 
     def _read_default_value(self, value: Optional[T]) -> T:
         """Read value from controller if it was not given."""
