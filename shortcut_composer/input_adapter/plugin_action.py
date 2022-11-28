@@ -1,38 +1,22 @@
 from typing import List
 
 from shortcut_composer_config import SHORT_VS_LONG_PRESS_TIME
-from core_components import Controller, InstructionHolder, Instruction
+from core_components import InstructionHolder, Instruction
 
 
 class PluginAction:
     """
-    Temporarily toggle plugin instructions.
-
-    Action starts all the instructions on key press, and ends them on
-    release. Short and long presses are not distinguished.
+    Stores basic action attributes and grants main plugin action interface.
 
     ### Arguments:
 
-    - `name`          -- unique name of action. Must match the
-                          definition in shortcut_composer.action file
-    - `instructions`  -- list of additional instructions to perform on
-                          key press and release.
+    - `name`         -- unique name of action. Must match the definition
+                        in shortcut_composer.action file
+    - `instructions` -- (optional) list of additional instructions to
+                        perform on key press and release.
+    - `short_vs_long_press_time` -- (optional) time [s] that specifies
+                                    if key press is short or long.
 
-    ### Action implementation example:
-
-    Example action is meant to turn on ISOLATE_LAYER action for the time
-    a key is pressed.
-
-    ```python
-    RawInstructions(
-        name="Toggle isolate layer (temporary)",
-        instructions=[
-            instructions.TemporaryOn(Toggle.ISOLATE_LAYER)
-        ]
-    )
-    ```
-    """
-    """
     Class is meant for creating child classes which override:
     - on_key_press
     - on_short_key_release

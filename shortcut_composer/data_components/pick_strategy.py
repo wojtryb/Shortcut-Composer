@@ -30,14 +30,16 @@ class PickStrategy(Enum):
     Specifies what layers to pick when scrolling through layers.
 
     Available strategies are:
-    - `ALL` - picks all the nodes (layers, groups, masks...).
-    - `VISIBLE` - picks active node and all the nodes that are visible.
-    - `CURRENT_VISIBILITY`- picks all the nodes with the same visibility
-        as the active node.
-    - `ANIMATED`- picks active node and all the nodes that have animation
-        frames.
-    - `PINNED` - picks active node and all the nodes that are pinned to
-        timeline.
+    - `ALL`               -- picks all the nodes in the stack
+                             (layers, groups, masks...).
+    - `VISIBLE`           -- picks active node and all the nodes that are
+                             visible.
+    - `CURRENT_VISIBILITY`-- picks all the nodes with the same visibility
+                             as the active node.
+    - `ANIMATED`          -- picks active node and all the nodes that
+                             have animation frames.
+    - `PINNED`            -- picks active node and all the nodes that
+                             are pinned to timeline.
 
 
     ### Usage Example:

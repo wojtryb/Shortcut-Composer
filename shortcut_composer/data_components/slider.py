@@ -20,11 +20,15 @@ class Slider:
 
     ### Arguments:
 
-    - `controller`     - defines which krita property will be modified
-    - `values`         - list or range of values to switch to
+    - `controller`     -- defines which krita property will be modified
+    - `values`         -- list or range of values to switch to
                           compatibile with controller
-    - `pixels_in_unit` - how many pixels mouse needs to be moved, to
-                          change the value by 1.0.
+    - `pixels_in_unit` -- (optional) how many pixels mouse needs to be
+                          moved, to change the value by 1.0
+    - `deadzone`       -- (optional) amount of pixels a mouse needs to
+                          moved for slider to start work
+    - `fps_limit`      -- (optional) maximum rate of slider refresh.
+                          0 for no limit.
 
     ### Usage Example:
 

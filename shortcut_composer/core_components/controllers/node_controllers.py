@@ -59,7 +59,7 @@ class LayerVisibilityController(NodeBasedController):
     Gives access to active layers' `visibility`.
 
     - Operates on `bool`
-    - Defaults to True
+    - Defaults to `True`
     """
 
     default_value: bool = True

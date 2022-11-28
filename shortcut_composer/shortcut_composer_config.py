@@ -1,3 +1,9 @@
+"""
+Defines global, default values for action templates.
+
+Used, when no specific per-action configuration is given.
+"""
+
 from typing import Final
 
 

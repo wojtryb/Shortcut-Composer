@@ -27,23 +27,30 @@ class MouseTracker:
     ### Arguments:
 
     - `name`              -- unique name of action. Must match the definition
-                              in shortcut_composer.action file
-    - `horizontal_slider` -- defines what to do on horizontal mouse movement
-    - `vertical_slider`   -- defines what to do on vertical mouse movement
-    - `instructions`      -- list of additional instructions to perform on
-                              key press, release and during key being pressed.
+                             in shortcut_composer.action file.
+    - `horizontal_slider` -- (optional*) defines what to do on horizontal
+                             mouse movement.
+    - `vertical_slider`   -- (optional*) defines what to do on vertical
+                             mouse movement.
+    - `instructions`      -- (optional) list of additional instructions
+                             to perform on key press, release and during
+                             key being pressed.
+
+    *providing at least one of sliders is required.
 
     ### Action implementation examples:
 
+    Exaples of defining a tracker for one, and for both axes.
+
     ```python
-    MouseTracker(
+    templates.MouseTracker(
         name="Horizontal axis tracker",
-        horizontal_slider=Slider(...), # See slider documentation
+        horizontal_slider=Slider(...), # See `Slider`
     )
-    MouseTracker(
+    templates.MouseTracker(
         name="Double axis tracker",
-        horizontal_slider=Slider(...),
-        vertical_slider=Slider(...),
+        horizontal_slider=Slider(...), # See `Slider`
+        vertical_slider=Slider(...),   # See `Slider`
     )
     ```
     """

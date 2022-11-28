@@ -7,6 +7,7 @@ from ..enums import Tool
 
 
 class ToolDescriptor:
+    """Allows setting active `Tool`, as if it was a instance variable."""
 
     _tool_finder: 'ToolFinder'
 
@@ -14,10 +15,21 @@ class ToolDescriptor:
         self.instance = Api.instance()
 
     def __set__(self, _, tool_enum: Tool):
+        """Set active tool by triggering related action."""
         self.instance.action(tool_enum.value).trigger()
 
     def __get__(self, *_) -> Tool:
-        """Return enum of currently active tool."""
+        """
+        Return enum of an active tool.
+
+        First call creates a new ToolFinder needed to fetch a tool.
+        It is then stored as attribute, as it's creation in relatively
+        heavy.
+
+        Further calls will reuse the same ToolFinder instance.
+        ToolFinder cannot be created in __init__, as krita is not fully
+        initialized at this point.
+        """
         if not hasattr(self, "_tool_finder"):
             self._tool_finder = self.ToolFinder()
         current_tool_name = self._tool_finder.find_active_tool_name()
@@ -27,7 +39,7 @@ class ToolDescriptor:
         """Helper class for finding currently active tool."""
 
         def __init__(self) -> None:
-            """Remember the reference to unwrapper toolbox object."""
+            """Remember the reference to toolbox krita object."""
             self.instance = Api.instance()
             self.toolbox = self.__init_toolbox()
 

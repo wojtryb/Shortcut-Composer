@@ -12,15 +12,15 @@ class RawInstructions(PluginAction):
 
     - `name`         -- unique name of action. Must match the definition
                         in shortcut_composer.action file
-    - `instructions` -- list of additional instructions to perform on
-                        key press and release.
-    - `short_vs_long_press_time` -- time [s] that specifies if key press
-                                    is short or long.
+    - `instructions` -- (optional) list of additional instructions to
+                        perform on key press and release.
+    - `short_vs_long_press_time` -- (optional) time [s] that specifies
+                                    if key press is short or long.
 
     ### Action implementation example:
 
-    Example action is meant to turn on ISOLATE_LAYER action for the time
-    a key is pressed.
+    Example action is meant to turn on ISOLATE_LAYER action for as long
+    as the key is pressed.
 
     ```python
     templates.RawInstructions(

@@ -20,16 +20,20 @@ class MultipleAssignment(PluginAction, Generic[T]):
 
     ### Arguments:
 
-    - `name`            -- unique name of action. Must match the definition in
-                            shortcut_composer.action file
-    - `controller`      -- defines which krita property will be modified
-    - `values_to_cycle` -- list of values compatibile with controller to cycle
-    - `default_value`   -- value to switch to after long press. Does not
-                            have to belong to the list.
-    - `instructions`    -- list of additional instructions to perform on
-                            key press and release.
-    - `time_interval`   -- time [s] that specifies if key press is short or
-                            long.
+    - `name`          -- unique name of action. Must match the
+                         definition in shortcut_composer.action file
+    - `controller`    -- defines which krita property will be modified
+    - `values`        -- list of values compatibile with controller to cycle
+    - `default_value` -- (optional*) value to switch to after long press.
+                         Does not have to belong to the list. If not
+                         given, taken from a controller.
+    - `instructions`  -- (optional) list of additional instructions to
+                         perform on key press and release.
+    - `short_vs_long_press_time` -- (optional) time [s] that specifies
+                                    if key press is short or long.
+
+    *some controllers don't have a default value. Then providing it
+     becomes required.
 
     ### Action implementation example:
 
@@ -38,15 +42,16 @@ class MultipleAssignment(PluginAction, Generic[T]):
     is one of the available `controllers` tells krita, that requested
     values relate to brush size.
 
-    Long press, changes brush size to 100px which is not a value
-    available with short presses.
+    Key press longer than 0.3 seconds, changes brush size to 100px which
+     is not a value available to get with shorter presses.
 
     ```python
-    MultipleAssignment(
+    templates.MultipleAssignment(
         name="Brush size (cycle)",
         controller=controllers.BrushSizeController(),
         default_value=100,
-        values_to_cycle=[5, 10, 20, 50],
+        values=[5, 10, 20, 50],
+        short_vs_long_press_time=0.3
     )
     ```
     """

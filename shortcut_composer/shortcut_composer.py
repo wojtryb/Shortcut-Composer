@@ -14,7 +14,7 @@ class ShortcutComposer(Extension):
         """Obligatory override of abstract class method."""
 
     def createActions(self, window) -> None:
-        """Initialize manager of actions which binds them to krita."""
+        """Create ActionManager which holds and binds them to krita."""
         self.manager = ActionManager(window)
         for action in actions:
             self.manager.bind_action(action)
