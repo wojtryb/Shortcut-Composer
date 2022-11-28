@@ -3,44 +3,14 @@
     <Actions category="Scripts">
         <text>Shortcut Composer</text>
 
-        <Action name="Scroll isolated layers">
-        <text>Scroll isolated layers</text>
+        <Action name="Temporary move tool">
+        <text>Temporary move tool</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Scroll undo stack">
-        <text>Scroll undo stack</text>
-        <activationFlags>1</activationFlags>
-        <activationConditions>1</activationConditions>
-        </Action>
-
-        <Action name="Scroll timeline or animated layers">
-        <text>Scroll timeline or animated layers</text>
-        <activationFlags>1</activationFlags>
-        <activationConditions>1</activationConditions>
-        </Action>
-
-        <Action name="Scroll brush size or opacity">
-        <text>Scroll brush size or opacity</text>
-        <activationFlags>1</activationFlags>
-        <activationConditions>1</activationConditions>
-        </Action>
-
-        <Action name="Cycle brush presets">
-        <text>Cycle brush presets</text>
-        <activationFlags>1</activationFlags>
-        <activationConditions>1</activationConditions>
-        </Action>
-
-        <Action name="Preview current layer visibility">
-        <text>Preview current layer visibility</text>
-        <activationFlags>1</activationFlags>
-        <activationConditions>1</activationConditions>
-        </Action>
-
-        <Action name="Preview projection below">
-        <text>Preview projection below</text>
+        <Action name="Temporary transform tool">
+        <text>Temporary transform tool</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
@@ -57,14 +27,14 @@
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Temporary move tool">
-        <text>Temporary move tool</text>
+        <Action name="Preview current layer visibility">
+        <text>Preview current layer visibility</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Temporary transform tool">
-        <text>Temporary transform tool</text>
+        <Action name="Preview projection below">
+        <text>Preview projection below</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
@@ -89,6 +59,36 @@
 
         <Action name="Cycle painting blending modes">
         <text>Cycle painting blending modes</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
+        </Action>
+
+        <Action name="Cycle brush presets">
+        <text>Cycle brush presets</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
+        </Action>
+
+        <Action name="Scroll undo stack">
+        <text>Scroll undo stack</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
+        </Action>
+
+        <Action name="Scroll isolated layers">
+        <text>Scroll isolated layers</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
+        </Action>
+
+        <Action name="Scroll timeline or animated layers">
+        <text>Scroll timeline or animated layers</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
+        </Action>
+
+        <Action name="Scroll brush size or opacity">
+        <text>Scroll brush size or opacity</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
