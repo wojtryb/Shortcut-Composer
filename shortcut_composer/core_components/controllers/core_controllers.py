@@ -40,10 +40,10 @@ class ToggleController(Controller):
     default_value = False
 
     def get_value(self) -> bool:
-        return Krita.get_toggle_state(self.toggle)
+        return self.toggle.state
 
     def set_value(self, value: bool) -> None:
-        Krita.set_toggle_state(self.toggle, value)
+        self.toggle.state = value
 
 
 @dataclass

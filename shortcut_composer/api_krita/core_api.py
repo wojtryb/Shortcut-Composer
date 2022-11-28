@@ -9,7 +9,6 @@ from .wrappers import (
     Cursor,
     View,
 )
-from .enums import Toggle
 
 
 class KritaInstance:
@@ -25,11 +24,6 @@ class KritaInstance:
         """Return wrapper of krita `View`."""
         return View(self.instance.activeWindow().activeView())
 
-    def get_cursor(self) -> Cursor:
-        """Return wrapper of krita `Cursor`. Don't use on plugin init phase."""
-        qwin = self.get_active_qwindow()
-        return Cursor(qwin)
-
     def get_active_document(self) -> Document:
         """Return wrapper of krita `Document`."""
         return Document(self.instance.activeDocument())
@@ -38,6 +32,11 @@ class KritaInstance:
         """Return wrapper of krita `Canvas`."""
         return Canvas(self.instance.activeWindow().activeView().canvas())
 
+    def get_cursor(self) -> Cursor:
+        """Return wrapper of krita `Cursor`. Don't use on plugin init phase."""
+        qwin = self.get_active_qwindow()
+        return Cursor(qwin)
+
     def trigger_action(self, action_name: str) -> None:
         """Trigger internal krita action called `action_name`."""
         return self.instance.action(action_name).trigger()
@@ -45,14 +44,6 @@ class KritaInstance:
     def get_action_shortcut(self, action_name: str) -> QKeySequence:
         """Return shortcut of krita action called `action_name`."""
         return self.instance.action(action_name).shortcut()
-
-    def get_toggle_state(self, toggle: Toggle) -> bool:
-        """Return state of checkable krita action called `action_name`."""
-        return self.instance.action(toggle.value).isChecked()
-
-    def set_toggle_state(self, toggle: Toggle, state: bool) -> None:
-        """Set state of checkable krita action (toggle) by its enum."""
-        return self.instance.action(toggle.value).setChecked(state)
 
     def get_presets(self) -> dict:
         """Return a list of unwrapped preset objects"""

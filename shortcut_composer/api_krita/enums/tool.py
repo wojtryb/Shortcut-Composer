@@ -1,4 +1,5 @@
 from enum import Enum
+from krita import Krita as Api
 
 
 class Tool(Enum):
@@ -80,6 +81,9 @@ class Tool(Enum):
     MAGNETIC_SELECTION = "KisToolSelectMagnetic"
     CALLIGRAPHY = "KarbonCalligraphyTool"
     POLYGONAL_SELECTION = "KisToolSelectPolygonal"
+
+    def activate(self):
+        Api.instance().action(self.value).trigger()
 
     @staticmethod
     def is_paintable(tool: 'Tool'):
