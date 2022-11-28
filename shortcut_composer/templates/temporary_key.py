@@ -54,8 +54,8 @@ class TemporaryKey(PluginAction, Generic[T]):
         self, *,
         name: str,
         controller: Controller,
-        low_value: Optional[T] = None,
         high_value: T,
+        low_value: Optional[T] = None,
         instructions: List[Instruction] = [],
         short_vs_long_press_time: float = SHORT_VS_LONG_PRESS_TIME
     ) -> None:
@@ -65,8 +65,8 @@ class TemporaryKey(PluginAction, Generic[T]):
             instructions=instructions)
 
         self._controller = controller
-        self._low_value = self._read_default_value(low_value)
         self._high_value = high_value
+        self._low_value = self._read_default_value(low_value)
         self._was_high_before_press = False
 
     def _set_low(self) -> None:

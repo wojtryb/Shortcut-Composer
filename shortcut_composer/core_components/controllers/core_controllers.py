@@ -18,12 +18,12 @@ class ToolController(Controller):
     @staticmethod
     def get_value() -> Tool:
         """Get currently active tool."""
-        return Krita.get_current_tool()
+        return Krita.active_tool
 
     @staticmethod
     def set_value(value: Tool) -> None:
         """Set a passed tool."""
-        Krita.trigger_action(value.value)
+        Krita.active_tool = value
 
 
 @dataclass

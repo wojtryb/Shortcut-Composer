@@ -38,6 +38,5 @@ class SetBrushOnNonPaintable(Instruction):
     """
 
     def on_key_press(self) -> None:
-        current_tool = Krita.get_current_tool()
-        if not Tool.is_paintable(current_tool):
+        if not Tool.is_paintable(Krita.active_tool):
             Krita.trigger_action(Tool.FREEHAND_BRUSH.value)
