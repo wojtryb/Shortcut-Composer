@@ -74,7 +74,7 @@ class SliderHandler:
         while abs(start_point - self.read_mouse()) <= self.__slider.deadzone:
             if not self.__working:
                 return
-            sleep(0.05)
+            sleep(self.__slider.sleep_time)
         self._value_setting_loop()
 
     def _value_setting_loop(self) -> None:
@@ -84,7 +84,7 @@ class SliderHandler:
             clipped_value = self.__interpreter.interpret(self.read_mouse())
             to_set = self.__to_cycle.at(clipped_value)
             self.__slider.controller.set_value(to_set)
-            sleep(0.05)
+            sleep(self.__slider.sleep_time)
 
     def __update_interpreter(self):
         """Store a new interpreter with current mouse and current value."""

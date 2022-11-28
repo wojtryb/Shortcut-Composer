@@ -1,5 +1,6 @@
 from typing import List
 
+from shortcut_composer_config import SHORT_VS_LONG_PRESS_TIME
 from core_components import Controller, InstructionHolder, Instruction
 
 
@@ -39,13 +40,15 @@ class PluginAction:
     - on_every_key_release
     """
 
-    def __init__(self, *,
-                 name: str,
-                 time_interval: float = 0.3,
-                 controller: Controller = Controller(),
-                 instructions: List[Instruction] = []) -> None:
+    def __init__(
+        self, *,
+        name: str,
+        short_vs_long_press_time: float = SHORT_VS_LONG_PRESS_TIME,
+        controller: Controller = Controller(),
+        instructions: List[Instruction] = []
+    ) -> None:
         self.name = name
-        self._time_interval = time_interval
+        self._short_vs_long_press_time = short_vs_long_press_time
         self._controller = controller
         self._instructions = InstructionHolder(instructions)
 

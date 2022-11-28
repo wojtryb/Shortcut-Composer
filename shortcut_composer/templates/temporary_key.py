@@ -1,5 +1,6 @@
 from typing import List, TypeVar, Generic, Optional
 
+from shortcut_composer_config import SHORT_VS_LONG_PRESS_TIME
 from core_components import Controller, Instruction
 from input_adapter import PluginAction
 
@@ -49,16 +50,18 @@ class TemporaryKey(PluginAction, Generic[T]):
     ```
     """
 
-    def __init__(self, *,
-                 name: str,
-                 controller: Controller,
-                 low_value: Optional[T] = None,
-                 high_value: T,
-                 instructions: List[Instruction] = [],
-                 time_interval: float = 0.3) -> None:
+    def __init__(
+        self, *,
+        name: str,
+        controller: Controller,
+        low_value: Optional[T] = None,
+        high_value: T,
+        instructions: List[Instruction] = [],
+        short_vs_long_press_time: float = SHORT_VS_LONG_PRESS_TIME
+    ) -> None:
         super().__init__(
             name=name,
-            time_interval=time_interval,
+            short_vs_long_press_time=short_vs_long_press_time,
             controller=controller,
             instructions=instructions)
 
