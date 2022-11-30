@@ -3,6 +3,12 @@
     <Actions category="Scripts">
         <text>Shortcut Composer</text>
 
+        <Action name="Pie">
+        <text>Pie</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
+        </Action>
+
         <Action name="Temporary move tool">
         <text>Temporary move tool</text>
         <activationFlags>1</activationFlags>

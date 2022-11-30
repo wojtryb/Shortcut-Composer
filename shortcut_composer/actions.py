@@ -20,6 +20,10 @@ from data_components import (
 
 actions = [
 
+    templates.PieMenu(
+        name="Pie",
+    ),
+
     # Switch between FREEHAND BRUSH and the MOVE tool
     templates.TemporaryKey(
         name="Temporary move tool",
