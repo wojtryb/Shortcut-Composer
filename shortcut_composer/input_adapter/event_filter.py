@@ -1,8 +1,7 @@
 from typing import Callable, List, Literal
 
 from PyQt5.QtCore import QEvent
-
-from api_krita import QMdiArea  # type: ignore
+from PyQt5.QtWidgets import QMdiArea
 
 EventCallback = Callable[[QEvent], None]
 

@@ -43,15 +43,19 @@ class ActionManager:
     """
 
     class Window(Protocol):
-        def createAction(self, name: str, description: str, menu: str, /)\
-            -> QWidgetAction: ...
+        def createAction(
+            self,
+            name: str,
+            description: str,
+            menu: str, /
+        ) -> QWidgetAction: ...
 
     def __init__(self, window: Window):
         self._window = window
         self._event_filter = ReleaseKeyEventFilter()
         self._stored_actions: List[ActionContainer] = []
 
-    def bind_action(self, plugin_action: PluginAction) -> 'ActionContainer':
+    def bind_action(self, action: PluginAction) -> 'ActionContainer':
         """
         Create action components and stores them together.
 
@@ -59,26 +63,24 @@ class ActionManager:
         garbage collector.
         """
         container = ActionContainer(
-            plugin_action=plugin_action,
-            krita_action=self._create_krita_action(plugin_action),
-            shortcut=self._create_shortcut_adapter(plugin_action)
+            plugin_action=action,
+            krita_action=self._create_krita_action(action),
+            shortcut=self._create_adapter(action)
         )
         self._stored_actions.append(container)
         return container
 
-    def _create_krita_action(self, plugin_action: PluginAction)\
-            -> QWidgetAction:
+    def _create_krita_action(self, action: PluginAction) -> QWidgetAction:
         """Create QWidgetAction recognised by krita."""
         krita_action = self._window.createAction(
-            plugin_action.name,
-            plugin_action.name,
+            action.name,
+            action.name,
             ""
         )
         krita_action.setAutoRepeat(False)
         return krita_action
 
-    def _create_shortcut_adapter(self, action: PluginAction)\
-            -> ShortcutAdapter:
+    def _create_adapter(self, action: PluginAction) -> ShortcutAdapter:
         """
         Create ShortcutAdapter which runs elements of PluginAction interface.
 
