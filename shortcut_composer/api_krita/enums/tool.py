@@ -1,5 +1,7 @@
 from enum import Enum
+
 from krita import Krita as Api
+from PyQt5.QtGui import QIcon
 
 
 class Tool(Enum):
@@ -90,6 +92,11 @@ class Tool(Enum):
         """Is the user able to paint when the given tool is activated."""
         return tool in _PAINTABLE
 
+    @property
+    def icon(self) -> QIcon:
+        icon_name = _ICON_MAP.get(self, "krita_tool_freehand")
+        return Api.instance().icon(icon_name)
+
 
 _PAINTABLE = {
     Tool.FREEHAND_BRUSH,
@@ -99,4 +106,11 @@ _PAINTABLE = {
     Tool.RECTANGLE,
     Tool.MULTI_BRUSH,
     Tool.POLYLINE,
+}
+
+_ICON_MAP = {
+    Tool.CROP: "tool_crop",
+    Tool.PAN: "tool_pan",
+    Tool.FREEHAND_SELECTION: "tool_outline_selection",
+    Tool.FREEHAND_BRUSH: "krita_tool_freehand",
 }

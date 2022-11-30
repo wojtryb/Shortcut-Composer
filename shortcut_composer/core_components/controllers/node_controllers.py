@@ -32,6 +32,9 @@ class LayerOpacityController(NodeBasedController):
             self.active_node.opacity = opacity
             self.active_document.refresh()
 
+    def get_label(self, value: int) -> str:
+        return f"{value}%"
+
 
 class LayerBlendingModeController(NodeBasedController):
     """
@@ -52,6 +55,9 @@ class LayerBlendingModeController(NodeBasedController):
         if self.active_node.blending_mode != blending_mode:
             self.active_node.blending_mode = blending_mode
             self.active_document.refresh()
+
+    def get_label(self, value: BlendingMode) -> str:
+        return value.name[0]
 
 
 class LayerVisibilityController(NodeBasedController):

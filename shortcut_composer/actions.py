@@ -20,10 +20,6 @@ from data_components import (
 
 actions = [
 
-    templates.PieMenu(
-        name="Pie",
-    ),
-
     # Switch between FREEHAND BRUSH and the MOVE tool
     templates.TemporaryKey(
         name="Temporary move tool",
@@ -209,5 +205,15 @@ actions = [
             values=Range(10, 100),
             pixels_in_unit=5,
         ),
+    ),
+
+    templates.PieMenu(
+        name="Pie",
+        # controller=controllers.OpacityController(),
+        # values=[30, 50, 100],
+        # controller=controllers.PresetController(),
+        # values=["b) Basic-5 Size Opacity", "b) Basic-5 Size Opacity"],
+        controller=controllers.ToolController(),
+        values=[Tool.FREEHAND_BRUSH, Tool.FREEHAND_BRUSH],
     ),
 ]
