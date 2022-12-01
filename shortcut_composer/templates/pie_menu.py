@@ -8,14 +8,12 @@ from PyQt5.QtGui import (
     QPainterPath,
     QFont,
     QPixmap,
-    QImage,
-    QBrush,
-    QWindow
 )
 
-from shortcut_composer_config import SHORT_VS_LONG_PRESS_TIME
+from shortcut_composer_config import SHORT_VS_LONG_PRESS_TIME, PIE_ICON_SIZE_PX
 from core_components import Controller, Instruction
 from input_adapter import PluginAction
+from api_krita import pyqt
 
 T = TypeVar('T')
 
@@ -45,11 +43,11 @@ class MyWidget(QWidget):
         label = QLabel("text label", self)
         label.setFont(QFont('Times', 20))
         label.adjustSize()
-        label.setGeometry(pos.x(), pos.y(), 100, 100)
+        label.setGeometry(pos.x(), pos.y(), PIE_ICON_SIZE_PX, PIE_ICON_SIZE_PX)
         label.setStyleSheet(
             "background-color:rgba(47, 47, 47, 255);"
             "color: white;"
-            "border-radius: 50px;"
+            f"border-radius: {PIE_ICON_SIZE_PX//2}px;"
             "border: 3px rgba(60, 60, 60, 255);"
         )
         label.setAlignment(Qt.AlignCenter)
@@ -58,47 +56,21 @@ class MyWidget(QWidget):
         if isinstance(value, str):
             label.setText(value)
         elif isinstance(value, QPixmap):
-            rounded_image = self._make_pixmap_round(value, size=100)
-            label.setPixmap(rounded_image)
+            rounded_image = pyqt.make_pixmap_round(value)
+            label.setPixmap(pyqt.scale_pixmap(
+                rounded_image,
+                size_px=PIE_ICON_SIZE_PX
+            ))
         label.show()
 
     def paintEvent(self, event):
         self.painter = QPainter(self)
         self.painter.eraseRect(event.rect())
-        self.painter.setRenderHints(QPainter.HighQualityAntialiasing)
+        self.painter.setRenderHints(QPainter.Antialiasing)
         self._paint_wheel()
         label = self._controller.get_label(self._values[0])
         self._paint_label(QPoint(100, 100), label)
         self.painter.end()
-
-    @staticmethod
-    def _make_pixmap_round(pixmap: QPixmap, size=100) -> QPixmap:
-        image = pixmap.toImage()
-        image.convertToFormat(QImage.Format_ARGB32)
-
-        imgsize = min(image.width(), image.height())
-        out_img = QImage(imgsize, imgsize, QImage.Format_ARGB32)
-        out_img.fill(Qt.transparent)
-
-        brush = QBrush(image)
-        painter = QPainter(out_img)
-        painter.setBrush(brush)
-        painter.setPen(Qt.NoPen)
-        painter.setRenderHint(QPainter.Antialiasing, True)
-        painter.drawEllipse(0, 0, imgsize, imgsize)
-        painter.end()
-
-        pixel_ratio = QWindow().devicePixelRatio()
-        pixmap = QPixmap.fromImage(out_img)
-        pixmap.setDevicePixelRatio(pixel_ratio)
-        new_size = round(size * pixel_ratio)
-        pixmap = pixmap.scaled(
-            new_size,
-            new_size,
-            Qt.KeepAspectRatio,
-            Qt.SmoothTransformation
-        )
-        return pixmap
 
 
 class PieMenu(PluginAction, Generic[T]):
