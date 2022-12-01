@@ -214,6 +214,6 @@ actions = [
         # controller=controllers.PresetController(),
         # values=["b) Basic-5 Size Opacity", "b) Basic-5 Size Opacity"],
         controller=controllers.ToolController(),
-        values=[Tool.FREEHAND_BRUSH, Tool.FREEHAND_BRUSH],
+        values=[Tool.CROP, Tool.CROP],
     ),
 ]
