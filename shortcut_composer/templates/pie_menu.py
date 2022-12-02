@@ -5,8 +5,6 @@ from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtGui import (
     QColor,
-    QPainter,
-    QPainterPath,
     QFont,
     QPixmap,
 )
@@ -60,34 +58,19 @@ class MyWidget(QWidget):
     def move_center(self, x: int, y: int):
         self.move(x-self._pie_radius_px, y-self._pie_radius_px)
 
-    def _paint_main_wheel(self):
-        path = QPainterPath()
-        size = self._pie_radius_px-self._pie_icon_radius_px*0.7
-        path.addEllipse(self.center, size, size)
-        path.addEllipse(self.center, size*0.7, size*0.7)
-        self.painter.fillPath(path, self._color)
-
     def _paint_label(self, center: QPoint, value: Union[str, QPixmap]):
-        path = QPainterPath()
-        path.addEllipse(
-            center,
-            self._pie_icon_radius_px,
-            self._pie_icon_radius_px)
-        self.painter.fillPath(path, QColor(47, 47, 47, 255))
-
+        self.painter.paint_wheel(
+            center=center,
+            outer_radius=self._pie_icon_radius_px,
+            color=QColor(47, 47, 47, 255)
+        )
         if isinstance(value, QPixmap):
             rounded_image = pyqt.make_pixmap_round(value)
             scaled_image = pyqt.scale_pixmap(
                 rounded_image,
                 size_px=self._pie_icon_radius_px*2
             )
-            self.painter.drawPixmap(
-                QPoint(
-                    center.x() - self._pie_icon_radius_px,
-                    center.y() - self._pie_icon_radius_px
-                ),
-                scaled_image
-            )
+            self.painter.paint_pixmap(center, scaled_image)
         elif isinstance(value, str):
             label = QLabel("text label", self)
             label.setFont(QFont('Times', 20))
@@ -114,10 +97,13 @@ class MyWidget(QWidget):
     def paintEvent(self, event):
         super().paintEvent(event)
         if self.changed:
-            self.painter = QPainter(self)
-            self.painter.eraseRect(event.rect())
-            self.painter.setRenderHints(QPainter.Antialiasing)
-            self._paint_main_wheel()
+            self.painter = pyqt.Painter(self, event)
+            self.painter.paint_wheel(
+                center=self.center,
+                outer_radius=self._pie_radius_px-self._pie_icon_radius_px*0.7,
+                color=self._color,
+                fill_part=0.3,
+            )
             iterator = range(0, 360, round(360/len(self._values)))
             for value, angle in zip(self._values, iterator):
                 label = self._controller.get_label(value)
