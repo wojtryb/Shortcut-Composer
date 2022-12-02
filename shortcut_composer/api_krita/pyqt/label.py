@@ -1,4 +1,4 @@
-from typing import Union, Protocol
+from typing import Union, Protocol, Any
 
 from PyQt5.QtWidgets import QLabel, QWidget
 from PyQt5.QtGui import QFont, QColor, QPixmap
@@ -11,6 +11,7 @@ from .pixmap_transform import make_pixmap_round, scale_pixmap
 class Label(Protocol):
     center: QPoint
     radius: int
+    value: Any
     bg_color: QColor
     def paint(self, painter: Painter): ...
 
@@ -19,13 +20,14 @@ def pick_correct_label(
     widget: QWidget,
     center: QPoint,
     radius: int,
-    value: Union[str, QPixmap],
+    value: Any,
+    display_value: Union[str, QPixmap],
     bg_color: QColor = QColor(47, 47, 47, 255),
 ) -> Label:
-    if isinstance(value, str):
-        return TextLabel(widget, center, radius, value, bg_color)
-    elif isinstance(value, QPixmap):
-        return ImageLabel(widget, center, radius, value, bg_color)
+    if isinstance(display_value, str):
+        return TextLabel(widget, center, radius, value, display_value, bg_color)
+    elif isinstance(display_value, QPixmap):
+        return ImageLabel(widget, center, radius, value, display_value, bg_color)
 
 
 class TextLabel:
@@ -34,12 +36,14 @@ class TextLabel:
         widget: QWidget,
         center: QPoint,
         radius: int,
+        value: Any,
         text: str,
         bg_color: QColor = QColor(47, 47, 47, 255)
     ):
         self.widget = widget
         self.center = center
         self.radius = radius
+        self.value = value
         self.text = text
         self.bg_color = bg_color
         self._pyqt_label = self._create_pyqt_label()
@@ -84,13 +88,15 @@ class ImageLabel:
         self,
         widget: QWidget,
         center: QPoint,
-        size: int,
+        radius: int,
+        value: Any,
         picture: QPixmap,
         bg_color: QColor = QColor(47, 47, 47, 255)
     ):
         self.widget = widget
         self.center = center
-        self.radius = size
+        self.radius = radius
+        self.value = value
         self.picture = picture
         self.bg_color = bg_color
 

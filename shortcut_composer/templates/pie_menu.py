@@ -1,4 +1,5 @@
 from typing import List, TypeVar, Generic
+import math
 
 from PyQt5.QtGui import QColor
 
@@ -31,6 +32,7 @@ class PieMenu(PluginAction, Generic[T]):
             name=name,
             short_vs_long_press_time=short_vs_long_press_time,
             instructions=instructions)
+        self._controller = controller
         self.widget = PieWidget(
             controller,
             values,
@@ -40,11 +42,20 @@ class PieMenu(PluginAction, Generic[T]):
         )
 
     def on_key_press(self) -> None:
+        self._controller.refresh()
         cursor = Krita.get_cursor()
-        self.widget.move_center(cursor.x(), cursor.y())
+        self.start = (cursor.x(), cursor.y())
+        self.widget.move_center(*self.start)
         self.widget.show()
         super().on_key_press()
 
     def on_every_key_release(self) -> None:
         super().on_every_key_release()
+        cursor = Krita.get_cursor()
+        angle = math.degrees(math.atan(
+            (self.start[0] - cursor.x()) /
+            -(self.start[1] - cursor.y())
+        ))
+        label = self.widget.labels.closest(round(angle))
+        self._controller.set_value(label.value)
         self.widget.hide()

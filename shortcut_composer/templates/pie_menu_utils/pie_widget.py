@@ -93,7 +93,8 @@ class PieWidget(QWidget):
                 widget=self,
                 center=label_center,
                 radius=self._pie_icon_radius_px,
-                value=self._controller.get_label(value),
+                value=value,
+                display_value=self._controller.get_label(value),
                 bg_color=QColor(47, 47, 47, 255)
             )
         return labels
