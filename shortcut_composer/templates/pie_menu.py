@@ -24,10 +24,21 @@ T = TypeVar('T')
 
 
 class MyWidget(QWidget):
-    def __init__(self, controller: Controller, values: list, parent=None):
+    def __init__(
+        self,
+        controller: Controller,
+        values: list,
+        pie_radius_px: int,
+        pie_icon_radius_px: int,
+        color: QColor,
+        parent=None
+    ):
         QWidget.__init__(self, parent)
         self._controller = controller
         self._values = values
+        self._pie_radius_px = pie_radius_px
+        self._pie_icon_radius_px = pie_icon_radius_px
+        self._color = color
 
         self.setWindowFlags(
             self.windowFlags() |
@@ -44,33 +55,36 @@ class MyWidget(QWidget):
 
     @property
     def center(self):
-        return QPoint(PIE_RADIUS_PX, PIE_RADIUS_PX)
+        return QPoint(self._pie_radius_px, self._pie_radius_px)
 
     def move_center(self, x: int, y: int):
-        self.move(x-PIE_RADIUS_PX, y-PIE_RADIUS_PX)
+        self.move(x-self._pie_radius_px, y-self._pie_radius_px)
 
     def _paint_main_wheel(self):
         path = QPainterPath()
-        size = PIE_RADIUS_PX-PIE_ICON_RADIUS_PX*0.7
+        size = self._pie_radius_px-self._pie_icon_radius_px*0.7
         path.addEllipse(self.center, size, size)
         path.addEllipse(self.center, size*0.7, size*0.7)
-        self.painter.fillPath(path, QColor(100, 100, 100, 150))
+        self.painter.fillPath(path, self._color)
 
     def _paint_label(self, center: QPoint, value: Union[str, QPixmap]):
         path = QPainterPath()
-        path.addEllipse(center, PIE_ICON_RADIUS_PX, PIE_ICON_RADIUS_PX)
+        path.addEllipse(
+            center,
+            self._pie_icon_radius_px,
+            self._pie_icon_radius_px)
         self.painter.fillPath(path, QColor(47, 47, 47, 255))
 
         if isinstance(value, QPixmap):
             rounded_image = pyqt.make_pixmap_round(value)
             scaled_image = pyqt.scale_pixmap(
                 rounded_image,
-                size_px=PIE_ICON_RADIUS_PX*2
+                size_px=self._pie_icon_radius_px*2
             )
             self.painter.drawPixmap(
                 QPoint(
-                    center.x() - PIE_ICON_RADIUS_PX,
-                    center.y() - PIE_ICON_RADIUS_PX
+                    center.x() - self._pie_icon_radius_px,
+                    center.y() - self._pie_icon_radius_px
                 ),
                 scaled_image
             )
@@ -79,10 +93,10 @@ class MyWidget(QWidget):
             label.setFont(QFont('Times', 20))
             label.adjustSize()
             label.setGeometry(
-                round(center.x()-PIE_ICON_RADIUS_PX*0.6),
-                round(center.y()-PIE_ICON_RADIUS_PX*0.6),
-                round(PIE_ICON_RADIUS_PX*1.2),
-                round(PIE_ICON_RADIUS_PX*1.2))
+                round(center.x()-self._pie_icon_radius_px*0.6),
+                round(center.y()-self._pie_icon_radius_px*0.6),
+                round(self._pie_icon_radius_px*1.2),
+                round(self._pie_icon_radius_px*1.2))
             label.setStyleSheet(
                 "background-color:rgba(47, 47, 47, 255);"
                 "color: white;"
@@ -107,7 +121,7 @@ class MyWidget(QWidget):
             iterator = range(0, 360, round(360/len(self._values)))
             for value, angle in zip(self._values, iterator):
                 label = self._controller.get_label(value)
-                distance = PIE_RADIUS_PX-PIE_ICON_RADIUS_PX
+                distance = self._pie_radius_px-self._pie_icon_radius_px
                 point = self._center_from_angle(angle, distance)
                 self._paint_label(point, label)
             self.painter.end()
@@ -116,8 +130,8 @@ class MyWidget(QWidget):
     def _center_from_angle(self, angle: int, distance: int):
         rad_angle = math.radians(angle)
         return QPoint(
-            round(PIE_RADIUS_PX + distance*math.sin(rad_angle)),
-            round(PIE_RADIUS_PX - distance*math.cos(rad_angle)),
+            round(self._pie_radius_px + distance*math.sin(rad_angle)),
+            round(self._pie_radius_px - distance*math.cos(rad_angle)),
         )
 
 
@@ -129,13 +143,22 @@ class PieMenu(PluginAction, Generic[T]):
         controller: Controller,
         values: List[T],
         instructions: List[Instruction] = [],
-        short_vs_long_press_time: float = SHORT_VS_LONG_PRESS_TIME
+        short_vs_long_press_time: float = SHORT_VS_LONG_PRESS_TIME,
+        pie_radius_px: int = PIE_RADIUS_PX,
+        pie_icon_radius_px: int = PIE_ICON_RADIUS_PX,
+        color: QColor = QColor(100, 100, 100, 150),
     ) -> None:
         super().__init__(
             name=name,
             short_vs_long_press_time=short_vs_long_press_time,
             instructions=instructions)
-        self.widget = MyWidget(controller, values)
+        self.widget = MyWidget(
+            controller,
+            values,
+            pie_radius_px,
+            pie_icon_radius_px,
+            color
+        )
 
     def on_key_press(self) -> None:
         cursor = Krita.get_cursor()
