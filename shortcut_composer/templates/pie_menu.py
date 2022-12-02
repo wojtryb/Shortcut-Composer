@@ -1,4 +1,5 @@
 from typing import List, TypeVar, Generic, Union
+import math
 
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtWidgets import QWidget, QLabel
@@ -36,26 +37,37 @@ class MyWidget(QWidget):
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setStyleSheet("background: transparent;")
         self.setWindowTitle("Pie Menu")
-        self.setGeometry(0, 0, PIE_RADIUS_PX*2, PIE_RADIUS_PX*2)
+        self.setGeometry(0, 0, self.center_value*2, self.center_value*2)
 
         self.changed = False
 
-    def _paint_wheel(self):
+    @property
+    def center_value(self):
+        return PIE_ICON_RADIUS_PX + PIE_RADIUS_PX
+
+    @property
+    def center(self):
+        return QPoint(self.center_value, self.center_value)
+
+    def move_center(self, x: int, y: int):
+        self.move(x-self.center_value, y-self.center_value)
+
+    def _paint_main_wheel(self):
         path = QPainterPath()
         path.addEllipse(
-            QPoint(PIE_RADIUS_PX, PIE_RADIUS_PX),
+            self.center,
             PIE_RADIUS_PX,
             PIE_RADIUS_PX)
         path.addEllipse(
-            QPoint(PIE_RADIUS_PX, PIE_RADIUS_PX),
+            self.center,
             PIE_RADIUS_PX*0.7,
             PIE_RADIUS_PX*0.7)
         self.painter.fillPath(path, QColor(100, 100, 100, 50))
 
-    def _paint_label(self, pos: QPoint, value: Union[str, QPixmap]):
+    def _paint_label(self, center: QPoint, value: Union[str, QPixmap]):
         path = QPainterPath()
         path.addEllipse(
-            pos,
+            center,
             PIE_ICON_RADIUS_PX,
             PIE_ICON_RADIUS_PX)
         self.painter.fillPath(path, QColor(47, 47, 47, 255))
@@ -68,8 +80,8 @@ class MyWidget(QWidget):
             )
             self.painter.drawPixmap(
                 QPoint(
-                    pos.x() - PIE_ICON_RADIUS_PX,
-                    pos.y() - PIE_ICON_RADIUS_PX
+                    center.x() - PIE_ICON_RADIUS_PX,
+                    center.y() - PIE_ICON_RADIUS_PX
                 ),
                 scaled_image
             )
@@ -78,8 +90,8 @@ class MyWidget(QWidget):
             label.setFont(QFont('Times', 20))
             label.adjustSize()
             label.setGeometry(
-                round(pos.x()-PIE_ICON_RADIUS_PX*0.6),
-                round(pos.y()-PIE_ICON_RADIUS_PX*0.6),
+                round(center.x()-PIE_ICON_RADIUS_PX*0.6),
+                round(center.y()-PIE_ICON_RADIUS_PX*0.6),
                 round(PIE_ICON_RADIUS_PX*1.2),
                 round(PIE_ICON_RADIUS_PX*1.2))
             label.setStyleSheet(
@@ -102,11 +114,21 @@ class MyWidget(QWidget):
             self.painter = QPainter(self)
             self.painter.eraseRect(event.rect())
             self.painter.setRenderHints(QPainter.Antialiasing)
-            self._paint_wheel()
-            label = self._controller.get_label(self._values[0])
-            self._paint_label(QPoint(100, 100), label)
+            self._paint_main_wheel()
+            iterator = range(0, 360, round(360/len(self._values)))
+            for value, angle in zip(self._values, iterator):
+                label = self._controller.get_label(value)
+                point = self._center_from_angle(angle)
+                self._paint_label(point, label)
             self.painter.end()
             self.changed = False
+
+    def _center_from_angle(self, angle: int):
+        rad_angle = math.radians(angle)
+        return QPoint(
+            round(self.center_value + PIE_RADIUS_PX*math.sin(rad_angle)),
+            round(self.center_value - PIE_RADIUS_PX*math.cos(rad_angle)),
+        )
 
 
 class PieMenu(PluginAction, Generic[T]):
@@ -127,7 +149,7 @@ class PieMenu(PluginAction, Generic[T]):
 
     def on_key_press(self) -> None:
         cursor = Krita.get_cursor()
-        self.widget.move(cursor.x()-PIE_RADIUS_PX, cursor.y()-PIE_RADIUS_PX)
+        self.widget.move_center(cursor.x(), cursor.y())
         self.widget.show()
         super().on_key_press()
 
