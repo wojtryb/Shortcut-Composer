@@ -2,7 +2,6 @@ from typing import List, TypeVar, Generic
 import math
 
 from PyQt5.QtGui import QColor
-from PyQt5.QtCore import QPoint
 
 from shortcut_composer_config import (
     SHORT_VS_LONG_PRESS_TIME,
@@ -12,7 +11,13 @@ from shortcut_composer_config import (
 from core_components import Controller, Instruction
 from input_adapter import PluginAction
 from api_krita import Krita
-from .pie_menu_utils import PieWidget, LabelHolder, PieStyle, Label
+from .pie_menu_utils import (
+    PieWidget,
+    LabelHolder,
+    PieStyle,
+    Label,
+    AngleIterator
+)
 
 T = TypeVar('T')
 
@@ -66,26 +71,18 @@ class PieMenu(PluginAction, Generic[T]):
         self._controller.set_value(label.value)
         self._widget.hide()
 
-    def _center_from_angle(self, angle: int, distance: int) -> QPoint:
-        rad_angle = math.radians(angle)
-        return QPoint(
-            round(self._style.widget_radius + distance*math.sin(rad_angle)),
-            round(self._style.widget_radius - distance*math.cos(rad_angle)),
-        )
-
     def _create_labels(self, values: List[T]) -> LabelHolder:
         labels = LabelHolder()
-
-        iterator = range(0, 360, round(360/len(values)))
-        for value, angle in zip(values, iterator):
-            distance = self._style.pie_radius
-            label_center = self._center_from_angle(angle, distance)
-
+        iterator = AngleIterator(
+            center_distance=self._style.widget_radius,
+            radius=self._style.pie_radius,
+            amount=len(values)
+        )
+        for value, (angle, point) in zip(values, iterator):
             labels[angle] = Label(
-                center=label_center,
+                center=point,
                 value=value,
                 display_value=self._controller.get_label(value),
                 style=self._style
-
             )
         return labels

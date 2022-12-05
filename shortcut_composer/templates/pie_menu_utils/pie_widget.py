@@ -40,14 +40,10 @@ class PieWidget(QWidget):
 
     @property
     def center(self) -> QPoint:
-        return QPoint(
-            self._style.widget_radius,
-            self._style.widget_radius)
+        return QPoint(self._style.widget_radius, self._style.widget_radius)
 
     def move_center(self, x: int, y: int) -> None:
-        self.move(
-            x-self._style.widget_radius,
-            y-self._style.widget_radius)
+        self.move(x-self._style.widget_radius, y-self._style.widget_radius)
 
     def show(self) -> None:
         super().show()
