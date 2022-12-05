@@ -1,6 +1,6 @@
 from typing import Dict, Iterator
 
-from api_krita.pyqt import Label
+from .label import Label
 
 
 class LabelHolder:
