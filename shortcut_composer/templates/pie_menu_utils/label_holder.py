@@ -17,5 +17,9 @@ class LabelHolder:
         return iter(self._labels.values())
 
     def closest(self, angle: int) -> Label:
-        closest = min(self.angles(), key=lambda lab_ang: abs(lab_ang-angle))
+        def angle_difference(label_angle: int):
+            raw_difference = label_angle - angle
+            return abs((raw_difference + 180) % 360 - 180)
+
+        closest = min(self.angles(), key=angle_difference)
         return self._labels[closest]
