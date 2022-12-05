@@ -35,3 +35,9 @@ class Painter:
 
     def end(self):
         self._painter.end()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_):
+        self.end()
