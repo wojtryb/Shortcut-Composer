@@ -23,6 +23,7 @@ class PieWidget(QWidget):
         QWidget.__init__(self, parent)
         self._controller = controller
         self._style = style
+        self._labels = labels
         self._label_painters = self._create_label_painters(labels)
 
         self.setWindowFlags(
@@ -37,6 +38,13 @@ class PieWidget(QWidget):
         self.setGeometry(0, 0, size, size)
 
         self.changed = False
+
+    @property
+    def center_global(self) -> QPoint:
+        return QPoint(
+            self.pos().x() + self._style.widget_radius,
+            self.pos().y() + self._style.widget_radius
+        )
 
     @property
     def center(self) -> QPoint:
@@ -56,7 +64,8 @@ class PieWidget(QWidget):
 
         with Painter(self, event) as painter:
             self._paint_base_wheel(painter)
-            self._paint_active_pie(painter)
+            if self._labels.active:
+                self._paint_active_pie(painter, self._labels.active_angle)
 
             for label_painter in self._label_painters:
                 label_painter.paint(painter)
@@ -81,13 +90,13 @@ class PieWidget(QWidget):
             thickness=self._style.border_thickness,
         )
 
-    def _paint_active_pie(self, painter: Painter):
+    def _paint_active_pie(self, painter: Painter, angle: int):
         painter.paint_pie(
             center=self.center,
             outer_radius=(
                 self._style.pie_radius
                 - self._style.border_thickness//2),
-            angle=0,
+            angle=angle,
             span=360//len(self._label_painters),
             color=self._style.active_color,
             thickness=self._style.area_thickness,

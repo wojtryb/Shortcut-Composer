@@ -10,6 +10,7 @@ from dataclasses import dataclass
 @dataclass
 class Label:
     center: QPoint
+    angle: int
     value: Any
     style: PieStyle
     display_value: Union[str, QPixmap]

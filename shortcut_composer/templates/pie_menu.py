@@ -16,7 +16,8 @@ from .pie_menu_utils import (
     LabelHolder,
     PieStyle,
     Label,
-    AngleIterator
+    AngleIterator,
+    PieManager
 )
 
 T = TypeVar('T')
@@ -46,12 +47,14 @@ class PieMenu(PluginAction, Generic[T]):
         )
         self._labels = self._create_labels(values)
         self._widget = PieWidget(controller, self._labels, self._style)
+        self._pie_manager = PieManager(self._widget, self._labels)
 
     def on_key_press(self) -> None:
         self._controller.refresh()
         cursor = Krita.get_cursor()
         self.start = (cursor.x(), cursor.y())
         self._widget.move_center(*self.start)
+        self._pie_manager.start_loop()
         self._widget.show()
         super().on_key_press()
 
@@ -65,6 +68,7 @@ class PieMenu(PluginAction, Generic[T]):
         angle %= 360
         label = self._labels.closest(round(angle))
         self._controller.set_value(label.value)
+        self._pie_manager.stop()
         self._widget.hide()
 
     def _create_labels(self, values: List[T]) -> LabelHolder:
@@ -77,6 +81,7 @@ class PieMenu(PluginAction, Generic[T]):
         for value, (angle, point) in zip(values, iterator):
             labels[angle] = Label(
                 center=point,
+                angle=angle,
                 value=value,
                 display_value=self._controller.get_label(value),
                 style=self._style
