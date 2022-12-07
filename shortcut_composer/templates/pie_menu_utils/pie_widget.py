@@ -55,14 +55,15 @@ class PieWidget(QWidget):
             return
 
         with Painter(self, event) as painter:
-            self._paint_wheel(painter)
+            self._paint_base_wheel(painter)
+            self._paint_active_pie(painter)
 
             for label_painter in self._label_painters:
                 label_painter.paint(painter)
 
         self.changed = False
 
-    def _paint_wheel(self, painter: Painter):
+    def _paint_base_wheel(self, painter: Painter):
         painter.paint_wheel(
             center=self.center,
             outer_radius=(
@@ -73,17 +74,23 @@ class PieWidget(QWidget):
         )
         painter.paint_wheel(
             center=self.center,
-            outer_radius=self._style.pie_radius,
-            thickness=self._style.border_thickness,
-            color=self._style.border_color,
-        )
-        painter.paint_wheel(
-            center=self.center,
             outer_radius=(
                 self._style.pie_radius
                 - self._style.area_thickness),
             color=self._style.border_color,
             thickness=self._style.border_thickness,
+        )
+
+    def _paint_active_pie(self, painter: Painter):
+        painter.paint_pie(
+            center=self.center,
+            outer_radius=(
+                self._style.pie_radius
+                - self._style.border_thickness//2),
+            angle=0,
+            span=360//len(self._label_painters),
+            color=self._style.active_color,
+            thickness=self._style.area_thickness,
         )
 
     def _create_label_painters(self, labels: LabelHolder)\

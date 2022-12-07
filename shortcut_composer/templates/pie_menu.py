@@ -32,7 +32,7 @@ class PieMenu(PluginAction, Generic[T]):
         short_vs_long_press_time: float = SHORT_VS_LONG_PRESS_TIME,
         pie_radius: int = PIE_RADIUS_PX,
         icon_radius: int = ICON_RADIUS_PX,
-        area_color: QColor = QColor(55, 55, 55, 230),
+        area_color: QColor = QColor(55, 55, 55, 200),
     ) -> None:
         super().__init__(
             name=name,

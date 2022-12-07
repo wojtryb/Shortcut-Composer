@@ -32,18 +32,35 @@ class Painter:
         )
         self._painter.drawPixmap(left_top_corner, pixmap)
 
-    def paint_pie(self, center: QPoint, angle: int, span: int, color: QColor):
+    def paint_pie(
+        self,
+        center: QPoint,
+        outer_radius: int,
+        angle: int,
+        span: int,
+        color: QColor,
+        thickness: Optional[float] = None,
+    ):
+        angle = -angle + 90
         path = QPainterPath()
         path.moveTo(center)
-        start = 10
-        length = 45
-        radius = 50
-        rectangle = QRectF(center.x()-radius, center.y()-radius, radius*2, radius*2)
-        path.arcTo(rectangle, start, length)
+        rectangle = QRectF(
+            center.x()-outer_radius,
+            center.y()-outer_radius,
+            outer_radius*2,
+            outer_radius*2
+        )
+        path.arcTo(rectangle, angle-span//2, span)
 
-        radius = 25
-        rectangle = QRectF(center.x()-radius, center.y()-radius, radius*2, radius*2)
-        path.arcTo(rectangle, start+length, -length)
+        if thickness:
+            inner_radius = outer_radius-thickness
+            rectangle = QRectF(
+                center.x()-inner_radius,
+                center.y()-inner_radius,
+                inner_radius*2,
+                inner_radius*2
+            )
+            path.arcTo(rectangle, angle+span//2, -span)
 
         self._painter.fillPath(path, color)
 
