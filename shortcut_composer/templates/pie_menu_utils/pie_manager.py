@@ -16,15 +16,18 @@ class PieManager:
         self._is_working = False
         self._sleep_time = 1/FPS_LIMIT if FPS_LIMIT else 0.001
 
-    def start_loop(self):
+    def start(self):
         self._is_working = True
-        Thread(target=self.loop, daemon=True).start()
+        Thread(target=self._track_angle, daemon=True).start()
 
-    def loop(self):
+    def stop(self):
+        self._is_working = False
+
+    def _track_angle(self):
         while self._is_working:
             angle = self.angle_from_cursor()
             label = self._labels.from_angle(round(angle))
-            self.set_active_label(label)
+            self._set_active_label(label)
             sleep(self._sleep_time)
 
     def angle_from_cursor(self):
@@ -35,11 +38,7 @@ class PieManager:
         ))
         return angle % 360
 
-    def set_active_label(self, label: Label):
+    def _set_active_label(self, label: Label):
         if self._labels.active != label:
             self._labels.active = label
-            self._widget.changed = True
             self._widget.repaint()
-
-    def stop(self):
-        self._is_working = False
