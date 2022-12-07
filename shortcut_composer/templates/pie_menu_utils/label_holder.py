@@ -8,13 +8,6 @@ class LabelHolder:
         self._labels: Dict[int, Label] = {}
         self.active: Optional[Label] = None
 
-    @property
-    def active_angle(self) -> int:
-        for angle, label in self._labels.items():
-            if label == self.active:
-                return angle
-        raise RuntimeError("missing active")
-
     def __setitem__(self, angle: int, label: Label):
         self._labels[angle] = label
 
@@ -24,7 +17,7 @@ class LabelHolder:
     def __iter__(self) -> Iterator[Label]:
         return iter(self._labels.values())
 
-    def closest(self, angle: int) -> Label:
+    def from_angle(self, angle: int) -> Label:
         def angle_difference(label_angle: int):
             raw_difference = label_angle - angle
             return abs((raw_difference + 180) % 360 - 180)

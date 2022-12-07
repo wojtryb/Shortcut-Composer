@@ -59,13 +59,13 @@ class PieWidget(QWidget):
 
     def paintEvent(self, event) -> None:
         super().paintEvent(event)
+        print("try")
         if not self.changed:
             return
 
         with Painter(self, event) as painter:
             self._paint_base_wheel(painter)
-            if self._labels.active:
-                self._paint_active_pie(painter, self._labels.active_angle)
+            self._paint_active_pie(painter)
 
             for label_painter in self._label_painters:
                 label_painter.paint(painter)
@@ -90,13 +90,17 @@ class PieWidget(QWidget):
             thickness=self._style.border_thickness,
         )
 
-    def _paint_active_pie(self, painter: Painter, angle: int):
+    def _paint_active_pie(self, painter: Painter):
+        if not self._labels.active:
+            return
+
         painter.paint_pie(
             center=self.center,
             outer_radius=(
                 self._style.pie_radius
-                - self._style.border_thickness//2),
-            angle=angle,
+                - self._style.border_thickness//2
+            ),
+            angle=self._labels.active.angle,
             span=360//len(self._label_painters),
             color=self._style.active_color,
             thickness=self._style.area_thickness,

@@ -2,6 +2,7 @@ import math
 from threading import Thread
 
 from .pie_widget import PieWidget
+from .label import Label
 from .label_holder import LabelHolder
 from api_krita import Krita
 from time import sleep
@@ -20,20 +21,25 @@ class PieManager:
         Thread(target=self.loop, daemon=True).start()
 
     def loop(self):
-        cursor = Krita.get_cursor()
         while self._is_working:
-            angle = math.degrees(math.atan2(
-                -self._widget.center_global.x() + cursor.x(),
-                self._widget.center_global.y() - cursor.y()
-            ))
-            angle %= 360
-            label = self._labels.closest(round(angle))
-            if self._labels.active != label:
-                self._labels.active = label
-                self._widget.changed = True
-                self._widget.repaint()
-
+            angle = self.angle_from_cursor()
+            label = self._labels.from_angle(round(angle))
+            self.set_active_label(label)
             sleep(self._sleep_time)
+
+    def angle_from_cursor(self):
+        cursor = Krita.get_cursor()
+        angle = math.degrees(math.atan2(
+            -self._widget.center_global.x() + cursor.x(),
+            self._widget.center_global.y() - cursor.y()
+        ))
+        return angle % 360
+
+    def set_active_label(self, label: Label):
+        if self._labels.active != label:
+            self._labels.active = label
+            self._widget.changed = True
+            self._widget.repaint()
 
     def stop(self):
         self._is_working = False
