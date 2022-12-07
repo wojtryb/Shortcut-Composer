@@ -2,7 +2,9 @@ from typing import TypeVar, List
 
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtWidgets import QWidget
+from PyQt5.QtGui import QColor
 
+from shortcut_composer_config import PIE_DEADZONE_PX
 from api_krita.pyqt import Painter
 from .pie_style import PieStyle
 from .label_holder import LabelHolder
@@ -54,6 +56,7 @@ class PieWidget(QWidget):
             self._paint_base_wheel(painter)
             self._paint_active_pie(painter)
             self._paint_base_border(painter)
+            self._paint_deadzone_indicator(painter)
 
             for label_painter in self._label_painters:
                 label_painter.paint(painter)
@@ -69,9 +72,17 @@ class PieWidget(QWidget):
     def _paint_base_border(self, painter: Painter):
         painter.paint_wheel(
             center=self.center,
-            outer_radius=(self._style.pie_radius - self._style.area_thickness),
+            outer_radius=self._style.pie_radius - self._style.area_thickness,
             color=self._style.border_color,
             thickness=self._style.border_thickness,
+        )
+
+    def _paint_deadzone_indicator(self, painter: Painter):
+        painter.paint_wheel(
+            center=self.center,
+            outer_radius=PIE_DEADZONE_PX,
+            color=QColor(255, 255, 255, 255),
+            thickness=1,
         )
 
     def _paint_active_pie(self, painter: Painter):

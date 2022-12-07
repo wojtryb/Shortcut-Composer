@@ -22,3 +22,5 @@ FPS_LIMIT: Final[int] = 60
 ICON_RADIUS_PX: Final[int] = 50
 
 PIE_RADIUS_PX: Final[int] = 165
+
+PIE_DEADZONE_PX: Final[int] = 40

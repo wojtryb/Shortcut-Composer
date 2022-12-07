@@ -209,14 +209,10 @@ actions = [
 
     templates.PieMenu(
         name="Pie",
-        controller=controllers.OpacityController(),
-        values=[100, 70, 50, 30, 10],
-        # controller=controllers.PresetController(),
-        # values=["b) Basic-5 Size Opacity", "b) Basic-5 Size Opacity"],
-        # controller=controllers.PresetController(),
-        # values=Tag("RGBA"),
-        # controller=controllers.PresetController(),
-        # values=Tag("Digital"),
+        # controller=controllers.OpacityController(),
+        # values=[100, 70, 50, 30, 10],
+        controller=controllers.PresetController(),
+        values=Tag("RGBA"),
         # controller=controllers.ToolController(),
         # values=[Tool.CROP, Tool.FREEHAND_BRUSH, Tool.FREEHAND_SELECTION],
     ),

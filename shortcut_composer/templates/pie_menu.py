@@ -59,9 +59,8 @@ class PieMenu(PluginAction, Generic[T]):
 
     def on_every_key_release(self) -> None:
         super().on_every_key_release()
-        angle = self._pie_manager.angle_from_cursor()
-        label = self._labels.from_angle(round(angle))
-        self._controller.set_value(label.value)
+        if label := self._labels.active:
+            self._controller.set_value(label.value)
         self._pie_manager.stop()
         self._widget.hide()
 
