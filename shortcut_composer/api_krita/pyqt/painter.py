@@ -44,25 +44,18 @@ class Painter:
         angle = -angle + 90
         path = QPainterPath()
         path.moveTo(center)
-        rectangle = QRectF(
-            center.x()-outer_radius,
-            center.y()-outer_radius,
-            outer_radius*2,
-            outer_radius*2
-        )
+        rectangle = self._square(center, outer_radius*2)
         path.arcTo(rectangle, angle-span//2, span)
 
         if thickness:
             inner_radius = outer_radius-thickness
-            rectangle = QRectF(
-                center.x()-inner_radius,
-                center.y()-inner_radius,
-                inner_radius*2,
-                inner_radius*2
-            )
+            rectangle = self._square(center, round(inner_radius*2))
             path.arcTo(rectangle, angle+span//2, -span)
 
         self._painter.fillPath(path, color)
+
+    def _square(self, center: QPoint, width: int):
+        return QRectF(center.x()-width//2, center.y()-width//2, width, width)
 
     def end(self):
         self._painter.end()

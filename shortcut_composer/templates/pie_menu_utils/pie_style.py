@@ -2,16 +2,26 @@ from dataclasses import dataclass
 from copy import copy
 from PyQt5.QtGui import QColor
 
+from api_krita import Krita
+from shortcut_composer_config import PIE_DEADZONE_SCALE
+
 
 @dataclass
 class PieStyle:
-    pie_radius: int
-    icon_radius: int
+    pie_radius_scale: float
+    icon_radius_scale: float
     area_color: QColor
     active_color: QColor
 
     def __post_init__(self):
+        base_size = Krita.screen_size/2560
+
+        self.pie_radius = round(base_size * self.pie_radius_scale * 165)
+        self.icon_radius = round(base_size * self.icon_radius_scale * 50)
+        self.deadzone_radius = round(base_size * PIE_DEADZONE_SCALE * 40)
+
         self.widget_radius = self.pie_radius + self.icon_radius
+
         self.border_thickness = round(self.icon_radius*0.06)
         self.area_thickness = round(self.pie_radius*0.4)
 
@@ -19,8 +29,8 @@ class PieStyle:
         self.icon_color.setAlpha(255)
 
         self.border_color = QColor(
-            max(self.icon_color.red()-15, 0),
-            max(self.icon_color.green()-15, 0),
-            max(self.icon_color.blue()-15, 0),
+            max(self.icon_color.red()+15, 0),
+            max(self.icon_color.green()+15, 0),
+            max(self.icon_color.blue()+15, 0),
             255
         )

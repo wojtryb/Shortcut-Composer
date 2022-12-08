@@ -2,8 +2,8 @@ from dataclasses import dataclass
 
 from PyQt5.QtGui import QPixmap
 
-from shortcut_composer_config import ICON_RADIUS_PX
-from api_krita import Krita, pyqt
+from api_krita import Krita
+from api_krita.pyqt import add_border
 from api_krita.enums import Tool, Toggle
 from ..controller_base import Controller
 
@@ -29,8 +29,7 @@ class ToolController(Controller):
         Krita.active_tool = value
 
     def get_label(self, value: Tool) -> QPixmap:
-        icon_size = round(ICON_RADIUS_PX * 1.2)
-        return pyqt.add_border(value.icon.pixmap(icon_size, icon_size))
+        return add_border(value.icon.pixmap(200, 200))
 
 
 @dataclass

@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QDesktopWidget
 from PyQt5.QtGui import QKeySequence
 from krita import Krita as Api, Extension
 
@@ -19,6 +19,7 @@ class KritaInstance:
 
     def __init__(self) -> None:
         self.instance = Api.instance()
+        self.screen_size = QDesktopWidget().screenGeometry(-1).width()
 
     def get_active_view(self) -> View:
         """Return wrapper of krita `View`."""

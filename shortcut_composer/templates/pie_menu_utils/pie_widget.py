@@ -4,7 +4,6 @@ from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QColor
 
-from shortcut_composer_config import PIE_DEADZONE_PX
 from api_krita.pyqt import Painter
 from .pie_style import PieStyle
 from .label_holder import LabelHolder
@@ -46,15 +45,19 @@ class PieWidget(QWidget):
     def outer_radius(self) -> int:
         return self._style.pie_radius - self._style.border_thickness//2
 
+    @property
+    def deadzone(self) -> int:
+        return self._style.deadzone_radius
+
     def move_center(self, x: int, y: int) -> None:
         self.move(x-self._style.widget_radius, y-self._style.widget_radius)
 
     def paintEvent(self, event) -> None:
         with Painter(self, event) as painter:
+            self._paint_deadzone_indicator(painter)
             self._paint_base_wheel(painter)
             self._paint_active_pie(painter)
             self._paint_base_border(painter)
-            self._paint_deadzone_indicator(painter)
 
             for label_painter in self._label_painters:
                 label_painter.paint(painter)
@@ -78,14 +81,14 @@ class PieWidget(QWidget):
     def _paint_deadzone_indicator(self, painter: Painter):
         painter.paint_wheel(
             center=self.center,
-            outer_radius=PIE_DEADZONE_PX,
-            color=QColor(128, 255, 128, 150),
+            outer_radius=self.deadzone,
+            color=QColor(128, 255, 128, 120),
             thickness=1,
         )
         painter.paint_wheel(
             center=self.center,
-            outer_radius=PIE_DEADZONE_PX-1,
-            color=QColor(255, 128, 128, 150),
+            outer_radius=self.deadzone-1,
+            color=QColor(255, 128, 128, 120),
             thickness=1,
         )
 
