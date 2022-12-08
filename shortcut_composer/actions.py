@@ -102,47 +102,6 @@ actions = [
         ],
     ),
 
-    # Cycle between miscellaneous tools from values_to_cycle list
-    # After a long key press, go back to the FREEHAND BRUSH tool
-    templates.MultipleAssignment(
-        name="Cycle misc tools",
-        controller=controllers.ToolController(),
-        default_value=Tool.FREEHAND_BRUSH,
-        values=[
-            Tool.CROP,
-            Tool.REFERENCE,
-            Tool.GRADIENT,
-            Tool.MULTI_BRUSH,
-        ],
-    ),
-
-    # Cycle between painting blending modes from values_to_cycle list
-    # After a long key press, go back to the NORMAL blending mode
-    templates.MultipleAssignment(
-        name="Cycle painting blending modes",
-        controller=controllers.BlendingModeController(),
-        default_value=BlendingMode.NORMAL,
-        values=[
-            BlendingMode.OVERLAY,
-            BlendingMode.MULTIPLY,
-            BlendingMode.COLOR,
-            BlendingMode.ADD,
-            BlendingMode.BEHIND,
-            BlendingMode.DARKEN,
-            BlendingMode.LIGHTEN,
-            BlendingMode.NORMAL,
-        ],
-    ),
-
-    # Cycle between brush presets from the tag named "Digital"
-    # After a long key press, set "b) Basic-5 Size Opacity" preset
-    templates.MultipleAssignment(
-        name="Cycle brush presets",
-        controller=controllers.PresetController(),
-        instructions=[instructions.SetBrushOnNonPaintable()],
-        values=Tag("Digital"),
-        default_value="b) Basic-5 Size Opacity",
-    ),
 
     # Control undo and redo actions by sliding the cursor horizontally
     # Start triggering the actions after passing a deadzone of 100 px
@@ -209,20 +168,37 @@ actions = [
     ),
 
     templates.PieMenu(
-        name="Pie",
-        # controller=controllers.OpacityController(),
-        # values=[100, 70, 50, 30, 10],
+        name="Pick painting blending modes",
         controller=controllers.BlendingModeController(),
-        values=[BlendingMode.OVERLAY, BlendingMode.ADD, BlendingMode.SUBTRACT],
-        # controller=controllers.PresetController(),
-        # values=Tag("RGBA"),
-        # controller=controllers.ToolController(),
-        # values=[Tool.CROP, Tool.FREEHAND_BRUSH, Tool.FREEHAND_SELECTION,
-        #         Tool.POLYLINE, Tool.PAN, Tool.ZOOM],
+        instructions=[instructions.SetBrushOnNonPaintable()],
+        values=[
+            BlendingMode.NORMAL,
+            BlendingMode.OVERLAY,
+            BlendingMode.MULTIPLY,
+            BlendingMode.COLOR,
+            BlendingMode.ADD,
+            BlendingMode.BEHIND,
+            BlendingMode.DARKEN,
+            BlendingMode.LIGHTEN,
+        ],
     ),
+
     templates.PieMenu(
-        name="Pie2",
+        name="Pick misc tools",
+        controller=controllers.ToolController(),
+        values=[
+            Tool.CROP,
+            Tool.REFERENCE,
+            Tool.GRADIENT,
+            Tool.MULTI_BRUSH,
+        ],
+    ),
+
+    # Pick a brush preset from the tag named "RGBA" using a pie menu
+    templates.PieMenu(
+        name="Pick brush presets",
         controller=controllers.PresetController(),
+        instructions=[instructions.SetBrushOnNonPaintable()],
         values=Tag("RGBA"),
         area_color=QColor(120, 50, 50, 150),
         active_color=QColor(200, 50, 50, 255),

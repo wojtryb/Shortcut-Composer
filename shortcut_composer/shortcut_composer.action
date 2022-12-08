@@ -3,18 +3,6 @@
     <Actions category="Scripts">
         <text>Shortcut Composer</text>
 
-        <Action name="Pie">
-        <text>Pie</text>
-        <activationFlags>1</activationFlags>
-        <activationConditions>1</activationConditions>
-        </Action>
-
-        <Action name="Pie2">
-        <text>Pie2</text>
-        <activationFlags>1</activationFlags>
-        <activationConditions>1</activationConditions>
-        </Action>
-
         <Action name="Temporary move tool">
         <text>Temporary move tool</text>
         <activationFlags>1</activationFlags>
@@ -75,12 +63,6 @@
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Cycle brush presets">
-        <text>Cycle brush presets</text>
-        <activationFlags>1</activationFlags>
-        <activationConditions>1</activationConditions>
-        </Action>
-
         <Action name="Scroll undo stack">
         <text>Scroll undo stack</text>
         <activationFlags>1</activationFlags>
@@ -101,6 +83,24 @@
 
         <Action name="Scroll brush size or opacity">
         <text>Scroll brush size or opacity</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
+        </Action>
+
+        <Action name="Pick painting blending modes">
+        <text>Pick painting blending modes</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
+        </Action>
+
+        <Action name="Pick misc tools">
+        <text>Pick misc tools</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
+        </Action>
+
+        <Action name="Pick brush presets">
+        <text>Pick brush presets</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
