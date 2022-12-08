@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtGui import QKeySequence, QIcon
+from PyQt5.QtGui import QKeySequence
 from krita import Krita as Api, Extension
 
 from .wrappers import (
@@ -52,10 +52,6 @@ class KritaInstance:
     def get_active_qwindow(self) -> QMainWindow:
         """Return qt window of krita. Don't use on plugin init phase."""
         return self.instance.activeWindow().qwindow()
-
-    def get_icon(self, icon_name: str) -> QIcon:
-        """TODO: take it to tools."""
-        return self.instance.icon(icon_name)
 
     def add_extension(self, extension: Extension) -> None:
         """Add extension/plugin/add-on to krita."""

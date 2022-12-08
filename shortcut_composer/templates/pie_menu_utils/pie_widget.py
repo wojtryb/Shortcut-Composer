@@ -81,7 +81,13 @@ class PieWidget(QWidget):
         painter.paint_wheel(
             center=self.center,
             outer_radius=PIE_DEADZONE_PX,
-            color=QColor(255, 255, 255, 255),
+            color=QColor(128, 255, 128, 150),
+            thickness=1,
+        )
+        painter.paint_wheel(
+            center=self.center,
+            outer_radius=PIE_DEADZONE_PX-1,
+            color=QColor(255, 128, 128, 150),
             thickness=1,
         )
 

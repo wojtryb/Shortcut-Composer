@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QLabel, QWidget
 from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtCore import Qt
 
+from shortcut_composer_config import ICON_RADIUS_PX
 from api_krita.pyqt import Painter, make_pixmap_round, scale_pixmap
 from .label import Label
 from .pie_style import PieStyle
@@ -46,7 +47,7 @@ class TextLabelPainter(LabelPainter):
         )
         painter.paint_wheel(
             center=self.label.center,
-            outer_radius=self.style.icon_radius-self.style.border_thickness//2,
+            outer_radius=self.style.icon_radius,
             color=self.style.border_color,
             thickness=self.style.border_thickness,
         )
@@ -56,13 +57,16 @@ class TextLabelPainter(LabelPainter):
             raise TypeError("Label supposed to be text.")
 
         label = QLabel("text label", self.widget)
-        label.setFont(QFont('Arial', 20))
+        label.setFont(QFont(
+            'Helvetica',
+            round(ICON_RADIUS_PX*0.45),
+            QFont.Bold))
         label.adjustSize()
-        small_radius = round(self.style.icon_radius*0.6)
+        small_radius = round(self.style.icon_radius*0.4)
         label.setGeometry(
-            round(self.label.center.x()-small_radius),
+            round(self.label.center.x()-small_radius*2),
             round(self.label.center.y()-small_radius),
-            round(small_radius*2),
+            round(small_radius*4),
             round(small_radius*2)
         )
         label.setStyleSheet(
