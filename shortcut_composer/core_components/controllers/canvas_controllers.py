@@ -1,4 +1,5 @@
 from api_krita import Krita
+from api_krita.pyqt import Text
 from ..controller_base import Controller
 
 
@@ -31,8 +32,8 @@ class CanvasZoomController(CanvasBasedController):
     def set_value(self, value: float) -> None:
         self.canvas.zoom = value
 
-    def get_label(self, value: float) -> str:
-        return f"{round(value)}%"
+    def get_label(self, value: float) -> Text:
+        return Text(f"{round(value)}%")
 
 
 class CanvasRotationController(CanvasBasedController):

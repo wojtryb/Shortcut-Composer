@@ -1,5 +1,6 @@
 from api_krita import Krita
 from api_krita.wrappers import Node
+from api_krita.pyqt import Text
 from ..controller_base import Controller
 
 
@@ -45,5 +46,5 @@ class TimeController(DocumentBasedController):
     def set_value(self, value: int) -> None:
         self.document.current_time = value
 
-    def get_label(self, value: int) -> str:
-        return str(value)
+    def get_label(self, value: int) -> Text:
+        return Text(str(value))
