@@ -6,6 +6,7 @@ from .pie_widget import PieWidget
 from .label import Label
 from .label_holder import LabelHolder
 from api_krita import Krita
+from api_krita.wrappers import Cursor
 from time import sleep
 from shortcut_composer_config import FPS_LIMIT, PIE_DEADZONE_PX
 
@@ -16,6 +17,8 @@ class PieManager:
         self._labels = labels
         self._is_working = False
         self._sleep_time = 1/FPS_LIMIT if FPS_LIMIT else 0.001
+
+        self._cursor: Cursor
 
     def start(self):
         self._is_working = True
@@ -28,18 +31,17 @@ class PieManager:
         self._cursor = Krita.get_cursor()
         while self._is_working:
             if self._distance_from_center() < PIE_DEADZONE_PX:
-                self._set_active_label(None)
+                label = None
             else:
                 angle = self._angle_from_cursor()
                 label = self._labels.from_angle(round(angle))
-                self._set_active_label(label)
+            self._set_active_label(label)
             sleep(self._sleep_time)
 
     def _distance_from_center(self):
-        return (
-            (self._widget.center_global.x() - self._cursor.x()) ** 2
-            + (self._widget.center_global.y() - self._cursor.y()) ** 2
-        ) ** 0.5
+        distance = (self._widget.center_global.x() - self._cursor.x()) ** 2
+        distance += (self._widget.center_global.y() - self._cursor.y()) ** 2
+        return distance ** 0.5
 
     def _angle_from_cursor(self):
         angle = math.degrees(math.atan2(

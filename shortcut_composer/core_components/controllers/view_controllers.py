@@ -75,7 +75,7 @@ class BlendingModeController(ViewBasedController):
         self.view.blending_mode = value
 
     def get_label(self, value: BlendingMode) -> str:
-        return value.name[0]
+        return value.name[:3]
 
 
 class OpacityController(ViewBasedController):

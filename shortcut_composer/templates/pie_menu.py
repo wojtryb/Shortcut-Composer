@@ -6,6 +6,8 @@ from shortcut_composer_config import (
     SHORT_VS_LONG_PRESS_TIME,
     ICON_RADIUS_PX,
     PIE_RADIUS_PX,
+    PIE_ACTIVE_COLOR,
+    PIE_AREA_COLOR,
 )
 from core_components import Controller, Instruction
 from input_adapter import PluginAction
@@ -32,7 +34,8 @@ class PieMenu(PluginAction, Generic[T]):
         short_vs_long_press_time: float = SHORT_VS_LONG_PRESS_TIME,
         pie_radius: int = PIE_RADIUS_PX,
         icon_radius: int = ICON_RADIUS_PX,
-        area_color: QColor = QColor(55, 55, 55, 200),
+        area_color: QColor = PIE_AREA_COLOR,
+        active_color: QColor = PIE_ACTIVE_COLOR,
     ) -> None:
         super().__init__(
             name=name,
@@ -43,6 +46,7 @@ class PieMenu(PluginAction, Generic[T]):
             pie_radius=pie_radius,
             icon_radius=icon_radius,
             area_color=area_color,
+            active_color=active_color,
         )
         self._labels = self._create_labels(values)
         self._widget = PieWidget(self._labels, self._style)
