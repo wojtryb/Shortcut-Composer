@@ -8,7 +8,7 @@ from shortcut_composer_config import PIE_DEADZONE_PX
 from api_krita.pyqt import Painter
 from .pie_style import PieStyle
 from .label_holder import LabelHolder
-from .label_painter import pick_correct_painter, LabelPainter
+from .label_painter import LabelPainter, create_painter
 
 
 class PieWidget(QWidget):
@@ -103,11 +103,4 @@ class PieWidget(QWidget):
         )
 
     def _create_label_painters(self) -> List[LabelPainter]:
-        painters = []
-        for label in self._labels:
-            painters.append(pick_correct_painter(
-                widget=self,
-                style=self._style,
-                label=label,
-            ))
-        return painters
+        return [create_painter(label, self) for label in self._labels]

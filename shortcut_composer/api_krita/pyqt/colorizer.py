@@ -5,8 +5,7 @@ from typing import Union
 
 class Colorizer(QColor):
 
-    def __init__(self, value: Union[int, BlendingMode]):
-        ...
+    def __init__(self, value: Union[int, BlendingMode]): ...
 
     def __new__(cls, value: Union[int, BlendingMode]) -> QColor:
         if isinstance(value, int):
@@ -32,5 +31,4 @@ class Colorizer(QColor):
 
     @classmethod
     def blending_mode(cls, mode: BlendingMode):
-        print(mode)
         return cls.BLENDING_MODES_MAP.get(mode, QColor(220, 220, 220))
