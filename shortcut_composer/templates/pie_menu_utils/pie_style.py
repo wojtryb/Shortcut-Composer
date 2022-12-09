@@ -23,7 +23,7 @@ class PieStyle:
         self.widget_radius = self.pie_radius + self.icon_radius
 
         self.border_thickness = round(self.icon_radius*0.06)
-        self.area_thickness = round(self.pie_radius*0.4)
+        self.area_thickness = round(self.pie_radius/self.pie_radius_scale*0.4)
 
         self.icon_color = copy(self.area_color)
         self.icon_color.setAlpha(255)
