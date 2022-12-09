@@ -3,6 +3,8 @@ from typing import Optional
 from PyQt5.QtGui import QPainter, QPainterPath, QColor, QPixmap
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtCore import QPoint, QRectF
+from math import floor, ceil
+
 
 
 class Painter:
@@ -45,12 +47,12 @@ class Painter:
         path = QPainterPath()
         path.moveTo(center)
         rectangle = self._square(center, outer_radius*2)
-        path.arcTo(rectangle, angle-span//2, span)
+        path.arcTo(rectangle, angle-floor(span/2), span)
 
         if thickness:
             inner_radius = outer_radius-thickness
             rectangle = self._square(center, round(inner_radius*2))
-            path.arcTo(rectangle, angle+span//2, -span)
+            path.arcTo(rectangle, angle+ceil(span/2), -span)
 
         self._painter.fillPath(path, color)
 
