@@ -1,6 +1,7 @@
-from typing import List, TypeVar, Generic
+from typing import List, TypeVar, Generic, Tuple, Union
 
 from PyQt5.QtGui import QColor
+from PyQt5.QtGui import QPixmap
 
 from shortcut_composer_config import (
     SHORT_VS_LONG_PRESS_TIME,
@@ -12,19 +13,21 @@ from shortcut_composer_config import (
 from core_components import Controller, Instruction
 from input_adapter import PluginAction
 from api_krita import Krita
+from api_krita.pyqt import Text
 from .pie_menu_utils import (
     PieWidget,
     LabelHolder,
     PieStyle,
     Label,
     AngleIterator,
-    PieManager
+    PieManager,
 )
 
 T = TypeVar('T')
 
 
 class PieMenu(PluginAction, Generic[T]):
+
     def __init__(
         self, *,
         name: str,
@@ -64,24 +67,37 @@ class PieMenu(PluginAction, Generic[T]):
 
     def on_every_key_release(self) -> None:
         super().on_every_key_release()
-        if label := self._labels.active:
-            self._controller.set_value(label.value)
         self._pie_manager.stop()
         self._widget.hide()
+        if label := self._labels.active:
+            self._controller.set_value(label.value)
 
     def _create_labels(self, values: List[T]) -> LabelHolder:
-        labels = LabelHolder()
+        valid_values = self._validate_labels(values)
         iterator = AngleIterator(
             center_distance=self._style.widget_radius,
             radius=self._style.pie_radius,
-            amount=len(values)
+            amount=len(valid_values)
         )
-        for value, (angle, point) in zip(values, iterator):
+        labels = LabelHolder()
+        for (value, icon), (angle, point) in zip(valid_values, iterator):
             labels[angle] = Label(
                 center=point,
                 angle=angle,
                 value=value,
-                display_value=self._controller.get_label(value),
+                display_value=icon,
                 style=self._style
             )
         return labels
+
+    def _validate_labels(self, values: List[T])\
+            -> List[Tuple[T, Union[Text, QPixmap]]]:
+        valid_values = []
+        for value in values:
+            try:
+                icon = self._controller.get_label(value)
+            except KeyError:
+                continue
+            else:
+                valid_values.append((value, icon))
+        return valid_values
