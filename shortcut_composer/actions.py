@@ -13,11 +13,11 @@ from core_components import instructions, controllers
 from data_components import (
     CurrentLayerStack,
     PickStrategy,
+    read_setting,
     Slider,
     Range,
     Tag,
 )
-from api_krita import Krita
 
 
 actions = [
@@ -207,45 +207,29 @@ actions = [
     # Pick a brush preset from the tag named "RGBA" using a pie menu
 
     templates.PieMenu(
-        name="Pick brush presets (green)",
-        controller=controllers.PresetController(),
-        instructions=[instructions.SetBrushOnNonPaintable()],
-        values=Tag(
-            Krita.read_setting(
-                group="ShortcutComposer",
-                name="Tag (green)",
-                default="RGBA",
-            )
-        ),
-        area_color=QColor(95, 65, 65, 190),
-        active_color=QColor(200, 70, 50),
-    ),
-    templates.PieMenu(
         name="Pick brush presets (red)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        values=Tag(
-            Krita.read_setting(
-                group="ShortcutComposer",
-                name="Tag (red)",
-                default="Erasers",
-            )
-        ),
+        values=Tag(read_setting(name="Tag (red)", default="Erasers")),
         area_color=QColor(95, 65, 65, 190),
-        active_color=QColor(200, 70, 50),
+        active_color=QColor(200, 70, 70),
     ),
+
+    templates.PieMenu(
+        name="Pick brush presets (green)",
+        controller=controllers.PresetController(),
+        instructions=[instructions.SetBrushOnNonPaintable()],
+        values=Tag(read_setting(name="Tag (green)", default="RGBA")),
+        area_color=QColor(65, 95, 65, 190),
+        active_color=QColor(70, 200, 70),
+    ),
+
     templates.PieMenu(
         name="Pick brush presets (blue)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        values=Tag(
-            Krita.read_setting(
-                group="ShortcutComposer",
-                name="Tag (blue)",
-                default="Pixel Art",
-            )
-        ),
-        area_color=QColor(95, 65, 65, 190),
-        active_color=QColor(200, 70, 50),
+        values=Tag(read_setting(name="Tag (blue)", default="Pixel Art")),
+        area_color=QColor(65, 65, 96, 190),
+        active_color=QColor(100, 100, 230),
     ),
 ]

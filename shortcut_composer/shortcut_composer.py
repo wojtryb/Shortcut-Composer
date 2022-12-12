@@ -3,7 +3,7 @@
 from api_krita import Extension  # type: ignore
 from input_adapter import ActionManager
 from .actions import actions
-from .templates.pie_menu_utils.settings_handler import SettingsHandler
+from .templates.pie_menu_utils import SettingsHandler
 
 
 class ShortcutComposer(Extension):
@@ -16,9 +16,7 @@ class ShortcutComposer(Extension):
 
     def createActions(self, window) -> None:
         """Create ActionManager which holds and binds them to krita."""
+        self._settings = SettingsHandler(window)
         self._manager = ActionManager(window)
         for action in actions:
             self._manager.bind_action(action)
-
-        self._settings = SettingsHandler(window)
-        self._settings.create_settings()
