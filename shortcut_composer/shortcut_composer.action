@@ -99,8 +99,20 @@
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Pick brush presets">
-        <text>Pick brush presets</text>
+        <Action name="Pick brush presets (green)">
+        <text>Pick brush presets (green)</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
+        </Action>
+        
+        <Action name="Pick brush presets (red)">
+        <text>Pick brush presets (red)</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
+        </Action>
+
+        <Action name="Pick brush presets (blue)">
+        <text>Pick brush presets (blue)</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
