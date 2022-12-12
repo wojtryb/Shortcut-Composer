@@ -53,6 +53,8 @@ class PieMenu(PluginAction, Generic[T]):
             active_color=active_color,
         )
         self._labels = self._create_labels(values)
+        self._update_icon_radius(len(self._labels))
+
         self._widget = PieWidget(self._labels, self._style)
         self._pie_manager = PieManager(self._widget, self._labels)
 
@@ -101,3 +103,7 @@ class PieMenu(PluginAction, Generic[T]):
             else:
                 valid_values.append((value, icon))
         return valid_values
+
+    def _update_icon_radius(self, amount: int):
+        max_icon_size = round(self._style.pie_radius * 3.1413 / amount)
+        self._style.icon_radius = min(self._style.icon_radius, max_icon_size)
