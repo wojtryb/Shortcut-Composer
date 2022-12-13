@@ -35,8 +35,9 @@ class PieStyle:
             255
         )
 
-    def update_icon_radius(self, amount: int):
+    def update_with_item_amount(self, amount: int):
         if not amount:
+            self.deadzone_radius = float("inf")
             return
         max_icon_size = round(self.pie_radius * 3.1413 / amount)
         self.icon_radius = min(self.icon_radius, max_icon_size)

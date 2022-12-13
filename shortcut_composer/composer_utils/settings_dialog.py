@@ -36,11 +36,10 @@ class SettingsDialog(QWidget):
 
         button_box = QDialogButtonBox(buttons)  # type: ignore
         button_box.accepted.connect(self._handle_ok_button)
-        button_box.rejected.connect(self._handle_cancel_button)
+        button_box.rejected.connect(self.hide)
 
         button_layout = QVBoxLayout()
-        button_layout.addWidget(QLabel(
-            "Selected tags gets updated after krita restart."))
+        button_layout.addWidget(QLabel("Pressing ok reloads the plugin."))
         button_layout.addWidget(button_box)
         button_layout.setAlignment(Qt.AlignBottom)
 
@@ -54,9 +53,6 @@ class SettingsDialog(QWidget):
                 value=combo.currentText()
             )
             Krita.trigger_action("Reload Shortcut Composer")
-        self.hide()
-
-    def _handle_cancel_button(self):
         self.hide()
 
     def _create_combobox_layout(self):

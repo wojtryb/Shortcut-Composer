@@ -8,6 +8,9 @@ class LabelHolder:
         self._labels: Dict[int, Label] = {}
         self.active: Optional[Label] = None
 
+    def add(self, label: Label):
+        self._labels[label.angle] = label
+
     def angles(self):
         return self._labels.keys()
 
@@ -18,9 +21,6 @@ class LabelHolder:
 
         closest = min(self.angles(), key=angle_difference)
         return self._labels[closest]
-
-    def __setitem__(self, angle: int, label: Label):
-        self._labels[angle] = label
 
     def __iter__(self) -> Iterator[Label]:
         return iter(self._labels.values())

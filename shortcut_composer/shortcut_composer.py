@@ -1,5 +1,7 @@
 """Main file which defines extension class and adds it to krita."""
 
+from PyQt5.QtWidgets import QWidgetAction
+
 from api_krita import Krita, Extension  # type: ignore
 from input_adapter import ActionManager
 from .actions import create_actions
@@ -9,6 +11,9 @@ from .composer_utils import SettingsDialog
 class ShortcutComposer(Extension):
     """Krita extension that adds complex keyboard shortcuts."""
 
+    _pie_settings_dialog: SettingsDialog
+    _settings_action: QWidgetAction
+    _reload_action: QWidgetAction
     _manager: ActionManager
 
     def setup(self) -> None:
