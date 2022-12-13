@@ -10,10 +10,16 @@ class AngleIterator:
         self._amount = amount
 
     def __iter__(self):
-        for angle in range(0, 360, round(360/self._amount)):
-            yield angle, self._center_from_angle(angle)
+        for angle in self._float_range(0, 360, 360/self._amount):
+            yield round(angle), self._center_from_angle(angle)
 
-    def _center_from_angle(self, angle: int) -> QPoint:
+    @staticmethod
+    def _float_range(start: float, end: float, step: float):
+        while start < end:
+            yield start
+            start += step
+
+    def _center_from_angle(self, angle: float) -> QPoint:
         rad_angle = math.radians(angle)
         return QPoint(
             round(self._center_distance + self._radius*math.sin(rad_angle)),
