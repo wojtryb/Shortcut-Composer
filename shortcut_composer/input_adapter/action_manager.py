@@ -4,7 +4,7 @@ key_release events.
 """
 
 from dataclasses import dataclass
-from typing import List, Protocol
+from typing import Dict, Protocol
 
 from PyQt5.QtWidgets import QWidgetAction
 
@@ -53,7 +53,7 @@ class ActionManager:
     def __init__(self, window: Window):
         self._window = window
         self._event_filter = ReleaseKeyEventFilter()
-        self._stored_actions: List[ActionContainer] = []
+        self._stored_actions: Dict[str, ActionContainer] = {}
 
     def bind_action(self, action: PluginAction) -> 'ActionContainer':
         """
@@ -62,12 +62,17 @@ class ActionManager:
         The container is stored in internal list to protect it from
         garbage collector.
         """
+        if action.name in self._stored_actions:
+            self._stored_actions[action.name].plugin_action = action
+            self._stored_actions[action.name].shortcut.action = action
+            return self._stored_actions[action.name]
+
         container = ActionContainer(
             plugin_action=action,
             krita_action=self._create_krita_action(action),
             shortcut=self._create_adapter(action)
         )
-        self._stored_actions.append(container)
+        self._stored_actions[action.name] = container
         return container
 
     def _create_krita_action(self, action: PluginAction) -> QWidgetAction:

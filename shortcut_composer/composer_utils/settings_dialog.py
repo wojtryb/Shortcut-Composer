@@ -72,6 +72,7 @@ class SettingsDialog(QWidget):
                 name=combo.objectName(),
                 value=combo.currentText()
             )
+            Krita.trigger_action("Reload Shortcut Composer")
         self.hide()
 
     def handle_cancel_button(self):
