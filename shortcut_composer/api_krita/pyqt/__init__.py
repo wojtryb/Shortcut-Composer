@@ -1,16 +1,10 @@
-from .pixmap_transform import (
-    make_pixmap_round,
-    scale_pixmap,
-    add_border,
-)
+from .pixmap_transform import PixmapTransform
 from .colorizer import Colorizer
 from .painter import Painter
 from .text import Text
 
 __all__ = [
-    "make_pixmap_round",
-    "scale_pixmap",
-    "add_border",
+    "PixmapTransform",
     "Colorizer",
     "Painter",
     "Text",

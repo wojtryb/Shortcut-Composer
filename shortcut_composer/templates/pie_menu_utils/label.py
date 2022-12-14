@@ -6,8 +6,7 @@ from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtGui import QFont, QPixmap, QColor
 from PyQt5.QtWidgets import QLabel, QWidget
 
-from api_krita import pyqt
-from api_krita.pyqt import Painter, Text
+from api_krita.pyqt import Painter, Text, PixmapTransform
 from .pie_style import PieStyle
 
 
@@ -144,8 +143,8 @@ class ImageLabelPainter(LabelPainter):
         if not isinstance(self.label.image, QPixmap):
             raise TypeError("Label supposed to be pixmap.")
 
-        rounded_image = pyqt.make_pixmap_round(self.label.image)
-        return pyqt.scale_pixmap(
+        rounded_image = PixmapTransform.make_pixmap_round(self.label.image)
+        return PixmapTransform.scale_pixmap(
             pixmap=rounded_image,
             size_px=round(self.style.icon_radius*1.8)
         )
