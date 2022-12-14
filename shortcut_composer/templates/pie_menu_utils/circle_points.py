@@ -4,7 +4,7 @@ from typing import Iterable, Tuple
 from PyQt5.QtCore import QPoint
 
 
-class AngleCalculator:
+class CirclePoints:
     """
     Operates on points located on a provided circle.
 
