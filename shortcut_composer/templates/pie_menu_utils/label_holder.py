@@ -8,11 +8,11 @@ class LabelHolder:
         self._labels: Dict[int, Label] = {}
         self.active: Optional[Label] = None
 
-    def add(self, label: Label):
+    def add(self, label: Label) -> None:
         self._labels[label.angle] = label
 
-    def angles(self):
-        return self._labels.keys()
+    def angles(self) -> tuple:
+        return tuple(self._labels.keys())
 
     def from_angle(self, angle: int) -> Label:
         def angle_difference(label_angle: int):

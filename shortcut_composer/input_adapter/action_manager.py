@@ -33,6 +33,11 @@ class ActionContainer:
         """Bind key_press method to action 'trigger' event."""
         self.krita_action.triggered.connect(self.shortcut.on_key_press)
 
+    def replace_action(self, new_action: PluginAction):
+        """Replace plugin action managed by this container."""
+        self.plugin_action = new_action
+        self.shortcut.action = new_action
+
 
 class ActionManager:
     """
@@ -48,7 +53,7 @@ class ActionManager:
         self._event_filter = ReleaseKeyEventFilter()
         self._stored_actions: Dict[str, ActionContainer] = {}
 
-    def bind_action(self, action: PluginAction) -> 'ActionContainer':
+    def bind_action(self, action: PluginAction):
         """
         Create action components and stores them together.
 
@@ -56,9 +61,8 @@ class ActionManager:
         garbage collector.
         """
         if action.name in self._stored_actions:
-            self._stored_actions[action.name].plugin_action = action
-            self._stored_actions[action.name].shortcut.action = action
-            return self._stored_actions[action.name]
+            self._stored_actions[action.name].replace_action(action)
+            return
 
         container = ActionContainer(
             plugin_action=action,
@@ -68,7 +72,6 @@ class ActionManager:
             shortcut=self._create_adapter(action)
         )
         self._stored_actions[action.name] = container
-        return container
 
     def _create_adapter(self, action: PluginAction) -> ShortcutAdapter:
         """

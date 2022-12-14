@@ -9,6 +9,7 @@ from api_krita.pyqt import Text
 
 @dataclass
 class Label:
+
     value: Any
     center: QPoint = QPoint(0, 0)
     angle: int = 0

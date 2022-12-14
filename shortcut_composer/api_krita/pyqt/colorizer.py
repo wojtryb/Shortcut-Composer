@@ -7,6 +7,7 @@ from ..enums import BlendingMode
 
 
 class Color(Enum):
+
     ORANGE = QColor(236, 109, 39)
     LIGHT_GRAY = QColor(170, 170, 170)
     BLUE = QColor(110, 217, 224)
