@@ -76,7 +76,7 @@ class BlendingModeController(ViewBasedController):
         self.view.blending_mode = value
 
     def get_label(self, value: BlendingMode) -> Text:
-        return Text(value.name[:3], Colorizer(value))
+        return Text(value.name[:3], Colorizer.blending_mode(value))
 
 
 class OpacityController(ViewBasedController):
@@ -98,7 +98,7 @@ class OpacityController(ViewBasedController):
         self.view.opacity = value
 
     def get_label(self, value: int) -> Text:
-        return Text(f"{value}%", Colorizer(value))
+        return Text(f"{value}%", Colorizer.percentage(value))
 
 
 class FlowController(ViewBasedController):
@@ -118,4 +118,4 @@ class FlowController(ViewBasedController):
         self.view.flow = value
 
     def get_label(self, value: int) -> Text:
-        return Text(f"{value}%", Colorizer(value))
+        return Text(f"{value}%", Colorizer.percentage(value))
