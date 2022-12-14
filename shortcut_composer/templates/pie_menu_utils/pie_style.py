@@ -14,6 +14,15 @@ from shortcut_composer_config import (
 
 @dataclass
 class PieStyle:
+    """
+    Holds and calculates configuration of displayed elements.
+
+    All style elements are calculated based on passed base colors and
+    scale multipliers.
+
+    Using adapt_to_item_amount() allows to modify the style to make it
+    fit the given amount of labels.
+    """
 
     pie_radius_scale: float
     icon_radius_scale: float
@@ -54,6 +63,7 @@ class PieStyle:
         )
 
     def adapt_to_item_amount(self, amount: int) -> None:
+        """Modify the style to make it fit the given amount of labels."""
         if not amount:
             self.deadzone_radius = float("inf")
             return
