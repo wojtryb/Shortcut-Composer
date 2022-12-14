@@ -11,8 +11,8 @@ class LabelHolder:
     def add(self, label: Label) -> None:
         self._labels[label.angle] = label
 
-    def angles(self) -> tuple:
-        return tuple(self._labels.keys())
+    def angles(self) -> Iterator[int]:
+        return iter(self._labels.keys())
 
     def from_angle(self, angle: int) -> Label:
         def angle_difference(label_angle: int):
