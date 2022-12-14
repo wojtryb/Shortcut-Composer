@@ -38,7 +38,7 @@ class PieManager:
                 label = None
             else:
                 angle = self._angle_from_cursor()
-                label = self._labels.from_angle(round(angle))
+                label = self._widget.labels.from_angle(round(angle))
             self._set_active_label(label)
             sleep(self._sleep_time)
 
