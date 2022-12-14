@@ -51,20 +51,16 @@ class PieMenu(PluginAction, Generic[T]):
         self._labels = self._create_labels(values)
         self._style.adapt_to_item_amount(len(self._labels))
 
-        self._widget = PieWidget(self._labels, self._style)
-        self._pie_manager = PieManager(self._widget, self._labels)
+        self._pie_manager = PieManager(PieWidget(self._labels, self._style))
 
     def on_key_press(self) -> None:
         self._controller.refresh()
-        self._widget.move_center(QCursor().pos())
         self._pie_manager.start()
-        self._widget.show()
         super().on_key_press()
 
     def on_every_key_release(self) -> None:
         super().on_every_key_release()
         self._pie_manager.stop()
-        self._widget.hide()
         if label := self._labels.active:
             self._controller.set_value(label.value)
 
