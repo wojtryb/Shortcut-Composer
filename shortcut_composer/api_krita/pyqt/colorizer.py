@@ -6,6 +6,7 @@ from ..enums import BlendingMode
 
 
 class Color(Enum):
+    """Named custom colors."""
 
     ORANGE = QColor(236, 109, 39)
     LIGHT_GRAY = QColor(170, 170, 170)
@@ -20,17 +21,21 @@ class Color(Enum):
 
 
 class Colorizer(QColor):
+    """Functions that return a color associated with value of property."""
 
     @classmethod
     def blending_mode(cls, mode: BlendingMode) -> QColor:
+        """Return a QColor associated with blending mode. Gray by default."""
         return cls.BLENDING_MODES_MAP.get(mode, Color.LIGHT_GRAY).value
 
     @classmethod
     def percentage(cls, percent: int) -> QColor:
+        """Return a QColor associated with percentage value."""
         return cls._percentage(percent).value
 
     @staticmethod
     def _percentage(percent: int) -> Color:
+        """Mapping of percentage values to custom colors."""
         if percent >= 100:
             return Color.DARK_GREEN
         if percent >= 80:
@@ -51,3 +56,4 @@ class Colorizer(QColor):
         BlendingMode.ADD: Color.DARK_BLUE,
         BlendingMode.MULTIPLY: Color.BLUE,
     }
+    """Mapping of blending modes to custom colors."""
