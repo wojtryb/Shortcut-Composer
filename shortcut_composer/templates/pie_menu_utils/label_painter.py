@@ -13,11 +13,11 @@ from .pie_style import PieStyle
 
 def create_painter(label: Label, style: PieStyle, widget: QWidget) \
         -> 'LabelPainter':
-    if isinstance(label.display_value, Text):
-        return TextLabelPainter(widget, style, label)
-    elif isinstance(label.display_value, QPixmap):
+    if label.image:
         return ImageLabelPainter(widget, style, label)
-    raise TypeError(f"Unknown label type: {type(label.display_value)}")
+    elif label.text:
+        return TextLabelPainter(widget, style, label)
+    raise ValueError(f"Label {label} is not valid")
 
 
 @dataclass
@@ -51,14 +51,14 @@ class TextLabelPainter(LabelPainter):
         )
 
     def _create_pyqt_label(self) -> QLabel:
-        if not isinstance(self.label.display_value, Text):
+        if not isinstance(self.label.text, Text):
             raise TypeError("Label supposed to be text.")
 
         font_size = round(self.style.icon_radius*0.45)
         heigth = round(self.style.icon_radius*0.8)
 
         label = QLabel(self.widget)
-        label.setText(self.label.display_value.text)
+        label.setText(self.label.text.value)
         label.setFont(QFont('Helvetica', font_size, QFont.Bold))
         label.setAlignment(Qt.AlignCenter)
         label.setGeometry(0, 0, round(heigth*2), round(heigth))
@@ -66,7 +66,7 @@ class TextLabelPainter(LabelPainter):
                    self.label.center.y()-heigth//2)
         label.setStyleSheet(f'''
             background-color:rgba({self._color_to_str(self.style.icon_color)});
-            color:rgba({self._color_to_str(self.label.display_value.color)});
+            color:rgba({self._color_to_str(self.label.text.color)});
         ''')
 
         label.show()
@@ -97,10 +97,10 @@ class ImageLabelPainter(LabelPainter):
         painter.paint_pixmap(self.label.center, self.ready_image)
 
     def _prepare_image(self):
-        if not isinstance(self.label.display_value, QPixmap):
+        if not isinstance(self.label.image, QPixmap):
             raise TypeError("Label supposed to be pixmap.")
 
-        rounded_image = pyqt.make_pixmap_round(self.label.display_value)
+        rounded_image = pyqt.make_pixmap_round(self.label.image)
         return pyqt.scale_pixmap(
             pixmap=rounded_image,
             size_px=round(self.style.icon_radius*1.8)

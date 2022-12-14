@@ -13,4 +13,14 @@ class Label:
     value: Any
     center: QPoint = QPoint(0, 0)
     angle: int = 0
-    display_value: Union[Text, QPixmap] = Text("")
+    display_value: Union[QPixmap, Text, None] = None
+
+    @property
+    def text(self) -> Optional[Text]:
+        if isinstance(self.display_value, Text):
+            return self.display_value
+
+    @property
+    def image(self) -> Optional[QPixmap]:
+        if isinstance(self.display_value, QPixmap):
+            return self.display_value

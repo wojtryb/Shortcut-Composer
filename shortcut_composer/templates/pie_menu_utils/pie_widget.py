@@ -43,15 +43,18 @@ class PieWidget(QWidget):
         return self.pos() + self.center  # type: ignore
 
     @property
-    def _outer_radius(self) -> int:
-        return self._style.pie_radius - self._style.border_thickness//2
-
-    @property
     def deadzone(self) -> float:
+        """Return the deadzone distance."""
         return self._style.deadzone_radius
 
-    def move_center(self, point: QPoint) -> None:
-        self.move(point-self.center)  # type: ignore
+    @property
+    def _no_border_radius(self) -> int:
+        """Return radius of widget excluding width of border."""
+        return self._style.pie_radius - self._style.border_thickness//2
+
+    def move_center(self, new_center: QPoint) -> None:
+        """Move the widget by providing a new center point."""
+        self.move(new_center-self.center)  # type: ignore
 
     def paintEvent(self, event: QPaintEvent) -> None:
         with Painter(self, event) as painter:
