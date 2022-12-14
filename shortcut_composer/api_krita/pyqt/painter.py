@@ -27,13 +27,6 @@ class Painter:
             path.addEllipse(center, inner_radius, inner_radius)
         self._painter.fillPath(path, color)
 
-    def paint_pixmap(self, center: QPoint, pixmap: QPixmap):
-        left_top_corner = QPoint(
-            center.x() - pixmap.width()//2,
-            center.y() - pixmap.height()//2
-        )
-        self._painter.drawPixmap(left_top_corner, pixmap)
-
     def paint_pie(
         self,
         center: QPoint,
@@ -55,6 +48,13 @@ class Painter:
             path.arcTo(inner_rectangle, angle+math.ceil(span/2), -span)
 
         self._painter.fillPath(path, color)
+
+    def paint_pixmap(self, center: QPoint, pixmap: QPixmap):
+        left_top_corner = QPoint(
+            center.x() - pixmap.width()//2,
+            center.y() - pixmap.height()//2
+        )
+        self._painter.drawPixmap(left_top_corner, pixmap)
 
     def _square(self, center: QPoint, width: int):
         return QRectF(center.x()-width//2, center.y()-width//2, width, width)
