@@ -4,10 +4,8 @@ from PyQt5.QtGui import QColor, QPixmap, QCursor
 
 from shortcut_composer_config import (
     SHORT_VS_LONG_PRESS_TIME,
-    ICON_RADIUS_SCALE,
-    PIE_RADIUS_SCALE,
+    PIE_BACKGROUND_COLOR,
     PIE_ACTIVE_COLOR,
-    PIE_AREA_COLOR,
 )
 from core_components import Controller, Instruction
 from input_adapter import PluginAction
@@ -33,9 +31,9 @@ class PieMenu(PluginAction, Generic[T]):
         values: List[T],
         instructions: List[Instruction] = [],
         short_vs_long_press_time: float = SHORT_VS_LONG_PRESS_TIME,
-        pie_radius_scale: float = PIE_RADIUS_SCALE,
-        icon_radius_scale: float = ICON_RADIUS_SCALE,
-        area_color: QColor = PIE_AREA_COLOR,
+        pie_radius_scale: float = 1.0,
+        icon_radius_scale: float = 1.0,
+        background_color: QColor = PIE_BACKGROUND_COLOR,
         active_color: QColor = PIE_ACTIVE_COLOR,
     ) -> None:
         super().__init__(
@@ -47,7 +45,7 @@ class PieMenu(PluginAction, Generic[T]):
         self._style = PieStyle(
             pie_radius_scale=pie_radius_scale,
             icon_radius_scale=icon_radius_scale,
-            area_color=area_color,
+            background_color=background_color,
             active_color=active_color,
         )
         self._labels = self._create_labels(values)

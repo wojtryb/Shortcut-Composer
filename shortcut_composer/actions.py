@@ -195,6 +195,7 @@ def create_actions(): return [
             Tool.MULTI_BRUSH,
             Tool.ASSISTANTS,
         ],
+        pie_radius_scale=0.85
     ),
 
     # Pick a brush preset from the tag named "RGBA" using a pie menu
@@ -203,7 +204,7 @@ def create_actions(): return [
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
         values=Tag(read_setting(name="Tag (red)", default="Erasers")),
-        area_color=QColor(95, 65, 65, 190),
+        background_color=QColor(95, 65, 65, 190),
         active_color=QColor(200, 70, 70),
     ),
 
@@ -212,7 +213,7 @@ def create_actions(): return [
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
         values=Tag(read_setting(name="Tag (green)", default="RGBA")),
-        area_color=QColor(65, 95, 65, 190),
+        background_color=QColor(65, 95, 65, 190),
         active_color=QColor(70, 200, 70),
     ),
 
@@ -221,7 +222,7 @@ def create_actions(): return [
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
         values=Tag(read_setting(name="Tag (blue)", default="Pixel Art")),
-        area_color=QColor(70, 70, 105, 190),
+        background_color=QColor(70, 70, 105, 190),
         active_color=QColor(110, 160, 235),
     ),
 ]

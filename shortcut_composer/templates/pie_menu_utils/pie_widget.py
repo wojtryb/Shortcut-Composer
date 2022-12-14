@@ -67,7 +67,7 @@ class PieWidget(QWidget):
         painter.paint_wheel(
             center=self.center,
             outer_radius=self._outer_radius,
-            color=self._style.area_color,
+            color=self._style.background_color,
             thickness=self._style.area_thickness,
         )
 
