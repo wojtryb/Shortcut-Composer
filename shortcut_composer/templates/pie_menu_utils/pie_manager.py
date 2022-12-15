@@ -4,7 +4,7 @@ from time import sleep
 
 from PyQt5.QtGui import QCursor
 
-from shortcut_composer_config import FPS_LIMIT
+from composer_utils import Config
 from .pie_widget import PieWidget
 from .label import Label
 from .circle_points import CirclePoints
@@ -22,7 +22,8 @@ class PieManager:
     def __init__(self, widget: PieWidget) -> None:
         self._widget = widget
         self._is_working = False
-        self._sleep_time = 1/FPS_LIMIT if FPS_LIMIT else 0.001
+        fps_limit = Config.FPS_LIMIT.get()
+        self._sleep_time = 1/fps_limit if fps_limit else 0.001
 
     def start(self):
         """Show widget under the mouse and start the mouse tracking loop."""

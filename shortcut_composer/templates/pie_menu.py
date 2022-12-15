@@ -3,11 +3,7 @@ from typing import List, TypeVar, Generic, Union
 from PyQt5.QtGui import QColor, QPixmap
 from PyQt5.QtCore import QPoint
 
-from shortcut_composer_config import (
-    SHORT_VS_LONG_PRESS_TIME,
-    PIE_BACKGROUND_COLOR,
-    PIE_ACTIVE_COLOR,
-)
+from composer_utils import Config
 from core_components import Controller, Instruction
 from input_adapter import PluginAction
 from api_krita.pyqt import Text
@@ -79,11 +75,11 @@ class PieMenu(PluginAction, Generic[T]):
         controller: Controller,
         values: List[T],
         instructions: List[Instruction] = [],
-        short_vs_long_press_time: float = SHORT_VS_LONG_PRESS_TIME,
         pie_radius_scale: float = 1.0,
         icon_radius_scale: float = 1.0,
-        background_color: QColor = PIE_BACKGROUND_COLOR,
-        active_color: QColor = PIE_ACTIVE_COLOR,
+        background_color: QColor = QColor(75, 75, 75, 190),
+        active_color: QColor = QColor(100, 150, 230, 255),
+        short_vs_long_press_time: float = Config.SHORT_VS_LONG_PRESS_TIME.get()
     ) -> None:
         super().__init__(
             name=name,

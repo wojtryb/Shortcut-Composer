@@ -4,12 +4,8 @@ from copy import copy
 
 from PyQt5.QtGui import QColor
 
+from composer_utils import Config
 from api_krita import Krita
-from shortcut_composer_config import (
-    PIE_DEADZONE_GLOBAL_SCALE,
-    ICON_RADIUS_GLOBAL_SCALE,
-    PIE_RADIUS_GLOBAL_SCALE,
-)
 
 
 @dataclass
@@ -35,16 +31,16 @@ class PieStyle:
         self.pie_radius = round(
             165 * base_size
             * self.pie_radius_scale
-            * ICON_RADIUS_GLOBAL_SCALE
+            * Config.PIE_GLOBAL_SCALE.get()
         )
         self.icon_radius = round(
             50 * base_size
             * self.icon_radius_scale
-            * PIE_RADIUS_GLOBAL_SCALE
+            * Config.PIE_ICON_GLOBAL_SCALE.get()
         )
         self.deadzone_radius: float = (
             40 * base_size
-            * PIE_DEADZONE_GLOBAL_SCALE
+            * Config.PIE_DEADZONE_GLOBAL_SCALE.get()
         )
         self.widget_radius = self.pie_radius + self.icon_radius
 
