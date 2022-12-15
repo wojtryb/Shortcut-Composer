@@ -46,6 +46,7 @@ class PieWidget(QWidget):
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setStyleSheet("background: transparent;")
         self.setWindowTitle("Pie Menu")
+        self.setCursor(Qt.CrossCursor)
 
         size = self._style.widget_radius*2
         self.setGeometry(0, 0, size, size)
@@ -64,11 +65,6 @@ class PieWidget(QWidget):
     def deadzone(self) -> float:
         """Return the deadzone distance."""
         return self._style.deadzone_radius
-
-    @property
-    def _no_border_radius(self) -> int:
-        """Return radius of widget excluding width of border."""
-        return self._style.pie_radius - self._style.border_thickness//2
 
     def move_center(self, new_center: QPoint) -> None:
         """Move the widget by providing a new center point."""
@@ -89,7 +85,7 @@ class PieWidget(QWidget):
         """Paint a base circle."""
         painter.paint_wheel(
             center=self.center,
-            outer_radius=self._no_border_radius,
+            outer_radius=self._style.no_border_radius,
             color=self._style.background_color,
             thickness=self._style.area_thickness,
         )
@@ -98,7 +94,7 @@ class PieWidget(QWidget):
         """Paint a border on the inner edge of base circle."""
         painter.paint_wheel(
             center=self.center,
-            outer_radius=self._style.pie_radius - self._style.area_thickness,
+            outer_radius=self._style.inner_edge_radius,
             color=self._style.border_color,
             thickness=self._style.border_thickness,
         )
@@ -128,7 +124,7 @@ class PieWidget(QWidget):
 
         painter.paint_pie(
             center=self.center,
-            outer_radius=self._no_border_radius,
+            outer_radius=self._style.no_border_radius,
             angle=self.labels.active.angle,
             span=360//len(self._label_painters),
             color=self._style.active_color,

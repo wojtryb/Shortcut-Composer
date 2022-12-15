@@ -46,11 +46,13 @@ class PieStyle:
             40 * base_size
             * PIE_DEADZONE_GLOBAL_SCALE
         )
-
         self.widget_radius = self.pie_radius + self.icon_radius
 
         self.border_thickness = round(self.pie_radius*0.02)
         self.area_thickness = round(self.pie_radius/self.pie_radius_scale*0.4)
+
+        self.inner_edge_radius = self.pie_radius - self.area_thickness
+        self.no_border_radius = self.pie_radius - self.border_thickness//2
 
         self.icon_color = copy(self.background_color)
         self.icon_color.setAlpha(255)
