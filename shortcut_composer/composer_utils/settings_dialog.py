@@ -1,9 +1,12 @@
-from typing import List
+from typing import List, Union
 from PyQt5.QtWidgets import (
     QDialogButtonBox,
+    QDoubleSpinBox,
     QVBoxLayout,
     QGridLayout,
+    QFormLayout,
     QComboBox,
+    QSpinBox,
     QWidget,
     QLabel,
 )
@@ -12,7 +15,8 @@ from PyQt5.QtGui import QCursor
 
 from api_krita.wrappers import Database
 from api_krita import Krita
-from composer_utils import read_setting
+from .config import Config
+from .krita_setting import read_setting, write_setting
 
 
 class SettingsDialog(QWidget):
@@ -23,39 +27,18 @@ class SettingsDialog(QWidget):
         self.setWindowTitle("Shortcut composer settings")
 
         self.combo_boxes: List[QComboBox] = []
+        self.forms: List[Union[QSpinBox, QDoubleSpinBox]] = []
 
-        button_layout = self._create_button_layout()
         combo_layout = self._create_combobox_layout()
+        form_layout = self._create_form_layout()
+        ending_layout = self._create_ending_layout()
 
         layout = QVBoxLayout()
         layout.addLayout(combo_layout)
-        layout.addLayout(button_layout)
+        layout.addLayout(form_layout)
+        layout.addLayout(ending_layout)
 
         self.setLayout(layout)
-
-    def _create_button_layout(self):
-        buttons = QDialogButtonBox.Ok | QDialogButtonBox.Cancel
-
-        button_box = QDialogButtonBox(buttons)  # type: ignore
-        button_box.accepted.connect(self._handle_ok_button)
-        button_box.rejected.connect(self.hide)
-
-        button_layout = QVBoxLayout()
-        button_layout.addWidget(QLabel("Pressing ok reloads the plugin."))
-        button_layout.addWidget(button_box)
-        button_layout.setAlignment(Qt.AlignBottom)
-
-        return button_layout
-
-    def _handle_ok_button(self):
-        for combo in self.combo_boxes:
-            Krita.write_setting(
-                group="ShortcutComposer",
-                name=combo.objectName(),
-                value=combo.currentText()
-            )
-            Krita.trigger_action("Reload Shortcut Composer")
-        self.hide()
 
     def _create_combobox_layout(self):
         combo_layout = QGridLayout()
@@ -80,6 +63,62 @@ class SettingsDialog(QWidget):
         self.combo_boxes.append(combo_box)
         return combo_box
 
+    def _create_form_layout(self):
+        form_layout = QFormLayout()
+
+        def add_row(config: Config, is_int: bool):
+            form = self._create_form(config, is_int)
+            form_layout.addRow(config.value, form)
+
+        add_row(Config.SHORT_VS_LONG_PRESS_TIME, is_int=False)
+        add_row(Config.PIXELS_IN_UNIT, is_int=True)
+        add_row(Config.SLIDER_DEADZONE, is_int=True)
+        add_row(Config.FPS_LIMIT, is_int=True)
+        add_row(Config.PIE_GLOBAL_SCALE, is_int=False)
+        add_row(Config.PIE_ICON_GLOBAL_SCALE, is_int=False)
+        add_row(Config.PIE_DEADZONE_GLOBAL_SCALE, is_int=False)
+
+        return form_layout
+
+    def _create_form(self, config: Config, is_int: bool):
+
+        form = QSpinBox() if is_int else QDoubleSpinBox()
+        form.setObjectName(config.value)
+        form.setMinimum(0)
+        form.setSingleStep(1 if is_int else 0.1)  # type: ignore
+        form.setValue(float(config.get()))  # type: ignore
+
+        self.forms.append(form)
+        return form
+
+    def _create_ending_layout(self):
+        buttons = QDialogButtonBox.Ok | QDialogButtonBox.Cancel
+
+        button_box = QDialogButtonBox(buttons)  # type: ignore
+        button_box.accepted.connect(self._handle_ok_button)
+        button_box.rejected.connect(self.hide)
+
+        button_layout = QVBoxLayout()
+        button_layout.addWidget(QLabel("Pressing ok reloads the plugin."))
+        button_layout.addWidget(button_box)
+        button_layout.setAlignment(Qt.AlignBottom)
+
+        return button_layout
+
+    def _handle_ok_button(self):
+        for combo in self.combo_boxes:
+            write_setting(
+                name=combo.objectName(),
+                value=combo.currentText()
+            )
+        for form in self.forms:
+            write_setting(
+                name=form.objectName(),
+                value=form.value()
+            )
+        Krita.trigger_action("Reload Shortcut Composer")
+        self.hide()
+
     def show(self) -> None:
         self._refresh_comboboxes()
         self.move(QCursor.pos())
@@ -91,7 +130,7 @@ class SettingsDialog(QWidget):
 
         for combo_box in self.combo_boxes:
             combo_box.clear()
-            combo_box.addItems(sorted(tags))
+            combo_box.addItems(sorted(tags, key=str.lower))
             combo_box.setCurrentText(read_setting(
                 name=combo_box.objectName(),
                 default="RGBA",
