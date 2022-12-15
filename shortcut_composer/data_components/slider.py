@@ -1,12 +1,10 @@
-from typing import Any, List, Union
-from dataclasses import dataclass
+from typing import Any, List, Union, Optional
 
 from composer_utils import Config
 from core_components import Controller
 from .range import Range
 
 
-@dataclass
 class Slider:
     """
     Part of MouseTracker specifying what to do on single axis movement.
@@ -18,7 +16,7 @@ class Slider:
     -  a discrete list of values
     -  a contiguous range defined using Range(start, stop)
 
-    ### Arguments:
+    # Arguments:
 
     - `controller`     -- defines which krita property will be modified
     - `values`         -- list or range of values to switch to
@@ -30,7 +28,7 @@ class Slider:
     - `fps_limit`      -- (optional) maximum rate of slider refresh.
                           0 for no limit.
 
-    ### Usage Example:
+    # Usage Example:
 
     Slider example allows to pick one of 5 presets defined using their
     name. If active preset does not belong to the list, the tracking
@@ -57,11 +55,23 @@ class Slider:
     )
     ```
     """
-    controller: Controller
-    values: Union[List[Any], Range]
-    pixels_in_unit: int = Config.PIXELS_IN_UNIT.get()
-    deadzone: int = Config.SLIDER_DEADZONE.get()
-    fps_limit: int = Config.FPS_LIMIT.get()
 
-    def __post_init__(self):
+    def __init__(
+        self,
+        controller: Controller,
+        values: Union[List[Any], Range],
+        pixels_in_unit: Optional[int] = None,
+        deadzone: Optional[int] = None,
+        fps_limit: Optional[int] = None
+    ) -> None:
+        self.controller = controller
+        self.values = values
+        self.pixels_in_unit = self._read(pixels_in_unit, Config.PIXELS_IN_UNIT)
+        self.deadzone = self._read(deadzone, Config.SLIDER_DEADZONE)
+        self.fps_limit = self._read(fps_limit, Config.FPS_LIMIT)
         self.sleep_time = 1/self.fps_limit if self.fps_limit else 0.001
+
+    def _read(self, passed: Optional[int], field: Config):
+        if passed is not None:
+            return passed
+        return field.get()

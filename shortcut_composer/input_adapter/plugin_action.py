@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from composer_utils import Config
 from core_components import InstructionHolder, Instruction
@@ -28,9 +28,11 @@ class PluginAction:
         self, *,
         name: str,
         instructions: List[Instruction] = [],
-        short_vs_long_press_time: float = Config.SHORT_VS_LONG_PRESS_TIME.get()
+        short_vs_long_press_time: Optional[float] = None
     ) -> None:
         self.name = name
+        if short_vs_long_press_time is None:
+            short_vs_long_press_time = Config.SHORT_VS_LONG_PRESS_TIME.get()
         self.short_vs_long_press_time = short_vs_long_press_time
         self._instructions = InstructionHolder(instructions)
 
