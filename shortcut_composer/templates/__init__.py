@@ -2,10 +2,11 @@
 Templates allowing to create actions using logic related to key events.
 
 Available templates:
-- `RawInstructions`
-- `TemporaryKey`
-- `MultipleAssignment`
+- `PieMenu`
 - `MouseTracker`
+- `MultipleAssignment`
+- `TemporaryKey`
+- `RawInstructions`
 
 All templates must implement PluginAction interface, so that they can be
 used by the ShortcutAdapter.

@@ -20,12 +20,17 @@ SLIDER_DEADZONE: Final[int] = 0
 FPS_LIMIT: Final[int] = 60
 """Maximum rate of slider refresh. 0 for no limit"""
 
-ICON_RADIUS_GLOBAL_SCALE: Final[float] = 1.0
-
 PIE_RADIUS_GLOBAL_SCALE: Final[float] = 1.0
+"""Global scale factor for all the pie menus."""
+
+ICON_RADIUS_GLOBAL_SCALE: Final[float] = 1.0
+"""Global scale factor for all the pie menu icons."""
 
 PIE_DEADZONE_GLOBAL_SCALE: Final[float] = 1.0
+"""Global scale factor for all the deadzone areas in pie menus."""
 
 PIE_BACKGROUND_COLOR: Final[QColor] = QColor(75, 75, 75, 190)
+"""Default background color of all the pie menus without explicit one."""
 
 PIE_ACTIVE_COLOR: Final[QColor] = QColor(100, 150, 230, 255)
+"""Default color of active pie menu icon when there is no explicit one."""

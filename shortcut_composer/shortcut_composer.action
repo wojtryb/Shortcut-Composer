@@ -51,18 +51,6 @@
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Cycle misc tools">
-        <text>Cycle misc tools</text>
-        <activationFlags>1</activationFlags>
-        <activationConditions>1</activationConditions>
-        </Action>
-
-        <Action name="Cycle painting blending modes">
-        <text>Cycle painting blending modes</text>
-        <activationFlags>1</activationFlags>
-        <activationConditions>1</activationConditions>
-        </Action>
-
         <Action name="Scroll undo stack">
         <text>Scroll undo stack</text>
         <activationFlags>1</activationFlags>
@@ -87,26 +75,26 @@
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Pick painting blending modes">
-        <text>Pick painting blending modes</text>
-        <activationFlags>1</activationFlags>
-        <activationConditions>1</activationConditions>
-        </Action>
-
         <Action name="Pick misc tools">
         <text>Pick misc tools</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Pick brush presets (green)">
-        <text>Pick brush presets (green)</text>
+        <Action name="Pick painting blending modes">
+        <text>Pick painting blending modes</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
         
         <Action name="Pick brush presets (red)">
         <text>Pick brush presets (red)</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
+        </Action>
+
+        <Action name="Pick brush presets (green)">
+        <text>Pick brush presets (green)</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
