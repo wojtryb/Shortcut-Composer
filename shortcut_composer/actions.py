@@ -10,10 +10,10 @@ from PyQt5.QtGui import QColor
 import templates
 from api_krita.enums import BlendingMode, Tool, Toggle
 from core_components import instructions, controllers
+from composer_utils import read_setting
 from data_components import (
     CurrentLayerStack,
     PickStrategy,
-    read_setting,
     Slider,
     Range,
     Tag,

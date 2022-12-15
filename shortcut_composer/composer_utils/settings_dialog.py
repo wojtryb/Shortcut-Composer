@@ -9,8 +9,10 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtGui import QCursor
+
 from api_krita.wrappers import Database
 from api_krita import Krita
+from composer_utils import read_setting
 
 
 class SettingsDialog(QWidget):
@@ -90,8 +92,7 @@ class SettingsDialog(QWidget):
         for combo_box in self.combo_boxes:
             combo_box.clear()
             combo_box.addItems(sorted(tags))
-            combo_box.setCurrentText(Krita.read_setting(
-                group="ShortcutComposer",
+            combo_box.setCurrentText(read_setting(
                 name=combo_box.objectName(),
                 default="RGBA",
             ))
