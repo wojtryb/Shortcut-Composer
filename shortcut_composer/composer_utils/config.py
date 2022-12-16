@@ -1,7 +1,7 @@
 from typing import Union, Any
 from enum import Enum
 
-from .krita_setting import read_setting
+from .krita_setting import read_setting, write_setting
 
 
 class Config(Enum):
@@ -19,6 +19,11 @@ class Config(Enum):
 
     def get(self) -> Any:
         return type(self.default)(read_setting(self.value, str(self.default)))
+
+    @staticmethod
+    def reset_defaults():
+        for field, default in _defaults.items():
+            write_setting(field.value, default)
 
 
 _defaults = {

@@ -30,15 +30,6 @@ def create_actions(): return [
         high_value=Tool.MOVE,
     ),
 
-    # Switch between FREEHAND BRUSH and the TRANSFORM tool
-    templates.TemporaryKey(
-        name="Temporary transform tool",
-        controller=controllers.ToolController(),
-        low_value=Tool.FREEHAND_BRUSH,
-        high_value=Tool.TRANSFORM,
-        short_vs_long_press_time=1.0
-    ),
-
     # Switch the eraser toggle ON and OFF
     # Set tool to FREEHAND BRUSH if current tool does not allow to paint
     # Ensure the preserve alpha is OFF
@@ -101,6 +92,21 @@ def create_actions(): return [
             Tool.RECTANGULAR_SELECTION,
             Tool.CONTIGUOUS_SELECTION,
         ],
+    ),
+
+    # Cycle between all modes in transform tool.
+    templates.MultipleAssignment(
+        name="Cycle transform tool modes",
+        controller=controllers.ToolController(),
+        values=[
+            Tool.TRANSFORM_FREE,
+            Tool.TRANSFORM_PERSPECTIVE,
+            Tool.TRANSFORM_WARP,
+            Tool.TRANSFORM_CAGE,
+            Tool.TRANSFORM_LIQUIFY,
+            Tool.TRANSFORM_MESH,
+        ],
+        short_vs_long_press_time=0.6
     ),
 
     # Control undo and redo actions by sliding the cursor horizontally
