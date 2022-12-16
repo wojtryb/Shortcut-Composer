@@ -172,6 +172,8 @@ def create_actions(): return [
         name="Pick misc tools",
         controller=controllers.ToolController(),
         values=[
+            Tool.TRANSFORM_LIQUIFY,
+            Tool.TRANSFORM_WARP,
             Tool.CROP,
             Tool.REFERENCE,
             Tool.GRADIENT,

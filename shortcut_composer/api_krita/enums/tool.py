@@ -16,6 +16,11 @@ class Tool(Enum):
     - `GRADIENT`
     - `LINE`
     - `TRANSFORM`
+    - `TRANSFORM_PERSPECTIVE`
+    - `TRANSFORM_WARP`
+    - `TRANSFORM_CAGE`
+    - `TRANSFORM_LIQUIFY`
+    - `TRANSFORM_MESH`
     - `MOVE`
     - `RECTANGULAR_SELECTION`
     - `CONTIGUOUS_SELECTION`
@@ -53,6 +58,11 @@ class Tool(Enum):
     GRADIENT = "KritaFill/KisToolGradient"
     LINE = "KritaShape/KisToolLine"
     TRANSFORM = "KisToolTransform"
+    TRANSFORM_PERSPECTIVE = "Transform tool: perspective"
+    TRANSFORM_WARP = "Transform tool: warp"
+    TRANSFORM_CAGE = "Transform tool: cage"
+    TRANSFORM_LIQUIFY = "Transform tool: liquify"
+    TRANSFORM_MESH = "Transform tool: mesh"
     MOVE = "KritaTransform/KisToolMove"
     RECTANGULAR_SELECTION = "KisToolSelectRectangular"
     CONTIGUOUS_SELECTION = "KisToolSelectContiguous"
@@ -114,6 +124,11 @@ _ICON_MAP = {
     Tool.GRADIENT: "krita_tool_gradient",
     Tool.LINE: "krita_tool_line",
     Tool.TRANSFORM: "krita_tool_transform",
+    Tool.TRANSFORM_PERSPECTIVE: "transform_icons_perspective",
+    Tool.TRANSFORM_WARP: "transform_icons_warp",
+    Tool.TRANSFORM_CAGE: "transform_icons_cage",
+    Tool.TRANSFORM_LIQUIFY: "transform_icons_liquify_main",
+    Tool.TRANSFORM_MESH: "transform_icons_mesh",
     Tool.MOVE: "krita_tool_move",
     Tool.RECTANGULAR_SELECTION: "tool_rect_selection",
     Tool.CONTIGUOUS_SELECTION: "tool_contiguous_selection",
