@@ -72,7 +72,7 @@ class SettingsDialog(QWidget):
             form_layout.addRow(config.value, form)
 
         add_row(Config.SHORT_VS_LONG_PRESS_TIME, is_int=False)
-        add_row(Config.PIXELS_IN_UNIT, is_int=True)
+        add_row(Config.SLIDER_SENSITIVITY_SCALE, is_int=False)
         add_row(Config.SLIDER_DEADZONE, is_int=True)
         add_row(Config.FPS_LIMIT, is_int=True)
         add_row(Config.PIE_GLOBAL_SCALE, is_int=False)

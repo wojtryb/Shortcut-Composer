@@ -30,7 +30,7 @@ class MouseInterpreter:
     start_value: Interpreted
     min: Interpreted
     max: Interpreted
-    pixels_in_unit: float
+    pixels_in_unit: int
 
     def interpret(self, mouse: MouseInput) -> Interpreted:
         """Return value corresponding to the `mouse`."""
