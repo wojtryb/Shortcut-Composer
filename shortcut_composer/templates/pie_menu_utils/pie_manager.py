@@ -22,8 +22,7 @@ class PieManager:
     def __init__(self, widget: PieWidget) -> None:
         self._widget = widget
         self._is_working = False
-        fps_limit = Config.FPS_LIMIT.get()
-        self._sleep_time = 1/fps_limit if fps_limit else 0.001
+        self._sleep_time = Config.get_sleep_time()
 
     def start(self):
         """Show widget under the mouse and start the mouse tracking loop."""
