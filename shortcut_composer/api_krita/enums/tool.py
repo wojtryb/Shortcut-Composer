@@ -8,6 +8,8 @@ class Tool(Enum):
     """
     Contains all known tools from krita toolbox.
 
+    Extended with modes of the transform tool.
+
     Example usage: `Tool.FREEHAND_BRUSH`
 
     Available tools:
@@ -106,15 +108,18 @@ class Tool(Enum):
 
     @property
     def icon(self) -> QIcon:
-        icon_name = _ICON_MAP.get(self, "edit-delete")
+        """Return the icon of this tool."""
+        icon_name = _ICON_NAME_MAP.get(self, "edit-delete")
         return Api.instance().icon(icon_name)
 
     def __eq__(self, other):
+        """All subtools of transform tool are technically the same tool."""
         if self in _TRANSFORMS and other in _TRANSFORMS:
             return True
         return Enum.__eq__(self, other)
 
     def __hash__(self):
+        """Identify tool by its krita name."""
         return hash(self.value)
 
 
@@ -127,6 +132,7 @@ _TRANSFORMS = {
     Tool.TRANSFORM_LIQUIFY,
     Tool.TRANSFORM_MESH,
 }
+"""Set of all subtools that are in fact the transform tool."""
 
 _PAINTABLE = {
     Tool.FREEHAND_BRUSH,
@@ -137,8 +143,9 @@ _PAINTABLE = {
     Tool.MULTI_BRUSH,
     Tool.POLYLINE,
 }
+"""Set of tools that are used to paint on the canvas."""
 
-_ICON_MAP = {
+_ICON_NAME_MAP = {
     Tool.FREEHAND_BRUSH: "krita_tool_freehand",
     Tool.FREEHAND_SELECTION: "tool_outline_selection",
     Tool.GRADIENT: "krita_tool_gradient",
@@ -180,3 +187,4 @@ _ICON_MAP = {
     Tool.CALLIGRAPHY: "calligraphy",
     Tool.POLYGONAL_SELECTION: "tool_polygonal_selection"
 }
+"""Maps tools to names of their icons."""

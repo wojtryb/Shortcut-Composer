@@ -16,7 +16,7 @@ class Slider:
     -  a discrete list of values
     -  a contiguous range defined using Range(start, stop)
 
-    # Arguments:
+    ### Arguments:
 
     - `controller`        -- defines which krita property will be modified
     - `values`            -- list or range of values to switch to
@@ -25,7 +25,7 @@ class Slider:
     - `deadzone`          -- (optional) amount of pixels a mouse needs
                              to be moved for slider to start to work
 
-    # Usage Example:
+    ### Usage Example:
 
     Slider example allows to pick one of 5 presets defined using their
     name. If active preset does not belong to the list, the tracking
