@@ -11,12 +11,12 @@ from api_krita.wrappers import Database
 from ..config import Config
 
 
-class ComboBoxes(QGridLayout):
+class ComboBoxesLayout(QGridLayout):
 
     def __init__(self):
-        QGridLayout.__init__(self)
+        super().__init__()
         self.setAlignment(Qt.AlignTop)
-        self.combo_boxes: Dict[Config, QComboBox] = {}
+        self._combo_boxes: Dict[Config, QComboBox] = {}
         self._row_counter = count()
 
         self._add_row(Config.TAG_RED)
@@ -33,18 +33,18 @@ class ComboBoxes(QGridLayout):
     def _create_combobox(self, config: Config):
         combo_box = QComboBox()
         combo_box.setObjectName(config.value)
-        self.combo_boxes[config] = combo_box
+        self._combo_boxes[config] = combo_box
         return combo_box
 
     def refresh(self):
         with Database() as database:
             tags = database.get_brush_tags()
 
-        for config, combo_box in self.combo_boxes.items():
+        for config, combo_box in self._combo_boxes.items():
             combo_box.clear()
             combo_box.addItems(sorted(tags, key=str.lower))
             combo_box.setCurrentText(config.read())
 
     def apply(self):
-        for config, combo in self.combo_boxes.items():
+        for config, combo in self._combo_boxes.items():
             config.write(combo.currentText())
