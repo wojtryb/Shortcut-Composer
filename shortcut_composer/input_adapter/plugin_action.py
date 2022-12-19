@@ -32,7 +32,7 @@ class PluginAction:
     ) -> None:
         self.name = name
         if short_vs_long_press_time is None:
-            short_vs_long_press_time = Config.SHORT_VS_LONG_PRESS_TIME.get()
+            short_vs_long_press_time = Config.SHORT_VS_LONG_PRESS_TIME.read()
         self.short_vs_long_press_time = short_vs_long_press_time
         self._instructions = InstructionHolder(instructions)
 

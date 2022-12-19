@@ -6,7 +6,6 @@ from PyQt5.QtWidgets import (
 )
 
 from ..config import Config
-from ..krita_setting import write_setting
 
 
 class Forms(QFormLayout):
@@ -38,11 +37,8 @@ class Forms(QFormLayout):
 
     def refresh(self):
         for config, form in self.forms.items():
-            form.setValue(config.get())  # type: ignore
+            form.setValue(config.read())  # type: ignore
 
     def apply(self):
-        for form in self.forms.values():
-            write_setting(
-                name=form.objectName(),
-                value=form.value()
-            )
+        for config, form in self.forms.items():
+            config.write(form.value())

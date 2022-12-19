@@ -65,7 +65,7 @@ class Slider:
         self.controller = controller
         self.values = values
 
-        sensitivity = Config.SLIDER_SENSITIVITY_SCALE.get() * sensitivity_scale
+        sensitivity = Config.SLIDER_SENSITIVITY_SCALE.read()*sensitivity_scale
         self.pixels_in_unit = round(50 / sensitivity)
 
         self.deadzone = self._read(deadzone, Config.SLIDER_DEADZONE)
@@ -73,4 +73,4 @@ class Slider:
     def _read(self, passed: Optional[int], field: Config):
         if passed is not None:
             return passed
-        return field.get()
+        return field.read()

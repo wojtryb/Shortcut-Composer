@@ -9,7 +9,6 @@ from PyQt5.QtCore import Qt
 
 from api_krita.wrappers import Database
 from ..config import Config
-from ..krita_setting import write_setting
 
 
 class ComboBoxes(QGridLayout):
@@ -44,11 +43,8 @@ class ComboBoxes(QGridLayout):
         for config, combo_box in self.combo_boxes.items():
             combo_box.clear()
             combo_box.addItems(sorted(tags, key=str.lower))
-            combo_box.setCurrentText(config.get())
+            combo_box.setCurrentText(config.read())
 
     def apply(self):
-        for combo in self.combo_boxes.values():
-            write_setting(
-                name=combo.objectName(),
-                value=combo.currentText()
-            )
+        for config, combo in self.combo_boxes.items():
+            config.write(combo.currentText())

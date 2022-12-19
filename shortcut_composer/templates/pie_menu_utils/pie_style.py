@@ -31,16 +31,16 @@ class PieStyle:
         self.pie_radius = round(
             165 * base_size
             * self.pie_radius_scale
-            * Config.PIE_GLOBAL_SCALE.get()
+            * Config.PIE_GLOBAL_SCALE.read()
         )
         self.icon_radius = round(
             50 * base_size
             * self.icon_radius_scale
-            * Config.PIE_ICON_GLOBAL_SCALE.get()
+            * Config.PIE_ICON_GLOBAL_SCALE.read()
         )
         self.deadzone_radius: float = (
             40 * base_size
-            * Config.PIE_DEADZONE_GLOBAL_SCALE.get()
+            * Config.PIE_DEADZONE_GLOBAL_SCALE.read()
         )
         self.widget_radius = self.pie_radius + self.icon_radius
 

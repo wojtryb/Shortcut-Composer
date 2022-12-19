@@ -1,7 +1,7 @@
 from typing import Union, Any
 from enum import Enum
 
-from .krita_setting import read_setting, write_setting
+from api_krita import Krita
 
 
 class Config(Enum):
@@ -21,17 +21,28 @@ class Config(Enum):
     def default(self) -> Union[float, int]:
         return _defaults[self]
 
-    def get(self) -> Any:
-        return type(self.default)(read_setting(self.value, str(self.default)))
+    def read(self) -> Any:
+        return type(self.default)(Krita.read_setting(
+            group="ShortcutComposer",
+            name=self.value,
+            default=str(self.default),
+        ))
+
+    def write(self, value: Any) -> None:
+        Krita.write_setting(
+            group="ShortcutComposer",
+            name=self.value,
+            value=value
+        )
 
     @staticmethod
     def reset_defaults():
         for field, default in _defaults.items():
-            write_setting(field.value, default)
+            field.write(default)
 
     @staticmethod
     def get_sleep_time():
-        fps_limit = Config.FPS_LIMIT.get()
+        fps_limit = Config.FPS_LIMIT.read()
         return 1/fps_limit if fps_limit else 0.001
 
 
