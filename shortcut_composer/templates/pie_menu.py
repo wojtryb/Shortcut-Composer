@@ -52,6 +52,10 @@ class PieMenu(PluginAction, Generic[T]):
         name="Pick active layer opacity",
         controller=controllers.LayerOpacityController(),
         values=[100, 90, 80, 70, 60, 50, 40, 30, 20, 10],
+        pie_radius_scale=1.3   # 30% larger menu
+        icon_radius_scale=0.9  # 10% smaller icons
+        background_color=QColor(255, 0, 0, 128)  # 50% red
+        active_color=QColor(0, 0, 255)           # 100% blue
     )
     ```
     """

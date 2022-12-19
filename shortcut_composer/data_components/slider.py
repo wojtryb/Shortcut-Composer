@@ -49,6 +49,8 @@ class Slider:
     Slider(
             controller=controllers.FlowController(),
             values=Range(10, 100)
+            sensitivity_scale=2  # slider is 2x more sensitive than others
+            deadzone=20          # move 20 pixels to start sliding
     )
     ```
     """
