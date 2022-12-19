@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QToolButton
 from krita import Krita as Api
+from PyQt5.QtWidgets import QWidget, QToolButton
 
 from ..enums import Tool
 

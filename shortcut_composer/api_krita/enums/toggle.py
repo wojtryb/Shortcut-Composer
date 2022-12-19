@@ -1,5 +1,5 @@
-from enum import Enum
 from krita import Krita as Api
+from enum import Enum
 
 
 class Toggle(Enum):

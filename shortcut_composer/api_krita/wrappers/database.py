@@ -1,5 +1,5 @@
 import os.path
-from typing import List
+from typing import List, Any
 
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 from PyQt5.Qt import QStandardPaths
@@ -8,16 +8,23 @@ from PyQt5.Qt import QStandardPaths
 class Database:
     """Explorer of the database with krita resources."""
 
-    def __init__(self):
-        """Connect to the database with krita resources."""
-        database_path = os.path.join(
+    connection_name = "ShortcutComposer"
+
+    def __init__(self) -> None:
+        self.connect_if_needed()
+
+    @classmethod
+    def connect_if_needed(cls) -> None:
+        """Connect to krita database if it was not done already."""
+        if cls.connection_name in QSqlDatabase.connectionNames():
+            return
+        cls.database = QSqlDatabase.addDatabase("QSQLITE", cls.connection_name)
+        cls.database.setDatabaseName(os.path.join(
             QStandardPaths.standardLocations(QStandardPaths.DataLocation)[0],
             'resourcecache.sqlite'
-        )
-        self.database = QSqlDatabase.addDatabase("QSQLITE", "dbResources")
-        self.database.setDatabaseName(database_path)
+        ))
 
-    def single_value_query(self, sql_query: str, value: str) -> List[str]:
+    def _single_column_query(self, sql_query: str, value: str) -> List[Any]:
         if not self.database.open():
             return []
 
@@ -43,14 +50,14 @@ class Database:
                     ON r.id = rt.resource_id
             WHERE t.name='{tag_name}'
         '''
-        return self.single_value_query(sql_query, "preset")
+        return self._single_column_query(sql_query, "preset")
 
     def get_brush_tags(self) -> List[str]:
         sql_query = '''
             SELECT t.name AS tag
             FROM tags t
         '''
-        return self.single_value_query(sql_query, "tag")
+        return self._single_column_query(sql_query, "tag")
 
     def close(self) -> None:
         """Close the connection with the database."""
@@ -63,6 +70,3 @@ class Database:
     def __exit__(self, *_):
         """Close the connection with the database on exit."""
         self.close()
-
-
-"★ My Favorites"

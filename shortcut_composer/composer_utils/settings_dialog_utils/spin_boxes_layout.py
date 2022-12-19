@@ -8,7 +8,8 @@ from PyQt5.QtWidgets import (
 from ..config import Config
 
 
-class FormsLayout(QFormLayout):
+class SpinBoxesLayout(QFormLayout):
+    """Dialog zone consisting of spin boxes."""
 
     def __init__(self):
         super().__init__()
@@ -23,10 +24,11 @@ class FormsLayout(QFormLayout):
         self._add_row(Config.PIE_DEADZONE_GLOBAL_SCALE, is_int=False)
 
     def _add_row(self, config: Config, is_int: bool):
-        form = self._create_form(config, is_int)
-        self.addRow(config.value, form)
+        """Add a spin box to the layout along with its desctiption."""
+        self.addRow(config.value, self._create_form(config, is_int))
 
     def _create_form(self, config: Config, is_int: bool):
+        """Store and return new spin box for required type (int or float)."""
         form = QSpinBox() if is_int else QDoubleSpinBox()
         form.setObjectName(config.value)
         form.setMinimum(0)
@@ -36,9 +38,11 @@ class FormsLayout(QFormLayout):
         return form
 
     def refresh(self):
+        """Read values from krita config and apply them to stored boxes."""
         for config, form in self._forms.items():
             form.setValue(config.read())  # type: ignore
 
     def apply(self):
+        """Write values from stored spin boxes to krita config file."""
         for config, form in self._forms.items():
             config.write(form.value())

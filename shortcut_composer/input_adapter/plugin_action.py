@@ -31,9 +31,7 @@ class PluginAction:
         short_vs_long_press_time: Optional[float] = None
     ) -> None:
         self.name = name
-        if short_vs_long_press_time is None:
-            short_vs_long_press_time = Config.SHORT_VS_LONG_PRESS_TIME.read()
-        self.short_vs_long_press_time = short_vs_long_press_time
+        self.short_vs_long_press_time = _read_time(short_vs_long_press_time)
         self._instructions = InstructionHolder(instructions)
 
     def on_key_press(self) -> None:
@@ -51,3 +49,9 @@ class PluginAction:
     def on_every_key_release(self) -> None:
         """Called on each release of related key, after short/long callback."""
         self._instructions.on_every_key_release()
+
+
+def _read_time(short_vs_long_press_time: Optional[float]) -> float:
+    if short_vs_long_press_time is None:
+        return Config.SHORT_VS_LONG_PRESS_TIME.read()
+    return short_vs_long_press_time
