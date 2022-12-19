@@ -21,7 +21,7 @@ class ShortcutAdapter:
     - on_every_key_release (called after short or long release callback)
     """
 
-    def __init__(self, action: PluginAction):
+    def __init__(self, action: PluginAction) -> None:
         self.action = action
         self.key_released = True
         self.last_press_time = time()
@@ -60,7 +60,7 @@ class ShortcutAdapter:
             self._on_key_release()
 
     @property
-    def _short_vs_long_press_time(self):
+    def _short_vs_long_press_time(self) -> float:
         """Time in seconds distinguishing short key presses from long ones."""
         return self.action.short_vs_long_press_time
 

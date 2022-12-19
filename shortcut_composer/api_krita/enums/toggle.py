@@ -47,6 +47,6 @@ class Toggle(Enum):
         """Set state of checkable krita action (toggle) by its enum."""
         return Api.instance().action(self.value).setChecked(state)
 
-    def switch_state(self):
+    def switch_state(self) -> None:
         """Change state from ON to OFF and vice-versa."""
         self.state = not self.state

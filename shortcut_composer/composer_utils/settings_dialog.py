@@ -14,7 +14,7 @@ from .settings_dialog_utils import (
 class SettingsDialog(QDialog):
     """Dialog which allows to change global settings of the plugin."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.setMinimumSize(QSize(300, 200))
@@ -35,23 +35,23 @@ class SettingsDialog(QDialog):
         full_layout.addLayout(self._buttons_layout)
         self.setLayout(full_layout)
 
-    def _apply(self):
+    def _apply(self) -> None:
         """Ask all dialog zones to apply themselves."""
         self._combo_boxes_layout.apply()
         self._spin_boxes_layout.apply()
         Krita.trigger_action("Reload Shortcut Composer")
 
-    def _refresh(self):
+    def _refresh(self) -> None:
         """Ask all dialog zones to refresh themselves. """
         self._combo_boxes_layout.refresh()
         self._spin_boxes_layout.refresh()
 
-    def _ok(self):
+    def _ok(self) -> None:
         """Hide the dialog after applying the changes"""
         self._apply()
         self.hide()
 
-    def _reset(self):
+    def _reset(self) -> None:
         """Reset all config values to defaults in krita and elements."""
         Config.reset_defaults()
         self._refresh()

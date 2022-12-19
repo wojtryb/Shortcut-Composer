@@ -19,7 +19,7 @@ class ButtonsLayout(QVBoxLayout):
     reset_callback: EmptyCallback = lambda: None
     cancel_callback: EmptyCallback = lambda: None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         super().__init__()
 
         self._button_box = QDialogButtonBox(
@@ -33,7 +33,7 @@ class ButtonsLayout(QVBoxLayout):
         self.addWidget(self._button_box)
         self.setAlignment(Qt.AlignBottom)
 
-    def _handle_buttons(self, button: QAbstractButton):
+    def _handle_buttons(self, button: QAbstractButton) -> None:
         """React to one of the buttons being pressed."""
         role = self._button_box.buttonRole(button)
         if role == QDialogButtonBox.AcceptRole:

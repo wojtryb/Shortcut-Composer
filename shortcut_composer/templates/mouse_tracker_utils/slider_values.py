@@ -42,7 +42,7 @@ class RangeSliderValues(SliderValues):
     apart from restricting it to the range `min` and `max` values.
     """
 
-    def __init__(self, values: Range):
+    def __init__(self, values: Range) -> None:
         self.min = Interpreted(values.min)
         self.max = Interpreted(values.max)
         self.__default = Interpreted((self.min + self.max)*0.5)
@@ -74,7 +74,7 @@ class ListSliderValues(SliderValues, Generic[Controlled]):
     Controlled values may change over time.
     """
 
-    def __init__(self, values: List[Controlled]):
+    def __init__(self, values: List[Controlled]) -> None:
         self.__values = values
         self.min = Interpreted(-0.49)
 

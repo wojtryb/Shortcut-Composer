@@ -53,7 +53,7 @@ class Config(Enum):
         ))
 
     def write(self, value: Any) -> None:
-        "Write given value to krita config file."
+        """Write given value to krita config file."""
         Krita.write_setting(
             group="ShortcutComposer",
             name=self.value,
@@ -61,13 +61,13 @@ class Config(Enum):
         )
 
     @staticmethod
-    def reset_defaults():
+    def reset_defaults() -> None:
         """Reset all config files."""
         for field, default in _defaults.items():
             field.write(default)
 
     @staticmethod
-    def get_sleep_time():
+    def get_sleep_time() -> float:
         """Read sleep time from FPS_LIMIT config field."""
         fps_limit = Config.FPS_LIMIT.read()
         return 1/fps_limit if fps_limit else 0.001
@@ -85,3 +85,4 @@ _defaults = {
     Config.TAG_GREEN: "RGBA",
     Config.TAG_BLUE: "Erasers",
 }
+"""Maps default values to config fields."""

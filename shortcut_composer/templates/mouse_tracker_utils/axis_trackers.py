@@ -107,12 +107,12 @@ class DoubleAxisTracker(PluginAction):
             self.start_y = self.cursor.y()
 
         @property
-        def delta_x(self):
+        def delta_x(self) -> int:
             """Offset of current position from starting one in x axis."""
             return abs(self.start_x - self.cursor.x())
 
         @property
-        def delta_y(self):
+        def delta_y(self) -> int:
             """Offset of current position from starting one in y axis."""
             return abs(self.start_y - self.cursor.y())
 

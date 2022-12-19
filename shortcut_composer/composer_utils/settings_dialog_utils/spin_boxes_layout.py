@@ -7,13 +7,15 @@ from PyQt5.QtWidgets import (
 
 from ..config import Config
 
+SpinBox = Union[QSpinBox, QDoubleSpinBox]
+
 
 class SpinBoxesLayout(QFormLayout):
     """Dialog zone consisting of spin boxes."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
-        self._forms: Dict[Config, Union[QSpinBox, QDoubleSpinBox]] = {}
+        self._forms: Dict[Config, SpinBox] = {}
 
         self._add_row(Config.SHORT_VS_LONG_PRESS_TIME, is_int=False)
         self._add_row(Config.SLIDER_SENSITIVITY_SCALE, is_int=False)
@@ -23,11 +25,11 @@ class SpinBoxesLayout(QFormLayout):
         self._add_row(Config.PIE_ICON_GLOBAL_SCALE, is_int=False)
         self._add_row(Config.PIE_DEADZONE_GLOBAL_SCALE, is_int=False)
 
-    def _add_row(self, config: Config, is_int: bool):
+    def _add_row(self, config: Config, is_int: bool) -> None:
         """Add a spin box to the layout along with its desctiption."""
         self.addRow(config.value, self._create_form(config, is_int))
 
-    def _create_form(self, config: Config, is_int: bool):
+    def _create_form(self, config: Config, is_int: bool) -> SpinBox:
         """Store and return new spin box for required type (int or float)."""
         form = QSpinBox() if is_int else QDoubleSpinBox()
         form.setObjectName(config.value)
@@ -37,12 +39,12 @@ class SpinBoxesLayout(QFormLayout):
         self._forms[config] = form
         return form
 
-    def refresh(self):
+    def refresh(self) -> None:
         """Read values from krita config and apply them to stored boxes."""
         for config, form in self._forms.items():
             form.setValue(config.read())  # type: ignore
 
-    def apply(self):
+    def apply(self) -> None:
         """Write values from stored spin boxes to krita config file."""
         for config, form in self._forms.items():
             config.write(form.value())

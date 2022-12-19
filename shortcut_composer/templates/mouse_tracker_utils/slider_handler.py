@@ -13,6 +13,8 @@ from .slider_values import (
     SliderValues,
 )
 
+MouseGetter = Callable[[], MouseInput]
+
 
 class SliderHandler:
     """
@@ -44,14 +46,14 @@ class SliderHandler:
     phase in which case main loop will never be started.
     """
 
-    def __init__(self, slider: Slider, is_horizontal: bool):
+    def __init__(self, slider: Slider, is_horizontal: bool) -> None:
         """Store the slider configuration, create value adapter."""
         self._slider = slider
         self._to_cycle = self.__create_slider_values(slider)
         self._working = False
         self._is_horizontal = is_horizontal
 
-        self._mouse_getter: Callable[[], MouseInput]
+        self._mouse_getter: MouseGetter
         self._interpreter: MouseInterpreter
         self._sleep_time = Config.get_sleep_time()
 
@@ -88,7 +90,7 @@ class SliderHandler:
             self._slider.controller.set_value(to_set)
             sleep(self._sleep_time)
 
-    def __update_interpreter(self):
+    def __update_interpreter(self) -> None:
         """Store a new interpreter with current mouse and current value."""
         self._interpreter = MouseInterpreter(
             min=self._to_cycle.min,
@@ -103,7 +105,7 @@ class SliderHandler:
         controller_value = self._slider.controller.get_value()
         return self._to_cycle.index(controller_value)
 
-    def __pick_mouse_getter(self):
+    def __pick_mouse_getter(self) -> MouseGetter:
         """
         Refresh a mouse fetching method.
 

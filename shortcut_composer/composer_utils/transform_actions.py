@@ -44,12 +44,12 @@ class TransformModeActions:
         Tool.TRANSFORM.activate()
         Thread(target=self._delayed_click, args=[mode], daemon=True).start()
 
-    def _delayed_click(self, mode: TransformMode):
+    def _delayed_click(self, mode: TransformMode) -> None:
         """Activate a mode after a small delay, so that krita notices it."""
         sleep(0.1)
         self._finder.activate_mode(mode, apply=False)
 
-    def create_actions(self, window):
+    def create_actions(self, window) -> None:
         """Create krita actions which activate new tools."""
         _ACTION_MAP = {
             "Transform tool: free": self.set_free,
@@ -94,7 +94,7 @@ class TransformModeActions:
             self._transform_options: QWidget
             self._apply_button: QPushButton
 
-        def ensure_initialized(self, mode: TransformMode):
+        def ensure_initialized(self, mode: TransformMode) -> None:
             """Fetch widget, apply and mode buttons if not done already."""
             if not self._initialized:
                 Tool.TRANSFORM.activate()
@@ -105,7 +105,7 @@ class TransformModeActions:
             if mode not in self._mode_buttons:
                 self._mode_buttons[mode] = self._fetch_mode_button(mode)
 
-        def activate_mode(self, mode: TransformMode, apply: bool):
+        def activate_mode(self, mode: TransformMode, apply: bool) -> None:
             """Apply transform if requested and activate given mode."""
             if apply:
                 self._apply_button.click()

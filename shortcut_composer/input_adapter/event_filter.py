@@ -9,7 +9,7 @@ EventCallback = Callable[[QEvent], None]
 class ReleaseKeyEventFilter(QMdiArea):
     """Event filter for running registered callbacks on KeyRelease."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Create list to hold callbacks as they get registered."""
         super().__init__(None)
         self._release_callbacks: List[EventCallback] = []
