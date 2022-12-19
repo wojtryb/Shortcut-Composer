@@ -24,14 +24,14 @@ class TransformModeActions:
         self._finder.ensure_initialized(tool)
 
         if Krita.active_tool == Tool.TRANSFORM:
-            return self._finder.activate_tool(tool)
+            return self._finder.activate_tool(tool, apply=True)
 
         Tool.TRANSFORM.activate()
         Thread(target=self._delayed_click, args=[tool], daemon=True).start()
 
     def _delayed_click(self, tool: Tool):
         sleep(0.1)
-        self._finder.activate_tool(tool)
+        self._finder.activate_tool(tool, apply=False)
 
     def create_actions(self, window):
         _ACTION_MAP = {
@@ -76,8 +76,9 @@ class TransformModeActions:
             if tool not in self.tool_buttons:
                 self.tool_buttons[tool] = self._fetch_tool_button(tool)
 
-        def activate_tool(self, tool: Tool):
-            self._apply_button.click()
+        def activate_tool(self, tool: Tool, apply: bool):
+            if apply:
+                self._apply_button.click()
             self.tool_buttons[tool].click()
 
         def _fetch_tool_button(self, tool: Tool) -> QToolButton:
