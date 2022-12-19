@@ -13,6 +13,9 @@ class Config(Enum):
     PIE_GLOBAL_SCALE = "Pie global scale"
     PIE_ICON_GLOBAL_SCALE = "Pie icon global scale"
     PIE_DEADZONE_GLOBAL_SCALE = "Pie deadzone global scale"
+    TAG_RED = "Tag (red)"
+    TAG_GREEN = "Tag (green)"
+    TAG_BLUE = "Tag (blue)"
 
     @property
     def default(self) -> Union[float, int]:
@@ -40,4 +43,7 @@ _defaults = {
     Config.PIE_GLOBAL_SCALE: 1.0,
     Config.PIE_ICON_GLOBAL_SCALE: 1.0,
     Config.PIE_DEADZONE_GLOBAL_SCALE: 1.0,
+    Config.TAG_RED: "★ My Favorites",
+    Config.TAG_GREEN: "RGBA",
+    Config.TAG_BLUE: "Erasers",
 }

@@ -24,7 +24,7 @@ While Shortcut-Composer is highly configurable and extendable, the add-on comes 
 ### (`Pie menus`):
 - ### Pick brush presets (red, gree, blue)
   Three color coded pie menus that let you pick a brush preset from selected tag. Default tag mapping is as follows:
-  - <span style="color:red">red</span>: "Digital"
+  - <span style="color:red">red</span>: "★ My Favorites"
   - <span style="color:green">green</span>: "RGBA"
   - <span style="color:blue">blue</span>: "Erasers"
   It is encouraged to change those tags to custom ones in **Tools > Scripts > Shortcut Composer Settings**.  
