@@ -27,12 +27,12 @@ class ShortcutComposer(Extension):
         self._pie_settings_dialog = SettingsDialog()
         self._settings_action = Krita.create_action(
             window=window,
-            name="Shortcut Composer Settings",
+            name="Shortcut composer settings",
             group="tools/scripts",
             callback=self._pie_settings_dialog.show)
         self._reload_action = Krita.create_action(
             window=window,
-            name="Reload Shortcut Composer",
+            name="Reload shortcut composer",
             callback=self.reload_composer)
 
         self._manager = ActionManager(window)
