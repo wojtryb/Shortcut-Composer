@@ -10,8 +10,9 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
-from api_krita.enums import Tool
-from api_krita import Krita
+from ..enums import Tool
+from ..core_api import KritaInstance
+Krita = KritaInstance()
 
 TransformMode = Literal[
     Tool.TRANSFORM_FREE,
@@ -30,26 +31,12 @@ class TransformModeActions:
     Tools are available as krita actions, but not added to the toolbar.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, window) -> None:
         self._finder = self.TransformModeFinder()
         self._actions: Dict[str, QWidgetAction] = {}
+        self._create_actions(window)
 
-    def _set_mode(self, mode: TransformMode) -> None:
-        """Set a passed mode. Implementation of the new krita tool."""
-        self._finder.ensure_initialized(mode)
-
-        if Krita.active_tool == Tool.TRANSFORM:
-            return self._finder.activate_mode(mode, apply=True)
-
-        Tool.TRANSFORM.activate()
-        Thread(target=self._delayed_click, args=[mode], daemon=True).start()
-
-    def _delayed_click(self, mode: TransformMode) -> None:
-        """Activate a mode after a small delay, so that krita notices it."""
-        sleep(0.1)
-        self._finder.activate_mode(mode, apply=False)
-
-    def create_actions(self, window) -> None:
+    def _create_actions(self, window) -> None:
         """Create krita actions which activate new tools."""
         _ACTION_MAP = {
             "Transform tool: free": self.set_free,
@@ -66,6 +53,21 @@ class TransformModeActions:
                 name=action_name,
                 callback=implementation
             )
+
+    def _set_mode(self, mode: TransformMode) -> None:
+        """Set a passed mode. Implementation of the new krita tool."""
+        self._finder.ensure_initialized(mode)
+
+        if Krita.active_tool == Tool.TRANSFORM:
+            return self._finder.activate_mode(mode, apply=True)
+
+        Tool.TRANSFORM.activate()
+        Thread(target=self._delayed_click, args=[mode], daemon=True).start()
+
+    def _delayed_click(self, mode: TransformMode) -> None:
+        """Activate a mode after a small delay, so that krita notices it."""
+        sleep(0.1)
+        self._finder.activate_mode(mode, apply=False)
 
     set_free = partialmethod(_set_mode, Tool.TRANSFORM_FREE)
     set_perspective = partialmethod(_set_mode, Tool.TRANSFORM_PERSPECTIVE)
