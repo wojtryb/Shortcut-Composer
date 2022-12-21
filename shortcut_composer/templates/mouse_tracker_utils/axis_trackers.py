@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 from threading import Thread, Lock
 from time import sleep
 from typing import List, Optional

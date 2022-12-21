@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 from krita import Krita as Api, Extension
 from typing import Callable, Protocol, Any
 

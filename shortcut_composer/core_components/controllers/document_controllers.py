@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 from api_krita import Krita
 from api_krita.wrappers import Node
 from api_krita.pyqt import Text

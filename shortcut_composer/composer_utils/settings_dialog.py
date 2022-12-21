@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 from PyQt5.QtWidgets import QVBoxLayout, QDialog
 from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QCursor
