@@ -42,7 +42,7 @@ class ToolDescriptor:
         def __init__(self) -> None:
             """Remember the reference to toolbox krita object."""
             self.instance = Api.instance()
-            self.toolbox = self.__init_toolbox()
+            self.toolbox = self._init_toolbox()
 
         def find_active_tool_name(self) -> str:
             """Find and return name of currently active tool."""
@@ -52,7 +52,7 @@ class ToolDescriptor:
                         return qobj.objectName()
             raise RuntimeError("No active tool found.")
 
-        def __init_toolbox(self) -> QWidget:
+        def _init_toolbox(self) -> QWidget:
             """Find and return reference to unwrapped toolbox object."""
             qwindow = self.instance.activeWindow().qwindow()
             for qobj in qwindow.findChildren(QWidget):

@@ -28,11 +28,11 @@ class InstructionHolder:
     """
 
     def __init__(self, instructions: List[Instruction] = []) -> None:
-        self.__instructions = instructions
+        self._instructions = instructions
 
     def _template(self, method_name: str) -> None:
         """Perform method `method_name` of each held instruction."""
-        for instruction in self.__instructions:
+        for instruction in self._instructions:
             getattr(instruction, method_name)()
 
     on_key_press = partialmethod(_template, "on_key_press")

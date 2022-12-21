@@ -52,7 +52,7 @@ class SliderHandler:
     def __init__(self, slider: Slider, is_horizontal: bool) -> None:
         """Store the slider configuration, create value adapter."""
         self._slider = slider
-        self._to_cycle = self.__create_slider_values(slider)
+        self._to_cycle = self._create_slider_values(slider)
         self._working = False
         self._is_horizontal = is_horizontal
 
@@ -64,7 +64,7 @@ class SliderHandler:
         """Start a deadzone phase in a new thread."""
         self._working = True
         self._slider.controller.refresh()
-        self._mouse_getter = self.__pick_mouse_getter()
+        self._mouse_getter = self._pick_mouse_getter()
         Thread(target=self._start_after_deadzone, daemon=True).start()
 
     def stop(self) -> None:
@@ -86,29 +86,29 @@ class SliderHandler:
 
     def _value_setting_loop(self) -> None:
         """Block a thread contiguously setting values from `SliderValues`."""
-        self.__update_interpreter()
+        self._update_interpreter()
         while self._working:
             clipped_value = self._interpreter.interpret(self.read_mouse())
             to_set = self._to_cycle.at(clipped_value)
             self._slider.controller.set_value(to_set)
             sleep(self._sleep_time)
 
-    def __update_interpreter(self) -> None:
+    def _update_interpreter(self) -> None:
         """Store a new interpreter with current mouse and current value."""
         self._interpreter = MouseInterpreter(
             min=self._to_cycle.min,
             max=self._to_cycle.max,
             mouse_origin=self.read_mouse(),
-            start_value=self.__get_current_interpreted_value(),
+            start_value=self._get_current_interpreted_value(),
             pixels_in_unit=self._slider.pixels_in_unit,
         )
 
-    def __get_current_interpreted_value(self) -> Interpreted:
+    def _get_current_interpreted_value(self) -> Interpreted:
         """Read interpreted value corresponding to currently set value."""
         controller_value = self._slider.controller.get_value()
         return self._to_cycle.index(controller_value)
 
-    def __pick_mouse_getter(self) -> MouseGetter:
+    def _pick_mouse_getter(self) -> MouseGetter:
         """
         Refresh a mouse fetching method.
 
@@ -124,7 +124,7 @@ class SliderHandler:
         return lambda: MouseInput(-cursor.y())
 
     @staticmethod
-    def __create_slider_values(slider: Slider) -> SliderValues:
+    def _create_slider_values(slider: Slider) -> SliderValues:
         """Return the right values adapter based on passed data type."""
         if isinstance(slider.values, Iterable):
             return ListSliderValues(slider.values)
