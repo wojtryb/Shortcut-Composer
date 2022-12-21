@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ActionCollection version="2" name="Scripts">
     <Actions category="Scripts">
-        <text>Shortcut Composer: User Actions</text>
+        <text>Shortcut Composer: Complex Actions</text>
 
         <!-- Insert your action definitions here -->
-
-
-    </Actions>
-    <Actions category="Scripts">
-        <text>Shortcut Composer: Complex Actions</text>
+        <!-- ................................... -->
+        <!-- ................................... -->
+        <!-- ................................... -->
 
         <Action name="Temporary move tool">
         <activationFlags>1</activationFlags>
