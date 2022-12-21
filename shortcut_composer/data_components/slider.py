@@ -10,7 +10,7 @@ from .range import Range
 
 class Slider:
     """
-    Part of MouseTracker specifying what to do on single axis movement.
+    Part of CursorTracker specifying what to do on single axis movement.
 
     While the slider is active the value is being changed relatively to
     the offset from the starting value.

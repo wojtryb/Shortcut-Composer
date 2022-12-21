@@ -27,7 +27,7 @@ class SpinBoxesLayout(QFormLayout):
         self._add_row(Config.SHORT_VS_LONG_PRESS_TIME, is_int=False)
         self._add_row(Config.FPS_LIMIT, is_int=True)
 
-        self._add_label("Mouse trackers")
+        self._add_label("Cursor trackers")
         self._add_row(Config.SLIDER_SENSITIVITY_SCALE, is_int=False)
         self._add_row(Config.SLIDER_DEADZONE, is_int=True)
 

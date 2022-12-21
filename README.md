@@ -5,7 +5,7 @@
 
 The plugin adds new shortcuts of the following types:
 - `Pie menu` - while key is pressed, displays a pie menu, which allows to pick values by hovering mouse.
-- `Mouse tracker` - while key is pressed, tracks a mouse, switching values according to cursor offset.
+- `Cursor tracker` - while key is pressed, tracks a cursor, switching values according to cursor offset.
 - `Preview` - Temporarily changes canvas elements while the key is pressed.
 - `Multiple assignment` - repeatedly pressing a key, cycles between multiple values of krita property.
 - `Temporary key` - temporarily activates a krita property with long press or toggles it on/off with short press.
@@ -49,8 +49,8 @@ Pie menu is a widget displayed on the canvas while a key is pressed. It will dis
   - darken,
   - lighten
   
-### (`Mouse trackers`):
-Mouse tracker is a value-switching action, active while the key is pressed. It tracks the mouse position to change the value of single krita property. Tracker can be attached to horizontal axis, vertical axis or both.
+### (`Cursor trackers`):
+Cursor tracker is a value-switching action, active while the key is pressed. It tracks the mouse position to change the value of single krita property. Tracker can be attached to horizontal axis, vertical axis or both. Cursor is meant only to be hovered, mouse buttons are not supported.
 
 - ### Scroll isolated layers
   Scrolls the layers by sliding the cursor vertically. Can be used for picking the active layer and analizing the layer stack. While the key is pressed, isolates the active layer to give better preview of which layer is active.
@@ -123,7 +123,7 @@ Shortcut-Composer comes with a settings dialog available from krita topbar: **To
 - Common settings
   - `Short vs long press time` - Time in seconds distinguishing short key presses from long ones.
   - `FPS limit` - Maximum rate of slider refresh. 0 for no limit
-- Mouse trackers
+- Cursor trackers
   - `Slider sensitivity scale` - Sensitivity multiplier of sliders. 
   - `Slider deadzone` - Amount of pixels a mouse needs to moved for slider to start work.
 - Pie menus display
@@ -149,7 +149,7 @@ To achieve that it is required to modify actions implementation:
 
 ### Known limitations
 - Pressing a modifier while the usual key is pressed, will result in conflict. For instance, pressing <kbd>ctrl</kbd> while using temporary eraser assigned to <kbd>x</kbd> will result in unwanted <kbd>ctrl</kbd>+<kbd>x</kbd> operation which cuts current layer.
-- Controllers for setting canvas `zoom`, `rotation` and `active presets` cannot be used with `Mouse tracker` template which needs to utilize different threads. 
+- Controllers for setting canvas `zoom`, `rotation` and `active presets` cannot be used with `Cursor tracker` template which needs to utilize different threads. 
 
 ## For krita plugin programmers
 ### Alternative API

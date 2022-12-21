@@ -102,7 +102,7 @@ def create_actions() -> List[ComplexAction]: return [
     # Control undo and redo actions by sliding the cursor horizontally
     # Start triggering the actions after passing a deadzone of 100 px
     # Use UndoOnPress instruction to trigger undo key press
-    templates.MouseTracker(
+    templates.CursorTracker(
         name="Scroll undo stack",
         instructions=[instructions.UndoOnPress()],
         horizontal_slider=Slider(
@@ -114,7 +114,7 @@ def create_actions() -> List[ComplexAction]: return [
 
     # Scroll all active layers by sliding the cursor vertically
     # Use TemporaryOn instruction to temporarily isolate active layer
-    templates.MouseTracker(
+    templates.CursorTracker(
         name="Scroll isolated layers",
         instructions=[instructions.TemporaryOn(Toggle.ISOLATE_LAYER)],
         vertical_slider=Slider(
@@ -127,7 +127,7 @@ def create_actions() -> List[ComplexAction]: return [
     # animated layers by sliding it vertically
 
     # Use TemporaryOn instruction to temporarily isolate active layer
-    templates.MouseTracker(
+    templates.CursorTracker(
         name="Scroll timeline or animated layers",
         instructions=[instructions.TemporaryOn(Toggle.ISOLATE_LAYER)],
         horizontal_slider=Slider(
@@ -145,7 +145,7 @@ def create_actions() -> List[ComplexAction]: return [
 
     # Opacity is contiguous from 10% to 100%, sizes come from a list
     # Switch 1% of opacity every 5 px (instead of default 50 px)
-    templates.MouseTracker(
+    templates.CursorTracker(
         name="Scroll brush size or opacity",
         horizontal_slider=Slider(
             controller=controllers.BrushSizeController(),
