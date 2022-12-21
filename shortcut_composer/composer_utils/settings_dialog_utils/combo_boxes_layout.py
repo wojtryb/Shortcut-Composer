@@ -23,6 +23,7 @@ class ComboBoxesLayout(QGridLayout):
         self._combo_boxes: Dict[Config, QComboBox] = {}
         self._row_counter = count()
 
+        self._add_label("Preset pie-menus mapping")
         self._add_row(Config.TAG_RED)
         self._add_row(Config.TAG_GREEN)
         self._add_row(Config.TAG_BLUE)
@@ -34,6 +35,12 @@ class ComboBoxesLayout(QGridLayout):
         label.setFixedWidth(100)
         self.addWidget(label, row_id, 0)
         self.addWidget(self._create_combobox(config), row_id, 1)
+
+    def _add_label(self, text: str):
+        row_id = next(self._row_counter)
+        label = QLabel(text)
+        label.setAlignment(Qt.AlignCenter)
+        self.addWidget(label, row_id, 0, 1, 2)
 
     def _create_combobox(self, config: Config) -> QComboBox:
         """Store and return combobox that represents given config field."""
