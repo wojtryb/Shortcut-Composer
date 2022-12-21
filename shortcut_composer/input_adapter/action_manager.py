@@ -9,7 +9,7 @@ from typing import Dict
 from PyQt5.QtWidgets import QWidgetAction
 
 from api_krita import Krita
-from .plugin_action import PluginAction
+from .complex_action import ComplexAction
 from .event_filter import ReleaseKeyEventFilter
 from .shortcut_adapter import ShortcutAdapter
 
@@ -19,13 +19,13 @@ class ActionContainer:
     """
     Holds action elements together.
 
-    - `PluginAction` is the action implementation.
-    - `QWidgetAction` krita representation, which PluginAction implements.
-    - `ShortcutAdapter` manages running elements of PluginAction
+    - `ComplexAction` is the action implementation.
+    - `QWidgetAction` krita representation, which ComplexAction implements.
+    - `ShortcutAdapter` manages running elements of ComplexAction
       interface at right time.
 
     """
-    plugin_action: PluginAction
+    core_action: ComplexAction
     krita_action: QWidgetAction
     shortcut: ShortcutAdapter
 
@@ -33,18 +33,18 @@ class ActionContainer:
         """Bind key_press method to action 'trigger' event."""
         self.krita_action.triggered.connect(self.shortcut.on_key_press)
 
-    def replace_action(self, new_action: PluginAction) -> None:
+    def replace_action(self, new_action: ComplexAction) -> None:
         """Replace plugin action managed by this container."""
-        self.plugin_action = new_action
+        self.core_action = new_action
         self.shortcut.action = new_action
 
 
 class ActionManager:
     """
-    Creates and stores `ActionContainers` from `PluginActions`.
+    Creates and stores `ActionContainers` from `ComplexActions`.
 
     `QWidgetAction` and `ShortcutAdapter` are created and stored in
-    container along with passed `PluginAction` by using the
+    container along with passed `ComplexAction` by using the
     bind_action() method.
     """
 
@@ -53,7 +53,7 @@ class ActionManager:
         self._event_filter = ReleaseKeyEventFilter()
         self._stored_actions: Dict[str, ActionContainer] = {}
 
-    def bind_action(self, action: PluginAction) -> None:
+    def bind_action(self, action: ComplexAction) -> None:
         """
         Create action components and stores them together.
 
@@ -65,7 +65,7 @@ class ActionManager:
             return
 
         container = ActionContainer(
-            plugin_action=action,
+            core_action=action,
             krita_action=Krita.create_action(
                 window=self._window,
                 name=action.name),
@@ -73,14 +73,14 @@ class ActionManager:
         )
         self._stored_actions[action.name] = container
 
-    def _create_adapter(self, action: PluginAction) -> ShortcutAdapter:
+    def _create_adapter(self, action: ComplexAction) -> ShortcutAdapter:
         """
-        Create ShortcutAdapter which runs elements of PluginAction interface.
+        Create ShortcutAdapter which runs elements of ComplexAction interface.
 
         Adapter require registering its callback in event filter.
         """
-        shortcut = ShortcutAdapter(action)
+        shortcut_adapter = ShortcutAdapter(action)
         self._event_filter.register_release_callback(
-            shortcut.event_filter_callback  # type: ignore
+            shortcut_adapter.event_filter_callback  # type: ignore
         )
-        return shortcut
+        return shortcut_adapter

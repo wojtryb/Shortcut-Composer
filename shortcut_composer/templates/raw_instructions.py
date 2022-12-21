@@ -1,7 +1,7 @@
-from input_adapter import PluginAction
+from input_adapter import ComplexAction
 
 
-class RawInstructions(PluginAction):
+class RawInstructions(ComplexAction):
     """
     Temporarily toggle plugin instructions.
 

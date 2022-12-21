@@ -3,17 +3,17 @@ from time import sleep
 from typing import List, Optional
 
 from api_krita import Krita
-from input_adapter import PluginAction
+from input_adapter import ComplexAction
 from core_components import Instruction
 from .slider_handler import SliderHandler
 
 
-class SingleAxisTracker(PluginAction):
+class SingleAxisTracker(ComplexAction):
     """
     Track the mouse along one axis to switch values.
 
     Tracking is performed as long as the key is pressed.
-    This class only grants the PluginAction interface, while the main
+    This class only grants the ComplexAction interface, while the main
     logic is located in passed SliderHandler.
     """
 
@@ -42,12 +42,12 @@ class SingleAxisTracker(PluginAction):
         self._handler.stop()
 
 
-class DoubleAxisTracker(PluginAction):
+class DoubleAxisTracker(ComplexAction):
     """
     Track the mouse along the axis which had the biggest initial movement.
 
     Tracking is performed as long as the key is pressed.
-    This class only grants the PluginAction interface, while the main
+    This class only grants the ComplexAction interface, while the main
     logic is located in SliderHandler which uses passed Slider.
     """
 

@@ -8,7 +8,7 @@ Available templates:
 - `TemporaryKey`
 - `RawInstructions`
 
-All templates must implement PluginAction interface, so that they can be
+All templates must implement ComplexAction interface, so that they can be
 used by the ShortcutAdapter.
 
 Each template implements different logic based pressing and releasing of

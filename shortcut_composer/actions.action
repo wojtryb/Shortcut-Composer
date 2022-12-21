@@ -1,106 +1,140 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ActionCollection version="2" name="Scripts">
     <Actions category="Scripts">
-        <text>Shortcut Composer</text>
+        <text>Shortcut Composer: User Actions</text>
+
+        <!-- Insert your action definitions here -->
+
+
+    </Actions>
+    <Actions category="Scripts">
+        <text>Shortcut Composer: Complex Actions</text>
 
         <Action name="Temporary move tool">
-        <text>Temporary move tool</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Temporary eraser">
-        <text>Temporary eraser</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Temporary preserve alpha">
-        <text>Temporary preserve alpha</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Preview current layer visibility">
-        <text>Preview current layer visibility</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Preview projection below">
-        <text>Preview projection below</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Cycle painting opacity">
-        <text>Cycle painting opacity</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Cycle selection tools">
-        <text>Cycle selection tools</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Scroll undo stack">
-        <text>Scroll undo stack</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Scroll isolated layers">
-        <text>Scroll isolated layers</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Scroll timeline or animated layers">
-        <text>Scroll timeline or animated layers</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Scroll brush size or opacity">
-        <text>Scroll brush size or opacity</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Pick misc tools">
-        <text>Pick misc tools</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Pick painting blending modes">
-        <text>Pick painting blending modes</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Pick transform tool modes">
-        <text>Cycle transform tool modes</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Pick brush presets (red)">
-        <text>Pick brush presets (red)</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Pick brush presets (green)">
-        <text>Pick brush presets (green)</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
         <Action name="Pick brush presets (blue)">
-        <text>Pick brush presets (blue)</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
+        </Action>
+
+    </Actions>
+    <Actions category="Scripts">
+        <text>Shortcut Composer: Utilities</text>
+
+        <Action name="Shortcut Composer Settings">
+        <activationFlags>0</activationFlags>
+        <activationConditions>0</activationConditions>
+        </Action>
+
+        <Action name="Reload Shortcut Composer">
+        <activationFlags>0</activationFlags>
+        <activationConditions>0</activationConditions>
+        </Action>
+        
+        <Action name="Transform tool: free">
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
+        </Action>
+        
+        <Action name="Transform tool: perspective">
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
+        </Action>
+
+        <Action name="Transform tool: warp">
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
+        </Action>
+
+        <Action name="Transform tool: cage">
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
+        </Action>
+
+        <Action name="Transform tool: liquify">
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
+        </Action>
+
+        <Action name="Transform tool: mesh">
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>

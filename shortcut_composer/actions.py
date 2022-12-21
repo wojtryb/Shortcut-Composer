@@ -1,13 +1,17 @@
 """
-Implementation of all plugin actions.
+Implementation of complex actions.
 
-Remember to define every action under exactly the same name in the
+Make sure that every complex action implemented here has a definition in
 `shortcut_composer.action` file. Otherwise the action will not be
 visible in `keyboard shortcuts` menu in krita settings.
 """
 
-from PyQt5.QtGui import QColor
 import templates
+from typing import List
+
+from PyQt5.QtGui import QColor
+
+from input_adapter import ComplexAction
 from api_krita.enums import BlendingMode, Tool, Toggle
 from core_components import instructions, controllers
 from composer_utils import Config
@@ -20,7 +24,7 @@ from data_components import (
 )
 
 
-def create_actions(): return [
+def create_actions() -> List[ComplexAction]: return [
 
     # Switch between FREEHAND BRUSH and the MOVE tool
     templates.TemporaryKey(
@@ -36,7 +40,6 @@ def create_actions(): return [
     templates.TemporaryKey(
         name="Temporary eraser",
         controller=controllers.ToggleController(Toggle.ERASER),
-        low_value=False,
         high_value=True,
         instructions=[
             instructions.SetBrushOnNonPaintable(),
@@ -50,7 +53,6 @@ def create_actions(): return [
     templates.TemporaryKey(
         name="Temporary preserve alpha",
         controller=controllers.ToggleController(Toggle.PRESERVE_ALPHA),
-        low_value=False,
         high_value=True,
         instructions=[
             instructions.SetBrushOnNonPaintable(),

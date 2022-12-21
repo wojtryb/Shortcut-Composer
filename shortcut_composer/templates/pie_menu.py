@@ -4,7 +4,7 @@ from PyQt5.QtGui import QColor, QPixmap
 from PyQt5.QtCore import QPoint
 
 from core_components import Controller, Instruction
-from input_adapter import PluginAction
+from input_adapter import ComplexAction
 from api_krita.pyqt import Text
 from .pie_menu_utils import (
     CirclePoints,
@@ -18,7 +18,7 @@ from .pie_menu_utils import (
 T = TypeVar('T')
 
 
-class PieMenu(PluginAction, Generic[T]):
+class PieMenu(ComplexAction, Generic[T]):
     """
     Pick value by hovering over a pie menu widget.
 

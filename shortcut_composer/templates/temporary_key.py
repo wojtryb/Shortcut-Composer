@@ -1,12 +1,12 @@
 from typing import List, TypeVar, Generic, Optional
 
 from core_components import Controller, Instruction
-from input_adapter import PluginAction
+from input_adapter import ComplexAction
 
 T = TypeVar('T')
 
 
-class TemporaryKey(PluginAction, Generic[T]):
+class TemporaryKey(ComplexAction, Generic[T]):
     """
     Temporarily activate (long press) a value or toggle it (short press).
 

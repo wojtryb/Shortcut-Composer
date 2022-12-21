@@ -4,7 +4,7 @@ from composer_utils import Config
 from core_components import InstructionHolder, Instruction
 
 
-class PluginAction:
+class ComplexAction:
     """
     Stores basic action attributes and grants main plugin action interface.
 
@@ -52,6 +52,7 @@ class PluginAction:
 
 
 def _read_time(short_vs_long_press_time: Optional[float]) -> float:
+    """Return the given time, or time red from krita config if not given."""
     if short_vs_long_press_time is None:
         return Config.SHORT_VS_LONG_PRESS_TIME.read()
     return short_vs_long_press_time

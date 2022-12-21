@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from input_adapter import PluginAction
+from input_adapter import ComplexAction
 from core_components import Instruction
 from data_components import Slider
 from .mouse_tracker_utils import (
@@ -10,7 +10,7 @@ from .mouse_tracker_utils import (
 )
 
 
-class MouseTracker:
+class MouseTracker(ComplexAction):
     """
     Switch values with horizontal or vertical mouse movement.
 
@@ -61,7 +61,7 @@ class MouseTracker:
         horizontal_slider: Optional[Slider] = None,
         vertical_slider: Optional[Slider] = None,
         instructions: List[Instruction] = [],
-    ) -> PluginAction:
+    ) -> ComplexAction:
         """
         Pick and create correct ActionPlugin based on provided sliders.
 
