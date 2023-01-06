@@ -1,5 +1,5 @@
 from typing import Any
-from .helpers import Range
+from ..convenience_utils.helpers import Range
 
 
 def create_proxy(values_to_cycle, default_value):

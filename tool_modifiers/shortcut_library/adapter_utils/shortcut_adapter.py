@@ -2,13 +2,13 @@ from time import time
 
 from PyQt5.QtGui import QKeyEvent
 
-from .plugin_actions.krita_api_wrapper import Krita
-from .plugin_actions.interfaces import PluginAction
+from ..convenience_utils.krita_api_wrapper import Krita
+from ..plugin_actions.interfaces import PluginAction
 
 
-class Shortcut:
+class ShortcutAdapter:
     """
-    Maps krita key events to custom ones from PluginAction.
+    Adds additional key events based on krita's key press and release.
 
     Krita events:
     - on_key_press (recognised when krita action is triggered)

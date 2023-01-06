@@ -8,9 +8,9 @@ from typing import List
 
 from PyQt5.QtWidgets import QWidgetAction
 
-from .plugin_actions.interfaces import PluginAction
+from ..plugin_actions.interfaces import PluginAction
 from .event_filter import ReleaseKeyEventFilter
-from .shortcut import Shortcut
+from .shortcut_adapter import ShortcutAdapter
 
 
 @dataclass
@@ -25,7 +25,7 @@ class ActionContainer:
 
     action: PluginAction
     krita_action: QWidgetAction
-    shortcut: Shortcut
+    shortcut: ShortcutAdapter
 
     def __post_init__(self):
         """Bind key_press method to action 'trigger' event."""
@@ -61,7 +61,7 @@ class ActionManager:
             action.action_name,
             ""
         )
-        shortcut = Shortcut(action)
+        shortcut = ShortcutAdapter(action)
         self._event_filter.register_release_callback(
             shortcut.event_filter_callback)
 

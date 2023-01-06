@@ -1,22 +1,25 @@
 """File that acts as config - define all action objects here."""
 
-from .shortcut_library.plugin_actions.enums import Tool
-from .shortcut_library.plugin_actions import (
-    TemporaryEraser,
-    TemporaryPreserveAlpha,
+from .shortcut_library.convenience_utils.enums import Tool
+from .shortcut_library.plugin_actions.interfaces import (
     MouseCycleAction,
     TemporaryAction,
     CyclicAction
-
 )
+from .shortcut_library.plugin_actions.temporary_actions import (
+    TemporaryEraser,
+    TemporaryPreserveAlpha,
+)
+
 from .shortcut_library.plugin_actions.controllers import (
     BlendingModeController,
     OpacityController,
     PresetController,
     ToolController
 )
-from .shortcut_library.plugin_actions.handlers import Handler
-from .shortcut_library.plugin_actions.helpers import Tag, Range
+
+from .shortcut_library.slider_utils.handlers import Handler
+from .shortcut_library.convenience_utils.helpers import Tag, Range
 
 actions = [
     TemporaryEraser(),

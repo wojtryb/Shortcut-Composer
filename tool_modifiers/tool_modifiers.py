@@ -1,10 +1,12 @@
 """Central file which defines extension class and adds it to krita."""
 
-from .shortcut_library.plugin_actions.krita_api_wrapper import (
+from .shortcut_library.convenience_utils.krita_api_wrapper import (
     Krita,
     Extension
 )
-from .shortcut_library import ReleaseKeyEventFilter, ActionManager
+from .shortcut_library.adapter_utils.event_filter import ReleaseKeyEventFilter
+from .shortcut_library.adapter_utils.action_creator import ActionManager
+
 from .actions import actions
 
 
