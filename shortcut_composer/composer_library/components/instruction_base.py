@@ -14,7 +14,7 @@ class Instruction:
 class InstructionHolder:
     __instructions: List[Instruction]
 
-    def __enter__(self) -> 'InstructionHolder':
+    def enter(self) -> 'InstructionHolder':
         for instruction in self.__instructions:
             instruction.enter()
         return self
@@ -23,6 +23,12 @@ class InstructionHolder:
         for instruction in self.__instructions:
             instruction.update()
 
-    def __exit__(self, *_) -> None:
+    def exit(self, *_) -> None:
         for instruction in self.__instructions:
             instruction.exit()
+
+    def __enter__(self) -> 'InstructionHolder':
+        return self.enter()
+
+    def __exit__(self, *_) -> None:
+        self.exit()

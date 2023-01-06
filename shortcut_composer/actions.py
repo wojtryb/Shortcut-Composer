@@ -8,8 +8,6 @@ from .composer_library.templates import PickStrategy
 from .composer_library.templates.slider_utils import Slider, Range
 
 from .composer_library.components import instructions, controllers
-from .composer_library.components.controllers.strategies \
-    import SetBrushStrategy
 
 
 actions = [
@@ -26,21 +24,23 @@ actions = [
     ),
     templates.TemporaryKey(
         action_name="Eraser (temporary)",
-        controller=controllers.EraserController(
-            affect_preserve_alpha=True,
-            set_brush_strategy=SetBrushStrategy.ON_NON_PAINTABLE
-        ),
+        controller=controllers.EraserController(),
         low_value=False,
         high_value=True,
+        additional_instructions=[
+            instructions.SetBrushOnNonPaintable(),
+            instructions.UnlockAlpha(),
+        ],
     ),
     templates.TemporaryKey(
         action_name="Preserve alpha (temporary)",
-        controller=controllers.PreserveAlphaController(
-            affect_eraser=True,
-            set_brush_strategy=SetBrushStrategy.ON_NON_PAINTABLE
-        ),
+        controller=controllers.PreserveAlphaController(),
         low_value=False,
         high_value=True,
+        additional_instructions=[
+            instructions.SetBrushOnNonPaintable(),
+            instructions.TurnOffEraser(),
+        ],
     ),
     templates.MultipleAssignment(
         action_name="Opacity (cycle)",
@@ -69,11 +69,10 @@ actions = [
     ),
     templates.MultipleAssignment(
         action_name="Preset (cycle)",
-        controller=controllers.PresetController(
-            set_brush_strategy=SetBrushStrategy.ON_NON_PAINTABLE
-        ),
+        controller=controllers.PresetController(),
         default_value="b) Basic-5 Size Opacity",
-        values_to_cycle=Tag("Digital")
+        values_to_cycle=Tag("Digital"),
+        # additional_instructions=[instructions.SetBrushOnNonPaintable()],
     ),
     templates.LayerPicker(
         action_name="Layer scraper - isolate",
