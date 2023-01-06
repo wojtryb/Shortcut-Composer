@@ -69,12 +69,6 @@
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Layer scraper - visibility">
-        <text>Layer scraper - visibility</text>
-        <activationFlags>1</activationFlags>
-        <activationConditions>1</activationConditions>
-        </Action>
-
         <Action name="Timeline scraper (tracker)">
         <text>Timeline scraper (tracker)</text>
         <activationFlags>1</activationFlags>

@@ -100,9 +100,14 @@ actions = [
     ),
     templates.MouseTracker(
         name="Timeline scraper (tracker)",
+        instructions=[instructions.TemporaryOn(Toggle.ISOLATE_LAYER)],
         horizontal_slider=Slider(
             controller=controllers.TimeController(),
             values=Range(0, float('inf')),
+        ),
+        vertical_slider=Slider(
+            controller=controllers.LayerController(),
+            values=CurrentLayerStack(PickStrategy.ANIMATED),
         )
     ),
     templates.MouseTracker(
