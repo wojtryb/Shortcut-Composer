@@ -11,117 +11,37 @@ from .composer_library.shortcut_templates import HideStrategy, PickStrategy
 
 actions = [
     shortcut_templates.TemporaryKey(
-        action_name="Eraser (toggle)",
-        controller=controllers.EraserController(affect_preserve_alpha=True),
-        low_value=False,
-        high_value=True,
-    ),
-    shortcut_templates.TemporaryKey(
-        action_name="Preserve alpha (toggle)",
-        controller=controllers.PreserveAlphaController(affect_eraser=True),
-        low_value=False,
-        high_value=True,
-    ),
-    shortcut_templates.LayerPicker(
-        action_name="Layer picker",
-        hide_strategy=HideStrategy.MAKE_INVISIBLE,
-        pick_strategy=PickStrategy.VISIBLE
-    ),
-    shortcut_templates.MouseTracker(
-        action_name="Brush size mouse",
-        separate_sliders=True,
-        horizontal_slider=Slider(
-            controller=controllers.BrushSizeController(),
-            default_value=100,
-            values_to_cycle=Range(1, 1000),
-            sensitivity=0.5
-        ),
-        vertical_slider=Slider(
-            controller=controllers.BrushSizeController(),
-            default_value=100,
-            values_to_cycle=[50, 100, 200, 250, 500, 1000]
-        ),
-    ),
-    shortcut_templates.MouseTracker(
-        action_name="Mouse cycle",
-        separate_sliders=True,
-        horizontal_slider=Slider(
-            controller=controllers.OpacityController(),
-            default_value=50,
-            values_to_cycle=Range(10, 90)
-        ),
-        vertical_slider=Slider(
-            controller=controllers.OpacityController(),
-            default_value=50,
-            values_to_cycle=[10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-        ),
-        # horizontal_slider=Slider(
-        #     controllers=controllers.ToolController,
-        #     default_value=Tool.FREEHAND_SELECTION,
-        #     values_to_cycle=[
-        #         Tool.FREEHAND_SELECTION,
-        #         Tool.RECTANGULAR_SELECTION,
-        #         Tool.CONTIGUOUS_SELECTION,
-        #         Tool.GRADIENT,
-        #         Tool.LINE,
-        #         Tool.TRANSFORM,
-        #         Tool.REFERENCE,
-        #     ],
-        # ),
-        # vertical_slider=Slider(
-        #     controllers=controllers.BlendingModeController(),
-        #     values_to_cycle=[
-        #         BlendingMode.OVERLAY,
-        #         BlendingMode.NORMAL,
-        #         BlendingMode.DARKEN],
-        #     default_value=BlendingMode.NORMAL,
-        #     sensitivity=50
-        # ),
-    ),
-    shortcut_templates.MouseTracker(
-        action_name="Canvas slider",
-        separate_sliders=True,
-        horizontal_slider=Slider(
-            controller=controllers.CanvasRotationController(),
-            default_value=0,
-            values_to_cycle=Range(1, 90),
-            sensitivity=50
-        ),
-        vertical_slider=Slider(
-            controller=controllers.CanvasZoomController(),
-            default_value=1,
-            values_to_cycle=Range(0.25, 4),
-            sensitivity=50
-        ),
-    ),
-    shortcut_templates.TemporaryKey(
-        action_name="Freehand selection (toggle)",
+        action_name="Move tool (temporary)",
         controller=controllers.ToolController(),
-        high_value=Tool.FREEHAND_SELECTION,
+        high_value=Tool.MOVE,
     ),
     shortcut_templates.TemporaryKey(
-        action_name="Gradient (toggle)",
-        controller=controllers.ToolController(),
-        high_value=Tool.GRADIENT,
-    ),
-    shortcut_templates.TemporaryKey(
-        action_name="Line tool (toggle)",
-        controller=controllers.ToolController(),
-        high_value=Tool.LINE,
-    ),
-    shortcut_templates.TemporaryKey(
-        action_name="Transform tool (toggle)",
+        action_name="Transform tool (temporary)",
         controller=controllers.ToolController(),
         high_value=Tool.TRANSFORM,
         time_interval=1.0
     ),
     shortcut_templates.TemporaryKey(
-        action_name="Move tool (toggle)",
-        controller=controllers.ToolController(),
-        high_value=Tool.MOVE,
+        action_name="Eraser (temporary)",
+        controller=controllers.EraserController(affect_preserve_alpha=True),
+        low_value=False,
+        high_value=True,
+    ),
+    shortcut_templates.TemporaryKey(
+        action_name="Preserve alpha (temporary)",
+        controller=controllers.PreserveAlphaController(affect_eraser=True),
+        low_value=False,
+        high_value=True,
     ),
     shortcut_templates.MultipleAssignment(
-        action_name="Selections tools (cycle)",
+        action_name="Opacity (cycle)",
+        controller=controllers.OpacityController(),
+        default_value=100,
+        values_to_cycle=[70, 50, 30],
+        include_default_in_cycle=True,
+    ),
+    shortcut_templates.MultipleAssignment(
+        action_name="Selection tools (cycle)",
         controller=controllers.ToolController(),
         values_to_cycle=[
             Tool.FREEHAND_SELECTION,
@@ -130,19 +50,13 @@ actions = [
         ],
     ),
     shortcut_templates.MultipleAssignment(
-        action_name="Canvas cycle",
-        controller=controllers.CanvasRotationController(),
-        default_value=0,
-        values_to_cycle=[15, 30, 60, 90],
-    ),
-    shortcut_templates.MultipleAssignment(
         action_name="Misc tools (cycle)",
         controller=controllers.ToolController(),
         values_to_cycle=[
-            Tool.GRADIENT,
-            Tool.LINE,
-            Tool.TRANSFORM,
+            Tool.CROP,
             Tool.REFERENCE,
+            Tool.GRADIENT,
+            Tool.MULTI_BRUSH,
         ],
     ),
     shortcut_templates.MultipleAssignment(
@@ -150,19 +64,66 @@ actions = [
         controller=controllers.PresetController(
             set_brush_strategy=SetBrushStrategy.ON_NON_PAINTABLE
         ),
-        default_value="y) Texture Big",
-        values_to_cycle=Tag("Digital")
+        default_value="b) Basic-5 Size Opacity",
+        values_to_cycle=Tag("My Favourites")
     ),
-    shortcut_templates.MultipleAssignment(
-        action_name="Opacity (cycle)",
-        controller=controllers.OpacityController(),
-        values_to_cycle=[75, 50, 20.3, 11.1],
-        include_default_in_cycle=True,
+    shortcut_templates.LayerPicker(
+        action_name="Layer scraper - isolate",
+        hide_strategy=HideStrategy.ISOLATE_LAYER,
+        pick_strategy=PickStrategy.ALL
     ),
-    shortcut_templates.MultipleAssignment(
-        action_name="Blending mode (cycle)",
-        controller=controllers.BlendingModeController(),
-        values_to_cycle=[BlendingMode.OVERLAY],
-        include_default_in_cycle=True,
+    shortcut_templates.LayerPicker(
+        action_name="Layer scraper - visibility",
+        hide_strategy=HideStrategy.MAKE_INVISIBLE,
+        pick_strategy=PickStrategy.VISIBLE
+    ),
+    shortcut_templates.MouseTracker(
+        action_name="Blending mode (tracker)",
+        horizontal_slider=Slider(
+            controller=controllers.BrushSizeController(),
+            default_value=BlendingMode.NORMAL,
+            values_to_cycle=[
+                BlendingMode.NORMAL,
+                BlendingMode.OVERLAY,
+                BlendingMode.MULTIPLY,
+                BlendingMode.COLOR,
+                BlendingMode.ADD,
+                BlendingMode.BEHIND,
+                BlendingMode.DARKEN,
+                BlendingMode.LIGHTEN,
+            ],
+        ),
+    ),
+    shortcut_templates.MouseTracker(
+        action_name="Discrete brush settings (tracker)",
+        horizontal_slider=Slider(
+            controller=controllers.BrushSizeController(),
+            default_value=100,
+            values_to_cycle=[
+                0.7, 1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7, 8, 9,
+                10, 12, 14, 16, 20, 25, 30, 35, 40, 50, 60, 70, 80,
+                100, 120, 160, 200, 250, 300, 350, 400, 450,
+                500, 600, 700, 800, 900, 1000
+            ]
+        ),
+        vertical_slider=Slider(
+            controller=controllers.OpacityController(),
+            default_value=100,
+            values_to_cycle=[10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+        ),
+    ),
+    shortcut_templates.MouseTracker(
+        action_name="Contiguous brush settings (tracker)",
+        separate_sliders=False,
+        horizontal_slider=Slider(
+            controller=controllers.BrushSizeController(),
+            default_value=100,
+            values_to_cycle=Range(50, 1000)
+        ),
+        vertical_slider=Slider(
+            controller=controllers.OpacityController(),
+            default_value=100,
+            values_to_cycle=Range(10, 100)
+        ),
     ),
 ]

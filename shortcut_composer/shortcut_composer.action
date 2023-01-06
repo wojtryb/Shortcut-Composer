@@ -3,84 +3,56 @@
     <Actions category="Scripts">
         <text>Shortcut Composer</text>
 
-        <Action name="Layer picker">
-        <text>Pick a layer</text>
+        <Action name="Move tool (temporary)">
+        <text>Move tool (temporary)</text>
         </Action>
 
-        <Action name="Freehand selection (toggle)">
-        <text>Temporarily switch to freehand selection</text>
-        </Action>
-        
-        <Action name="Gradient (toggle)">
-        <text>Temporarily switch to gradient tool</text>
-        </Action>
-        
-        <Action name="Line tool (toggle)">
-        <text>Temporarily switch to line tool</text>
-        </Action>
-        
-        <Action name="Transform tool (toggle)">
-        <text>Temporarily switch to transform tool</text>
-        </Action>
-        
-        <Action name="Move tool (toggle)">
-        <text>Temporarily switch to move tool</text>
+        <Action name="Transform tool (temporary)">
+        <text>Transform tool (temporary)</text>
         </Action>
 
-        <Action name="Eraser (toggle)">
-        <text>Temporarily switch to eraser (toggle)</text>
+        <Action name="Eraser (temporary)">
+        <text>Eraser (temporary)</text>
         </Action>
 
-        <Action name="Preserve alpha (toggle)">
-        <text>Temporarily preserve alpha (toggle)</text>
-        </Action>
-
-        <Action name="Tool 1 (toggle)">
-        <text>Temporarily switch to custom tool 1</text>
-        </Action>
-
-        <Action name="Tool 2 (toggle)">
-        <text>Temporarily switch to custom tool 2</text>
-        </Action>
-
-        <Action name="Tool 3 (toggle)">
-        <text>Temporarily switch to custom tool 3</text>
-        </Action>
-
-        <Action name="Selections tools (cycle)">
-        <text>Selection cyclic tool</text>
-        </Action>
-
-        <Action name="Misc tools (cycle)">
-        <text>Misc cyclic tool</text>
-        </Action>
-
-        <Action name="Preset (cycle)">
-        <text>Preset (cycle)</text>
+        <Action name="Preserve alpha (temporary)">
+        <text>Preserve alpha (temporary)</text>
         </Action>
 
         <Action name="Opacity (cycle)">
         <text>Opacity (cycle)</text>
         </Action>
 
-        <Action name="Blending mode (cycle)">
-        <text>Blending mode (cycle)</text>
+        <Action name="Selection tools (cycle)">
+        <text>Selection tools (cycle)</text>
         </Action>
 
-        <Action name="Mouse cycle">
-        <text>Mouse cycle</text>
+        <Action name="Misc tools (cycle)">
+        <text>Misc tools (cycle)</text>
         </Action>
 
-        <Action name="Canvas slider">
-        <text>Canvas slider</text>
+        <Action name="Preset (cycle)">
+        <text>Preset (cycle)</text>
         </Action>
 
-        <Action name="Canvas cycle">
-        <text>Canvas cycle</text>
+        <Action name="Layer scraper - isolate">
+        <text>Layer scraper - isolate</text>
         </Action>
 
-        <Action name="Brush size mouse">
-        <text>Brush size mouse</text>
+        <Action name="Layer scraper - visibility">
+        <text>Layer scraper - visibility</text>
+        </Action>
+
+        <Action name="Blending mode (tracker)">
+        <text>Blending mode (tracker)</text>
+        </Action>
+
+        <Action name="Discrete brush settings (tracker)">
+        <text>Discrete brush settings (tracker)</text>
+        </Action>
+
+        <Action name="Contiguous brush settings (tracker)">
+        <text>Contiguous brush settings (tracker)</text>
         </Action>
 
     </Actions>
