@@ -9,6 +9,7 @@ class CyclicTool(CyclicPluginAction):
 
     default_value: str = "KritaShape/KisToolBrush"
     time_interval: float = 0.3
+    include_default_in_cycle: bool = False
 
     def _set_value(self, value: str) -> None:
         'activates a tool of passed name'
@@ -22,6 +23,7 @@ class CyclicTool(CyclicPluginAction):
 class CyclicPreset(CyclicPluginAction):
 
     time_interval: float = 0.3
+    include_default_in_cycle: bool = False
 
     def _set_value(self, value: str):
         presets = Krita.get_presets()
@@ -36,6 +38,7 @@ class CyclicBlendingModes(CyclicPluginAction):
 
     default_value: str = "normal"
     time_interval: float = 0.3
+    include_default_in_cycle: bool = True
 
     def _set_value(self, value: str):
         print("setting", value)
@@ -50,6 +53,7 @@ class CyclicOpacity(CyclicPluginAction):
 
     default_value: float = 100.0
     time_interval: float = 0.3
+    include_default_in_cycle: bool = True
 
     def __post_init__(self):
         self.values_to_cycle = \

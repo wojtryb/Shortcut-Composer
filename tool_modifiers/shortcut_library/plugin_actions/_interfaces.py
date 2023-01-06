@@ -58,7 +58,9 @@ class CyclicPluginAction(PluginAction):
     values_to_cycle: List[str]
     default_value: str
 
-    _wait_for_release: bool = field(default=False, init=False)
+    def __post_init__(self):
+        self.include_default_in_cycle: bool
+        self._wait_for_release: bool = False
 
     @abstractmethod
     def _set_value(self, value: str) -> None:

@@ -64,10 +64,12 @@ actions = [
     CyclicOpacity(
         action_name="Opacity (cycle)",
         default_value=100,
-        values_to_cycle=[75, 50, 100],
+        values_to_cycle=[75, 50],
+        include_default_in_cycle=True,
     ),
     CyclicBlendingModes(
         action_name="Blending mode (cycle)",
-        values_to_cycle=["overlay", "normal"],
+        values_to_cycle=["overlay"],
+        include_default_in_cycle=True,
     ),
 ]
