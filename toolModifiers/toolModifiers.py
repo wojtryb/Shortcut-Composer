@@ -1,9 +1,9 @@
+from functools import partial
 from krita import *
 
 from .importCode.action_wrapper import ActionCreator
 from .importCode.passFunctions import (
     setTool,
-    setBrushTool,
     isToolSelected,
     isEraserActive,
     toggleEraser,
@@ -41,9 +41,9 @@ class toolModifiers(Extension):
             self.actions.append(creator.create_shortcut(
                 human_name=human_name,
                 krita_name=krita_name,
-                set_low_function=setBrushTool,
-                set_high_function=setTool,
-                is_high_state_function=isToolSelected
+                set_low_function=partial(setTool, "KritaShape/KisToolBrush"),
+                set_high_function=partial(setTool, krita_name),
+                is_high_state_function=partial(isToolSelected, krita_name)
             ))
 
         # 'create action for eraser'
@@ -65,5 +65,4 @@ class toolModifiers(Extension):
         ))
 
 
-# 'load the extension on krita start-up'
 Krita.instance().addExtension(toolModifiers(Krita.instance()))
