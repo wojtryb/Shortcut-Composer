@@ -3,3 +3,5 @@ from .pixmap_transform import (
     add_border,
     scale_pixmap,
 )
+
+from .painter import Painter
