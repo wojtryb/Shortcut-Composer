@@ -2,10 +2,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Dict, Literal
-from time import sleep
-from threading import Thread
-from functools import partialmethod
+from functools import partial, partialmethod
 
+from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import (
     QWidgetAction,
     QToolButton,
@@ -65,12 +64,11 @@ class TransformModeActions:
             return self._finder.activate_mode(mode, apply=True)
 
         Tool.TRANSFORM.activate()
-        Thread(target=self._delayed_click, args=[mode], daemon=True).start()
+        self._delayed_click(mode)
 
     def _delayed_click(self, mode: TransformMode) -> None:
-        """Activate a mode after a small delay, so that krita notices it."""
-        sleep(0.1)
-        self._finder.activate_mode(mode, apply=False)
+        method = partial(self._finder.activate_mode, mode=mode, apply=False)
+        QTimer.singleShot(40, method)
 
     set_free = partialmethod(_set_mode, Tool.TRANSFORM_FREE)
     set_perspective = partialmethod(_set_mode, Tool.TRANSFORM_PERSPECTIVE)
