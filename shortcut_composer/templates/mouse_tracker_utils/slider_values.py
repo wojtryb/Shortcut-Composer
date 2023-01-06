@@ -6,15 +6,20 @@ from .new_types import Interpreted, Controlled
 
 class SliderValues(ABC):
     """
-    Interface adapter for values accepted by the slider handler.
+    Converts between interpreted values and those compatibile with controller.
 
-    Values are a container with `at()` and `index()` methods.
-    Each child class must contain public `min`, `max` and `default`.
+    Works as if it was a container with  controller compatibile values:
+    - `at()` fetches controller value using interpreted one
+    - `index()` fetches interpreted value using controller one
+
+    Valid interpreted values are a contiguous range - each child of this
+    class must contain public attributes:
+    - `min`     - first valid interpreted value / range beginning
+    - `max`     - last valid interpreted value / range end
     """
 
     min: Interpreted
     max: Interpreted
-    default: Interpreted
 
     @abstractmethod
     def at(self, value: Interpreted) -> Controlled:
@@ -27,9 +32,9 @@ class SliderValues(ABC):
 
 class RangeSliderValues(SliderValues):
     """
-    Allows to fetch values from user-defined Range.
+    Allows to fetch values from Range object defined by the user.
 
-    Moving from input to output domain require no calculation, apart
+    Moving from interpreted to controller domain require no calculation, apart
     from restricting it to the range `min` and `max` values.
     """
 
