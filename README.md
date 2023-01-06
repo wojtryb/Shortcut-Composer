@@ -29,7 +29,7 @@ Used for picking layers and analizing the layer stack. Scrolls all active layer 
 Variation on "Scroll isolated layers" for animators. Layers are restricted only to animated ones. Horizontal mouse movement changes current frame on the timeline.
 
 ### (`Mouse tracker`): Scroll undo stack
-Extends the usual undo(<kbd>ctrl</kbd>+<kbd>z</kbd>) action. Controls the undo stack by sliding the cursor horizontally. Undoing is still possible with short key presses.
+Extends the usual undo(<kbd>ctrl</kbd>+<kbd>z</kbd>) action. Controls the undo stack by sliding the cursor horizontally. Usual undoing is still possible.
 
 ### (`Mouse tracker`): Scroll brush size or opacity
 Allows to control both `brush size` and `opacity` with single key. Opacity changes contiguously with vertical mouse movement, while brush size snaps to custom values. It is meant to provide easy access to precise values for pixel artists.
@@ -106,3 +106,62 @@ To change actions name or create a new one, both files need to be edited. Make s
 - Controllers for setting canvas `zoom`, `rotation` and `active presets` cannot be used with `Mouse tracker` template which needs to utilize different threads. 
 
 ## For krita plugin programmers
+The extension consists of elements that can be reused in other krita plugins under GPL3 license.
+
+### Alternative API
+Package `api_krita` consists of wrapper for krita api. It offers PEP8 compatibility, typings, and docstrings.
+
+Most of objects attributes are now rewritten as settables properties 
+
+Copy `api_krita` to the extension directory, to access syntax such as:
+```python
+from .api_krita import Krita
+from .api_krita.enums import BlendingMode, Tool, Toggle
+
+# active tool operations
+tool = Krita.active_tool  # get current tool
+Krita.active_tool = Tool.FREEHAND_BRUSH  # set current tool
+Tool.FREEHAND_BRUSH.activate()  # set current tool (alternative way)
+
+# operations on a document
+document = Krita.get_active_document()
+all_nodes = document.get_all_nodes()  # all nodes with flattened structure
+picked_node = all_nodes[3]
+
+picked_node.name = "My layer name"
+picked_node.visible = True
+picked_node.opacity = 50  # remapped from 0-255 go 0-100 [%]
+document.active_node = picked_node 
+document.refresh()
+
+# Operations on a view
+view = Krita.get_active_view()
+view.brush_size = 100
+view.blending_mode = BlendingMode.NORMAL  # Enumerated blending modes
+
+# Handling checkable actions
+mirror_state = Toggle.MIRROR_CANVAS.state  # get mirror state
+Toggle.SOFT_PROOFING.state = False  # turn off soft proofing
+Toggle.PRESERVE_ALPHA.switch_state()  # change state of preserve alpha
+
+```
+
+### Custom keyboard shortcut interface
+Package `input_adapter` consists of `ActionManager` and `PluginAction` which grant extended interface for creating keyboard shortcuts.
+
+While usual actions can only recognise key press, subclassing `PluginAction` lets you override methods performed on:
+- key press
+- short key release
+- long key release
+- every key release
+
+Then use `ActionManager` instance to bind objects of those custom actions to krita during CreateActions phase:
+
+```python
+class ExtensionName(Extension):
+    ...
+    def createActions(self, window) -> None:
+        action = PluginActionChild(name="...")
+        self.manager = ActionManager(window)
+        self.manager.bind_action(action)
+```
