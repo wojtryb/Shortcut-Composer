@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ActionCollection version="2" name="Scripts">
     <Actions category="Scripts">
-        <text>Shortcut Composer: Complex Actions</text>
+        <text>Shortcut Composer: User Defined</text>
 
         <!-- Insert your action definitions here -->
         <!-- ................................... -->
         <!-- ................................... -->
         <!-- ................................... -->
+
+    </Actions>
+    <Actions category="Scripts">
+        <text>Shortcut Composer: Temporary Tools</text>
 
         <Action name="Temporary move tool">
         <activationFlags>1</activationFlags>
@@ -23,6 +27,10 @@
         <activationConditions>1</activationConditions>
         </Action>
 
+    </Actions>
+    <Actions category="Scripts">
+        <text>Shortcut Composer: Canvas Previews</text>
+
         <Action name="Preview current layer visibility">
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
@@ -33,6 +41,10 @@
         <activationConditions>1</activationConditions>
         </Action>
 
+    </Actions>
+    <Actions category="Scripts">
+        <text>Shortcut Composer: Multiple Assignments</text>
+
         <Action name="Cycle painting opacity">
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
@@ -42,6 +54,10 @@
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
+
+    </Actions>
+    <Actions category="Scripts">
+        <text>Shortcut Composer: Mouse Trackers</text>
 
         <Action name="Scroll undo stack">
         <activationFlags>1</activationFlags>
@@ -67,6 +83,10 @@
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
+
+    </Actions>
+    <Actions category="Scripts">
+        <text>Shortcut Composer: Pie Menus</text>
 
         <Action name="Pick misc tools">
         <activationFlags>1</activationFlags>
