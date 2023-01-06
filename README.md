@@ -4,6 +4,7 @@
 
 
 The plugin adds new shortcuts of the following types:
+- `Pie menu` - while key is pressed, displays a pie menu which allows to pick values by hovering.
 - `Mouse tracker` - while key is pressed, tracks a mouse, switching values according to cursor offset.
 - `Preview` - displays on-canvas preview while the key is pressed.
 - `Multiple assignment` - repeatedly pressing a key cycles between multiple values of krita property.
@@ -18,8 +19,34 @@ The plugin adds new shortcuts of the following types:
 <!-- Screen z akcjami w Keyboard Shortcuts -->
 
 ## Pre-made actions
-Shortcut composer add-on comes with multiple pre-made, highly configurable and extendable actions which can be used out-of-the-box.
+While Shortcut-Composer is highly configurable and extendable, the add-on comes with multiple pre-made actions which can be used out-of-the-box.
 
+### (`Pie menus`):
+- ### Pick brush presets (red, gree, blue)
+  Three color coded pie menus that let you pick a brush preset from selected tag. Default tag mapping is as follows:
+  - <span style="color:red">red</span>: "Digital"
+  - <span style="color:green">green</span>: "RGBA"
+  - <span style="color:blue">blue</span>: "Erasers"
+  It is encouraged to change those tags to custom ones in **Tools > Scripts > Shortcut Composer Settings**.  
+
+- ### Pick misc tools
+  Pie menu for wtitching active tools. Consists of tools that are used rather sporadically:
+  - crop tool,
+  - reference tool,
+  - gradient tool,
+  - multi_brush tool,
+  - assistant tool
+  
+- ### Pick painting blending modes
+  Pie menu for switching painting blending mode. Consists of most commonly used ones:
+  - overlay,
+  - multiply,
+  - color,
+  - add,
+  - darken,
+  - lighten,
+  - normal
+  
 ### (`Mouse trackers`):
 - ### Scroll isolated layers
   Used for picking layers and analizing the layer stack. Scrolls all active layer by sliding the cursor vertically. While the action is running, isolates active layer.
@@ -45,37 +72,15 @@ Shortcut composer add-on comes with multiple pre-made, highly configurable and e
 ### (`Multiple assignments`):
 - ### Cycle selection tools
   Pressing a key repeatedly cycles most commonly used selection tools:
-  - `freehand selection tool`,
-  - `rectangular selection tool`,
-  - `contiguous selection tool`
-
-  Performing a long press, goes back to the `freehand brush tool`. Tools can be used while the key is pressed.
-
-- ### Cycle misc tools
-  Pressing a key repeatedly cycles most commonly used miscellaneous tools:
-  - `crop tool`,
-  - `reference tool`,
-  - `gradient tool`,
-  - `multi_brush tool`
+  - freehand selection tool,
+  - rectangular selection tool,
+  - contiguous selection tool`
 
   Performing a long press, goes back to the `freehand brush tool`. Tools can be used while the key is pressed.
 
 - ### Cycle painting opacity
   Pressing a key repeatedly cycles brush predefined opacity values: `100%`, `70%`, `50%`, `30%`
   Performing a long press, goes back to the `100%` opacity. Modified opacity can be used while the key is pressed.
-
-- ### Cycle painting blending modes
-  Pressing a key repeatedly cycles most commonly used blending modes:
-  - `overlay`,
-  - `multiply`,
-  - `color`,
-  - `add`,
-  - `behind`,
-  - `darken`,
-  - `lighten`,
-  - `normal`,
-
-  Performing a long press, goes back to the `normal` mode. Modified mode can be used while the key is pressed.
 
 - ### Cycle brush presets
   Pressing a key repeatedly cycles brush presets from default `"Digital"` tag. Used tag is configurable.
