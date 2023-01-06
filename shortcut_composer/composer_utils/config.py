@@ -1,7 +1,7 @@
 from typing import Union, Any
 from enum import Enum
 
-from .read_setting import read_setting
+from .krita_setting import read_setting
 
 
 class Config(Enum):

@@ -1,7 +1,8 @@
+from krita import Krita as Api, Extension
+from typing import Callable, Protocol, Any
+
 from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QWidgetAction
 from PyQt5.QtGui import QKeySequence
-from typing import Callable, Protocol
-from krita import Krita as Api, Extension
 
 from .wrappers import (
     ToolDescriptor,
@@ -58,8 +59,8 @@ class KritaInstance:
     def read_setting(self, group: str, name: str, default: str) -> str:
         return self.instance.readSetting(group, name, default)
 
-    def write_setting(self, group: str, name: str, value: str) -> None:
-        self.instance.writeSetting(group, name, value)
+    def write_setting(self, group: str, name: str, value: Any) -> None:
+        self.instance.writeSetting(group, name, str(value))
 
     def create_action(
         self,
