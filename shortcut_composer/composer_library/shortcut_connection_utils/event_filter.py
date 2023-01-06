@@ -1,8 +1,8 @@
 from typing import Callable, List
 
 from PyQt5.QtCore import QEvent
+from PyQt5.QtGui import QKeyEvent
 from ..krita_api import QMdiArea
-
 
 EventCallback = Callable[[QEvent], None]
 
@@ -15,11 +15,11 @@ class ReleaseKeyEventFilter(QMdiArea):
         super().__init__(None)
         self._release_callbacks: List[EventCallback] = []
 
-    def register_release_callback(self, callback: EventCallback):
+    def register_release_callback(self, callback: EventCallback) -> None:
         """Add new callback to list, so it gets executed on each KeyRelease."""
         self._release_callbacks.append(callback)
 
-    def eventFilter(self, _, event):
+    def eventFilter(self, _, event: QKeyEvent) -> bool:
         """Everrides QMdiArea method - executed on every krita event."""
         if event.type() == QEvent.KeyRelease:
             for callback in self._release_callbacks:

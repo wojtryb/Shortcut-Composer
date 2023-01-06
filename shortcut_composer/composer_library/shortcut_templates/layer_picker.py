@@ -35,7 +35,7 @@ class HideStrategy(Enum):
             self.document.refresh()
             return self
 
-        def update(self):
+        def update(self) -> None:
             current_node = self.document.current_node()
             if current_node != self.last_node:
                 self.last_node.toggle_visible()
@@ -89,7 +89,7 @@ class LayerPicker(MouseTracker):
         self.hide_strategy = hide_strategy
         self.pick_strategy = pick_strategy
 
-    def _loop_common(self):
+    def _loop_common(self) -> None:
         document = Krita.get_active_document()
 
         with self.hide_strategy.value(document) as hider:

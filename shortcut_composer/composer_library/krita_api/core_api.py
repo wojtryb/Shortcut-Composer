@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QWidget, QToolButton, QMainWindow
+from PyQt5.QtGui import QKeySequence
 from krita import Krita as Api, Extension
 
 from .wrappers.document import Document
@@ -32,7 +33,7 @@ class Krita:
         return Api.instance().action(action_name).trigger()
 
     @staticmethod
-    def get_action_shortcut(action_name: str) -> str:
+    def get_action_shortcut(action_name: str) -> QKeySequence:
         return Api.instance().action(action_name).shortcut()
 
     @staticmethod

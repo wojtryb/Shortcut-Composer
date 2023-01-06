@@ -17,7 +17,7 @@ class ToolController(Controller):
         return Krita.get_current_tool()
 
     @staticmethod
-    def set_value(value: Tool):
+    def set_value(value: Tool) -> None:
         """Set a passed tool."""
         Krita.trigger_action(value.value)
 
@@ -33,7 +33,7 @@ class EraserController(Controller):
     def get_value() -> Node:
         return Krita.get_action_state("erase_action")
 
-    def set_value(self, value: bool):
+    def set_value(self, value: bool) -> None:
         self.set_brush_strategy()
         if self.affect_preserve_alpha:
             Krita.set_action_state("preserve_alpha", False)
@@ -51,7 +51,7 @@ class PreserveAlphaController(Controller):
     def get_value() -> Node:
         return Krita.get_action_state("preserve_alpha")
 
-    def set_value(self, value: bool):
+    def set_value(self, value: bool) -> None:
         self.set_brush_strategy()
         if self.affect_eraser:
             Krita.set_action_state("erase_action", False)

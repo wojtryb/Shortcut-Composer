@@ -38,7 +38,7 @@ class Database:
         query_handler.finish()
         return preset_names
 
-    def close(self):
+    def close(self) -> None:
         self.database.close()
 
     def __enter__(self):

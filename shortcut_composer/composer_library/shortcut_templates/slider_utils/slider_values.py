@@ -23,10 +23,10 @@ class SliderValues(ABC):
     max: float
 
     @abstractmethod
-    def at(self, value: float): ...
+    def at(self, value: float) -> Any: ...
 
     @abstractmethod
-    def index(self, value: Any): ...
+    def index(self, value: Any) -> Any: ...
 
 
 class RangeSliderValues(SliderValues):
@@ -36,10 +36,10 @@ class RangeSliderValues(SliderValues):
         self.max = values_to_cycle.max
         self.default_value = default_value
 
-    def at(self, value: float):
+    def at(self, value: float) -> None:
         return value
 
-    def index(self, value: Any):
+    def index(self, value: Any) -> Any:
         return value
 
 
@@ -50,8 +50,8 @@ class ListSliderValues(SliderValues):
         self.max = len(values_to_cycle) - 0.51
         self.default_value = values_to_cycle.index(default_value)
 
-    def at(self, value: float):
+    def at(self, value: float) -> Any:
         return self.values_to_cycle[round(value)]
 
-    def index(self, value: Any):
+    def index(self, value: Any) -> int:
         return self.values_to_cycle.index(value)

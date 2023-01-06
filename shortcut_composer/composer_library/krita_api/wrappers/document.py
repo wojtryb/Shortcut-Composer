@@ -18,7 +18,7 @@ class Document:
     def top_nodes(self) -> List[Node]:
         return [Node(node) for node in self.document.topLevelNodes()]
 
-    def all_nodes(self):
+    def all_nodes(self) -> List[Node]:
         def recursive_search(nodes: List[Node], found_so_far: List[Node]):
             for node in nodes:
                 if node.is_group_layer():

@@ -14,10 +14,10 @@ class ShortcutComposer(Extension):
         """Initialize extension, create single event filter."""
         super(ShortcutComposer, self).__init__(parent)
 
-    def setup(self):
+    def setup(self) -> None:
         """Obligatory override of abstract class."""
 
-    def createActions(self, window):
+    def createActions(self, window) -> None:
         """Initialize manager of actions which binds them to event filter."""
         self.manager = ActionManager(window)
         for action in actions:

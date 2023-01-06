@@ -16,7 +16,7 @@ class PresetController(Controller):
         """Get currently active preset."""
         return Krita.get_active_view().current_brush_preset_name()
 
-    def set_value(self, value: str):
+    def set_value(self, value: str) -> None:
         """Set a preset of passed name."""
         self.set_brush_strategy()
         Krita.get_active_view().set_brush_preset(self.presets[value])
@@ -31,7 +31,7 @@ class BrushSizeController(Controller):
         return Krita.get_active_view().current_brush_size()
 
     @staticmethod
-    def set_value(value: float):
+    def set_value(value: float) -> None:
         Krita.get_active_view().set_brush_size(value)
 
 
@@ -45,7 +45,7 @@ class BlendingModeController(Controller):
         return BlendingMode(Krita.get_active_view().current_blending_mode())
 
     @staticmethod
-    def set_value(value: BlendingMode):
+    def set_value(value: BlendingMode) -> None:
         """Set a passed blending mode."""
         Krita.get_active_view().set_blending_mode(value)
 
@@ -60,7 +60,7 @@ class OpacityController(Controller):
         return Krita.get_active_view().current_opacity()
 
     @staticmethod
-    def set_value(value: int):
+    def set_value(value: int) -> None:
         """Set passed brush opacity."""
         Krita.get_active_view().set_opacity(value)
 
@@ -74,5 +74,5 @@ class FlowController(Controller):
         return Krita.get_active_view().current_flow()
 
     @staticmethod
-    def set_value(value: int):
+    def set_value(value: int) -> None:
         Krita.get_active_view().set_flow(value)
