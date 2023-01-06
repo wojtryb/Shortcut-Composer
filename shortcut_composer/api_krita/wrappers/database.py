@@ -1,11 +1,11 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from krita import Krita as Api
 import os.path
 from typing import List, Any
 
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery
-from PyQt5.Qt import QStandardPaths
 
 
 class Database:
@@ -21,11 +21,11 @@ class Database:
         """Connect to krita database if it was not done already."""
         if cls.connection_name in QSqlDatabase.connectionNames():
             return
+
         cls.database = QSqlDatabase.addDatabase("QSQLITE", cls.connection_name)
-        cls.database.setDatabaseName(os.path.join(
-            QStandardPaths.standardLocations(QStandardPaths.DataLocation)[0],
-            'resourcecache.sqlite'
-        ))
+        path = Api.instance().readSetting("", "ResourceCacheDbDirectory", "")
+        path = os.path.join(path, "resourcecache.sqlite")
+        cls.database.setDatabaseName(path)
 
     def _single_column_query(self, sql_query: str, value: str) -> List[Any]:
         """Use SQL query to get single column in a form of a list."""
