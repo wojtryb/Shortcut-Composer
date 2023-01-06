@@ -54,6 +54,12 @@ class KritaInstance:
         """Return qt window of krita. Don't use on plugin init phase."""
         return self.instance.activeWindow().qwindow()
 
+    def read_setting(self, group: str, name: str, default: str) -> str:
+        return self.instance.readSetting(group, name, default)
+
+    def write_setting(self, group: str, name: str, value: str) -> None:
+        self.instance.writeSetting(group, name, value)
+
     def add_extension(self, extension: Extension) -> None:
         """Add extension/plugin/add-on to krita."""
         self.instance.addExtension(extension(self.instance))

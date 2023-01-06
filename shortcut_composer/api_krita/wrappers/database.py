@@ -17,11 +17,23 @@ class Database:
         self.database = QSqlDatabase.addDatabase("QSQLITE", "dbResources")
         self.database.setDatabaseName(database_path)
 
-    def get_preset_names_from_tag(self, tag_name: str) -> List[str]:
-        """Return list of all preset names that belong to passed tag."""
+    def single_value_query(self, sql_query: str, value: str) -> List[str]:
         if not self.database.open():
             return []
 
+        query_handler = QSqlQuery(self.database)
+        if not query_handler.exec(sql_query):
+            return []
+
+        return_list = []
+        while query_handler.next():
+            return_list.append(query_handler.value(value))
+
+        query_handler.finish()
+        return return_list
+
+    def get_preset_names_from_tag(self, tag_name: str) -> List[str]:
+        """Return list of all preset names that belong to passed tag."""
         sql_query = f'''
             SELECT r.name AS preset
             FROM tags t
@@ -31,16 +43,14 @@ class Database:
                     ON r.id = rt.resource_id
             WHERE t.name='{tag_name}'
         '''
-        query_handler = QSqlQuery(self.database)
-        if not query_handler.exec(sql_query):
-            return []
+        return self.single_value_query(sql_query, "preset")
 
-        preset_names = []
-        while query_handler.next():
-            preset_names.append(query_handler.value('preset'))
-
-        query_handler.finish()
-        return preset_names
+    def get_brush_tags(self) -> List[str]:
+        sql_query = '''
+            SELECT t.name AS tag
+            FROM tags t
+        '''
+        return self.single_value_query(sql_query, "tag")
 
     def close(self) -> None:
         """Close the connection with the database."""
@@ -53,3 +63,6 @@ class Database:
     def __exit__(self, *_):
         """Close the connection with the database on exit."""
         self.close()
+
+
+"★ My Favorites"

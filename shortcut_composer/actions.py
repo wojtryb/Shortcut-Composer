@@ -17,6 +17,7 @@ from data_components import (
     Range,
     Tag,
 )
+from api_krita import Krita
 
 
 actions = [
@@ -204,11 +205,46 @@ actions = [
     ),
 
     # Pick a brush preset from the tag named "RGBA" using a pie menu
+
     templates.PieMenu(
-        name="Pick brush presets",
+        name="Pick brush presets (green)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        values=Tag("RGBA"),
+        values=Tag(
+            Krita.read_setting(
+                group="ShortcutComposer",
+                name="Tag (green)",
+                default="RGBA",
+            )
+        ),
+        area_color=QColor(95, 65, 65, 190),
+        active_color=QColor(200, 70, 50),
+    ),
+    templates.PieMenu(
+        name="Pick brush presets (red)",
+        controller=controllers.PresetController(),
+        instructions=[instructions.SetBrushOnNonPaintable()],
+        values=Tag(
+            Krita.read_setting(
+                group="ShortcutComposer",
+                name="Tag (red)",
+                default="Erasers",
+            )
+        ),
+        area_color=QColor(95, 65, 65, 190),
+        active_color=QColor(200, 70, 50),
+    ),
+    templates.PieMenu(
+        name="Pick brush presets (blue)",
+        controller=controllers.PresetController(),
+        instructions=[instructions.SetBrushOnNonPaintable()],
+        values=Tag(
+            Krita.read_setting(
+                group="ShortcutComposer",
+                name="Tag (blue)",
+                default="Pixel Art",
+            )
+        ),
         area_color=QColor(95, 65, 65, 190),
         active_color=QColor(200, 70, 50),
     ),
