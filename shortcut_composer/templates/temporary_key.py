@@ -18,15 +18,19 @@ class TemporaryKey(PluginAction, Generic[T]):
 
     ### Arguments:
 
-    - `name`          -- unique name of action. Must match the
-                          definition in shortcut_composer.action file
-    - `controller`    -- defines which krita property will be modified
-    - `low_value`     -- value compatibile with controller
-    - `high_value`    -- value compatibile with controller
-    - `instructions`  -- list of additional instructions to perform on
-                          key press and release.
-    - `time_interval` -- time [s] that specifies if key press is short
-                          or long.
+    - `name`         -- unique name of action. Must match the definition
+                        in shortcut_composer.action file.
+    - `controller`   -- defines which krita property will be modified.
+    - `high_value`   -- value to switch to compatibile with controller.
+    - `low_value`    -- (optional*) value to return to compatibile with
+                        controller. If not given, taken from controller.
+    - `instructions` -- (optional) list of additional instructions to
+                        perform on key press and release.
+    - `short_vs_long_press_time` -- (optional) time [s] that specifies
+                                    if key press is short or long.
+
+    *some controllers don't have a default value. Then providing it
+     becomes required.
 
     ### Action implementation example:
 
@@ -39,13 +43,13 @@ class TemporaryKey(PluginAction, Generic[T]):
     100% on the key release.
 
     ```python
-    TemporaryKey(
+    templates.TemporaryKey(
         name="Change opacity between 100 and 50,
         controller=controllers.OpacityController(),
-        low_value=100,
         high_value=50,
-        instructions=[], # See instructions for more info
-        time_interval=0.3,
+        low_value=100,
+        instructions=[], # See "instructions" for more info
+        short_vs_long_press_time=0.3,
     )
     ```
     """

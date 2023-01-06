@@ -20,7 +20,7 @@ from data_components import (
 
 actions = [
 
-    # Switch between freehand brush and the move tool
+    # Switch between FREEHAND BRUSH and the MOVE tool
     templates.TemporaryKey(
         name="Temporary move tool",
         controller=controllers.ToolController(),
@@ -28,18 +28,18 @@ actions = [
         high_value=Tool.MOVE,
     ),
 
-    # Switch between freehand brush and the transform tool
+    # Switch between FREEHAND BRUSH and the TRANSFORM tool
     templates.TemporaryKey(
         name="Temporary transform tool",
         controller=controllers.ToolController(),
         low_value=Tool.FREEHAND_BRUSH,
         high_value=Tool.TRANSFORM,
-        time_interval=1.0
+        short_vs_long_press_time=1.0
     ),
 
-    # Switch the eraser toggle on and off
-    # Set tool to freehand brush if current tool does not allow to paint
-    # Ensure the preserve alpha is off
+    # Switch the eraser toggle ON and OFF
+    # Set tool to FREEHAND BRUSH if current tool does not allow to paint
+    # Ensure the preserve alpha is OFF
     templates.TemporaryKey(
         name="Temporary eraser",
         controller=controllers.ToggleController(Toggle.ERASER),
@@ -51,9 +51,9 @@ actions = [
         ],
     ),
 
-    # Switch the preserve alpha toggle on and off
-    # Set tool to freehand brush if current tool does not allow to paint
-    # Ensure the eraser toggle is off
+    # Switch the preserve alpha toggle ON and OFF
+    # Set tool to FREEHAND BRUSH if current tool does not allow to paint
+    # Ensure the eraser toggle is OFF
     templates.TemporaryKey(
         name="Temporary preserve alpha",
         controller=controllers.ToggleController(Toggle.PRESERVE_ALPHA),
@@ -89,7 +89,7 @@ actions = [
     ),
 
     # Cycle between selection tools from values_to_cycle list.
-    # After a long key press, go back to the freehand brush tool
+    # After a long key press, go back to the FREEHAND BRUSH tool
     templates.MultipleAssignment(
         name="Cycle selection tools",
         controller=controllers.ToolController(),
@@ -102,7 +102,7 @@ actions = [
     ),
 
     # Cycle between miscellaneous tools from values_to_cycle list
-    # After a long key press, go back to the freehand brush tool
+    # After a long key press, go back to the FREEHAND BRUSH tool
     templates.MultipleAssignment(
         name="Cycle misc tools",
         controller=controllers.ToolController(),
@@ -116,7 +116,7 @@ actions = [
     ),
 
     # Cycle between painting blending modes from values_to_cycle list
-    # After a long key press, go back to the normal blending mode
+    # After a long key press, go back to the NORMAL blending mode
     templates.MultipleAssignment(
         name="Cycle painting blending modes",
         controller=controllers.BlendingModeController(),

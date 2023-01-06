@@ -18,8 +18,8 @@ class SliderHandler:
     When started, tracks the mouse, interprets it and sets corresponding value.
 
     Arguments:
-    - `slider` - configuration dataclass created by the user.
-    - `is_horizontal` - specifies which axis to track.
+    - `slider`        -- configuration dataclass created by the user.
+    - `is_horizontal` -- specifies which axis to track.
 
     On initialization, values to cycle stored in `slider` are wrapped in
     proper `SliderValues` which provides values compatibile with the
