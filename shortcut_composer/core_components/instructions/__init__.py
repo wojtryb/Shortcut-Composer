@@ -22,6 +22,7 @@ from .togglers import (
     EnsureOff,
     EnsureOn,
 )
+from .undo import UndoOnShortPress
 
 __all__ = [
     'SetBrushOnNonPaintable',
@@ -29,6 +30,7 @@ __all__ = [
     'ToggleShowBelow',
     'TemporaryOff',
     'TemporaryOn',
+    'UndoOnShortPress',
     'SetBrush',
     'EnsureOff',
     'EnsureOn',
