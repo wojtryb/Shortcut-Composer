@@ -122,7 +122,7 @@
     <Actions category="Scripts">
         <text>Shortcut Composer: Utilities</text>
 
-        <Action name="Shortcut Composer Settings">
+        <Action name="Configure Shortcut Composer">
         <activationFlags>0</activationFlags>
         <activationConditions>0</activationConditions>
         </Action>

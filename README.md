@@ -25,7 +25,7 @@ While Shortcut-Composer is highly configurable and extendable, the add-on comes 
 Pie menu is a widget displayed on the canvas while a key is pressed. It will disappear as soon, as the key is released. Moving cursor in a direction of a icon, activates its value on key release. **The action does not recognise mouse clicks, and only requires hovering**. Pie menu does nothing if the cursor is not moved out of the deadzone.
 
 - ### Pick brush presets (red, green, blue)
-  Three color coded pie menus that let you pick a **brush preset** from related **tag** with brush presets. Used tags can be changed in **Tools > Scripts > Shortcut Composer Settings**. Default tag mapping is as follows:
+  Three color coded pie menus that let you pick a **brush preset** from related **tag** with brush presets. Used tags can be changed in **Tools > Scripts > Configure Shortcut Composer**. Default tag mapping is as follows:
   - <span style="color:red">red</span>: "★ My Favorites"
   - <span style="color:green">green</span>: "RGBA"
   - <span style="color:blue">blue</span>: "Erasers"
@@ -122,7 +122,7 @@ Multiple assignment is an action which cycles between multiple values of single 
 ## Modifying default plugin behaviour
 
 ### Tweaking the global parameters
-Shortcut-Composer comes with a settings dialog available from krita topbar: **Tools > Scripts > Shortcut Composer Settings**. The dialog allows to change the following aspects of actions:
+Shortcut-Composer comes with a settings dialog available from krita topbar: **Tools > Scripts > Configure Shortcut Composer**. The dialog allows to change the following aspects of actions:
 
 - Preset pie-menus mapping
   - `Tag (red)` - tag to be used in red preset pie-menu
@@ -157,7 +157,6 @@ To achieve that it is required to modify actions implementation:
 
 ### Known limitations
 - Pressing a modifier while the usual key is pressed, will result in conflict. For instance, pressing <kbd>ctrl</kbd> while using temporary eraser assigned to <kbd>x</kbd> will result in unwanted <kbd>ctrl</kbd>+<kbd>x</kbd> operation which cuts current layer.
-- Controllers for setting canvas `zoom`, `rotation` and `active presets` cannot be used with `Cursor tracker` template which needs to utilize different threads. 
 
 ## For krita plugin programmers
 ### Alternative API

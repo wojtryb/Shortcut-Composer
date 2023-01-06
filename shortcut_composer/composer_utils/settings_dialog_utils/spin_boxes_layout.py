@@ -51,7 +51,7 @@ class SpinBoxesLayout(QFormLayout):
         form = QSpinBox() if is_int else QDoubleSpinBox()
         form.setObjectName(config.value)
         form.setMinimum(0)
-        form.setSingleStep(1 if is_int else 0.1)  # type: ignore
+        form.setSingleStep(1 if is_int else 0.05)  # type: ignore
 
         self._forms[config] = form
         return form

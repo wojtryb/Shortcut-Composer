@@ -7,12 +7,7 @@ from ..controller_base import Controller
 
 
 class CanvasBasedController(Controller):
-    """
-    Family of controllers which operate on values from active document.
-
-    As canvas operates on OpenGL, those controllers cannot be used in
-    threads other than GUI, as they cause Krita to crash (5.0.6).
-    """
+    """Family of controllers which operate on values from active document."""
 
     def refresh(self):
         """Refresh currently stored canvas."""

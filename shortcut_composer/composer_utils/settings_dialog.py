@@ -21,7 +21,7 @@ class SettingsDialog(QDialog):
         super().__init__()
 
         self.setMinimumSize(QSize(300, 200))
-        self.setWindowTitle("Shortcut Composer Settings")
+        self.setWindowTitle("Configure Shortcut Composer")
 
         self._combo_boxes_layout = ComboBoxesLayout()
         self._spin_boxes_layout = SpinBoxesLayout()

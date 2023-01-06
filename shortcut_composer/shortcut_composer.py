@@ -42,13 +42,14 @@ class ShortcutComposer(Extension):
         return Krita.create_action(
             window=window,
             name="Reload Shortcut Composer",
+            group="tools/scripts",
             callback=self._reload_composer)
 
     def _create_settings_action(self, window) -> QWidgetAction:
         """Create krita action which opens the extension settings dialog."""
         return Krita.create_action(
             window=window,
-            name="Shortcut Composer Settings",
+            name="Configure Shortcut Composer",
             group="tools/scripts",
             callback=self._pie_settings_dialog.show)
 

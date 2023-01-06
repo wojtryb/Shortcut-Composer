@@ -76,7 +76,7 @@ class PieStyle:
         self.icon_radius = min(self.icon_radius, max_icon_size)
 
     SYSTEM_FONT_SIZE = {
-        "Linux": 0.45,
+        "Linux": 0.40,
         "Windows": 0.25,
         "Darwin": 0.25,
         "": 0.25,
