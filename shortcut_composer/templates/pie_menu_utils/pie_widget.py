@@ -15,11 +15,11 @@ from .label_holder import LabelHolder
 
 
 class AnimatedWidget(QWidget):
-    """Adds the fade-in animation when the widget is shown."""
+    """Adds the fade-in animation when the widget is shown (60 FPS)."""
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
-        self._animation_interval = 0.0167/Config.PIE_ANIMATION_TIME.read()
+        self._animation_interval = self._read_animation_interval()
         self._animation_timer = Timer(self._increase_opacity, 17)
 
     def _increase_opacity(self):
@@ -34,6 +34,12 @@ class AnimatedWidget(QWidget):
         self.setWindowOpacity(0)
         self._animation_timer.start()
         super().show()
+
+    def _read_animation_interval(self):
+        """Return how much opacity (0-1) should be increased on each frame."""
+        if time := Config.PIE_ANIMATION_TIME.read():
+            return 0.0167/time
+        return 1
 
 
 class PieWidget(AnimatedWidget):
