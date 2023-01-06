@@ -1,7 +1,6 @@
 from typing import List, TypeVar, Generic, Tuple, Union
 
-from PyQt5.QtGui import QColor
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QColor, QPixmap
 
 from shortcut_composer_config import (
     SHORT_VS_LONG_PRESS_TIME,
@@ -53,9 +52,10 @@ class PieMenu(PluginAction, Generic[T]):
             active_color=active_color,
         )
         self._labels = self._create_labels(values)
-        self._update_icon_radius(len(self._labels))
+        self._style.update_icon_radius(len(self._labels))
 
         self._widget = PieWidget(self._labels, self._style)
+
         self._pie_manager = PieManager(self._widget, self._labels)
 
     def on_key_press(self) -> None:
@@ -90,6 +90,8 @@ class PieMenu(PluginAction, Generic[T]):
                 display_value=icon,
                 style=self._style
             )
+        if not labels:
+            self._style.deadzone_radius = float("inf")
         return labels
 
     def _validate_labels(self, values: List[T])\
@@ -103,7 +105,3 @@ class PieMenu(PluginAction, Generic[T]):
             else:
                 valid_values.append((value, icon))
         return valid_values
-
-    def _update_icon_radius(self, amount: int):
-        max_icon_size = round(self._style.pie_radius * 3.1413 / amount)
-        self._style.icon_radius = min(self._style.icon_radius, max_icon_size)

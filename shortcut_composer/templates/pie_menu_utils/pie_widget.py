@@ -46,7 +46,7 @@ class PieWidget(QWidget):
         return self._style.pie_radius - self._style.border_thickness//2
 
     @property
-    def deadzone(self) -> int:
+    def deadzone(self) -> float:
         return self._style.deadzone_radius
 
     def move_center(self, x: int, y: int) -> None:
@@ -79,6 +79,9 @@ class PieWidget(QWidget):
         )
 
     def _paint_deadzone_indicator(self, painter: Painter):
+        if self.deadzone == float("inf"):
+            return
+
         painter.paint_wheel(
             center=self.center,
             outer_radius=self.deadzone,

@@ -18,7 +18,7 @@ class PieStyle:
 
         self.pie_radius = round(base_size * self.pie_radius_scale * 165)
         self.icon_radius = round(base_size * self.icon_radius_scale * 50)
-        self.deadzone_radius = round(base_size * PIE_DEADZONE_SCALE * 40)
+        self.deadzone_radius: float = base_size * PIE_DEADZONE_SCALE * 40
 
         self.widget_radius = self.pie_radius + self.icon_radius
 
@@ -34,3 +34,9 @@ class PieStyle:
             max(self.icon_color.blue()+15, 0),
             255
         )
+
+    def update_icon_radius(self, amount: int):
+        if not amount:
+            return
+        max_icon_size = round(self.pie_radius * 3.1413 / amount)
+        self.icon_radius = min(self.icon_radius, max_icon_size)
