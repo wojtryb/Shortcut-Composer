@@ -4,12 +4,12 @@ from .current_tool import get_current_tool_name
 from ..config import connected_toggles
 
 
-def set_tool(tool_name):
+def set_tool(tool_name: str):
     'activates a tool of passed name'
     Krita.instance().action(tool_name).trigger()
 
 
-def is_tool_selected(tool_name):
+def is_tool_selected(tool_name: str):
     'returns True if the passed tool is active'
     return get_current_tool_name() == tool_name
 

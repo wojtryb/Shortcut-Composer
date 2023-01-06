@@ -10,7 +10,7 @@ class ReleaseKeyEventFilter(QMdiArea):
         super().__init__(None)
         self._release_callbacks = []
 
-    def register_release_callback(self, callback: Callable[[None], None]):
+    def register_release_callback(self, callback: Callable[[QEvent], None]):
         self._release_callbacks.append(callback)
 
     def eventFilter(self, _, event):
