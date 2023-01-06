@@ -3,25 +3,38 @@ from time import time
 from PyQt5.QtGui import QKeyEvent
 
 from .plugin_actions.krita_api_wrapper import Krita
-from .plugin_actions._interfaces import PluginAction
+from .plugin_actions.interfaces import PluginAction
 
 
 class Shortcut:
+    """
+    Maps krita key events to custom ones from PluginAction.
+
+    Krita events:
+    - on_key_press (recognised when krita action is triggered)
+    - on_key_release (found by event filter)
+
+    Custom action events:
+    - on_key_press
+    - on_short_key_release (release directly after the press)
+    - on_long_key_release (release long time after the press)
+    - on_every_key_release (called after short or long release callback)
+    """
 
     def __init__(self, action: PluginAction):
+        """Store action which will be steered, and time counting objects."""
         self.action = action
         self.key_released = True
         self.last_press_time = time()
 
     def on_key_press(self):
-        'run when user presses a key assigned to this action'
+        """Callback to run when krita action is triggered."""
         self.key_released = False
         self.last_press_time = time()
         self.action.on_key_press()
 
     def _on_key_release(self):
-        'run when user released a related key'
-
+        """Run when key event is recognised as release of related key."""
         self.key_released = True
         if time() - self.last_press_time < self.action.time_interval:
             self.action.on_short_key_release()

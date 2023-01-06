@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from .krita_api_wrapper import Krita
-from ._interfaces import TemporaryAction
+from .interfaces import TemporaryAction
 from .enums import Tool
 
 

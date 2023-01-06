@@ -1,3 +1,5 @@
+"""File that acts as config - define all action objects here."""
+
 from .shortcut_library.plugin_actions.enums import Tool, BlendingMode
 from .shortcut_library.plugin_actions import (
     TemporaryTool,
