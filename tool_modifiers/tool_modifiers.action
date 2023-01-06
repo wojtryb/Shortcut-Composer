@@ -172,6 +172,31 @@
         <statusTip></statusTip>
         </Action>
 
+        <Action name="Opacity (cycle)">
+        <icon></icon>
+        <text>Opacity (cycle)</text>
+        <whatsThis></whatsThis>
+        <toolTip></toolTip>
+        <iconText></iconText>
+        <activationFlags>0</activationFlags>
+        <activationConditions>0</activationConditions>
+        <shortcut></shortcut>
+        <isCheckable>false</isCheckable>
+        <statusTip></statusTip>
+        </Action>
+
+        <Action name="Blending mode (cycle)">
+        <icon></icon>
+        <text>Blending mode (cycle)</text>
+        <whatsThis></whatsThis>
+        <toolTip></toolTip>
+        <iconText></iconText>
+        <activationFlags>0</activationFlags>
+        <activationConditions>0</activationConditions>
+        <shortcut></shortcut>
+        <isCheckable>false</isCheckable>
+        <statusTip></statusTip>
+        </Action>
 
     </Actions>
 </ActionCollection>

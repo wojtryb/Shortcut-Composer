@@ -9,6 +9,8 @@ from .shortcut_library.plugin_actions import (
     TemporaryAlphaLock,
     CyclicTool,
     CyclicPreset,
+    CyclicOpacity,
+    CyclicBlendingModes,
 )
 
 from .config import cyclic_tools, temporary_tools
@@ -45,6 +47,16 @@ class ToolModifiers(Extension):
                 "wojtryb6 R 05 watercolor",
             ],
             _default_value="wojtryb6 R 01 horizontal DA"
+        ))
+        creator.bind_action(CyclicOpacity(
+            action_name="Opacity (cycle)",
+            _values_to_cycle=[100, 75, 50],
+            _default_value=100
+        ))
+        creator.bind_action(CyclicBlendingModes(
+            action_name="Blending mode (cycle)",
+            _values_to_cycle=["normal", "overlay"],
+            _default_value="normal"
         ))
 
 

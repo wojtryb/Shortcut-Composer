@@ -35,6 +35,7 @@ class CyclicPreset(CyclicPluginAction):
         return Krita.get_active_view().current_brush_preset_name()
 
 
+@dataclass
 class CyclicBlendingModes(CyclicPluginAction):
 
     action_name: str
@@ -42,20 +43,28 @@ class CyclicBlendingModes(CyclicPluginAction):
     _default_value: str
 
     def _set_value(self, value: str):
+        print("setting", value)
         Krita.get_active_view().set_blending_mode(value)
 
     def _get_current_value(self) -> str:
+        print(Krita.get_active_view().current_blending_mode())
         return Krita.get_active_view().current_blending_mode()
 
 
 class CyclicOpacity(CyclicPluginAction):
 
-    action_name: int
-    _values_to_cycle: List[int]
-    _default_value: int
+    def __init__(
+        self,
+        action_name: str,
+        _values_to_cycle: List[float],
+        _default_value: float
+    ):
+        self.action_name = action_name
+        self._values_to_cycle = [round(val/100, 4) for val in _values_to_cycle]
+        self._default_value = round(_default_value/100, 4)
 
-    def _set_value(self, value: int):
+    def _set_value(self, value: float):
         Krita.get_active_view().set_opacity(value)
 
-    def _get_current_value(self) -> int:
+    def _get_current_value(self) -> float:
         return Krita.get_active_view().current_opacity()

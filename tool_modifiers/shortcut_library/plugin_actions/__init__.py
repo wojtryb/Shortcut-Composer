@@ -6,6 +6,8 @@ from .temporary_actions import (
 from .cyclic_actions import (
     CyclicTool,
     CyclicPreset,
+    CyclicBlendingModes,
+    CyclicOpacity,
 )
 
 
@@ -15,4 +17,6 @@ __all__ = [
     'TemporaryAlphaLock',
     'CyclicTool',
     'CyclicPreset',
+    'CyclicBlendingModes',
+    'CyclicOpacity',
 ]
