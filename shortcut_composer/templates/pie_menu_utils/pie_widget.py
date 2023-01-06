@@ -2,7 +2,7 @@ from typing import List
 
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtWidgets import QWidget
-from PyQt5.QtGui import QColor
+from PyQt5.QtGui import QColor, QPaintEvent
 
 from api_krita.pyqt import Painter
 from .pie_style import PieStyle
@@ -18,8 +18,8 @@ class PieWidget(QWidget):
         parent=None
     ):
         QWidget.__init__(self, parent)
-        self._style = style
         self._labels = labels
+        self._style = style
         self._label_painters = self._create_label_painters()
 
         self.setWindowFlags(
@@ -30,6 +30,7 @@ class PieWidget(QWidget):
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setStyleSheet("background: transparent;")
         self.setWindowTitle("Pie Menu")
+
         size = self._style.widget_radius*2
         self.setGeometry(0, 0, size, size)
 
@@ -49,10 +50,10 @@ class PieWidget(QWidget):
     def deadzone(self) -> float:
         return self._style.deadzone_radius
 
-    def move_center(self, x: int, y: int) -> None:
-        self.move(x-self._style.widget_radius, y-self._style.widget_radius)
+    def move_center(self, point: QPoint) -> None:
+        self.move(point-self.center)  # type: ignore
 
-    def paintEvent(self, event) -> None:
+    def paintEvent(self, event: QPaintEvent) -> None:
         with Painter(self, event) as painter:
             self._paint_deadzone_indicator(painter)
             self._paint_base_wheel(painter)
@@ -62,7 +63,7 @@ class PieWidget(QWidget):
             for label_painter in self._label_painters:
                 label_painter.paint(painter)
 
-    def _paint_base_wheel(self, painter: Painter):
+    def _paint_base_wheel(self, painter: Painter) -> None:
         painter.paint_wheel(
             center=self.center,
             outer_radius=self._outer_radius,
@@ -70,7 +71,7 @@ class PieWidget(QWidget):
             thickness=self._style.area_thickness,
         )
 
-    def _paint_base_border(self, painter: Painter):
+    def _paint_base_border(self, painter: Painter) -> None:
         painter.paint_wheel(
             center=self.center,
             outer_radius=self._style.pie_radius - self._style.area_thickness,
@@ -78,7 +79,7 @@ class PieWidget(QWidget):
             thickness=self._style.border_thickness,
         )
 
-    def _paint_deadzone_indicator(self, painter: Painter):
+    def _paint_deadzone_indicator(self, painter: Painter) -> None:
         if self.deadzone == float("inf"):
             return
 
@@ -95,7 +96,7 @@ class PieWidget(QWidget):
             thickness=1,
         )
 
-    def _paint_active_pie(self, painter: Painter):
+    def _paint_active_pie(self, painter: Painter) -> None:
         if not self._labels.active:
             return
 
@@ -108,7 +109,6 @@ class PieWidget(QWidget):
             thickness=self._style.area_thickness,
         )
 
-    def _create_label_painters(self) -> List[LabelPainter]:
-        return [
-            create_painter(label, self._style, self) for label in self._labels
-        ]
+    def _create_label_painters(self) -> List[LabelPainter]: return [
+        create_painter(label, self._style, self) for label in self._labels
+    ]

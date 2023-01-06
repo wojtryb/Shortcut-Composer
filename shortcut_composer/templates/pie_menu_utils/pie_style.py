@@ -1,5 +1,7 @@
+import math
 from dataclasses import dataclass
 from copy import copy
+
 from PyQt5.QtGui import QColor
 
 from api_krita import Krita
@@ -8,6 +10,7 @@ from shortcut_composer_config import PIE_DEADZONE_SCALE
 
 @dataclass
 class PieStyle:
+
     pie_radius_scale: float
     icon_radius_scale: float
     area_color: QColor
@@ -22,7 +25,7 @@ class PieStyle:
 
         self.widget_radius = self.pie_radius + self.icon_radius
 
-        self.border_thickness = round(self.icon_radius*0.06)
+        self.border_thickness = round(self.pie_radius*0.02)
         self.area_thickness = round(self.pie_radius/self.pie_radius_scale*0.4)
 
         self.icon_color = copy(self.area_color)
@@ -35,9 +38,9 @@ class PieStyle:
             255
         )
 
-    def update_with_item_amount(self, amount: int):
+    def adapt_to_item_amount(self, amount: int) -> None:
         if not amount:
             self.deadzone_radius = float("inf")
             return
-        max_icon_size = round(self.pie_radius * 3.1413 / amount)
+        max_icon_size = round(self.pie_radius * math.pi / amount)
         self.icon_radius = min(self.icon_radius, max_icon_size)

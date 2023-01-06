@@ -1,26 +1,28 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
+from PyQt5.QtGui import QFont, QPixmap, QColor
 from PyQt5.QtWidgets import QLabel, QWidget
-from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtCore import Qt
 
-from api_krita.pyqt import Painter, make_pixmap_round, scale_pixmap, Text
+from api_krita import pyqt
+from api_krita.pyqt import Painter, Text
 from .label import Label
 from .pie_style import PieStyle
 
 
-def create_painter(label: Label, style: PieStyle, widget: QWidget)\
-        -> "LabelPainter":
+def create_painter(label: Label, style: PieStyle, widget: QWidget) \
+        -> 'LabelPainter':
     if isinstance(label.display_value, Text):
         return TextLabelPainter(widget, style, label)
     elif isinstance(label.display_value, QPixmap):
         return ImageLabelPainter(widget, style, label)
-    raise TypeError(f"Unknown label type {type(label.display_value)}")
+    raise TypeError(f"Unknown label type: {type(label.display_value)}")
 
 
 @dataclass
 class LabelPainter(ABC):
+
     widget: QWidget
     style: PieStyle
     label: Label
@@ -39,7 +41,7 @@ class TextLabelPainter(LabelPainter):
         painter.paint_wheel(
             center=self.label.center,
             outer_radius=self.style.icon_radius,
-            color=self.style.icon_color
+            color=self.style.icon_color,
         )
         painter.paint_wheel(
             center=self.label.center,
@@ -48,43 +50,31 @@ class TextLabelPainter(LabelPainter):
             thickness=self.style.border_thickness,
         )
 
-    def _create_pyqt_label(self):
+    def _create_pyqt_label(self) -> QLabel:
         if not isinstance(self.label.display_value, Text):
             raise TypeError("Label supposed to be text.")
 
-        label = QLabel("text label", self.widget)
-        label.setFont(QFont(
-            'Helvetica',
-            round(self.style.icon_radius*0.45),
-            QFont.Bold))
-        label.adjustSize()
-        small_radius = round(self.style.icon_radius*0.4)
-        label.setGeometry(
-            round(self.label.center.x()-small_radius*2),
-            round(self.label.center.y()-small_radius),
-            round(small_radius*4),
-            round(small_radius*2)
-        )
-        label.setStyleSheet(
-            f"""background-color:rgba(
-                {self.style.icon_color.red()},
-                {self.style.icon_color.green()},
-                {self.style.icon_color.blue()},
-                {self.style.icon_color.alpha()}
-            );
-            color:rgba(
-                {self.label.display_value.color.red()},
-                {self.label.display_value.color.green()},
-                {self.label.display_value.color.blue()},
-                {self.label.display_value.color.alpha()}
-            );"""
-        )
-        label.setAlignment(Qt.AlignCenter)
-        label.setWordWrap(True)
+        font_size = round(self.style.icon_radius*0.45)
+        heigth = round(self.style.icon_radius*0.8)
+
+        label = QLabel(self.widget)
         label.setText(self.label.display_value.text)
+        label.setFont(QFont('Helvetica', font_size, QFont.Bold))
+        label.setAlignment(Qt.AlignCenter)
+        label.setGeometry(0, 0, round(heigth*2), round(heigth))
+        label.move(self.label.center.x()-heigth,
+                   self.label.center.y()-heigth//2)
+        label.setStyleSheet(f'''
+            background-color:rgba({self._color_to_str(self.style.icon_color)});
+            color:rgba({self._color_to_str(self.label.display_value.color)});
+        ''')
 
         label.show()
         return label
+
+    @staticmethod
+    def _color_to_str(color: QColor) -> str: return f'''
+        {color.red()}, {color.green()}, {color.blue()}, {color.alpha()}'''
 
 
 @dataclass
@@ -110,8 +100,8 @@ class ImageLabelPainter(LabelPainter):
         if not isinstance(self.label.display_value, QPixmap):
             raise TypeError("Label supposed to be pixmap.")
 
-        rounded_image = make_pixmap_round(self.label.display_value)
-        return scale_pixmap(
+        rounded_image = pyqt.make_pixmap_round(self.label.display_value)
+        return pyqt.scale_pixmap(
             pixmap=rounded_image,
             size_px=round(self.style.icon_radius*1.8)
         )

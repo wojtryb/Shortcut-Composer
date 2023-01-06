@@ -1,6 +1,6 @@
-from typing import List, TypeVar, Generic, Tuple, Union, Optional
+from typing import List, TypeVar, Generic, Union
 
-from PyQt5.QtGui import QColor, QPixmap
+from PyQt5.QtGui import QColor, QPixmap, QCursor
 
 from shortcut_composer_config import (
     SHORT_VS_LONG_PRESS_TIME,
@@ -11,7 +11,6 @@ from shortcut_composer_config import (
 )
 from core_components import Controller, Instruction
 from input_adapter import PluginAction
-from api_krita import Krita
 from api_krita.pyqt import Text
 from .pie_menu_utils import (
     AngleIterator,
@@ -52,15 +51,14 @@ class PieMenu(PluginAction, Generic[T]):
             active_color=active_color,
         )
         self._labels = self._create_labels(values)
-        self._style.update_with_item_amount(len(self._labels))
+        self._style.adapt_to_item_amount(len(self._labels))
 
         self._widget = PieWidget(self._labels, self._style)
         self._pie_manager = PieManager(self._widget, self._labels)
 
     def on_key_press(self) -> None:
         self._controller.refresh()
-        cursor = Krita.get_cursor()
-        self._widget.move_center(cursor.x(), cursor.y())
+        self._widget.move_center(QCursor().pos())
         self._pie_manager.start()
         self._widget.show()
         super().on_key_press()
@@ -73,11 +71,9 @@ class PieMenu(PluginAction, Generic[T]):
             self._controller.set_value(label.value)
 
     def _create_labels(self, values: List[T]) -> LabelHolder:
-        icons = [self._try_get_icon(value) for value in values]
-
-        label_list: List[Label] = []
-        for value, icon in zip(values, icons):
-            if icon:
+        label_list = []
+        for value in values:
+            if icon := self._get_icon_if_possible(value):
                 label_list.append(Label(value=value, display_value=icon))
 
         angle_iterator = AngleIterator(
@@ -85,16 +81,15 @@ class PieMenu(PluginAction, Generic[T]):
             radius=self._style.pie_radius,
             amount=len(label_list))
 
+        label_holder = LabelHolder()
         for label, (angle, point) in zip(label_list, angle_iterator):
             label.angle = angle
             label.center = point
-
-        label_holder = LabelHolder()
-        for label in label_list:
             label_holder.add(label)
+
         return label_holder
 
-    def _try_get_icon(self, value: T) -> Union[Text, QPixmap, None]:
+    def _get_icon_if_possible(self, value: T) -> Union[Text, QPixmap, None]:
         try:
             return self._controller.get_label(value)
         except KeyError:

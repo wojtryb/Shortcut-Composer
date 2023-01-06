@@ -1,17 +1,18 @@
 import math
 from threading import Thread
 from typing import Optional
+from time import sleep
 
-from .pie_widget import PieWidget
-from .label import Label
-from .label_holder import LabelHolder
+from shortcut_composer_config import FPS_LIMIT
 from api_krita import Krita
 from api_krita.wrappers import Cursor
-from time import sleep
-from shortcut_composer_config import FPS_LIMIT
+from .pie_widget import PieWidget
+from .label_holder import LabelHolder
+from .label import Label
 
 
 class PieManager:
+
     def __init__(self, widget: PieWidget, labels: LabelHolder) -> None:
         self._widget = widget
         self._labels = labels
@@ -44,11 +45,10 @@ class PieManager:
         return distance ** 0.5
 
     def _angle_from_cursor(self):
-        angle = math.degrees(math.atan2(
+        return math.degrees(math.atan2(
             -self._widget.center_global.x() + self._cursor.x(),
             self._widget.center_global.y() - self._cursor.y()
-        ))
-        return angle % 360
+        )) % 360
 
     def _set_active_label(self, label: Optional[Label]):
         if self._labels.active != label:
