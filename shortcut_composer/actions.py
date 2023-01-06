@@ -65,7 +65,7 @@ actions = [
             set_brush_strategy=SetBrushStrategy.ON_NON_PAINTABLE
         ),
         default_value="b) Basic-5 Size Opacity",
-        values_to_cycle=Tag("My Favourites")
+        values_to_cycle=Tag("Digital")
     ),
     shortcut_templates.LayerPicker(
         action_name="Layer scraper - isolate",
