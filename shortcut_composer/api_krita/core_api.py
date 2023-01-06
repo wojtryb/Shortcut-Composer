@@ -5,7 +5,7 @@ from krita import Krita as Api, Extension, qApp
 from typing import Callable, Protocol, Any
 
 from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QWidgetAction
-from PyQt5.QtGui import QKeySequence, QColor
+from PyQt5.QtGui import QKeySequence, QColor, QIcon
 from PyQt5.QtCore import QTimer
 
 from .wrappers import (
@@ -60,6 +60,9 @@ class KritaInstance:
     def get_active_qwindow(self) -> QMainWindow:
         """Return qt window of krita. Don't use on plugin init phase."""
         return self.instance.activeWindow().qwindow()
+
+    def get_icon(self, icon_name: str) -> QIcon:
+        return self.instance.icon(icon_name)
 
     def read_setting(self, group: str, name: str, default: str) -> str:
         """Read setting from .kritarc file as string."""
