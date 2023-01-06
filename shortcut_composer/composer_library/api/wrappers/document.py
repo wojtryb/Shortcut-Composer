@@ -35,3 +35,6 @@ class Document:
 
     def refresh(self) -> None:
         self.document.refreshProjection()
+
+    def __bool__(self) -> None:
+        return bool(self.document)
