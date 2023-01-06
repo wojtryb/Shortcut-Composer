@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from PyQt5.QtGui import QPixmap
+
 from api_krita import Krita
 from api_krita.enums import Tool, Toggle
 from ..controller_base import Controller
@@ -24,6 +26,9 @@ class ToolController(Controller):
     def set_value(value: Tool) -> None:
         """Set a passed tool."""
         Krita.active_tool = value
+
+    def get_label(self, value: Tool) -> QPixmap:
+        return value.icon.pixmap(60, 60)
 
 
 @dataclass
