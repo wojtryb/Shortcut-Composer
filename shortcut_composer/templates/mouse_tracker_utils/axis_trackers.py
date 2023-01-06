@@ -20,30 +20,36 @@ class SingleAxisTracker(PluginAction):
     def __init__(self, *,
                  name: str,
                  handler: SliderHandler,
+                 is_horizontal: bool,
                  instructions: List[Instruction] = [],
-                 sign: Literal[1, -1] = 1,
-                 time_interval=0.3) -> None:
+                 time_interval: float = 0.3) -> None:
         super().__init__(
             name=name,
             time_interval=time_interval,
             instructions=instructions)
 
+        self._is_horizontal = is_horizontal
         self._handler = handler
-        self._sign = sign
         self._lock = Lock()
 
     def on_key_press(self) -> None:
         """Start tracking with handler."""
         self._lock.acquire()
         super().on_key_press()
-        cursor = Krita.get_cursor()
-        return self._handler.start(lambda: self._sign*cursor.y())
+        return self._handler.start(self._get_mouse_getter())
 
     def on_every_key_release(self) -> None:
         """End tracking with handler."""
         super().on_every_key_release()
         self._handler.stop()
         self._lock.release()
+
+    def _get_mouse_getter(self):
+        cursor = Krita.get_cursor()
+
+        if self._is_horizontal:
+            return cursor.x
+        return lambda: -cursor.y()
 
 
 class DoubleAxisTracker(PluginAction):
