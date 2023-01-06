@@ -19,10 +19,11 @@ class Slider:
 
     ### Arguments:
 
-    - `controller`  - defines which krita property will be modified
-    - `values`      - list or range of values to switch to compatibile
-                       with controller
-    - `sensitivity` - how much movement is needed to switch values
+    - `controller`     - defines which krita property will be modified
+    - `values`         - list or range of values to switch to
+                          compatibile with controller
+    - `pixels_in_unit` - how many pixels mouse needs to be moved, to
+                          change the value by 1.0.
 
     ### Usage Example:
 
@@ -53,5 +54,5 @@ class Slider:
     """
     controller: Controller
     values: Union[List[Any], Range]
-    sensitivity: int = 50
+    pixels_in_unit: int = 50
     deadzone: int = 10

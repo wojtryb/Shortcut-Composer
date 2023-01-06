@@ -148,7 +148,8 @@ actions = [
         ),
         vertical_slider=Slider(
             controller=controllers.OpacityController(),
-            values=Range(10, 100)
+            values=Range(10, 100),
+            pixels_in_unit=5,
         ),
     ),
 ]
