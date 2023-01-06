@@ -28,7 +28,9 @@ class LayerOpacityController(NodeBasedController):
 
     def set_value(self, opacity: int) -> None:
         """Set a passed blending mode."""
-        self.active_node.opacity = opacity
+        if self.active_node.opacity != opacity:
+            self.active_node.opacity = opacity
+            self.active_document.refresh()
 
 
 class LayerBlendingModeController(NodeBasedController):
@@ -47,7 +49,9 @@ class LayerBlendingModeController(NodeBasedController):
 
     def set_value(self, blending_mode: BlendingMode) -> None:
         """Set passed brush opacity."""
-        self.active_node.blending_mode = blending_mode
+        if self.active_node.blending_mode != blending_mode:
+            self.active_node.blending_mode = blending_mode
+            self.active_document.refresh()
 
 
 class LayerVisibilityController(NodeBasedController):
