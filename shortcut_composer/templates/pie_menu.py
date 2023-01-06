@@ -1,5 +1,4 @@
 from typing import List, TypeVar, Generic
-import math
 
 from PyQt5.QtGui import QColor
 
@@ -60,13 +59,8 @@ class PieMenu(PluginAction, Generic[T]):
 
     def on_every_key_release(self) -> None:
         super().on_every_key_release()
-        cursor = Krita.get_cursor()
-        angle = math.degrees(math.atan2(
-            (-self.start[0] + cursor.x()),
-            (self.start[1] - cursor.y())
-        ))
-        angle %= 360
-        label = self._labels.closest(round(angle))
+        angle = self._pie_manager.angle_from_cursor()
+        label = self._labels.from_angle(round(angle))
         self._controller.set_value(label.value)
         self._pie_manager.stop()
         self._widget.hide()
