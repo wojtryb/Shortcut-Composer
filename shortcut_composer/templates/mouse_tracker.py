@@ -4,9 +4,9 @@ from time import sleep
 from typing import List, Literal, Optional
 
 from api_krita import Krita
-from connection_utils import PluginAction
-from components import Instruction, InstructionHolder
-from components.helpers import Slider
+from input_adapter import PluginAction
+from core_components import Instruction, InstructionHolder
+from data_components import Slider
 from .mouse_tracker_utils import SliderHandler
 
 

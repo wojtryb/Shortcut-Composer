@@ -16,18 +16,21 @@ Available controllers:
 """
 
 from .document_controllers import LayerController, TimeController
-from .canvas_controllers import (
-    CanvasRotationController,
-    CanvasZoomController)
 from .core_controllers import (
     ToggleController,
-    ToolController)
+    ToolController,
+)
 from .view_controllers import (
     BlendingModeController,
     BrushSizeController,
     OpacityController,
     PresetController,
-    FlowController)
+    FlowController,
+)
+from .canvas_controllers import (
+    CanvasRotationController,
+    CanvasZoomController,
+)
 
 __all__ = [
     "CanvasRotationController",

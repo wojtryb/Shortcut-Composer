@@ -2,11 +2,8 @@
 
 import templates
 from api_krita.enums import BlendingMode, Tool, Toggle
-from components import (
-    instructions,
-    controllers,
-)
-from components.helpers import (
+from core_components import instructions, controllers
+from data_components import (
     CurrentLayerStack,
     PickStrategy,
     Slider,

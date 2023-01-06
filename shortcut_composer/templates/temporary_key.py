@@ -1,7 +1,7 @@
 from typing import Any, List
 
-from components import Controller, Instruction
-from connection_utils import PluginAction
+from core_components import Controller, Instruction
+from input_adapter import PluginAction
 
 
 class TemporaryKey(PluginAction):
