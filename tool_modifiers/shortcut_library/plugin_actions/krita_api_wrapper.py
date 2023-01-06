@@ -52,7 +52,6 @@ class Krita:
 
     @staticmethod
     def get_presets() -> dict:
-        # print(Api.instance().resources('preset'))
         return Api.instance().resources('preset')
 
     @staticmethod
