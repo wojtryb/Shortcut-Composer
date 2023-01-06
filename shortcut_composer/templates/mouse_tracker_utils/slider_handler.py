@@ -14,58 +14,61 @@ from .slider_values import (
 
 class SliderHandler:
 
-    MouseGetter = Callable[[], MouseInput]
-
     def __init__(self, slider: Slider):
         self.__slider = slider
-        self.__to_cycle = self.__create_slider_values()
+        self.__to_cycle = self.__init_slider_values(slider)
         self.__working = False
 
         self.__interpreter: MouseInterpreter
+        self.__mouse_getter: Callable[[], MouseInput]
 
-    def start(self, mouse_getter: MouseGetter) -> None:
+    def read_mouse(self) -> MouseInput:
+        return self.__mouse_getter()
+
+    def start(self, mouse_getter: Callable[[], MouseInput]) -> None:
         self.__working = True
         self.__slider.controller.refresh()
-        Thread(target=self._loop, args=[mouse_getter], daemon=True).start()
+        self.__mouse_getter = mouse_getter
+        Thread(target=self._start_after_deadzone, daemon=True).start()
 
-    def stop(self):
+    def stop(self) -> None:
         self.__working = False
 
-    def _loop(self, mouse_getter: MouseGetter) -> None:
-        self._block_until_deadzone(mouse_getter)
-        self.__interpreter = MouseInterpreter(
-            min=self.__to_cycle.min,
-            max=self.__to_cycle.max,
-            mouse_origin=mouse_getter(),
-            start_value=self.__get_current_value(),
-            pixels_in_unit=self.__slider.pixels_in_unit,
-        )
-        while self.__working:
-            self._handle(mouse_getter())
-            sleep(0.05)
-
-    def _block_until_deadzone(self, mouse_getter: MouseGetter) -> None:
-        start_point = mouse_getter()
-        while abs(start_point - mouse_getter()) <= self.__slider.deadzone:
+    def _start_after_deadzone(self) -> None:
+        start_point = self.read_mouse()
+        while abs(start_point - self.read_mouse()) <= self.__slider.deadzone:
             if not self.__working:
                 return
             sleep(0.05)
+        self._value_setting_loop()
 
-    def _handle(self, mouse: MouseInput) -> None:
-        clipped_value = self.__interpreter.interpret(mouse)
-        to_set = self.__to_cycle.at(clipped_value)
-        self.__slider.controller.set_value(to_set)
+    def _value_setting_loop(self) -> None:
+        self.__update_interpreter()
+        while self.__working:
+            clipped_value = self.__interpreter.interpret(self.read_mouse())
+            to_set = self.__to_cycle.at(clipped_value)
+            self.__slider.controller.set_value(to_set)
+            sleep(0.05)
 
-    def __create_slider_values(self) -> SliderValues:
+    def __update_interpreter(self):
+        self.__interpreter = MouseInterpreter(
+            min=self.__to_cycle.min,
+            max=self.__to_cycle.max,
+            mouse_origin=self.read_mouse(),
+            start_value=self.__get_current_interpreted_value(),
+            pixels_in_unit=self.__slider.pixels_in_unit,
+        )
+
+    def __get_current_interpreted_value(self) -> Interpreted:
+        controller_value = self.__slider.controller.get_value()
+        return self.__to_cycle.index(controller_value)
+
+    @staticmethod
+    def __init_slider_values(slider: Slider) -> SliderValues:
         """Return the right values adapter based on passed data type."""
-        values = self.__slider.values
+        if isinstance(slider.values, Iterable):
+            return ListSliderValues(slider.values)
+        elif isinstance(slider.values, Range):
+            return RangeSliderValues(slider.values)
 
-        if isinstance(values, Iterable):
-            return ListSliderValues(values)
-        elif isinstance(values, Range):
-            return RangeSliderValues(values)
-
-        raise RuntimeError(f"Wrong type: {values}")
-
-    def __get_current_value(self) -> Interpreted:
-        return self.__to_cycle.index(self.__slider.controller.get_value())
+        raise RuntimeError(f"Wrong type: {slider.values}")
