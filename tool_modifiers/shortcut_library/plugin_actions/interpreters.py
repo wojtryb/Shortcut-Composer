@@ -1,82 +1,40 @@
-from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
-from typing import Any, List, Optional, Union
+from dataclasses import dataclass
 
-from .helpers import Range
-
-
-def create_interpreter(values_to_cycle, sensitivity):
-    if isinstance(values_to_cycle, list):
-        return ListInterpreter(values_to_cycle, sensitivity)
-    elif isinstance(values_to_cycle, Range):
-        return RangeInterpreter(values_to_cycle, sensitivity)
-    raise RuntimeError(f"Wrong type: {values_to_cycle}")
+from .value_proxy import ValuesProxy
 
 
 @dataclass
-class Interpreter(ABC):
-
-    values_to_cycle: Union[List[Any], Range]
+class Interpreter:
+    to_cycle: ValuesProxy
     sensitivity: float
 
-    min: float = field(init=False)
-    max: float = field(init=False)
-    start_mouse: float = field(init=False)
-    start_value: float = field(init=False)
+    def __post_init__(self):
+        self.origin: float
+        self.start_value: float
 
-    @abstractmethod
-    def at(self, mouse: int):
-        pass
+    def mouse_to_value(self, mouse: int) -> float:
+        value = self.start_value + self._delta(mouse)
+        self._recalibrate(value)
+        return self._clip(value)
 
-    @abstractmethod
-    def get_value(self, value: Any) -> Any:
-        pass
+    def calibrate(self, mouse: int, value: float):
+        self.origin = mouse
+        self.start_value = value
 
-    def calibrate(self, mouse: int, value: Optional[float] = None):
-        self.start_mouse = mouse
-        if value is not None:
-            self.start_value = value
+    def _recalibrate(self, value):
+        delta = (self.to_cycle.min - value)*self.sensitivity
+        if delta > 0:
+            self.origin += delta
+
+        delta = (self.to_cycle.max - value)*self.sensitivity
+        if delta < 0:
+            self.origin += delta
+
+    def _delta(self, mouse: int):
+        return (self.origin - mouse)/self.sensitivity
 
     def _clip(self, value):
-        delta = (self.min - value)*self.sensitivity
-        if delta > 0:
-            self.calibrate(self.start_mouse+delta)
-
-        delta = (self.max - value)*self.sensitivity
-        if delta < 0:
-            self.calibrate(self.start_mouse+delta)
-
-        return min(max(self.min, value), self.max)
-
-
-@dataclass
-class RangeInterpreter(Interpreter):
-
-    def __post_init__(self):
-        self.min = self.values_to_cycle.min
-        self.max = self.values_to_cycle.max
-
-    def at(self, mouse: int) -> float:
-        delta = (self.start_mouse - mouse)/self.sensitivity
-        print(delta)
-        return self._clip(self.start_value + delta)
-
-    def get_value(self, value: Any) -> Any:
-        return value
-
-
-@dataclass
-class ListInterpreter(Interpreter):
-
-    def __post_init__(self):
-        self.min = -0.49
-        self.max = len(self.values_to_cycle)-0.51
-
-    def at(self, mouse: int):
-        delta = (self.start_mouse - mouse)/self.sensitivity
-        print(delta)
-        index_to_set = round(self._clip(self.start_value + delta))
-        return self.values_to_cycle[index_to_set]
-
-    def get_value(self, value: Any) -> Any:
-        return self.values_to_cycle.index(value)
+        return min(
+            max(self.to_cycle.min, value),
+            self.to_cycle.max
+        )
