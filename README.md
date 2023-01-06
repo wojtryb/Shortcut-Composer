@@ -10,13 +10,22 @@ The plugin adds new shortcuts of the following types:
 - `Multiple assignment` - repeatedly pressing a key, cycles between multiple values of krita property.
 - `Temporary key` - temporarily activates a krita property with long press or toggles it on/off with short press.
 
+[![PIE MENUS - introducing Shortcut Composer](http://img.youtube.com/vi/hrjBycVYFZM/0.jpg)](https://www.youtube.com/watch?v=hrjBycVYFZM "PIE MENUS - introducing Shortcut Composer")
+
+## Requirements
+Shortcut Composer **v1.0** Requires krita **5.1.0** or later.
+
+Supported operating systems:
+- [x] Windows 10/11
+- [x] Linux
+- [ ] MacOS (Not tested yet - your feedback is very appreciated)
+- [ ] Android (Does not support python plugins yet)
+
 ## Installation:
 1. on [github project page](https://github.com/wojtryb/Shortcut-Composer), click the green button <kbd>code</kbd> and pick the <kbd>download zip</kbd> option. Do not extract it.
 2. in krita's topbar, open **Tools > Scripts > Import Python Plugin From File** and pick the downloaded .zip file
 3. restart krita.
 4. set custom shortcuts in **Settings > Configure Krita > Keyboard Shortcuts** under **Scripts > Shortcut Composer: Complex Actions** section. By intention, there are no default bindings.
-
-<!-- Screen z akcjami w Keyboard Shortcuts -->
 
 ## Pre-made actions
 While Shortcut-Composer is highly configurable and extendable, the add-on comes with pre-made, plug-and-play actions.
@@ -59,8 +68,6 @@ Cursor tracker is an action for switching values using cursor movement, while th
   - Key press: isloate active layer
   - Horizontal: -
   - Vertical: scroll all layers
-
-  <!-- <img src="https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif" width="120" height="40" /> -->
 
 - ### Scroll timeline or animated layers
   Variation on "Scroll isolated layers" for animators. Scrolling is restricted only to layers pinned to the animation timeline. Horizontal mouse movement changes the current frame.
