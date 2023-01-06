@@ -48,5 +48,5 @@ class MouseTracker(PluginAction):
         self.working = False
         if self.horizontal_slider:
             self.horizontal_slider.stop()
-        else:
+        if self.vertical_slider:
             self.vertical_slider.stop()
