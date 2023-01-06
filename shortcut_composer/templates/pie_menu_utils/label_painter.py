@@ -7,24 +7,23 @@ from PyQt5.QtCore import Qt
 
 from api_krita.pyqt import Painter, make_pixmap_round, scale_pixmap, Text
 from .label import Label
+from .pie_style import PieStyle
 
 
-def create_painter(label: Label, widget: QWidget) -> "LabelPainter":
+def create_painter(label: Label, style: PieStyle, widget: QWidget)\
+        -> "LabelPainter":
     if isinstance(label.display_value, Text):
-        return TextLabelPainter(widget, label)
+        return TextLabelPainter(widget, style, label)
     elif isinstance(label.display_value, QPixmap):
-        return ImageLabelPainter(widget, label)
+        return ImageLabelPainter(widget, style, label)
     raise TypeError(f"Unknown label type {type(label.display_value)}")
 
 
 @dataclass
 class LabelPainter(ABC):
     widget: QWidget
+    style: PieStyle
     label: Label
-
-    @property
-    def style(self):
-        return self.label.style
 
     @abstractmethod
     def paint(self, painter: Painter) -> None: ...

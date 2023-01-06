@@ -30,7 +30,7 @@ class PieWidget(QWidget):
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setStyleSheet("background: transparent;")
         self.setWindowTitle("Pie Menu")
-        size = (self._style.widget_radius)*2
+        size = self._style.widget_radius*2
         self.setGeometry(0, 0, size, size)
 
     @property
@@ -109,4 +109,6 @@ class PieWidget(QWidget):
         )
 
     def _create_label_painters(self) -> List[LabelPainter]:
-        return [create_painter(label, self) for label in self._labels]
+        return [
+            create_painter(label, self._style, self) for label in self._labels
+        ]
