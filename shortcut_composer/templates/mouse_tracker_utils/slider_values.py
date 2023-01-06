@@ -36,18 +36,18 @@ class RangeSliderValues(SliderValues):
     def __init__(self, values: Range):
         self.min = Interpreted(values.min)
         self.max = Interpreted(values.max)
-        self.default = Interpreted((self.min + self.max)*0.5)
+        self.__default = Interpreted((self.min + self.max)*0.5)
 
     def at(self, value: Interpreted) -> Controlled:
         """Check if element belongs to the range, and return it as is."""
         if not self.min <= value <= self.max:
-            raise ValueError("Value not in range")
+            return Controlled(self.__default)
         return Controlled(value)
 
     def index(self, value: Controlled) -> Interpreted:
         """Check if element belongs to the range, and return it as is."""
         if not self.min <= value <= self.max:
-            raise ValueError("Value not in range")
+            return Controlled(self.__default)
         return Interpreted(value)
 
 
@@ -68,7 +68,7 @@ class ListSliderValues(SliderValues):
     def __init__(self, values: list):
         self.__values = values
         self.min = Interpreted(-0.49)
-        self.default = Interpreted(0)
+        self.__default = Interpreted(0)
 
     @property
     def max(self) -> Interpreted:
@@ -77,8 +77,12 @@ class ListSliderValues(SliderValues):
 
     def at(self, value: Interpreted) -> Controlled:
         """Return element of list by rounding input to get list index."""
+        if not self.min <= value <= self.max:
+            value = self.__default
         return Controlled(self.__values[round(value)])
 
     def index(self, value: Controlled) -> Interpreted:
         """Return index of list element directly from it."""
+        if value not in self.__values:
+            value = self.__default
         return Interpreted(self.__values.index(value))
