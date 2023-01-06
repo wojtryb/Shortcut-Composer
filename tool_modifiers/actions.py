@@ -3,6 +3,7 @@
 from .shortcut_library import plugin_actions as templates
 from .shortcut_library.plugin_actions import HideStrategy, PickStrategy
 from .shortcut_library.api_adapter import controller, Tool, Tag
+from .shortcut_library.api_adapter.controller import SetBrushStrategy
 from .shortcut_library.plugin_actions.slider_utils import Slider, Range
 
 actions = [
@@ -93,7 +94,9 @@ actions = [
     ),
     templates.CyclicAction(
         action_name="Preset (cycle)",
-        controller=controller.PresetController(),
+        controller=controller.PresetController(
+            set_brush_strategy=SetBrushStrategy.ON_NON_PAINTABLE
+        ),
         default_value="y) Texture Big",
         values_to_cycle=Tag("Digital")
     ),
