@@ -1,4 +1,4 @@
-from typing import List, Any
+from typing import List
 
 from core_components import Controller, InstructionHolder, Instruction
 
@@ -7,7 +7,7 @@ class PluginAction:
     """
     Abstract class with custom key event interface
 
-    Child class can specify what to do on any of given callbacks:
+    Child class can specify what to do on any of given situations:
 
     - on_key_press
     - on_short_key_release

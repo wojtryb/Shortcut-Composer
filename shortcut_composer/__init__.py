@@ -1,3 +1,12 @@
+"""
+The only python file directly run by krita during plugin initialization phase.
+
+Runs the file with extension by importing everything from it.
+
+Appending this file location to python PATH allows to directly import
+main packages instead of using relative imports.
+"""
+
 import sys
 import os
 

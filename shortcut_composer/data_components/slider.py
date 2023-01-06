@@ -19,12 +19,10 @@ class Slider:
 
     ### Arguments:
 
-    - `controller`      - defines which krita property will be modified
-    - `slider_values` - list or range of values to switch to
-                           compatibile with controller
-    - `default_value`   - value to switch to when current value is not in the
-                           list. It has to belong to the list.
-    - `sensitivity`     - how much movement is needed to switch values
+    - `controller`  - defines which krita property will be modified
+    - `values`      - list or range of values to switch to compatibile
+                       with controller
+    - `sensitivity` - how much movement is needed to switch values
 
     ### Usage Example:
 
