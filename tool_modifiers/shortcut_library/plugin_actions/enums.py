@@ -11,8 +11,3 @@ class Tool(Enum):
     rectangular_selection = "KisToolSelectRectangular"
     contiquous_selection = "KisToolSelectContiguous"
     reference = "ToolReferenceImages"
-
-
-class BlendingMode(Enum):
-    normal = "normal"
-    overlay = "overlay"

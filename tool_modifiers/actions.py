@@ -1,6 +1,6 @@
 """File that acts as config - define all action objects here."""
 
-from .shortcut_library.plugin_actions.enums import Tool, BlendingMode
+from .shortcut_library.plugin_actions.enums import Tool
 from .shortcut_library.plugin_actions import (
     TemporaryEraser,
     TemporaryPreserveAlpha,
@@ -86,7 +86,7 @@ actions = [
     CyclicAction(
         action_name="Blending mode (cycle)",
         controller=BlendingModeController(),
-        values_to_cycle=[BlendingMode.overlay],
+        values_to_cycle=["overlay"],
         include_default_in_cycle=True,
     ),
 ]
