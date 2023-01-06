@@ -205,12 +205,14 @@ class MouseCycleAction(PluginAction):
 
         self.working = True
         while self.working:
-            if self.horizontal_handler.mouse.delta \
-                    > self.vertical_handler.mouse.delta:
+            delta_hor = self.horizontal_handler.mouse.start - cursor.x
+            delta_ver = self.vertical_handler.mouse.start - cursor.y
+
+            if abs(delta_hor) > abs(delta_ver):
                 to_set_x = cursor.x
-                to_set_y = self.vertical_handler.mouse.start
+                to_set_y = self.vertical_handler.interpreter.origin
             else:
-                to_set_x = self.horizontal_handler.mouse.start
+                to_set_x = self.horizontal_handler.interpreter.origin
                 to_set_y = cursor.y
 
             self.horizontal_handler.handle(to_set_x)
