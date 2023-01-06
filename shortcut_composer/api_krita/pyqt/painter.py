@@ -6,7 +6,6 @@ from PyQt5.QtCore import QPoint, QRectF
 from math import floor, ceil
 
 
-
 class Painter:
     def __init__(self, widget: QWidget, event) -> None:
         self._painter = QPainter(widget)
@@ -46,13 +45,13 @@ class Painter:
         angle = -angle + 90
         path = QPainterPath()
         path.moveTo(center)
-        rectangle = self._square(center, outer_radius*2)
-        path.arcTo(rectangle, angle-floor(span/2), span)
+        outer_rectangle = self._square(center, outer_radius*2)
+        path.arcTo(outer_rectangle, angle-floor(span/2), span)
 
         if thickness:
             inner_radius = outer_radius-thickness
-            rectangle = self._square(center, round(inner_radius*2))
-            path.arcTo(rectangle, angle+ceil(span/2), -span)
+            inner_rectangle = self._square(center, round(inner_radius*2))
+            path.arcTo(inner_rectangle, angle+ceil(span/2), -span)
 
         self._painter.fillPath(path, color)
 

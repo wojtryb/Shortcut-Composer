@@ -42,7 +42,7 @@ class PieWidget(QWidget):
         return self.pos() + self.center  # type: ignore
 
     @property
-    def outer_radius(self) -> int:
+    def _outer_radius(self) -> int:
         return self._style.pie_radius - self._style.border_thickness//2
 
     @property
@@ -65,7 +65,7 @@ class PieWidget(QWidget):
     def _paint_base_wheel(self, painter: Painter):
         painter.paint_wheel(
             center=self.center,
-            outer_radius=self.outer_radius,
+            outer_radius=self._outer_radius,
             color=self._style.area_color,
             thickness=self._style.area_thickness,
         )
@@ -98,7 +98,7 @@ class PieWidget(QWidget):
 
         painter.paint_pie(
             center=self.center,
-            outer_radius=self.outer_radius,
+            outer_radius=self._outer_radius,
             angle=self._labels.active.angle,
             span=360//len(self._label_painters),
             color=self._style.active_color,

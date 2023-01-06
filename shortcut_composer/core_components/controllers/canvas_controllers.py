@@ -33,7 +33,7 @@ class CanvasZoomController(CanvasBasedController):
         self.canvas.zoom = value
 
     def get_label(self, value: float) -> Text:
-        return Text(f"{round(value)}%")
+        return Text(f"{round(value/100, 2)}")
 
 
 class CanvasRotationController(CanvasBasedController):
