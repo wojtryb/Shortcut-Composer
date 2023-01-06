@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <title>Shortcut Composer</title>
+</head>
+
+<body>
+  <h1 id="shortcut-composer">Shortcut composer</h1>
+  <p><strong>Extension</strong> for painting application <strong>Krita</strong>, which allows to create custom, complex
+    <strong>keyboard shortcuts</strong>.</p>
+  <p>The plugin adds new shortcuts of the following types:</p>
+  <ul>
+    <li><code>Pie menu</code> - while key is pressed, displays a pie menu, which allows to pick values by hovering a
+      mouse.</li>
+    <li><code>Cursor tracker</code> - while key is pressed, tracks a cursor, switching values according to cursor
+      offset.</li>
+    <li><code>Canvas preview</code> - Temporarily changes canvas elements while the key is pressed.</li>
+    <li><code>Multiple assignment</code> - repeatedly pressing a key, cycles between multiple values of krita property.
+    </li>
+    <li><code>Temporary key</code> - temporarily activates a krita property with long press or toggles it on/off with
+      short press.</li>
+  </ul>
+  <h2 id="installation-">Installation:</h2>
+  <ol>
+    <li>on <a href="https://github.com/wojtryb/Shortcut-Composer">github project page</a>, click the green button
+      <kbd>code</kbd> and pick the <kbd>download zip</kbd> option. Do not extract it.</li>
+    <li>in krita&#39;s topbar, open <strong>Tools &gt; Scripts &gt; Import Python Plugin From File</strong> and pick the
+      downloaded .zip file</li>
+    <li>restart krita.</li>
+    <li>set custom shortcuts in <strong>Settings &gt; Configure Krita &gt; Keyboard Shortcuts</strong> under
+      <strong>Scripts &gt; Shortcut Composer: Complex Actions</strong> section. By intention, there are no default
+      bindings.</li>
+  </ol>
+  <h2 id="pre-made-actions">Pre-made actions</h2>
+  <p>While Shortcut-Composer is highly configurable and extendable, the add-on comes with pre-made, plug-and-play
+    actions.</p>
+  <h3 id="-pie-menus-">(<code>Pie menus</code>):</h3>
+  <p>Pie menu is a widget displayed on the canvas while a key is pressed. It will disappear as soon, as the key is
+    released. Moving cursor in a direction of a icon, activates its value on key release. <strong>The action does not
+      recognise mouse clicks, and only requires hovering</strong>. Pie menu does nothing if the cursor is not moved out
+    of the deadzone.</p>
+  <ul>
+    <li>
+      <h3 id="pick-brush-presets-red-green-blue-">Pick brush presets (red, green, blue)</h3>
+      <p>Three color coded pie menus that let you pick a <strong>brush preset</strong> from related <strong>tag</strong>
+        with brush presets. Used tags can be changed in <strong>Tools &gt; Scripts &gt; Configure Shortcut
+          Composer</strong>. Default tag mapping is as follows:</p>
+      <ul>
+        <li><span style="color:red">red</span>: &quot;★ My Favorites&quot;</li>
+        <li><span style="color:green">green</span>: &quot;RGBA&quot;</li>
+        <li><span style="color:blue">blue</span>: &quot;Erasers&quot;</li>
+      </ul>
+      <p>Presets in edited tags do not reload by themselves. Use <strong>Tools &gt; Scripts &gt; Reload Shortcut
+          Composer</strong> or press apply/ok button in plugin configuration dialog.</p>
+    </li>
+    <li>
+      <h3 id="pick-misc-tools">Pick misc tools</h3>
+      <p>Pie menu for picking <strong>active tools</strong>. Includes tools that are used rather sporadically, and may
+        not be worth a dedicated keyboard shortcut each:</p>
+      <ul>
+        <li>crop tool,</li>
+        <li>reference tool,</li>
+        <li>gradient tool,</li>
+        <li>multi_brush tool,</li>
+        <li>assistant tool</li>
+      </ul>
+    </li>
+    <li>
+      <h3 id="pick-painting-blending-modes">Pick painting blending modes</h3>
+      <p>Pie menu for picking <strong>painting blending modes</strong>. Consists of most commonly used ones:</p>
+      <ul>
+        <li>normal</li>
+        <li>overlay,</li>
+        <li>color,</li>
+        <li>multiply,</li>
+        <li>add,</li>
+        <li>screen,</li>
+        <li>darken,</li>
+        <li>lighten</li>
+      </ul>
+    </li>
+  </ul>
+  <h3 id="-cursor-trackers-">(<code>Cursor trackers</code>):</h3>
+  <p>Cursor tracker is an action for switching values using cursor movement, while the keyboard key is pressed. It
+    changes a single krita property according to the cursor movement along horizontal or vertical axis. <strong>The
+      action does not recognise mouse clicks, and only requires hovering</strong></p>
+  <ul>
+    <li>
+      <h3 id="scroll-isolated-layers">Scroll isolated layers</h3>
+      <p>Scrolls the layers by sliding the cursor vertically. Can be used for picking the active layer and analizing the
+        layer stack. While the key is pressed, isolates the active layer to give better response of which layer is
+        active.</p>
+      <ul>
+        <li>Key press: isloate active layer</li>
+        <li>Horizontal: -</li>
+        <li>Vertical: scroll all layers</li>
+      </ul>
+    </li>
+    <li>
+      <h3 id="scroll-timeline-or-animated-layers">Scroll timeline or animated layers</h3>
+      <p>Variation on &quot;Scroll isolated layers&quot; for animators. Scrolling is restricted only to layers pinned to
+        the animation timeline. Horizontal mouse movement changes the current frame.</p>
+      <ul>
+        <li>Key press: isloate active layer</li>
+        <li>Horizontal: scroll animation frames</li>
+        <li>Vertical: scroll layers pinned to timeline</li>
+      </ul>
+    </li>
+    <li>
+      <h3 id="scroll-undo-stack">Scroll undo stack</h3>
+      <p>Extends the krita undo action <kbd>ctrl</kbd>+<kbd>z</kbd>. While the key is pressed, horizontal mouse movement
+        controls the undo stack by performing undo and redo actions. Usual undo with short key press is still possible.
+      </p>
+      <ul>
+        <li>Key press: undo last operation</li>
+        <li>Horizontal: scroll left to undo, or right to redo</li>
+        <li>Vertical: -</li>
+      </ul>
+    </li>
+    <li>
+      <h3 id="scroll-brush-size-or-opacity">Scroll brush size or opacity</h3>
+      <p>Allows to control both <code>brush size</code> or <code>opacity</code> with a single key. Opacity changes
+        contiguously with vertical mouse movement, while brush size snaps to custom values.</p>
+      <ul>
+        <li>Key press: -</li>
+        <li>Horizontal: scroll brush size (descrete)</li>
+        <li>Vertical: scroll painting opacity (contiguous)</li>
+      </ul>
+    </li>
+    <li>
+      <h3 id="scroll-canvas-zoom-or-rotation">Scroll canvas zoom or rotation</h3>
+      <p>Allows to control both <code>canvas zoom</code> or <code>canvas rotation</code> with a single key. Does not
+        block the ability to paint.</p>
+      <ul>
+        <li>Key press: -</li>
+        <li>Horizontal: canvas rotation (contiguous)</li>
+        <li>Vertical: canvas zoom (contiguous)</li>
+      </ul>
+    </li>
+  </ul>
+  <h3 id="-canvas-previews-">(<code>Canvas previews</code>):</h3>
+  <p>Canvas preview is an action which changes canvas elements when the key is pressed, and changes them back to their
+    original state on key release.</p>
+  <ul>
+    <li>
+      <h3 id="preview-current-layer-visibility">Preview current layer visibility</h3>
+      <p>Changes active layer visibility on key press and release. Allows to quickly check layer&#39;s content.</p>
+    </li>
+    <li>
+      <h3 id="preview-projection-below">Preview projection below</h3>
+      <p>Hides all visible layers above the active one on key press, and reverses this change on key release. Allows to
+        check what is the position of current layer in a stack. It is possible to paint while action is active.</p>
+    </li>
+  </ul>
+  <h3 id="-multiple-assignments-">(<code>Multiple assignments</code>):</h3>
+  <p>Multiple assignment is an action which cycles between multiple values of single krita property. Each key press
+    activates next list element. Performing a long press breaks the cycle and sets a default value, which does not have
+    to belong the the list.</p>
+  <ul>
+    <li>
+      <h3 id="cycle-selection-tools">Cycle selection tools</h3>
+      <p>Pressing a key repeatedly cycles most commonly used selection tools:</p>
+      <ul>
+        <li>freehand selection tool,</li>
+        <li>rectangular selection tool,</li>
+        <li>contiguous selection tool</li>
+      </ul>
+      <p>Performing a long press, goes back to the <code>freehand brush tool</code>. Tools can be used while the key is
+        pressed.</p>
+    </li>
+    <li>
+      <h3 id="cycle-painting-opacity">Cycle painting opacity</h3>
+      <p>Pressing a key repeatedly cycles brush predefined opacity values: <code>100%</code>, <code>70%</code>,
+        <code>50%</code>, <code>30%</code></p>
+      <p>Performing a long press, goes back to the <code>100%</code> opacity. Modified opacity can be used while the key
+        is pressed.</p>
+    </li>
+  </ul>
+  <h3 id="-temporary-keys-">(<code>Temporary keys</code>):</h3>
+  <ul>
+    <li>
+      <h3 id="temporary-move-tool">Temporary move tool</h3>
+      <p>Pressing a key temporarily activates the <code>move tool</code> which goes back to the <code>freehand brush
+          tool</code> after the key release. Short key presses allow to permanently toggle between those two tools. </p>
+    </li>
+    <li>
+      <h3 id="temporary-eraser">Temporary eraser</h3>
+      <p>Pressing a key temporarily activates the <code>eraser</code> mode which gets turned off after the key is
+        released. Short key presses allow to permanently toggle between those two states. </p>
+    </li>
+    <li>
+      <h3 id="temporary-preserve-alpha">Temporary preserve alpha</h3>
+      <p>Pressing a key temporarily activates the <code>preserve alpha</code> mode which gets turned off after the key
+        is released. Short key presses allow to permanently toggle between those two states. </p>
+    </li>
+  </ul>
+  <h2 id="modifying-default-plugin-behaviour">Modifying default plugin behaviour</h2>
+  <h3 id="tweaking-the-global-parameters">Tweaking the global parameters</h3>
+  <p>Shortcut-Composer comes with a settings dialog available from krita topbar: <strong>Tools &gt; Scripts &gt;
+      Configure Shortcut Composer</strong>. The dialog allows to change the following aspects of actions:</p>
+  <ul>
+    <li>Preset pie-menus mapping<ul>
+        <li><code>Tag (red)</code> - tag to be used in red preset pie-menu</li>
+        <li><code>Tag (green)</code> - tag to be used in green preset pie-menu</li>
+        <li><code>Tag (blue)</code> - tag to be used in blue preset pie-menu</li>
+      </ul>
+    </li>
+    <li>Common settings<ul>
+        <li><code>Short vs long press time</code> - Time in seconds distinguishing short key presses from long ones.
+        </li>
+        <li><code>FPS limit</code> - Maximum rate of Mouse Tracker and Pie Menu refresh.</li>
+      </ul>
+    </li>
+    <li>Cursor trackers<ul>
+        <li><code>Tracker sensitivity scale</code> - Sensitivity multiplier of all Mouse Trackers. </li>
+        <li><code>Tracker deadzone</code> - Amount of pixels a mouse needs to moved for Mouse Trackers to start work.
+        </li>
+      </ul>
+    </li>
+    <li>Pie menus display<ul>
+        <li><code>Pie global scale</code> - Global scale factor for base of every pie menu.</li>
+        <li><code>Pie icon global scale</code> - Global scale factor for icons of every pie menu.</li>
+        <li><code>Pie deadzone global scale</code> - Global scale factor for the deadzone area of every pie menu.</li>
+        <li><code>Pie animation time</code> - Time (in seconds) for fade-in animation when showing the pie menu.</li>
+      </ul>
+    </li>
+  </ul>
+  <h3 id="modifying-actions-and-creating-custom-ones">Modifying actions and creating custom ones</h3>
+  <p>While the settings dialog allows to tweak the values common for plugin actions, it does not allow to modify the
+    behaviour of the actions or create new ones.</p>
+  <p>To achieve that it is required to modify actions implementation: </p>
+  <ul>
+    <li>in krita&#39;s topbar, open <strong>Settings &gt; Manage Resources &gt; Open Resource Folder</strong></li>
+    <li>navigate to <strong>./pykrita/shortcut_composer/</strong> directory.</li>
+    <li>action definitions are located in <code>actions.action</code> file.</li>
+    <li>
+      <p>actions implementation is located in <code>actions.py</code> file.</p>
+    </li>
+    <li>
+      <p>Define an action in <code>actions.action</code> file by duplicating one of the existing definitions and using
+        an unique name for it.</p>
+    </li>
+    <li>Implement an action in <code>actions.py</code> file. Once again, duplicate one of the existing implementations.
+      It is best to pick the one that feels closest to desired action. Fill its arguments, making sure the name is
+      exactly the same as defined earlier.</li>
+  </ul>
+  <h2 id="worth-noting">Worth noting</h2>
+  <ul>
+    <li>Key bindings with modifiers like <kbd>ctrl</kbd> or <kbd>shift</kbd> are supported. When assigned to a key
+      combination, the key is considered released when the main key in sequence (non-modifier) is released.</li>
+    <li>Multiple shortcuts from this plugin can be used at the same time, unless bindings make it technically
+      impossible. For example holding both keys for <code>Temporary eraser</code> and <code>Cycle painting
+        opacity</code> result in an eraser with 70% opacity.</li>
+  </ul>
+  <h3 id="known-limitations">Known limitations</h3>
+  <ul>
+    <li>Pressing a modifier while the usual key is pressed, will result in conflict. For instance, pressing
+      <kbd>ctrl</kbd> while using temporary eraser assigned to <kbd>x</kbd> will result in unwanted
+      <kbd>ctrl</kbd>+<kbd>x</kbd> operation which cuts current layer.</li>
+  </ul>
+  <h2 id="for-krita-plugin-programmers">For krita plugin programmers</h2>
+  <h3 id="alternative-api">Alternative API</h3>
+  <p>The extension consists of elements that can be reused in other krita plugins under GPL-3.0-or-later license.
+    Package <code>api_krita</code> wrappes krita api offering PEP8 compatibility, typings, and docstring documentation.
+    Most of objects attributes are now available as settables properties.</p>
+  <p>Copy <code>api_krita</code> to the extension directory, to access syntax such as:</p>
+  <pre><code class="lang-python">from .api_krita <span class="hljs-built_in">import</span> Krita
+  from .api_krita.enums <span class="hljs-built_in">import</span> BlendingMode, Tool, Toggle
+  
+  <span class="hljs-comment"># active tool operations</span>
+  <span class="hljs-attr">tool</span> = Krita.active_tool  <span class="hljs-comment"># get current tool</span>
+  Krita.<span class="hljs-attr">active_tool</span> = Tool.FREEHAND_BRUSH  <span class="hljs-comment"># set current tool</span>
+  Tool.FREEHAND_BRUSH.activate()  <span class="hljs-comment"># set current tool (alternative way)</span>
+  
+  <span class="hljs-comment"># operations on a document</span>
+  <span class="hljs-attr">document</span> = Krita.get_active_document()
+  <span class="hljs-attr">all_nodes</span> = document.get_all_nodes()  <span class="hljs-comment"># all nodes with flattened structure</span>
+  <span class="hljs-attr">picked_node</span> = all_nodes[<span class="hljs-number">3</span>]
+  
+  picked_node.<span class="hljs-attr">name</span> = <span class="hljs-string">"My layer name"</span>
+  picked_node.<span class="hljs-attr">visible</span> = True
+  picked_node.<span class="hljs-attr">opacity</span> = <span class="hljs-number">50</span>  <span class="hljs-comment"># remapped from 0-255 go 0-100 [%]</span>
+  document.<span class="hljs-attr">active_node</span> = picked_node 
+  document.refresh()
+  
+  <span class="hljs-comment"># Operations on a view</span>
+  <span class="hljs-attr">view</span> = Krita.get_active_view()
+  view.<span class="hljs-attr">brush_size</span> = <span class="hljs-number">100</span>
+  view.<span class="hljs-attr">blending_mode</span> = BlendingMode.NORMAL  <span class="hljs-comment"># Enumerated blending modes</span>
+  
+  <span class="hljs-comment"># Handling checkable actions</span>
+  <span class="hljs-attr">mirror_state</span> = Toggle.MIRROR_CANVAS.state  <span class="hljs-comment"># get mirror state</span>
+  Toggle.SOFT_PROOFING.<span class="hljs-attr">state</span> = False  <span class="hljs-comment"># turn off soft proofing</span>
+  Toggle.PRESERVE_ALPHA.switch_state()  <span class="hljs-comment"># change state of preserve alpha</span>
+  </code></pre>
+  <p>Only functionalities that were needed during this plugin development are wrapped, so some of them are not yet
+    available. The syntax can also change over time.</p>
+  <h3 id="custom-keyboard-shortcut-interface">Custom keyboard shortcut interface</h3>
+  <p>Package <code>input_adapter</code> consists of <code>ActionManager</code> and <code>ComplexAction</code> which
+    grants extended interface for creating keyboard shortcuts.</p>
+  <p>While usual actions can only recognise key press, subclassing <code>ComplexAction</code> lets you override methods
+    performed on:</p>
+  <ul>
+    <li>key press</li>
+    <li>short key release</li>
+    <li>long key release</li>
+    <li>every key release</li>
+  </ul>
+  <p>Then use <code>ActionManager</code> instance to bind objects of those custom actions to krita during CreateActions
+    phase:</p>
+  <pre><code class="lang-python"><span class="hljs-keyword">from</span> api_krita <span class="hljs-keyword">import</span> Extension
+  <span class="hljs-keyword">from</span> input_adapter <span class="hljs-keyword">import</span> ActionManager, ComplexAction
+  
+  
+  <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CustomAction</span><span class="hljs-params">(ComplexAction)</span>:</span>
+      <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">on_key_press</span><span class="hljs-params">(self)</span>:</span> ...
+      <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">on_short_key_release</span><span class="hljs-params">(self)</span>:</span> ...
+      <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">on_long_key_release</span><span class="hljs-params">(self)</span>:</span> ...
+      <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">on_every_key_release</span><span class="hljs-params">(self)</span>:</span> ...
+  
+  
+  <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ExtensionName</span><span class="hljs-params">(Extension)</span>:</span>
+      ...
+      <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">createActions</span><span class="hljs-params">(self, window)</span> -&gt; <span class="hljs-keyword">None</span>:</span>
+          action = CustomAction(name=<span class="hljs-string">"Custom action name"</span>)
+          self.manager = ActionManager(window)
+          self.manager.bind_action(action)
+  </code></pre>
+
+
+</body>
+
+</html>
