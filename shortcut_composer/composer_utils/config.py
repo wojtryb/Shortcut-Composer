@@ -26,6 +26,11 @@ class Config(Enum):
         for field, default in _defaults.items():
             write_setting(field.value, default)
 
+    @staticmethod
+    def get_sleep_time():
+        fps_limit = Config.FPS_LIMIT.get()
+        return 1/fps_limit if fps_limit else 0.001
+
 
 _defaults = {
     Config.SHORT_VS_LONG_PRESS_TIME: 0.3,

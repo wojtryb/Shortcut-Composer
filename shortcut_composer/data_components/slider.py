@@ -24,7 +24,6 @@ class Slider:
     - `sensitivity_scale` -- (optional) changes sensitivity of slider
     - `deadzone`          -- (optional) amount of pixels a mouse needs
                              to be moved for slider to start to work
-    - `fps_limit`         -- (optional) maximum rate of slider refresh
 
     # Usage Example:
 
@@ -60,16 +59,14 @@ class Slider:
         values: Union[List[Any], Range],
         sensitivity_scale: float = 1.0,
         deadzone: Optional[int] = None,
-        fps_limit: Optional[int] = None
     ) -> None:
         self.controller = controller
         self.values = values
-        sensitivity_scale = (
-            Config.SLIDER_SENSITIVITY_SCALE.get() * sensitivity_scale)
-        self.pixels_in_unit = round(50 / sensitivity_scale)
+
+        sensitivity = Config.SLIDER_SENSITIVITY_SCALE.get() * sensitivity_scale
+        self.pixels_in_unit = round(50 / sensitivity)
+
         self.deadzone = self._read(deadzone, Config.SLIDER_DEADZONE)
-        self.fps_limit = self._read(fps_limit, Config.FPS_LIMIT)
-        self.sleep_time = 1/self.fps_limit if self.fps_limit else 0.001
 
     def _read(self, passed: Optional[int], field: Config):
         if passed is not None:

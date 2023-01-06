@@ -2,6 +2,7 @@ from threading import Thread
 from time import sleep
 from typing import Callable, Iterable
 
+from composer_utils import Config
 from api_krita import Krita
 from data_components import Slider, Range
 from .new_types import MouseInput, Interpreted
@@ -45,61 +46,62 @@ class SliderHandler:
 
     def __init__(self, slider: Slider, is_horizontal: bool):
         """Store the slider configuration, create value adapter."""
-        self.__slider = slider
-        self.__to_cycle = self.__create_slider_values(slider)
-        self.__working = False
-        self.__is_horizontal = is_horizontal
+        self._slider = slider
+        self._to_cycle = self.__create_slider_values(slider)
+        self._working = False
+        self._is_horizontal = is_horizontal
 
-        self.__mouse_getter: Callable[[], MouseInput]
-        self.__interpreter: MouseInterpreter
+        self._mouse_getter: Callable[[], MouseInput]
+        self._interpreter: MouseInterpreter
+        self._sleep_time = Config.get_sleep_time()
 
     def start(self) -> None:
         """Start a deadzone phase in a new thread."""
-        self.__working = True
-        self.__slider.controller.refresh()
-        self.__mouse_getter = self.__pick_mouse_getter()
+        self._working = True
+        self._slider.controller.refresh()
+        self._mouse_getter = self.__pick_mouse_getter()
         Thread(target=self._start_after_deadzone, daemon=True).start()
 
     def stop(self) -> None:
         """Stop a process by setting a flag which ends any loop."""
-        self.__working = False
+        self._working = False
 
     def read_mouse(self) -> MouseInput:
         """Fetch current mouse position."""
-        return self.__mouse_getter()
+        return self._mouse_getter()
 
     def _start_after_deadzone(self) -> None:
         """Block a thread until mouse reaches deadzone. Then start a loop."""
         start_point = self.read_mouse()
-        while abs(start_point - self.read_mouse()) <= self.__slider.deadzone:
-            if not self.__working:
+        while abs(start_point - self.read_mouse()) <= self._slider.deadzone:
+            if not self._working:
                 return
-            sleep(self.__slider.sleep_time)
+            sleep(self._sleep_time)
         self._value_setting_loop()
 
     def _value_setting_loop(self) -> None:
         """Block a thread contiguously setting values from `SliderValues`."""
         self.__update_interpreter()
-        while self.__working:
-            clipped_value = self.__interpreter.interpret(self.read_mouse())
-            to_set = self.__to_cycle.at(clipped_value)
-            self.__slider.controller.set_value(to_set)
-            sleep(self.__slider.sleep_time)
+        while self._working:
+            clipped_value = self._interpreter.interpret(self.read_mouse())
+            to_set = self._to_cycle.at(clipped_value)
+            self._slider.controller.set_value(to_set)
+            sleep(self._sleep_time)
 
     def __update_interpreter(self):
         """Store a new interpreter with current mouse and current value."""
-        self.__interpreter = MouseInterpreter(
-            min=self.__to_cycle.min,
-            max=self.__to_cycle.max,
+        self._interpreter = MouseInterpreter(
+            min=self._to_cycle.min,
+            max=self._to_cycle.max,
             mouse_origin=self.read_mouse(),
             start_value=self.__get_current_interpreted_value(),
-            pixels_in_unit=self.__slider.pixels_in_unit,
+            pixels_in_unit=self._slider.pixels_in_unit,
         )
 
     def __get_current_interpreted_value(self) -> Interpreted:
         """Read interpreted value corresponding to currently set value."""
-        controller_value = self.__slider.controller.get_value()
-        return self.__to_cycle.index(controller_value)
+        controller_value = self._slider.controller.get_value()
+        return self._to_cycle.index(controller_value)
 
     def __pick_mouse_getter(self):
         """
@@ -112,7 +114,7 @@ class SliderHandler:
         even when the cursor object gets deleted by C++.
         """
         cursor = Krita.get_cursor()
-        if self.__is_horizontal:
+        if self._is_horizontal:
             return lambda: MouseInput(cursor.x())
         return lambda: MouseInput(-cursor.y())
 
