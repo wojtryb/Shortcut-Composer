@@ -2,7 +2,7 @@ from time import time
 from dataclasses import dataclass
 from typing import Callable
 
-from krita import *
+from krita import Krita, QMdiArea
 from PyQt5.QtCore import QEvent
 
 from ..config import interval
@@ -64,4 +64,4 @@ class KeyFilter(QMdiArea):
 
     @property
     def tool_shortcut(self):
-        return Application.action(self.elements.human_name).shortcut()
+        return Krita.instance().action(self.elements.human_name).shortcut()
