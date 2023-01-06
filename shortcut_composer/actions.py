@@ -103,7 +103,6 @@ def create_actions(): return [
         ],
     ),
 
-
     # Control undo and redo actions by sliding the cursor horizontally
     # Start triggering the actions after passing a deadzone of 100 px
     # Use UndoOnPress instruction to trigger undo key press
@@ -168,23 +167,7 @@ def create_actions(): return [
         ),
     ),
 
-    templates.PieMenu(
-        name="Pick painting blending modes",
-        controller=controllers.BlendingModeController(),
-        instructions=[instructions.SetBrushOnNonPaintable()],
-        values=[
-            BlendingMode.NORMAL,
-            BlendingMode.OVERLAY,
-            BlendingMode.COLOR,
-            BlendingMode.MULTIPLY,
-            BlendingMode.ADD,
-            BlendingMode.SCREEN,
-            BlendingMode.BEHIND,
-            BlendingMode.DARKEN,
-            BlendingMode.LIGHTEN,
-        ],
-    ),
-
+    # Use pie menu to pick one of the sporadically used tools.
     templates.PieMenu(
         name="Pick misc tools",
         controller=controllers.ToolController(),
@@ -198,16 +181,37 @@ def create_actions(): return [
         pie_radius_scale=0.85
     ),
 
-    # Pick a brush preset from the tag named "RGBA" using a pie menu
+    # Use pie menu to pick one of the brush blending modes.
+    # Set tool to FREEHAND BRUSH if current tool does not allow to paint
+    templates.PieMenu(
+        name="Pick painting blending modes",
+        controller=controllers.BlendingModeController(),
+        instructions=[instructions.SetBrushOnNonPaintable()],
+        values=[
+            BlendingMode.NORMAL,
+            BlendingMode.OVERLAY,
+            BlendingMode.COLOR,
+            BlendingMode.MULTIPLY,
+            BlendingMode.ADD,
+            BlendingMode.SCREEN,
+            BlendingMode.DARKEN,
+            BlendingMode.LIGHTEN,
+        ],
+    ),
+
+    # Use pie menu to pick one of presets from tag specified in settings.
+    # Set tool to FREEHAND BRUSH if current tool does not allow to paint
     templates.PieMenu(
         name="Pick brush presets (red)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        values=Tag(read_setting(name="Tag (red)", default="Erasers")),
+        values=Tag(read_setting(name="Tag (red)", default="Digital")),
         background_color=QColor(95, 65, 65, 190),
         active_color=QColor(200, 70, 70),
     ),
 
+    # Use pie menu to pick one of presets from tag specified in settings.
+    # Set tool to FREEHAND BRUSH if current tool does not allow to paint
     templates.PieMenu(
         name="Pick brush presets (green)",
         controller=controllers.PresetController(),
@@ -217,11 +221,13 @@ def create_actions(): return [
         active_color=QColor(70, 200, 70),
     ),
 
+    # Use pie menu to pick one of presets from tag specified in settings.
+    # Set tool to FREEHAND BRUSH if current tool does not allow to paint
     templates.PieMenu(
         name="Pick brush presets (blue)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        values=Tag(read_setting(name="Tag (blue)", default="Pixel Art")),
+        values=Tag(read_setting(name="Tag (blue)", default="Erasers")),
         background_color=QColor(70, 70, 105, 190),
         active_color=QColor(110, 160, 235),
     ),
