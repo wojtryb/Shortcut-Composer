@@ -2,6 +2,7 @@ from PyQt5.QtGui import QPixmap, QImage
 
 from api_krita import Krita
 from api_krita.enums import BlendingMode
+from api_krita.pyqt import Text, Colorizer
 from ..controller_base import Controller
 
 
@@ -52,8 +53,8 @@ class BrushSizeController(ViewBasedController):
     def set_value(self, value: float) -> None:
         self.view.brush_size = value
 
-    def get_label(self, value: float) -> str:
-        return f"{round(value)}px"
+    def get_label(self, value: float) -> Text:
+        return Text(f"{round(value)}px")
 
 
 class BlendingModeController(ViewBasedController):
@@ -74,8 +75,8 @@ class BlendingModeController(ViewBasedController):
         """Set a passed blending mode."""
         self.view.blending_mode = value
 
-    def get_label(self, value: BlendingMode) -> str:
-        return value.name[:3]
+    def get_label(self, value: BlendingMode) -> Text:
+        return Text(value.name[:3], Colorizer(value))
 
 
 class OpacityController(ViewBasedController):
@@ -96,8 +97,8 @@ class OpacityController(ViewBasedController):
         """Set passed brush opacity."""
         self.view.opacity = value
 
-    def get_label(self, value: int) -> str:
-        return f"{value}%"
+    def get_label(self, value: int) -> Text:
+        return Text(f"{value}%", Colorizer(value))
 
 
 class FlowController(ViewBasedController):
@@ -116,5 +117,5 @@ class FlowController(ViewBasedController):
     def set_value(self, value: int) -> None:
         self.view.flow = value
 
-    def get_label(self, value: int) -> str:
-        return f"{value}%"
+    def get_label(self, value: int) -> Text:
+        return Text(f"{value}%", Colorizer(value))

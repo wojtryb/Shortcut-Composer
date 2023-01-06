@@ -1,5 +1,6 @@
 from api_krita import Krita
 from api_krita.enums import BlendingMode
+from api_krita.pyqt import Text, Colorizer
 from ..controller_base import Controller
 
 
@@ -32,8 +33,8 @@ class LayerOpacityController(NodeBasedController):
             self.active_node.opacity = opacity
             self.active_document.refresh()
 
-    def get_label(self, value: int) -> str:
-        return f"{value}%"
+    def get_label(self, value: int) -> Text:
+        return Text(f"{value}%", Colorizer(value))
 
 
 class LayerBlendingModeController(NodeBasedController):
@@ -56,8 +57,8 @@ class LayerBlendingModeController(NodeBasedController):
             self.active_node.blending_mode = blending_mode
             self.active_document.refresh()
 
-    def get_label(self, value: BlendingMode) -> str:
-        return value.name[:3]
+    def get_label(self, value: BlendingMode) -> Text:
+        return Text(value.name[:3], Colorizer(value))
 
 
 class LayerVisibilityController(NodeBasedController):

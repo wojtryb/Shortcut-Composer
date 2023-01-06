@@ -6,7 +6,7 @@ from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtCore import Qt
 
 from shortcut_composer_config import ICON_RADIUS_PX
-from api_krita.pyqt import Painter, make_pixmap_round, scale_pixmap
+from api_krita.pyqt import Painter, make_pixmap_round, scale_pixmap, Text
 from .label import Label
 from .pie_style import PieStyle
 
@@ -26,7 +26,7 @@ def pick_correct_painter(
     style: PieStyle,
     label: Label,
 ) -> LabelPainter:
-    if isinstance(label.display_value, str):
+    if isinstance(label.display_value, Text):
         return TextLabelPainter(widget, style, label)
     elif isinstance(label.display_value, QPixmap):
         return ImageLabelPainter(widget, style, label)
@@ -53,7 +53,7 @@ class TextLabelPainter(LabelPainter):
         )
 
     def _create_pyqt_label(self):
-        if not isinstance(self.label.display_value, str):
+        if not isinstance(self.label.display_value, Text):
             raise TypeError("Label supposed to be text.")
 
         label = QLabel("text label", self.widget)
@@ -75,12 +75,17 @@ class TextLabelPainter(LabelPainter):
                 {self.style.icon_color.green()},
                 {self.style.icon_color.blue()},
                 {self.style.icon_color.alpha()}
+            );
+            color:rgba(
+                {self.label.display_value.color.red()},
+                {self.label.display_value.color.green()},
+                {self.label.display_value.color.blue()},
+                {self.label.display_value.color.alpha()}
             );"""
-            "color: white;"
         )
         label.setAlignment(Qt.AlignCenter)
         label.setWordWrap(True)
-        label.setText(self.label.display_value)
+        label.setText(self.label.display_value.text)
 
         label.show()
         return label
