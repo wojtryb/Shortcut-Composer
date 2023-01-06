@@ -10,6 +10,20 @@ from PyQt5.Qt import QStandardPaths
 
 
 @dataclass
+class Cursor:
+
+    qwin: QMainWindow
+
+    @property
+    def x(self):
+        return self.qwin.cursor().pos().x()
+
+    @property
+    def y(self):
+        return self.qwin.cursor().pos().y()
+
+
+@dataclass
 class KritaView:
 
     view: Any
@@ -34,6 +48,7 @@ class KritaView:
 
 
 class Krita:
+
     @staticmethod
     def trigger_action(action_name) -> None:
         return Api.instance().action(action_name).trigger()
@@ -58,8 +73,14 @@ class Krita:
     def get_active_view() -> KritaView:
         return KritaView(Api.instance().activeWindow().activeView())
 
+    @staticmethod
     def get_active_qwindow() -> QMainWindow:
         return Api.instance().activeWindow().qwindow()
+
+    @classmethod
+    def get_cursor(cls) -> Cursor:
+        qwin = cls.get_active_qwindow()
+        return Cursor(qwin)
 
     @staticmethod
     def add_extension(extension: Extension) -> None:
@@ -98,12 +119,6 @@ class KritaDatabase:
 
         self.database = QSqlDatabase.addDatabase("QSQLITE", "dbResources")
         self.database.setDatabaseName(database_path)
-
-    # def get_presets_from_tag(self, tag):
-    #     all_preset_objects = Krita.get_presets()
-    #     preset_names = self.get_preset_names_from_tag(tag)
-
-    #     return [preset_names[preset] for preset in all_preset_objects]
 
     def get_preset_names_from_tag(self, tag) -> List[str]:
         if not self.database.open():
