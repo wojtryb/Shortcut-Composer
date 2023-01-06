@@ -7,6 +7,7 @@ from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QColor, QPaintEvent
 
 from api_krita.pyqt import AnimatedWidget, Painter
+from composer_utils import Config
 from .pie_style import PieStyle
 from .label import LabelPainter
 from .label_holder import LabelHolder
@@ -35,7 +36,7 @@ class PieWidget(AnimatedWidget):
         style: PieStyle,
         parent=None
     ):
-        super().__init__(parent)
+        super().__init__(parent, Config.PIE_ANIMATION_TIME.read())
         self.labels = labels
         self._style = style
         self._label_painters = self._create_label_painters()

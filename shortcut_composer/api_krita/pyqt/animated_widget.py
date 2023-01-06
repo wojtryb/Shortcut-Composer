@@ -1,14 +1,14 @@
 from PyQt5.QtWidgets import QWidget
 
 from .timer import Timer
-from composer_utils import Config
 
 
 class AnimatedWidget(QWidget):
     """Adds the fade-in animation when the widget is shown (60 FPS)."""
 
-    def __init__(self, parent) -> None:
+    def __init__(self, parent, animation_time: float = 0) -> None:
         super().__init__(parent)
+        self._animation_time = animation_time
         self._animation_interval = self._read_animation_interval()
         self._animation_timer = Timer(self._increase_opacity, 17)
 
@@ -27,6 +27,6 @@ class AnimatedWidget(QWidget):
 
     def _read_animation_interval(self):
         """Return how much opacity (0-1) should be increased on each frame."""
-        if time := Config.PIE_ANIMATION_TIME.read():
+        if time := self._animation_time:
             return 0.0167/time
         return 1
