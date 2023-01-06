@@ -67,7 +67,7 @@ class LayerPicker(VirtualSliderAction):
         document = Krita.get_active_document()
 
         with self.strategy.value(document) as hider:
-            self.vertical_slider._change_values(document.nodes())
+            self.vertical_slider._change_values(document.all_nodes())
 
             cursor = Krita.get_cursor()
             self.vertical_slider.set_start_value(-cursor.y)
