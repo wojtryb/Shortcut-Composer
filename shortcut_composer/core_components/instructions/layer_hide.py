@@ -5,11 +5,15 @@ from ..instruction_base import Instruction
 class ToggleLayerVisibility(Instruction):
 
     def enter(self) -> 'ToggleLayerVisibility':
-        Krita.trigger_action("toggle_layer_visibility")
+        self.document = Krita.get_active_document()
+        self.affected_node = self.document.active_node
+        self.affected_node.toggle_visility()
+        self.document.refresh()
         return self
 
     def exit(self, *_) -> None:
-        Krita.trigger_action("toggle_layer_visibility")
+        self.affected_node.toggle_visility()
+        self.document.refresh()
 
 
 class ToggleShowBelow(Instruction):
