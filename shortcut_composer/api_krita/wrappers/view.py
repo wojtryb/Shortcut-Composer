@@ -1,7 +1,7 @@
+from krita import Krita as Api
 from dataclasses import dataclass
 from typing import Protocol, Dict
 from functools import cached_property
-from krita import Krita as Api
 
 from ..enums import BlendingMode
 
