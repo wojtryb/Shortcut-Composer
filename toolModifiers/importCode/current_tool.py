@@ -1,7 +1,7 @@
 # courtesy of AkiR
 # https://krita-artists.org/t/discovering-which-toolbox-tool-is-active/10580
 
-from krita import Krita
+from krita import *
 from PyQt5.QtWidgets import QWidget, QToolButton
 
 
@@ -19,8 +19,7 @@ def find_active_tool(qtoolbox):
 
 
 def find_my_current_tool():
-    app = Krita.instance()
-    qwindow = app.activeWindow().qwindow()
+    qwindow = Application.activeWindow().qwindow()
     tool_box = find_tool_box(qwindow)
     return find_active_tool(tool_box)
 

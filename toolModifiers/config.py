@@ -1,6 +1,6 @@
 # list all the tools you want to create toggles versions
 
-TOOLS = {
+tools = {
     "Freehand selection (toggle)": "KisToolSelectOutline",
     "Gradient (toggle)": "KritaFill/KisToolGradient",
     "Line tool (toggle)": "KritaShape/KisToolLine",
@@ -13,7 +13,7 @@ TOOLS = {
 }
 
 # time (seconds) after which a press is considered long
-INTERVAL = 0.3
+interval = 0.3
 
 # using eraser or alpha toggle, resets the other toggle
-CONNECTEDTOGGLES = True
+connected_toggles = True

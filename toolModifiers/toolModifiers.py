@@ -9,7 +9,8 @@ from .importCode.pass_functions import (
     toggle_eraser,
     is_alpha_locked,
     toggle_alpha_lock)
-from .SETUP import TOOLS
+
+from .config import tools
 
 
 class toolModifiers(Extension):
@@ -29,7 +30,7 @@ class toolModifiers(Extension):
         """
         creator = ActionCreator(window)
 
-        for human_name, krita_name in TOOLS.items():
+        for human_name, krita_name in tools.items():
             self.actions.append(creator.create_shortcut(
                 human_name=human_name,
                 set_low_function=partial(set_tool, "KritaShape/KisToolBrush"),
@@ -54,4 +55,4 @@ class toolModifiers(Extension):
         ))
 
 
-Krita.instance().addExtension(toolModifiers(Krita.instance()))
+Application.addExtension(toolModifiers(Application))

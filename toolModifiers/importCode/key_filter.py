@@ -5,7 +5,7 @@ from typing import Callable
 from krita import *
 from PyQt5.QtCore import QEvent
 
-from ..SETUP import INTERVAL
+from ..config import interval
 
 
 @dataclass
@@ -22,7 +22,7 @@ class KeyFilter(QMdiArea):
     catches all keyboard inputs waiting for the correct one
     """
 
-    def __init__(self, elements: ActionElements) -> None:
+    def __init__(self, elements: ActionElements):
         super().__init__(None)
         self.elements = elements
         self.key_released = True
@@ -42,7 +42,10 @@ class KeyFilter(QMdiArea):
         'run when user released a related key'
 
         self.key_released = True
-        if time() - self.last_press_time > INTERVAL or self.state:
+        if (
+            time() - self.last_press_time > interval
+            or self.state
+        ):
             self.elements.set_low_function()
 
     def eventFilter(self, obj, e):
@@ -61,4 +64,4 @@ class KeyFilter(QMdiArea):
 
     @property
     def tool_shortcut(self):
-        return Krita.instance().action(self.elements.human_name).shortcut()
+        return Application.action(self.elements.human_name).shortcut()
