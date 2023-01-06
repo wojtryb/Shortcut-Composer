@@ -16,6 +16,7 @@ class Tool(Enum):
     - `GRADIENT`
     - `LINE`
     - `TRANSFORM`
+    - `TRANSFORM_FREE`
     - `TRANSFORM_PERSPECTIVE`
     - `TRANSFORM_WARP`
     - `TRANSFORM_CAGE`

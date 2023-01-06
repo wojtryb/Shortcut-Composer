@@ -94,21 +94,6 @@ def create_actions(): return [
         ],
     ),
 
-    # Cycle between all modes in transform tool.
-    templates.MultipleAssignment(
-        name="Cycle transform tool modes",
-        controller=controllers.ToolController(),
-        values=[
-            Tool.TRANSFORM_FREE,
-            Tool.TRANSFORM_PERSPECTIVE,
-            Tool.TRANSFORM_WARP,
-            Tool.TRANSFORM_CAGE,
-            Tool.TRANSFORM_LIQUIFY,
-            Tool.TRANSFORM_MESH,
-        ],
-        short_vs_long_press_time=0.6
-    ),
-
     # Control undo and redo actions by sliding the cursor horizontally
     # Start triggering the actions after passing a deadzone of 100 px
     # Use UndoOnPress instruction to trigger undo key press
@@ -178,15 +163,13 @@ def create_actions(): return [
         name="Pick misc tools",
         controller=controllers.ToolController(),
         values=[
-            Tool.TRANSFORM_LIQUIFY,
-            Tool.TRANSFORM_WARP,
             Tool.CROP,
             Tool.REFERENCE,
             Tool.GRADIENT,
             Tool.MULTI_BRUSH,
             Tool.ASSISTANTS,
         ],
-        pie_radius_scale=0.85
+        pie_radius_scale=0.9
     ),
 
     # Use pie menu to pick one of the brush blending modes.
@@ -204,6 +187,20 @@ def create_actions(): return [
             BlendingMode.SCREEN,
             BlendingMode.DARKEN,
             BlendingMode.LIGHTEN,
+        ],
+    ),
+
+    # Pick one of available  modes in transform tool.
+    templates.PieMenu(
+        name="Pick transform tool modes",
+        controller=controllers.ToolController(),
+        values=[
+            Tool.TRANSFORM_FREE,
+            Tool.TRANSFORM_PERSPECTIVE,
+            Tool.TRANSFORM_WARP,
+            Tool.TRANSFORM_CAGE,
+            Tool.TRANSFORM_LIQUIFY,
+            Tool.TRANSFORM_MESH,
         ],
     ),
 
