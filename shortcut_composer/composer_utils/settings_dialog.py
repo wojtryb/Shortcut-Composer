@@ -115,13 +115,20 @@ class PieValuesTab(QWidget):
         self.widgets = [
             PieValues(
                 allowed_values=set(BlendingMode._member_names_),
-                config=Config.BLENDING_MODES),
+                config=Config.BLENDING_MODES_VALUES
+            ),
             PieValues(
                 allowed_values=set(Tool._member_names_),
-                config=Config.SELECTION_TOOLS),
+                config=Config.SELECTION_TOOLS_VALUES
+            ),
             PieValues(
                 allowed_values=set(Tool._member_names_),
-                config=Config.MISC_TOOLS)
+                config=Config.MISC_TOOLS_VALUES
+            ),
+            PieValues(
+                allowed_values=set(Tool._member_names_),
+                config=Config.TRANSFORM_MODES_VALUES
+            ),
         ]
         for widget in self.widgets:
             layout.addWidget(widget)
@@ -134,7 +141,7 @@ class PieValuesTab(QWidget):
             widget.apply()
 
     def refresh(self) -> None:
-        """Ask all dialog zones to refresh themselves. """
+        """Ask all dialog zones to refresh themselves."""
         for widget in self.widgets:
             widget.refresh()
 
