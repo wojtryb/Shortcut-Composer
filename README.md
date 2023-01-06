@@ -165,9 +165,9 @@ Toggle.PRESERVE_ALPHA.switch_state()  # change state of preserve alpha
 Only functionalities that were needed during this plugin development are wrapped, so some of them are not yet available. The syntax can also change over time.
 
 ### Custom keyboard shortcut interface
-Package `input_adapter` consists of `ActionManager` and `PluginAction` which grant extended interface for creating keyboard shortcuts.
+Package `input_adapter` consists of `ActionManager` and `ComplexAction` which grant extended interface for creating keyboard shortcuts.
 
-While usual actions can only recognise key press, subclassing `PluginAction` lets you override methods performed on:
+While usual actions can only recognise key press, subclassing `ComplexAction` lets you override methods performed on:
 - key press
 - short key release
 - long key release
@@ -179,7 +179,7 @@ Then use `ActionManager` instance to bind objects of those custom actions to kri
 class ExtensionName(Extension):
     ...
     def createActions(self, window) -> None:
-        action = PluginActionChild(name="...")
+        action = ComplexActionChild(name="...")
         self.manager = ActionManager(window)
         self.manager.bind_action(action)
 ```

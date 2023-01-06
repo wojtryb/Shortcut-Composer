@@ -2,7 +2,7 @@
 Module contains utilities that allow to connect custom actions to krita.
 
 ActionManager (public) allows to use custom action interface of
-PluginAction (public) that supports key pressing, releasing and counting
+ComplexAction (public) that supports key pressing, releasing and counting
 time to differentiate short and long presses.
 
 Custom interface is achieved by using ShortcutAdapters (private) - each
@@ -15,6 +15,6 @@ for all actions.
 """
 
 from .action_manager import ActionManager
-from .plugin_action import PluginAction
+from .complex_action import ComplexAction
 
-__all__ = ['ActionManager', 'PluginAction']
+__all__ = ['ActionManager', 'ComplexAction']

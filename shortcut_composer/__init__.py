@@ -1,5 +1,5 @@
 """
-The only python file directly run by krita during plugin initialization phase.
+The only python file directly run by krita during plugin init phase.
 
 Runs the file with extension by importing everything from it.
 
