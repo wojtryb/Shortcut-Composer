@@ -44,3 +44,24 @@ class ToggleController(Controller):
 
     def set_value(self, value: Toggle) -> None:
         Krita.set_toggle_state(self.toggle, value)
+
+
+@dataclass
+class UndoController(Controller):
+
+    state = 0
+
+    def get_value(self) -> int:
+        return self.state
+
+    def set_value(self, value: float) -> None:
+        value = round(value)
+
+        if value == self.state:
+            return
+        elif value > self.state:
+            Krita.trigger_action("edit_undo")
+            self.state += 1
+        else:
+            Krita.trigger_action("edit_redo")
+            self.state -= 1

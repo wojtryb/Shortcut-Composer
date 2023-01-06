@@ -91,6 +91,13 @@ actions = [
         instructions=[instructions.SetBrushOnNonPaintable()],
     ),
     templates.MouseTracker(
+        name="Undo scraper (tracker)",
+        horizontal_slider=Slider(
+            controller=controllers.UndoController(),
+            values=Range(float('-inf'), float('inf')),
+        )
+    ),
+    templates.MouseTracker(
         name="Layer scraper (tracker)",
         instructions=[instructions.TemporaryOn(Toggle.ISOLATE_LAYER)],
         vertical_slider=Slider(
