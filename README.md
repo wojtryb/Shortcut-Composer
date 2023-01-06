@@ -30,6 +30,8 @@ Pie menu is a widget displayed on the canvas while a key is pressed. It will dis
   - <span style="color:green">green</span>: "RGBA"
   - <span style="color:blue">blue</span>: "Erasers"
 
+  Presets in edited tags do not reload by themselves. Use **Tools > Scripts > Reload Shortcut Composer** or press apply/ok button in plugin configuration dialog.
+
 - ### Pick misc tools
   Pie menu for picking **active tools**. Includes tools that are used rather sporadically, and may not be worth a dedicated keyboard shortcut each:
   - crop tool,
@@ -150,7 +152,7 @@ To achieve that it is required to modify actions implementation:
 
 1. Define an action in `actions.action` file by duplicating one of the existing definitions and using an unique name for it.
 2. Implement an action in `actions.py` file. Once again, duplicate one of the existing implementations. It is best to pick the one that feels closest to desired action. Fill its arguments, making sure the name is exactly the same as defined earlier.
-
+ 
 ## Worth noting
 - Key bindings with modifiers like <kbd>ctrl</kbd> or <kbd>shift</kbd> are supported. When assigned to a key combination, the key is considered released when the main key in sequence (non-modifier) is released.
 - Multiple shortcuts from this plugin can be used at the same time, unless bindings make it technically impossible. For example holding both keys for `Temporary eraser` and `Cycle painting opacity` result in an eraser with 70% opacity.

@@ -3,7 +3,7 @@
 
 from typing import List, TypeVar, Generic, Union, Optional
 
-from PyQt5.QtGui import QColor, QPixmap
+from PyQt5.QtGui import QColor, QPixmap, QIcon
 from PyQt5.QtCore import QPoint
 
 from core_components import Controller, Instruction
@@ -138,7 +138,8 @@ class PieMenu(ComplexAction, Generic[T]):
 
         return label_holder
 
-    def _get_icon_if_possible(self, value: T) -> Union[Text, QPixmap, None]:
+    def _get_icon_if_possible(self, value: T) \
+            -> Union[Text, QPixmap, QIcon, None]:
         """Return the paintable icon of the value or None if missing."""
         try:
             return self._controller.get_label(value)

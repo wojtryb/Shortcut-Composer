@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from PyQt5.QtCore import Qt, QPoint
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import (
     QPainter,
     QPixmap,
@@ -12,22 +12,6 @@ from PyQt5.QtGui import (
 
 class PixmapTransform:
     """Utilities for `QPixmap` transformation."""
-
-    @staticmethod
-    def add_border(pixmap: QPixmap, border_px: int) -> QPixmap:
-        """Add a transparent border of `border_px` pixels on each side."""
-        original_size = pixmap.width()
-        new_size = original_size + 2*border_px
-
-        result = QPixmap(new_size, new_size)
-        result.fill(Qt.transparent)
-        painter = QPainter(result)
-        painter.setRenderHint(QPainter.Antialiasing)
-        painter.setCompositionMode(QPainter.CompositionMode_SourceOver)
-        painter.drawPixmap(QPoint(), result)
-        painter.drawPixmap(border_px, border_px, pixmap)
-        painter.end()
-        return result
 
     @staticmethod
     def make_pixmap_round(pixmap: QPixmap) -> QPixmap:

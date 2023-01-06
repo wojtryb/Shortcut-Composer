@@ -70,11 +70,13 @@ class Painter:
 
     def paint_pixmap(self, center: QPoint, pixmap: QPixmap) -> None:
         """Paint pixmap providing a center instead of top-left corner."""
-        left_top_corner = QPoint(
+        self._painter.drawPixmap(
             center.x() - pixmap.width()//2,
-            center.y() - pixmap.height()//2
+            center.y() - pixmap.height()//2,
+            pixmap.width(),
+            pixmap.height(),
+            pixmap
         )
-        self._painter.drawPixmap(left_top_corner, pixmap)
 
     def _square(self, center: QPoint, width: int) -> QRectF:
         """Return a square of given `width` at `center` point."""

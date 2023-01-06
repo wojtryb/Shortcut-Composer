@@ -3,10 +3,9 @@
 
 from dataclasses import dataclass
 
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QIcon
 
 from api_krita import Krita
-from api_krita.pyqt import PixmapTransform
 from api_krita.enums import Tool, Toggle
 from ..controller_base import Controller
 
@@ -31,11 +30,8 @@ class ToolController(Controller):
         """Set a passed tool."""
         Krita.active_tool = value
 
-    def get_label(self, value: Tool) -> QPixmap:
-        return PixmapTransform.add_border(
-            pixmap=value.icon.pixmap(200, 200),
-            border_px=66
-        )
+    def get_label(self, value: Tool) -> QIcon:
+        return value.icon
 
 
 @dataclass

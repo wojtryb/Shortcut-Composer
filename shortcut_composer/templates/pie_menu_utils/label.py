@@ -1,12 +1,12 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Optional, Union, Any
+from typing import Union, Type, Any
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
 
 from PyQt5.QtCore import QPoint, Qt
-from PyQt5.QtGui import QFont, QPixmap, QColor
+from PyQt5.QtGui import QFont, QPixmap, QColor, QIcon
 from PyQt5.QtWidgets import QLabel, QWidget
 
 from api_krita.pyqt import Painter, Text, PixmapTransform
@@ -35,27 +35,20 @@ class Label:
     value: Any
     center: QPoint = QPoint(0, 0)
     angle: int = 0
-    display_value: Union[QPixmap, Text, None] = None
-
-    @property
-    def text(self) -> Optional[Text]:
-        """Return text if available."""
-        if isinstance(self.display_value, Text):
-            return self.display_value
-
-    @property
-    def image(self) -> Optional[QPixmap]:
-        """Return image if available."""
-        if isinstance(self.display_value, QPixmap):
-            return self.display_value
+    display_value: Union[QPixmap, QIcon, Text, None] = None
 
     def get_painter(self, widget: QWidget, style: PieStyle) -> 'LabelPainter':
         """Return LabelPainter which can display this label."""
-        if self.image:
-            return ImageLabelPainter(self, widget, style)
-        elif self.text:
-            return TextLabelPainter(self, widget, style)
-        raise ValueError(f"Label {self} is not valid")
+        if self.display_value is None:
+            raise ValueError(f"Label {self} is not valid")
+
+        painter_type: Type[LabelPainter] = {
+            QPixmap: ImageLabelPainter,
+            Text: TextLabelPainter,
+            QIcon: IconPainter,
+        }[type(self.display_value)]
+
+        return painter_type(self, widget, style)
 
 
 @dataclass
@@ -93,13 +86,15 @@ class TextLabelPainter(LabelPainter):
 
     def _create_pyqt_label(self) -> QLabel:
         """Create and show a new Qt5 label. Does not need redrawing."""
-        if not isinstance(self.label.text, Text):
+        to_display = self.label.display_value
+
+        if not isinstance(to_display, Text):
             raise TypeError("Label supposed to be text.")
 
         heigth = round(self.style.icon_radius*0.8)
 
         label = QLabel(self.widget)
-        label.setText(self.label.text.value)
+        label.setText(to_display.value)
         label.setFont(QFont('Helvetica', self.style.font_size, QFont.Bold))
         label.setAlignment(Qt.AlignCenter)
         label.setGeometry(0, 0, round(heigth*2), round(heigth))
@@ -107,7 +102,7 @@ class TextLabelPainter(LabelPainter):
                    self.label.center.y()-heigth//2)
         label.setStyleSheet(f'''
             background-color:rgba({self._color_to_str(self.style.icon_color)});
-            color:rgba({self._color_to_str(self.label.text.color)});
+            color:rgba({self._color_to_str(to_display.color)});
         ''')
 
         label.show()
@@ -140,13 +135,32 @@ class ImageLabelPainter(LabelPainter):
         )
         painter.paint_pixmap(self.label.center, self.ready_image)
 
-    def _prepare_image(self):
+    def _prepare_image(self) -> QPixmap:
         """Return image after scaling and reshaping it to circle."""
-        if not isinstance(self.label.image, QPixmap):
-            raise TypeError("Label supposed to be pixmap.")
+        to_display = self.label.display_value
 
-        rounded_image = PixmapTransform.make_pixmap_round(self.label.image)
+        if not isinstance(to_display, QPixmap):
+            raise TypeError("Label supposed to be QPixmap.")
+
+        rounded_image = PixmapTransform.make_pixmap_round(to_display)
         return PixmapTransform.scale_pixmap(
             pixmap=rounded_image,
             size_px=round(self.style.icon_radius*1.8)
+        )
+
+
+class IconPainter(ImageLabelPainter):
+    """Displays a `label` which holds an icon."""
+
+    def _prepare_image(self) -> QPixmap:
+        """Return icon after scaling it to fix QT_SCALE_FACTOR."""
+        to_display = self.label.display_value
+
+        if not isinstance(to_display, QIcon):
+            raise TypeError("Label supposed to be QIcon.")
+
+        size = round(self.style.icon_radius*1.1)
+        return PixmapTransform.scale_pixmap(
+            pixmap=to_display.pixmap(size, size),
+            size_px=size
         )
