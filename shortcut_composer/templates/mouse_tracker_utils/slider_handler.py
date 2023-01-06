@@ -1,10 +1,13 @@
 from threading import Thread
 from time import sleep
-from typing import Any, Callable
+from typing import Callable
 
 from data_components import Slider
 from .mouse_interpreter import MouseInterpreter
 from .slider_values import create_slider_values
+from .new_types import MouseInput, Interpreted
+
+MouseGetter = Callable[[], MouseInput]
 
 
 class SliderHandler:
@@ -15,7 +18,7 @@ class SliderHandler:
 
         self.__interpreter: MouseInterpreter
 
-    def start(self, mouse_getter: Callable[[], int]) -> None:
+    def start(self, mouse_getter: MouseGetter) -> None:
         self.__working = True
         self.__slider.controller.refresh()
         self.__interpreter = MouseInterpreter(
@@ -30,17 +33,17 @@ class SliderHandler:
     def stop(self):
         self.__working = False
 
-    def _loop(self, mouse_getter: Callable[[], int]) -> None:
+    def _loop(self, mouse_getter: MouseGetter) -> None:
         while self.__working:
             self._handle(mouse_getter())
             sleep(0.05)
 
-    def _handle(self, mouse: int) -> None:
-        clipped_value = self.__interpreter.mouse_to_value(mouse)
+    def _handle(self, mouse: MouseInput) -> None:
+        clipped_value = self.__interpreter.interpret(mouse)
         to_set = self.to_cycle.at(clipped_value)
         self.__slider.controller.set_value(to_set)
 
-    def __get_current_value(self) -> Any:
+    def __get_current_value(self) -> Interpreted:
         try:
             return self.to_cycle.index(self.__slider.controller.get_value())
         except ValueError:

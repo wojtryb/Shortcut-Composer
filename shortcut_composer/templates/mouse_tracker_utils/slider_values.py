@@ -1,10 +1,18 @@
 from abc import ABC, abstractmethod
-from typing import Any, Iterable
+from typing import Any, List, Iterable, Union, Protocol
 
 from data_components import Range
+from .new_types import Interpreted, Controlled
 
 
-def create_slider_values(slider_values) -> 'SliderValues':
+class ListLike(Protocol):
+    def index(self, __value: Any) -> int: ...
+    def __getitem__(self, item: int) -> Any: ...
+    def __iter__(self) -> Iterable: ...
+
+
+def create_slider_values(slider_values: Union[ListLike, Range])\
+        -> 'SliderValues':
     if isinstance(slider_values, Iterable):
         return ListSliderValues(slider_values)
     elif isinstance(slider_values, Range):
@@ -13,46 +21,45 @@ def create_slider_values(slider_values) -> 'SliderValues':
 
 
 class SliderValues(ABC):
-    values: Any
-    min: float
-    max: float
-    default_value: float
+    
+    min: Interpreted
+    max: Interpreted
+    default_value: Interpreted
 
     @abstractmethod
-    def at(self, value: float) -> Any: ...
+    def at(self, value: Interpreted) -> Controlled: ...
 
     @abstractmethod
-    def index(self, value: Any) -> Any: ...
+    def index(self, value: Controlled) -> Interpreted: ...
 
 
 class RangeSliderValues(SliderValues):
     def __init__(self, values: Range):
-        self.values = values
-        self.min = values.min
-        self.max = values.max
-        self.default_value = (self.min + self.max)*0.5
+        self.min = Interpreted(values.min)
+        self.max = Interpreted(values.max)
+        self.default_value = Interpreted((self.min + self.max)*0.5)
 
-    def at(self, value: float) -> None:
-        return value
+    def at(self, value: Interpreted) -> Controlled:
+        return Controlled(value)
 
-    def index(self, value: Any) -> Any:
+    def index(self, value: Controlled) -> Interpreted:
         if not self.min <= value <= self.max:
             raise ValueError("Value not in range")
-        return value
+        return Interpreted(value)
 
 
 class ListSliderValues(SliderValues):
-    def __init__(self, values: list):
-        self.slider_values: list = values
-        self.min = -0.49
-        self.default_value = 0
+    def __init__(self, values: List[Controlled]):
+        self.__values = values
+        self.min = Interpreted(-0.49)
+        self.default_value = Interpreted(0)
 
     @property
-    def max(self):
-        return len(self.slider_values) - 0.51
+    def max(self) -> Interpreted:
+        return Interpreted(len(self.__values) - 0.51)
 
-    def at(self, value: float) -> Any:
-        return self.slider_values[round(value)]
+    def at(self, value: Interpreted) -> Controlled:
+        return Controlled(self.__values[round(value)])
 
-    def index(self, value: Any) -> int:
-        return self.slider_values.index(value)
+    def index(self, value: Controlled) -> Interpreted:
+        return Interpreted(self.__values.index(value))
