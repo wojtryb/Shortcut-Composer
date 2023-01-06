@@ -162,7 +162,7 @@ actions = [
         name="Scroll isolated layers",
         instructions=[instructions.TemporaryOn(Toggle.ISOLATE_LAYER)],
         vertical_slider=Slider(
-            controller=controllers.LayerController(),
+            controller=controllers.ActiveLayerController(),
             values=CurrentLayerStack(PickStrategy.ALL),
         ),
     ),
@@ -179,7 +179,7 @@ actions = [
             values=Range(0, float('inf')),
         ),
         vertical_slider=Slider(
-            controller=controllers.LayerController(),
+            controller=controllers.ActiveLayerController(),
             values=CurrentLayerStack(PickStrategy.ANIMATED),
         ),
     ),

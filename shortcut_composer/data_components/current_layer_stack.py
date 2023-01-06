@@ -6,8 +6,8 @@ class CurrentLayerStack(list):
     """
     List-like container which holds nodes currently on layer stack.
 
-    Provides values that can be set with `LayerController`. Is the only
-    list of nodes that can be specified in configuration.
+    Provides values that can be set with `ActiveLayerController`.
+    Is the only list of nodes that can be specified in configuration.
 
     Is initialized with `PickStrategy`, which can filter layers based on
     their properties (`default: ALL`).
