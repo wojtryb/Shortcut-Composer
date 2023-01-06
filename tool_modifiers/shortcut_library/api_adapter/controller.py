@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Any
 
 from .krita_api import Krita, Node
-from .enums import Tool
+from .enums import Tool, BlendingMode
 
 
 class Controller(ABC):
@@ -40,7 +40,7 @@ class ToolController(Controller):
     @staticmethod
     def get_value() -> Tool:
         """Get currently active tool."""
-        return Tool(Krita.get_current_tool_name())
+        return Krita.get_current_tool()
 
     @staticmethod
     def set_value(value: Tool):
@@ -71,15 +71,15 @@ class PresetController(Controller):
 
 class BlendingModeController(Controller):
 
-    default_value = "normal"
+    default_value = BlendingMode.NORMAL
 
     @staticmethod
-    def get_value() -> str:
+    def get_value() -> BlendingMode:
         """Get currently active blending mode."""
-        return Krita.get_active_view().current_blending_mode()
+        return BlendingMode(Krita.get_active_view().current_blending_mode())
 
     @staticmethod
-    def set_value(value: str):
+    def set_value(value: BlendingMode):
         """Set a passed blending mode."""
         Krita.get_active_view().set_blending_mode(value)
 

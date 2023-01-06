@@ -2,7 +2,7 @@
 
 from .shortcut_library import plugin_actions as templates
 from .shortcut_library.plugin_actions import HideStrategy, PickStrategy
-from .shortcut_library.api_adapter import controller, Tool, Tag
+from .shortcut_library.api_adapter import controller, Tool, Tag, BlendingMode
 from .shortcut_library.api_adapter.controller import SetBrushStrategy
 from .shortcut_library.plugin_actions.slider_utils import Slider, Range
 
@@ -22,30 +22,33 @@ actions = [
             default_value=0.5,
             values_to_cycle=Range(0.1, 0.9)
         ),
-        vertical_slider=Slider(
-            controller=controller.OpacityController(),
-            default_value=0.5,
-            values_to_cycle=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-        ),
+        # vertical_slider=Slider(
+        #     controller=controller.OpacityController(),
+        #     default_value=0.5,
+        #     values_to_cycle=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+        # ),
         # horizontal_slider=Slider(
-        #     controller=controllers.ToolController,
-        #     default_value=Tool.freehand_selection,
+        #     controller=controller.ToolController,
+        #     default_value=Tool.FREEHAND_SELECTION,
         #     values_to_cycle=[
-        #         Tool.freehand_selection,
-        #         Tool.rectangular_selection,
-        #         Tool.contiquous_selection,
-        #         Tool.gradient,
-        #         Tool.line,
-        #         Tool.transform,
-        #         Tool.reference,
+        #         Tool.FREEHAND_SELECTION,
+        #         Tool.RECTANGULAR_SELECTION,
+        #         Tool.CONTIGUOUS_SELECTION,
+        #         Tool.GRADIENT,
+        #         Tool.LINE,
+        #         Tool.TRANSFORM,
+        #         Tool.REFERENCE,
         #     ],
         # ),
-        # vertical_slider=Slider(
-        #     controller=controllers.BlendingModeController,
-        #     values_to_cycle=['overlay', 'normal', 'darken'],
-        #     default_value='normal',
-        #     sensitivity=50
-        # ),
+        vertical_slider=Slider(
+            controller=controller.BlendingModeController,
+            values_to_cycle=[
+                BlendingMode.OVERLAY,
+                BlendingMode.NORMAL,
+                BlendingMode.DARKEN],
+            default_value=BlendingMode.NORMAL,
+            sensitivity=50
+        ),
     ),
     templates.TemporaryAction(
         action_name="Freehand selection (toggle)",
@@ -109,7 +112,7 @@ actions = [
     templates.CyclicAction(
         action_name="Blending mode (cycle)",
         controller=controller.BlendingModeController(),
-        values_to_cycle=["overlay"],
+        values_to_cycle=[BlendingMode.OVERLAY],
         include_default_in_cycle=True,
     ),
 ]
