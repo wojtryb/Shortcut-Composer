@@ -2,7 +2,7 @@ from enum import Enum
 from time import sleep
 from typing import List
 
-from ..krita_api import Krita, controller
+from ..krita_api import Krita, controllers
 from ..krita_api.wrappers import Document, Node
 
 from .mouse_tracker import MouseTracker
@@ -81,7 +81,7 @@ class LayerPicker(MouseTracker):
             separate_sliders=False,
             horizontal_slider=EmptySlider(),
             vertical_slider=Slider(
-                controller=controller.LayerController(),
+                controller=controllers.LayerController(),
                 values_to_cycle=[0],
                 default_value=0,
                 sensitivity=sensitivity
