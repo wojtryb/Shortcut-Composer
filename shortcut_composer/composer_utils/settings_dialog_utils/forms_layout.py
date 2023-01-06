@@ -8,11 +8,11 @@ from PyQt5.QtWidgets import (
 from ..config import Config
 
 
-class Forms(QFormLayout):
+class FormsLayout(QFormLayout):
 
     def __init__(self):
         super().__init__()
-        self.forms: Dict[Config, Union[QSpinBox, QDoubleSpinBox]] = {}
+        self._forms: Dict[Config, Union[QSpinBox, QDoubleSpinBox]] = {}
 
         self._add_row(Config.SHORT_VS_LONG_PRESS_TIME, is_int=False)
         self._add_row(Config.SLIDER_SENSITIVITY_SCALE, is_int=False)
@@ -32,13 +32,13 @@ class Forms(QFormLayout):
         form.setMinimum(0)
         form.setSingleStep(1 if is_int else 0.1)  # type: ignore
 
-        self.forms[config] = form
+        self._forms[config] = form
         return form
 
     def refresh(self):
-        for config, form in self.forms.items():
+        for config, form in self._forms.items():
             form.setValue(config.read())  # type: ignore
 
     def apply(self):
-        for config, form in self.forms.items():
+        for config, form in self._forms.items():
             config.write(form.value())

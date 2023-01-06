@@ -1,15 +1,15 @@
 from PyQt5.QtWidgets import (
     QDialogButtonBox,
+    QAbstractButton,
     QVBoxLayout,
     QDialog,
 )
-from PyQt5.QtCore import QSize, Qt
+from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QCursor
 
 from api_krita import Krita
 from .config import Config
-
-from .settings_dialog_utils import ComboBoxes, Forms
+from .settings_dialog_utils import ComboBoxesLayout, FormsLayout, ButtonsLayout
 
 
 class SettingsDialog(QDialog):
@@ -20,36 +20,18 @@ class SettingsDialog(QDialog):
         self.setMinimumSize(QSize(300, 200))
         self.setWindowTitle("Shortcut composer settings")
 
-        self.combo_boxes = ComboBoxes()
-        self.forms = Forms()
-        ending_layout = self._create_ending_layout()
+        self._combo_boxes_layout = ComboBoxesLayout()
+        self._forms_layout = FormsLayout()
+        self._buttons_layout = ButtonsLayout(self._handle_any_button_click)
 
-        layout = QVBoxLayout()
-        layout.addLayout(self.combo_boxes)
-        layout.addLayout(self.forms)
-        layout.addLayout(ending_layout)
+        full_layout = QVBoxLayout()
+        full_layout.addLayout(self._combo_boxes_layout)
+        full_layout.addLayout(self._forms_layout)
+        full_layout.addLayout(self._buttons_layout)
+        self.setLayout(full_layout)
 
-        self.setLayout(layout)
-
-    def _create_ending_layout(self):
-        buttons = (
-            QDialogButtonBox.Ok |
-            QDialogButtonBox.Apply |
-            QDialogButtonBox.Reset |
-            QDialogButtonBox.Cancel
-        )
-
-        self.button_box = QDialogButtonBox(buttons)  # type: ignore
-        self.button_box.clicked.connect(self._handle_click)
-
-        button_layout = QVBoxLayout()
-        button_layout.addWidget(self.button_box)
-        button_layout.setAlignment(Qt.AlignBottom)
-
-        return button_layout
-
-    def _handle_click(self, button):
-        role = self.button_box.buttonRole(button)
+    def _handle_any_button_click(self, button: QAbstractButton):
+        role = self._buttons_layout.get_button_role(button)
         if role == QDialogButtonBox.ApplyRole:
             self._apply()
         elif role == QDialogButtonBox.ResetRole:
@@ -62,13 +44,13 @@ class SettingsDialog(QDialog):
             self.hide()
 
     def _apply(self):
-        self.combo_boxes.apply()
-        self.forms.apply()
+        self._combo_boxes_layout.apply()
+        self._forms_layout.apply()
         Krita.trigger_action("Reload Shortcut Composer")
 
     def _refresh(self):
-        self.combo_boxes.refresh()
-        self.forms.refresh()
+        self._combo_boxes_layout.refresh()
+        self._forms_layout.refresh()
 
     def show(self) -> None:
         self._refresh()
