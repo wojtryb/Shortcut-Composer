@@ -1,7 +1,7 @@
 from typing import Any, List, Union
 from dataclasses import dataclass
 
-from shortcut_composer_config import PIXELS_IN_UNIT, SLIDER_DEADZONE, FPS_LIMIT
+from composer_utils import Config
 from core_components import Controller
 from .range import Range
 
@@ -59,9 +59,9 @@ class Slider:
     """
     controller: Controller
     values: Union[List[Any], Range]
-    pixels_in_unit: int = PIXELS_IN_UNIT
-    deadzone: int = SLIDER_DEADZONE
-    fps_limit: int = FPS_LIMIT
+    pixels_in_unit: int = Config.PIXELS_IN_UNIT.get()
+    deadzone: int = Config.SLIDER_DEADZONE.get()
+    fps_limit: int = Config.FPS_LIMIT.get()
 
     def __post_init__(self):
         self.sleep_time = 1/self.fps_limit if self.fps_limit else 0.001

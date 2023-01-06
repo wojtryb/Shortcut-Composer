@@ -1,6 +1,6 @@
 from typing import List
 
-from shortcut_composer_config import SHORT_VS_LONG_PRESS_TIME
+from composer_utils import Config
 from core_components import InstructionHolder, Instruction
 
 
@@ -28,7 +28,7 @@ class PluginAction:
         self, *,
         name: str,
         instructions: List[Instruction] = [],
-        short_vs_long_press_time: float = SHORT_VS_LONG_PRESS_TIME,
+        short_vs_long_press_time: float = Config.SHORT_VS_LONG_PRESS_TIME.get()
     ) -> None:
         self.name = name
         self.short_vs_long_press_time = short_vs_long_press_time

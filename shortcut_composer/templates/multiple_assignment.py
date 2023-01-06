@@ -1,7 +1,7 @@
 from typing import List, Iterator, TypeVar, Generic, Optional
 from itertools import cycle
 
-from shortcut_composer_config import SHORT_VS_LONG_PRESS_TIME
+from composer_utils import Config
 from core_components import Controller, Instruction
 from input_adapter import PluginAction
 
@@ -63,7 +63,7 @@ class MultipleAssignment(PluginAction, Generic[T]):
         values: List[T],
         default_value: Optional[T] = None,
         instructions: List[Instruction] = [],
-        short_vs_long_press_time: float = SHORT_VS_LONG_PRESS_TIME
+        short_vs_long_press_time: float = Config.SHORT_VS_LONG_PRESS_TIME.get()
     ) -> None:
         super().__init__(
             name=name,

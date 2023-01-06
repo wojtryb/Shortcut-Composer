@@ -2,7 +2,7 @@ from threading import Thread, Lock
 from time import sleep
 from typing import List
 
-from shortcut_composer_config import SHORT_VS_LONG_PRESS_TIME
+from composer_utils import Config
 from api_krita import Krita
 from input_adapter import PluginAction
 from core_components import Instruction
@@ -23,7 +23,7 @@ class SingleAxisTracker(PluginAction):
         name: str,
         slider_handler: SliderHandler,
         instructions: List[Instruction] = [],
-        short_vs_long_press_time: float = SHORT_VS_LONG_PRESS_TIME
+        short_vs_long_press_time: float = Config.SHORT_VS_LONG_PRESS_TIME.get()
     ) -> None:
         super().__init__(
             name=name,
@@ -58,7 +58,7 @@ class DoubleAxisTracker(PluginAction):
         horizontal_handler: SliderHandler,
         vertical_handler: SliderHandler,
         instructions: List[Instruction] = [],
-        short_vs_long_press_time: float = SHORT_VS_LONG_PRESS_TIME
+        short_vs_long_press_time: float = Config.SHORT_VS_LONG_PRESS_TIME.get()
     ) -> None:
         super().__init__(
             name=name,
