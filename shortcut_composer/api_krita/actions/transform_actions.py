@@ -69,7 +69,7 @@ class TransformModeActions:
 
     def _delayed_click(self, mode: TransformMode) -> None:
         """Activate a mode after a small delay, so that krita notices it."""
-        sleep(0.001)
+        sleep(0.1)
         self._finder.activate_mode(mode, apply=False)
 
     set_free = partialmethod(_set_mode, Tool.TRANSFORM_FREE)

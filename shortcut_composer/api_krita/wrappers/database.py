@@ -23,7 +23,7 @@ class Database:
             return
 
         cls.database = QSqlDatabase.addDatabase("QSQLITE", cls.connection_name)
-        path = Api.instance().readSetting("", "ResourceCacheDbDirectory", "")
+        path = Api.instance().readSetting("", "ResourceDirectory", "")
         path = os.path.join(path, "resourcecache.sqlite")
         cls.database.setDatabaseName(path)
 
