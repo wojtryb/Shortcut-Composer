@@ -1,7 +1,17 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QDialog, QTabWidget
+from PyQt5.QtWidgets import (
+    QAbstractItemView,
+    QVBoxLayout,
+    QListWidget,
+    QPushButton,
+    QHBoxLayout,
+    QTabWidget,
+    QComboBox,
+    QWidget,
+    QDialog,
+)
 from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QCursor
 
@@ -96,6 +106,43 @@ class GeneralSettingsTab(QWidget):
 
 
 class PieValuesTab(QWidget):
+    def __init__(self) -> None:
+        super().__init__()
+        layout = QVBoxLayout()
+
+        self.list_widget = QListWidget(self)
+        self.list_widget.setDragDropMode(QAbstractItemView.InternalMove)
+        self.list_widget.addItems(['ASD', 'ZXC', 'UIO'])
+
+        self.combo_box = QComboBox()
+        self.combo_box.addItems(["A", "B", "C"])
+
+        add_button = QPushButton('Add')
+        add_button.clicked.connect(self.add)
+
+        remove_button = QPushButton('Remove')
+        remove_button.clicked.connect(self.remove)
+
+        control_layout = QHBoxLayout()
+        control_layout.addWidget(self.combo_box)
+        control_layout.addWidget(add_button)
+        control_layout.addWidget(remove_button)
+
+        layout.addWidget(self.list_widget)
+        layout.addLayout(control_layout)
+
+        self.setLayout(layout)
+
+    def add(self):
+        current_row = self.list_widget.currentRow()
+        value = self.combo_box.currentText()
+        self.list_widget.insertItem(current_row+1, value)
+        self.list_widget.setCurrentRow(current_row+1)
+
+    def remove(self):
+        current_row = self.list_widget.currentRow()
+        self.list_widget.takeItem(current_row)
+
     def apply(self):
         pass
 
