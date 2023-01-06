@@ -56,4 +56,4 @@ class PieManager:
         """Mark label as active and ask the widget to repaint."""
         if self._widget.labels.active != label:
             self._widget.labels.active = label
-            self._widget.repaint()
+            self._widget.repaint_sygnal.emit()

@@ -3,7 +3,7 @@
 
 from typing import List
 
-from PyQt5.QtCore import Qt, QPoint
+from PyQt5.QtCore import Qt, QPoint, pyqtSignal
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QColor, QPaintEvent
 
@@ -29,6 +29,7 @@ class PieWidget(QWidget):
     - Extends widget interface to allow moving the widget on screen by
       providing the widget center.
     """
+    repaint_sygnal = pyqtSignal()
 
     def __init__(
         self,
@@ -40,6 +41,7 @@ class PieWidget(QWidget):
         self.labels = labels
         self._style = style
         self._label_painters = self._create_label_painters()
+        self.repaint_sygnal.connect(self.repaint)
 
         self.setWindowFlags(
             self.windowFlags() |
@@ -53,6 +55,14 @@ class PieWidget(QWidget):
 
         size = self._style.widget_radius*2
         self.setGeometry(0, 0, size, size)
+
+    def show(self) -> None:
+        self.repaint_sygnal.connect(self.repaint)
+        super().show()
+
+    def hide(self) -> None:
+        self.repaint_sygnal.disconnect(self.repaint)
+        super().hide()
 
     @property
     def center(self) -> QPoint:
