@@ -1,6 +1,6 @@
 """Main file which defines extension class and adds it to krita."""
 
-from api_krita import Krita, Extension  # type: ignore
+from api_krita import Extension  # type: ignore
 from input_adapter import ActionManager
 from .actions import actions
 
@@ -18,7 +18,3 @@ class ShortcutComposer(Extension):
         self.manager = ActionManager(window)
         for action in actions:
             self.manager.bind_action(action)
-
-
-# Add extension to krita
-Krita.add_extension(ShortcutComposer)

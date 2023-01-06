@@ -6,10 +6,13 @@ Runs the file with extension by importing everything from it.
 Appending this file location to python PATH allows to directly import
 main packages instead of using relative imports.
 """
-
 import sys
 import os
 
 sys.path.append(directory := os.path.dirname(__file__))
-from .shortcut_composer import *
+
+from .shortcut_composer import ShortcutComposer
+from .api_krita import Krita
+Krita.add_extension(ShortcutComposer)
+
 sys.path.remove(directory)
