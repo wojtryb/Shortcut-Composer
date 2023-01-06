@@ -94,8 +94,7 @@ def create_actions() -> List[ComplexAction]: return [
         name="Cycle selection tools",
         controller=controllers.ToolController(),
         default_value=Tool.FREEHAND_BRUSH,
-        values=Config.SELECTION_TOOLS_VALUES.read_as_enums(
-            Tool),  # type: ignore
+        values=Config.SELECTION_TOOLS_VALUES.read_as_enums(Tool),
     ),
 
     # Control undo and redo actions by sliding the cursor horizontally

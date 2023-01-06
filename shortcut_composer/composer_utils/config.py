@@ -7,7 +7,7 @@ from enum import Enum
 from api_krita import Krita
 from api_krita.enums import Tool, BlendingMode
 
-T = TypeVar('T', bound=Type[Enum])
+T = TypeVar('T', bound=Enum)
 
 
 class Config(Enum):
@@ -79,7 +79,7 @@ class Config(Enum):
             value=value
         )
 
-    def read_as_enums(self, enum: T) -> List[T]:
+    def read_as_enums(self, enum: Type[T]) -> List[T]:
         value_string: str = self.read()
         values_list = value_string.split(";")
         return [enum[value] for value in values_list]
