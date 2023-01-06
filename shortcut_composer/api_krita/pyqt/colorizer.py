@@ -1,4 +1,3 @@
-from typing import Union
 from enum import Enum
 
 from PyQt5.QtGui import QColor
@@ -22,16 +21,16 @@ class Color(Enum):
 
 class Colorizer(QColor):
 
-    def __init__(self, value: Union[int, BlendingMode]): ...
+    @classmethod
+    def blending_mode(cls, mode: BlendingMode) -> QColor:
+        return cls.BLENDING_MODES_MAP.get(mode, Color.LIGHT_GRAY).value
 
-    def __new__(cls, value: Union[int, BlendingMode]) -> QColor:
-        if isinstance(value, int):
-            return cls.percentage(value).value
-        elif isinstance(value, BlendingMode):
-            return cls.blending_mode(value).value
+    @classmethod
+    def percentage(cls, percent: int) -> QColor:
+        return cls._percentage(percent).value
 
     @staticmethod
-    def percentage(percent: int) -> Color:
+    def _percentage(percent: int) -> Color:
         if percent >= 100:
             return Color.DARK_GREEN
         if percent >= 80:
@@ -52,7 +51,3 @@ class Colorizer(QColor):
         BlendingMode.ADD: Color.DARK_BLUE,
         BlendingMode.MULTIPLY: Color.BLUE,
     }
-
-    @classmethod
-    def blending_mode(cls, mode: BlendingMode) -> Color:
-        return cls.BLENDING_MODES_MAP.get(mode, Color.LIGHT_GRAY)

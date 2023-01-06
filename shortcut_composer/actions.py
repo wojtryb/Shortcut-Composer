@@ -221,7 +221,7 @@ def create_actions(): return [
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
         values=Tag(read_setting(name="Tag (blue)", default="Pixel Art")),
-        area_color=QColor(65, 65, 96, 190),
-        active_color=QColor(100, 100, 230),
+        area_color=QColor(70, 70, 105, 190),
+        active_color=QColor(110, 160, 235),
     ),
 ]
