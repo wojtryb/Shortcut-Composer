@@ -5,8 +5,8 @@ from typing import List, Optional
 
 from api_krita import Krita
 from api_krita.pyqt import Timer
-from input_adapter import ComplexAction
 from core_components import Instruction
+from input_adapter import ComplexAction
 from .slider_handler import SliderHandler
 
 

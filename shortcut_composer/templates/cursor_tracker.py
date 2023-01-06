@@ -3,9 +3,9 @@
 
 from typing import List, Optional
 
-from input_adapter import ComplexAction
 from core_components import Instruction
 from data_components import Slider
+from input_adapter import ComplexAction
 from .mouse_tracker_utils import (
     SingleAxisTracker,
     DoubleAxisTracker,

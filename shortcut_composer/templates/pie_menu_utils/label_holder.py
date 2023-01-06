@@ -33,6 +33,7 @@ class LabelHolder:
 
         def angle_difference(label_angle: int):
             """Return the smallest difference between two angles."""
+            nonlocal angle
             raw_difference = label_angle - angle
             return abs((raw_difference + 180) % 360 - 180)
 

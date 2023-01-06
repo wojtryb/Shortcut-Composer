@@ -6,9 +6,9 @@ from typing import List, TypeVar, Generic, Union, Optional
 from PyQt5.QtGui import QColor, QPixmap, QIcon
 from PyQt5.QtCore import QPoint
 
+from api_krita.pyqt import Text
 from core_components import Controller, Instruction
 from input_adapter import ComplexAction
-from api_krita.pyqt import Text
 from .pie_menu_utils import (
     CirclePoints,
     LabelHolder,

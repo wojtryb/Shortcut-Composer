@@ -13,8 +13,8 @@ class Config(Enum):
 
     Each field remembers its default value:
     - `SHORT_VS_LONG_PRESS_TIME` = 0.3
-    - `SLIDER_SENSITIVITY_SCALE` = 1.0
-    - `SLIDER_DEADZONE` = 0
+    - `TRACKER_SENSITIVITY_SCALE` = 1.0
+    - `TRACKER_DEADZONE` = 0
     - `FPS_LIMIT` = 60
     - `PIE_GLOBAL_SCALE` = 1.0
     - `PIE_ICON_GLOBAL_SCALE` = 1.0
@@ -33,8 +33,8 @@ class Config(Enum):
     """
 
     SHORT_VS_LONG_PRESS_TIME = "Short vs long press time"
-    SLIDER_SENSITIVITY_SCALE = "Slider sensitivity scale"
-    SLIDER_DEADZONE = "Slider deadzone"
+    TRACKER_SENSITIVITY_SCALE = "Tracker sensitivity scale"
+    TRACKER_DEADZONE = "Tracker deadzone"
     FPS_LIMIT = "FPS limit"
     PIE_GLOBAL_SCALE = "Pie global scale"
     PIE_ICON_GLOBAL_SCALE = "Pie icon global scale"
@@ -80,8 +80,8 @@ class Config(Enum):
 
 _defaults = {
     Config.SHORT_VS_LONG_PRESS_TIME: 0.3,
-    Config.SLIDER_SENSITIVITY_SCALE: 1.0,
-    Config.SLIDER_DEADZONE: 0,
+    Config.TRACKER_SENSITIVITY_SCALE: 1.0,
+    Config.TRACKER_DEADZONE: 0,
     Config.FPS_LIMIT: 60,
     Config.PIE_GLOBAL_SCALE: 1.0,
     Config.PIE_ICON_GLOBAL_SCALE: 1.0,

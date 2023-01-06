@@ -8,8 +8,8 @@ from copy import copy
 
 from PyQt5.QtGui import QColor
 
-from composer_utils import Config
 from api_krita import Krita
+from composer_utils import Config
 
 
 @dataclass
@@ -58,9 +58,9 @@ class PieStyle:
         self.icon_color.setAlpha(255)
 
         self.border_color = QColor(
-            max(self.icon_color.red()+15, 0),
-            max(self.icon_color.green()+15, 0),
-            max(self.icon_color.blue()+15, 0),
+            min(self.icon_color.red()+15, 255),
+            min(self.icon_color.green()+15, 255),
+            min(self.icon_color.blue()+15, 255),
             255
         )
 

@@ -14,10 +14,10 @@ from typing import List
 
 from PyQt5.QtGui import QColor
 
-from input_adapter import ComplexAction
 from api_krita.enums import BlendingMode, Tool, Toggle
 from core_components import instructions, controllers
 from composer_utils import Config
+from input_adapter import ComplexAction
 from data_components import (
     CurrentLayerStack,
     PickStrategy,

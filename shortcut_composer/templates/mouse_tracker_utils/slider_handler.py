@@ -3,9 +3,9 @@
 
 from typing import Callable, Iterable
 
-from composer_utils import Config
 from api_krita import Krita
 from api_krita.pyqt import Timer
+from composer_utils import Config
 from data_components import Slider, Range
 from .new_types import MouseInput, Interpreted
 from .mouse_interpreter import MouseInterpreter

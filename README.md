@@ -134,8 +134,8 @@ Shortcut-Composer comes with a settings dialog available from krita topbar: **To
   - `Short vs long press time` - Time in seconds distinguishing short key presses from long ones.
   - `FPS limit` - Maximum rate of Mouse Tracker and Pie Menu refresh.
 - Cursor trackers
-  - `Slider sensitivity scale` - Sensitivity multiplier of all Mouse Trackers. 
-  - `Slider deadzone` - Amount of pixels a mouse needs to moved for Mouse Trackers to start work.
+  - `Tracker sensitivity scale` - Sensitivity multiplier of all Mouse Trackers. 
+  - `Tracker deadzone` - Amount of pixels a mouse needs to moved for Mouse Trackers to start work.
 - Pie menus display
   - `Pie global scale` - Global scale factor for base of every pie menu.
   - `Pie icon global scale` - Global scale factor for icons of every pie menu.
