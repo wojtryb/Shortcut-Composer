@@ -61,6 +61,9 @@ class Node():
     def set_visible(self, value: bool):
         return self.node.setVisible(value)
 
+    def toggle_visible(self):
+        self.set_visible(not self.is_visible())
+
     def type(self) -> bool:
         return self.node.type()
 

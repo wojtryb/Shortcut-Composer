@@ -1,13 +1,55 @@
+from enum import Enum
 from time import sleep
-from typing import Optional
 
 from .virtual_slider_action import VirtualSliderAction
 from .slider_utils import EmptySlider, Slider
-from ..api_adapter import controller, Krita, Node
+from ..api_adapter import controller, Krita, KritaDocument
+
+
+class HideStrategy(Enum):
+
+    class __HideStrategyBase:
+        def __init__(self, document: KritaDocument): ...
+        def __enter__(self): ...
+        def update(self): ...
+        def __exit__(self, *_): ...
+
+    class __IsolateLayerStrategy(__HideStrategyBase):
+        def __enter__(self):
+            Krita.set_action_state("isolate_active_layer", True)
+            return self
+
+        def __exit__(self, *_):
+            Krita.set_action_state("isolate_active_layer", False)
+
+    class __MakeInvisibleStrategy(__HideStrategyBase):
+        def __init__(self, document: KritaDocument) -> None:
+            self.document = document
+            self.last_node = self.document.current_node()
+
+        def __enter__(self):
+            self.last_node.toggle_visible()
+            self.document.refresh()
+            return self
+
+        def update(self):
+            current_node = self.document.current_node()
+            if current_node != self.last_node:
+                self.last_node.toggle_visible()
+                current_node.toggle_visible()
+                self.last_node = current_node
+                self.document.refresh()
+
+        def __exit__(self, *_):
+            self.last_node.toggle_visible()
+            self.document.refresh()
+
+    ISOLATE_LAYER = __IsolateLayerStrategy
+    MAKE_INVISIBLE = __MakeInvisibleStrategy
 
 
 class LayerPicker(VirtualSliderAction):
-    def __init__(self):
+    def __init__(self, strategy: HideStrategy):
         super().__init__(
             action_name="Layer picker",
             separate_sliders=False,
@@ -19,43 +61,19 @@ class LayerPicker(VirtualSliderAction):
                 sensitivity=50
             ),
         )
-        self.working = False
-        self.last_node: Optional[Node] = None
-        self.document = None
-
-    def on_key_press(self):
-        # Krita.set_action_state("isolate_active_layer", True)
-
-        Krita.trigger_action("toggle_layer_visibility")
-        self.document = Krita.get_active_document()
-        self.last_node = self.document.current_node()
-
-        nodes = self.document.nodes()
-        self.vertical_slider._change_values(nodes)
-        super().on_key_press()
+        self.strategy = strategy
 
     def _loop_common(self):
-        cursor = Krita.get_cursor()
+        document = Krita.get_active_document()
 
-        self.horizontal_slider.set_start_value(cursor.x)
-        self.vertical_slider.set_start_value(-cursor.y)
+        with self.strategy.value(document) as hider:
+            self.vertical_slider._change_values(document.nodes())
 
-        self.working = True
-        while self.working:
-            self.horizontal_slider.handle(cursor.x)
-            self.vertical_slider.handle(-cursor.y)
+            cursor = Krita.get_cursor()
+            self.vertical_slider.set_start_value(-cursor.y)
 
-            current_node = self.document.current_node()
-            if current_node != self.last_node:
-                self.last_node.set_visible(True)
-                current_node.set_visible(False)
-                self.last_node = current_node
-                self.document.refresh()
-
-            sleep(0.05)
-
-    def on_every_key_release(self):
-        Krita.trigger_action("toggle_layer_visibility")
-        # Krita.set_action_state("isolate_active_layer", False)
-
-        super().on_every_key_release()
+            self.working = True
+            while self.working:
+                self.vertical_slider.handle(-cursor.y)
+                hider.update()
+                sleep(0.05)
