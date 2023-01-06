@@ -10,6 +10,7 @@ class PieStyle:
 
     icon_color: QColor = QColor(75, 75, 75, 255)
     border_color: QColor = QColor(55, 55, 55, 255)
+    active_color: QColor = QColor(100, 150, 230, 255)
 
     def __post_init__(self):
         self.widget_radius = self.pie_radius + self.icon_radius

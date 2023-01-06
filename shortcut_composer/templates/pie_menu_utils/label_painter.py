@@ -56,7 +56,7 @@ class TextLabelPainter(LabelPainter):
             raise TypeError("Label supposed to be text.")
 
         label = QLabel("text label", self.widget)
-        label.setFont(QFont('Times', 20))
+        label.setFont(QFont('Arial', 20))
         label.adjustSize()
         small_radius = round(self.style.icon_radius*0.6)
         label.setGeometry(
