@@ -13,6 +13,22 @@ from .pie_style import PieStyle
 
 @dataclass
 class Label:
+    """
+    Paintable representation of value in PieWidget.
+
+    - `value` -- Value to set using the controller
+    - `center -- Label position in widget coordinates
+    - `angle` -- Angle in degrees in relation to widget center. Angles are
+                 counted clockwise with 0 being the top of widget
+    - `display_value` -- `value` representation to display. Can be
+                         either a colored text or an image
+
+    `display_value` can also be accessed using `text` and `image`
+    properties, which return None when the value does not exist or is
+    not of required type.
+
+    Label can be displayed with LabelPainter, returned by get_painter().
+    """
 
     value: Any
     center: QPoint = QPoint(0, 0)
@@ -21,15 +37,18 @@ class Label:
 
     @property
     def text(self) -> Optional[Text]:
+        """Return text if available."""
         if isinstance(self.display_value, Text):
             return self.display_value
 
     @property
     def image(self) -> Optional[QPixmap]:
+        """Return image if available."""
         if isinstance(self.display_value, QPixmap):
             return self.display_value
 
     def get_painter(self, widget: QWidget, style: PieStyle) -> 'LabelPainter':
+        """Return LabelPainter which can display this label."""
         if self.image:
             return ImageLabelPainter(self, widget, style)
         elif self.text:
@@ -39,22 +58,25 @@ class Label:
 
 @dataclass
 class LabelPainter(ABC):
+    """Displays a `label` inside of `widget` using given `style`."""
 
     label: Label
     widget: QWidget
     style: PieStyle
 
     @abstractmethod
-    def paint(self, painter: Painter) -> None: ...
+    def paint(self, painter: Painter) -> None: """Paint a label."""
 
 
 @dataclass
 class TextLabelPainter(LabelPainter):
+    """Displays a `label` which holds text."""
 
     def __post_init__(self):
         self._pyqt_label = self._create_pyqt_label()
 
     def paint(self, painter: Painter):
+        """Paint a background behind a label and its border."""
         painter.paint_wheel(
             center=self.label.center,
             outer_radius=self.style.icon_radius,
@@ -68,6 +90,7 @@ class TextLabelPainter(LabelPainter):
         )
 
     def _create_pyqt_label(self) -> QLabel:
+        """Create and show a new Qt5 label. Does not need redrawing."""
         if not isinstance(self.label.text, Text):
             raise TypeError("Label supposed to be text.")
 
@@ -96,10 +119,13 @@ class TextLabelPainter(LabelPainter):
 
 @dataclass
 class ImageLabelPainter(LabelPainter):
+    """Displays a `label` which holds an image."""
+
     def __post_init__(self):
         self.ready_image = self._prepare_image()
 
     def paint(self, painter: Painter):
+        """Paint a background behind a label its border, and image itself."""
         painter.paint_wheel(
             center=self.label.center,
             outer_radius=self.style.icon_radius,
@@ -114,6 +140,7 @@ class ImageLabelPainter(LabelPainter):
         painter.paint_pixmap(self.label.center, self.ready_image)
 
     def _prepare_image(self):
+        """Return image after scaling and reshaping it to circle."""
         if not isinstance(self.label.image, QPixmap):
             raise TypeError("Label supposed to be pixmap.")
 

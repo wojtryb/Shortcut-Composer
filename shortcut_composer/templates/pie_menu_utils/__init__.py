@@ -1,3 +1,5 @@
+"""Implementation of PieMenu."""
+
 from .angle_calculator import AngleCalculator
 from .label_holder import LabelHolder
 from .pie_manager import PieManager

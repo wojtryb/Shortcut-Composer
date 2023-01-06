@@ -11,6 +11,22 @@ from .label_holder import LabelHolder
 
 
 class PieWidget(QWidget):
+    """
+    PyQt5 widget with icons on ring that can be selected by hovering.
+
+    Methods inherits from QWidget used by other components:
+    - show() - displays the widget
+    - hide() - hides the widget
+    - repaint() - updates widget display after its data was changed
+
+    Overrides paintEvent(QPaintEvent) which tells how the widget looks
+
+    - Paints the widget: its base, and active pie and deadzone indicator
+    - Wraps Labels with LabelPainter which activated, paint them
+    - Extends widget interface to allow moving the widget on screen by
+      providing the widget center.
+    """
+
     def __init__(
         self,
         labels: LabelHolder,
@@ -36,10 +52,12 @@ class PieWidget(QWidget):
 
     @property
     def center(self) -> QPoint:
+        """Return point with center widget's point in its coordinates."""
         return QPoint(self._style.widget_radius, self._style.widget_radius)
 
     @property
     def center_global(self) -> QPoint:
+        """Return point with center widget's point in screen coordinates."""
         return self.pos() + self.center  # type: ignore
 
     @property
@@ -57,6 +75,7 @@ class PieWidget(QWidget):
         self.move(new_center-self.center)  # type: ignore
 
     def paintEvent(self, event: QPaintEvent) -> None:
+        """Paint the entire widget using the Painter wrapper."""
         with Painter(self, event) as painter:
             self._paint_deadzone_indicator(painter)
             self._paint_base_wheel(painter)
@@ -67,6 +86,7 @@ class PieWidget(QWidget):
                 label_painter.paint(painter)
 
     def _paint_base_wheel(self, painter: Painter) -> None:
+        """Paint a base circle."""
         painter.paint_wheel(
             center=self.center,
             outer_radius=self._no_border_radius,
@@ -75,6 +95,7 @@ class PieWidget(QWidget):
         )
 
     def _paint_base_border(self, painter: Painter) -> None:
+        """Paint a border on the inner edge of base circle."""
         painter.paint_wheel(
             center=self.center,
             outer_radius=self._style.pie_radius - self._style.area_thickness,
@@ -83,6 +104,7 @@ class PieWidget(QWidget):
         )
 
     def _paint_deadzone_indicator(self, painter: Painter) -> None:
+        """Paint the circle representing deadzone, when its valid."""
         if self.deadzone == float("inf"):
             return
 
@@ -100,6 +122,7 @@ class PieWidget(QWidget):
         )
 
     def _paint_active_pie(self, painter: Painter) -> None:
+        """Paint a pie representing active label if there is one."""
         if not self.labels.active:
             return
 
