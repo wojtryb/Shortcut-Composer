@@ -1,5 +1,5 @@
 """
-Component that allows to get and set a specific property of krita.
+Components that allow to get and set a specific property of krita.
 
 Available controllers:
     - `ToolController`
