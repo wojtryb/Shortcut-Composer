@@ -23,7 +23,7 @@ actions = [
     TemporaryPreserveAlpha(),
     MouseCycleAction(
         action_name="Mouse cycle",
-        separate_handlers=False,
+        separate_handlers=True,
         horizontal_handler=Handler(
             controller=OpacityController,
             default_value=0.5,
