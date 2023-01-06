@@ -1,5 +1,5 @@
-from typing import Any, Iterable, List, Optional
-from dataclasses import field, dataclass
+from typing import Any, List
+from dataclasses import dataclass
 from itertools import cycle
 
 from ..krita_api.controllers import Controller
@@ -27,8 +27,8 @@ class MultipleAssignment(PluginAction):
     default_value: Any = None
     time_interval: float = 0.3
 
-    _last_value: Any = field(init=False, default=None)
-    _iterator: Optional[Iterable] = field(init=False, default=None)
+    _last_value = None
+    _iterator = None
 
     def __post_init__(self):
         """

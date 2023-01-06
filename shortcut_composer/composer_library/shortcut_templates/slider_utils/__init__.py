@@ -1,4 +1,4 @@
-from .slider import Slider, EmptySlider
+from .slider import Slider
 from .slider_values import Range
 
-__all__ = ['Slider', 'EmptySlider', 'Range']
+__all__ = ['Slider', 'Range']
