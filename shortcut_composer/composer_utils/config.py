@@ -5,8 +5,9 @@ from .krita_setting import read_setting, write_setting
 
 
 class Config(Enum):
+
     SHORT_VS_LONG_PRESS_TIME = "Short vs long press time"
-    PIXELS_IN_UNIT = "Pixels in unit"
+    SLIDER_SENSITIVITY_SCALE = "Slider sensitivity scale"
     SLIDER_DEADZONE = "Slider deadzone"
     FPS_LIMIT = "FPS limit"
     PIE_GLOBAL_SCALE = "Pie global scale"
@@ -28,7 +29,7 @@ class Config(Enum):
 
 _defaults = {
     Config.SHORT_VS_LONG_PRESS_TIME: 0.3,
-    Config.PIXELS_IN_UNIT: 50,
+    Config.SLIDER_SENSITIVITY_SCALE: 1.0,
     Config.SLIDER_DEADZONE: 0,
     Config.FPS_LIMIT: 60,
     Config.PIE_GLOBAL_SCALE: 1.0,

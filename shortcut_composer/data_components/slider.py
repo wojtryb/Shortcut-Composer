@@ -18,15 +18,13 @@ class Slider:
 
     # Arguments:
 
-    - `controller`     -- defines which krita property will be modified
-    - `values`         -- list or range of values to switch to
-                          compatibile with controller
-    - `pixels_in_unit` -- (optional) how many pixels mouse needs to be
-                          moved, to change the value by 1.0
-    - `deadzone`       -- (optional) amount of pixels a mouse needs to
-                          moved for slider to start work
-    - `fps_limit`      -- (optional) maximum rate of slider refresh.
-                          0 for no limit.
+    - `controller`        -- defines which krita property will be modified
+    - `values`            -- list or range of values to switch to
+                             compatibile with controller
+    - `sensitivity_scale` -- (optional) changes sensitivity of slider
+    - `deadzone`          -- (optional) amount of pixels a mouse needs
+                             to be moved for slider to start to work
+    - `fps_limit`         -- (optional) maximum rate of slider refresh
 
     # Usage Example:
 
@@ -60,13 +58,15 @@ class Slider:
         self,
         controller: Controller,
         values: Union[List[Any], Range],
-        pixels_in_unit: Optional[int] = None,
+        sensitivity_scale: float = 1.0,
         deadzone: Optional[int] = None,
         fps_limit: Optional[int] = None
     ) -> None:
         self.controller = controller
         self.values = values
-        self.pixels_in_unit = self._read(pixels_in_unit, Config.PIXELS_IN_UNIT)
+        sensitivity_scale = (
+            Config.SLIDER_SENSITIVITY_SCALE.get() * sensitivity_scale)
+        self.pixels_in_unit = round(50 / sensitivity_scale)
         self.deadzone = self._read(deadzone, Config.SLIDER_DEADZONE)
         self.fps_limit = self._read(fps_limit, Config.FPS_LIMIT)
         self.sleep_time = 1/self.fps_limit if self.fps_limit else 0.001

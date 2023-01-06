@@ -150,11 +150,12 @@ def create_actions(): return [
                 100, 120, 160, 200, 250, 300, 350, 400, 450,
                 500, 600, 700, 800, 900, 1000
             ],
+            sensitivity_scale=2
         ),
         vertical_slider=Slider(
             controller=controllers.OpacityController(),
             values=Range(10, 100),
-            pixels_in_unit=5,
+            sensitivity_scale=10,
         ),
     ),
 
