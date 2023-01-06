@@ -85,7 +85,12 @@ class PieWidget(QWidget):
                 label_painter.paint(painter)
 
     def _paint_base_wheel(self, painter: Painter) -> None:
-        """Paint a base circle."""
+        """Paint a base circle and low opacity background to trick Windows."""
+        painter.paint_wheel(
+            center=self.center,
+            outer_radius=self._style.no_border_radius,
+            color=QColor(0, 0, 0, 1),
+        )
         painter.paint_wheel(
             center=self.center,
             outer_radius=self._style.no_border_radius,

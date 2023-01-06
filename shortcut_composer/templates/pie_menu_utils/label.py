@@ -96,12 +96,11 @@ class TextLabelPainter(LabelPainter):
         if not isinstance(self.label.text, Text):
             raise TypeError("Label supposed to be text.")
 
-        font_size = round(self.style.font_size)
         heigth = round(self.style.icon_radius*0.8)
 
         label = QLabel(self.widget)
         label.setText(self.label.text.value)
-        label.setFont(QFont('Helvetica', font_size, QFont.Bold))
+        label.setFont(QFont('Helvetica', self.style.font_size, QFont.Bold))
         label.setAlignment(Qt.AlignCenter)
         label.setGeometry(0, 0, round(heigth*2), round(heigth))
         label.move(self.label.center.x()-heigth,

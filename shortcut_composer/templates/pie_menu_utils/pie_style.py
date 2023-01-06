@@ -65,7 +65,7 @@ class PieStyle:
         )
 
         font_multiplier = self.SYSTEM_FONT_SIZE[platform.system()]
-        self.font_size = round(self.icon_radius*font_multiplier)
+        self.font_size: int = round(self.icon_radius*font_multiplier)
 
     def adapt_to_item_amount(self, amount: int) -> None:
         """Modify the style to make it fit the given amount of labels."""
