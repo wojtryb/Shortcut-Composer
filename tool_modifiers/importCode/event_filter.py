@@ -1,6 +1,6 @@
+from krita import QMdiArea
 from typing import Callable
 
-from krita import QMdiArea
 from PyQt5.QtCore import QEvent
 
 

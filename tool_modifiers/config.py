@@ -1,6 +1,6 @@
 # list all the tools you want to create toggles versions
 
-tools = {
+cyclic_tools = {
     "Selections tools (cycle)": [
         "KisToolSelectOutline",
         "KisToolSelectRectangular",
@@ -12,6 +12,14 @@ tools = {
         "KisToolTransform",
         "ToolReferenceImages",
     ]
+}
+
+temporary_tools = {
+    "Freehand selection (toggle)": "KisToolSelectOutline",
+    "Gradient (toggle)": "KritaFill/KisToolGradient",
+    "Line tool (toggle)": "KritaShape/KisToolLine",
+    "Transform tool (toggle)": "KisToolTransform",
+    "Move tool (toggle)": "KritaTransform/KisToolMove",
 }
 
 # time (seconds) after which a press is considered long
