@@ -58,8 +58,8 @@ class Node():
     def is_visible(self) -> bool:
         return self.node.visible()
 
-    def set_visible(self):
-        return self.node.setVisible()
+    def set_visible(self, value: bool):
+        return self.node.setVisible(value)
 
     def type(self) -> bool:
         return self.node.type()
@@ -70,7 +70,9 @@ class Node():
     def unique_id(self):
         return self.node.uniqueId()
 
-    def __eq__(self, node: 'Node'):
+    def __eq__(self, node: Any):
+        if not isinstance(node, Node):
+            return False
         return self.unique_id() == node.unique_id()
 
 
@@ -87,6 +89,9 @@ class KritaDocument:
 
     def nodes(self) -> List[Node]:
         return [Node(node) for node in self.document.topLevelNodes()]
+
+    def refresh(self) -> None:
+        self.document.refreshProjection()
 
 
 class Krita:
