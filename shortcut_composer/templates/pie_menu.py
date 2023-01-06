@@ -52,10 +52,11 @@ class PieMenu(PluginAction, Generic[T]):
     def on_every_key_release(self) -> None:
         super().on_every_key_release()
         cursor = Krita.get_cursor()
-        angle = math.degrees(math.atan(
-            (self.start[0] - cursor.x()) /
-            -(self.start[1] - cursor.y())
+        angle = math.degrees(math.atan2(
+            (-self.start[0] + cursor.x()),
+            (self.start[1] - cursor.y())
         ))
+        angle %= 360
         label = self.widget.labels.closest(round(angle))
         self._controller.set_value(label.value)
         self.widget.hide()
