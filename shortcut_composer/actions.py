@@ -1,16 +1,18 @@
 """File that acts as config - define all action objects here."""
 
 import templates
-from components import instructions, controllers
-
 from api_krita.enums import BlendingMode, Tool, Toggle
-from api_krita.wrappers import Tag
-
-from templates.slider_utils import (
+from components import (
+    instructions,
+    controllers,
+)
+from components.helpers import (
     CurrentLayerStack,
     PickStrategy,
     Slider,
-    Range)
+    Range,
+    Tag,
+)
 
 
 actions = [
@@ -82,12 +84,12 @@ actions = [
         instructions=[instructions.TemporaryOn(Toggle.ISOLATE_LAYER)],
         vertical_slider=Slider(
             controller=controllers.LayerController(),
-            values_to_cycle=CurrentLayerStack(PickStrategy.CURRENT_VISIBILITY),
+            slider_values=CurrentLayerStack(PickStrategy.CURRENT_VISIBILITY),
             default_value=None,
         ),
         horizontal_slider=Slider(
             controller=controllers.TimeController(),
-            values_to_cycle=Range(0, float('inf')),
+            slider_values=Range(0, float('inf')),
             default_value=1,
         ),
     ),
@@ -96,12 +98,12 @@ actions = [
         instructions=[instructions.ToggleLayerVisibility()],
         vertical_slider=Slider(
             controller=controllers.LayerController(),
-            values_to_cycle=CurrentLayerStack(PickStrategy.VISIBLE),
+            slider_values=CurrentLayerStack(PickStrategy.VISIBLE),
             default_value=None,
         ),
         horizontal_slider=Slider(
             controller=controllers.TimeController(),
-            values_to_cycle=Range(0, float('inf')),
+            slider_values=Range(0, float('inf')),
             default_value=1,
         ),
     ),
@@ -110,7 +112,7 @@ actions = [
         horizontal_slider=Slider(
             controller=controllers.BlendingModeController(),
             default_value=BlendingMode.NORMAL,
-            values_to_cycle=[
+            slider_values=[
                 BlendingMode.NORMAL,
                 BlendingMode.OVERLAY,
                 BlendingMode.MULTIPLY,
@@ -127,7 +129,7 @@ actions = [
         horizontal_slider=Slider(
             controller=controllers.BrushSizeController(),
             default_value=100,
-            values_to_cycle=[
+            slider_values=[
                 0.7, 1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7, 8, 9,
                 10, 12, 14, 16, 20, 25, 30, 35, 40, 50, 60, 70, 80,
                 100, 120, 160, 200, 250, 300, 350, 400, 450,
@@ -137,7 +139,7 @@ actions = [
         vertical_slider=Slider(
             controller=controllers.OpacityController(),
             default_value=100,
-            values_to_cycle=[10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+            slider_values=[10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
         ),
     ),
     templates.MouseTracker(
@@ -145,12 +147,12 @@ actions = [
         horizontal_slider=Slider(
             controller=controllers.BrushSizeController(),
             default_value=100,
-            values_to_cycle=Range(50, 1000)
+            slider_values=Range(50, 1000)
         ),
         vertical_slider=Slider(
             controller=controllers.OpacityController(),
             default_value=100,
-            values_to_cycle=Range(10, 100)
+            slider_values=Range(10, 100)
         ),
     ),
 ]
