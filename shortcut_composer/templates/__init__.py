@@ -6,7 +6,7 @@ Templates allowing to create actions using logic related to key events.
 
 Available templates:
 - `PieMenu`
-- `MouseTracker`
+- `CursorTracker`
 - `MultipleAssignment`
 - `TemporaryKey`
 - `RawInstructions`
@@ -18,17 +18,17 @@ Each template implements different logic based pressing and releasing of
 the related keys.
 """
 
-from .raw_instructions import RawInstructions
 from .multiple_assignment import MultipleAssignment
+from .raw_instructions import RawInstructions
+from .cursor_tracker import CursorTracker
 from .temporary_key import TemporaryKey
-from .mouse_tracker import MouseTracker
 from .pie_menu import PieMenu
 
 
 __all__ = [
     'MultipleAssignment',
     'RawInstructions',
+    'CursorTracker',
     'TemporaryKey',
-    'MouseTracker',
     'PieMenu',
 ]

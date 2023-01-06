@@ -13,7 +13,7 @@ from .mouse_tracker_utils import (
 )
 
 
-class MouseTracker(ComplexAction):
+class CursorTracker(ComplexAction):
     """
     Switch values with horizontal or vertical mouse movement.
 
@@ -46,11 +46,11 @@ class MouseTracker(ComplexAction):
     Exaples of defining a tracker for one, and for both axes.
 
     ```python
-    templates.MouseTracker(
+    templates.CursorTracker(
         name="Horizontal axis tracker",
         horizontal_slider=Slider(...), # See `Slider`
     )
-    templates.MouseTracker(
+    templates.CursorTracker(
         name="Double axis tracker",
         horizontal_slider=Slider(...), # See `Slider`
         vertical_slider=Slider(...),   # See `Slider`
