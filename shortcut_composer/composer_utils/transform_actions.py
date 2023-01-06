@@ -3,7 +3,12 @@ from time import sleep
 from threading import Thread
 from functools import partialmethod
 
-from PyQt5.QtWidgets import QWidget, QToolButton, QMainWindow, QPushButton
+from PyQt5.QtWidgets import (
+    QWidgetAction,
+    QToolButton,
+    QPushButton,
+    QWidget,
+)
 
 from api_krita.enums import Tool
 from api_krita import Krita
@@ -14,24 +19,26 @@ class TransformModeActions:
 
     def __init__(self) -> None:
         """Remember the reference to toolbox krita object."""
-        self.transform_options: QWidget
-        self.apply_button: QPushButton
-        self.tool_buttons: Dict[Tool, QToolButton] = {}
+        self._actions: Dict[str, QWidgetAction] = {}
+        self._tool_buttons: Dict[Tool, QToolButton] = {}
         self._initialized = False
+
+        self._transform_options: QWidget
+        self._apply_button: QPushButton
 
     def _ensure_initialized(self, tool: Tool):
         if not self._initialized:
             Tool.TRANSFORM.activate()
-            self.transform_options = self._fetch_transform_options()
-            self.apply_button = self._fetch_apply_button()
+            self._transform_options = self._fetch_transform_options()
+            self._apply_button = self._fetch_apply_button()
             self._initialized = True
 
-        if tool not in self.tool_buttons:
-            self.tool_buttons[tool] = self._fetch_tool_button(tool)
+        if tool not in self._tool_buttons:
+            self._tool_buttons[tool] = self._fetch_tool_button(tool)
 
     def _set_mode(self, tool: Tool) -> None:
         self._ensure_initialized(tool)
-        button = self.tool_buttons[tool]
+        button = self._tool_buttons[tool]
 
         if Krita.active_tool == Tool.TRANSFORM:
             return self._activate_mode_button(button)
@@ -44,7 +51,7 @@ class TransformModeActions:
         self._activate_mode_button(button)
 
     def _activate_mode_button(self, button: QToolButton):
-        self.apply_button.click()
+        self._apply_button.click()
         button.click()
 
     set_perspective = partialmethod(_set_mode, Tool.TRANSFORM_PERSPECTIVE)
@@ -54,27 +61,39 @@ class TransformModeActions:
     set_mesh = partialmethod(_set_mode, Tool.TRANSFORM_MESH)
 
     def _fetch_tool_button(self, tool: Tool) -> QToolButton:
-        for qobj in self.transform_options.findChildren(QToolButton):
+        for qobj in self._transform_options.findChildren(QToolButton):
             if qobj.objectName() == self._BUTTONS_MAP[tool]:
                 return qobj  # type: ignore
         raise RuntimeError("Couldnt find tool button.")
 
     def _fetch_apply_button(self) -> QPushButton:
-        for qobj in self.transform_options.findChildren(QPushButton):
-            qobj: QPushButton
+        for qobj in self._transform_options.findChildren(QPushButton):
             if qobj.text() == "&Apply":
                 return qobj  # type: ignore
         raise RuntimeError("Couldnt find apply button.")
 
     def _fetch_transform_options(self) -> QWidget:
         """Find and return reference to unwrapped options object."""
-        searched = "KisToolTransform option widget"
-        qwindow = Krita.get_active_qwindow()
-        qwindow: QMainWindow
-        for qobj in qwindow.findChildren(QWidget):
-            if qobj.objectName() == searched:
+        for qobj in Krita.get_active_qwindow().findChildren(QWidget):
+            if qobj.objectName() == "KisToolTransform option widget":
                 return qobj  # type: ignore
         raise RuntimeError("Transform options not found.")
+
+    def create_actions(self, window):
+        _ACTION_MAP = {
+            "Transform tool: perspective": self.set_perspective,
+            "Transform tool: warp": self.set_warp,
+            "Transform tool: cage": self.set_cage,
+            "Transform tool: liquify": self.set_liquify,
+            "Transform tool: mesh": self.set_mesh,
+        }
+
+        for action_name, implementation in _ACTION_MAP.items():
+            self._actions[action_name] = Krita.create_action(
+                window=window,
+                name=action_name,
+                callback=implementation
+            )
 
     _BUTTONS_MAP = {
         Tool.TRANSFORM_PERSPECTIVE: "perspectiveTransformButton",
