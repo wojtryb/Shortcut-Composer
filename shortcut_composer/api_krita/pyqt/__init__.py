@@ -3,6 +3,6 @@ from .pixmap_transform import (
     add_border,
     scale_pixmap,
 )
-from .colorizers import Colorizer
+from .colorizer import Colorizer
 from .text import Text
 from .painter import Painter

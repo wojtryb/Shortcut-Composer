@@ -8,29 +8,27 @@ from PyQt5.QtCore import Qt
 from shortcut_composer_config import ICON_RADIUS_PX
 from api_krita.pyqt import Painter, make_pixmap_round, scale_pixmap, Text
 from .label import Label
-from .pie_style import PieStyle
+
+
+def create_painter(label: Label, widget: QWidget) -> "LabelPainter":
+    if isinstance(label.display_value, Text):
+        return TextLabelPainter(widget, label)
+    elif isinstance(label.display_value, QPixmap):
+        return ImageLabelPainter(widget, label)
+    raise TypeError(f"Unknown label type {type(label.display_value)}")
 
 
 @dataclass
 class LabelPainter(ABC):
     widget: QWidget
-    style: PieStyle
     label: Label
+
+    @property
+    def style(self):
+        return self.label.style
 
     @abstractmethod
     def paint(self, painter: Painter) -> None: ...
-
-
-def pick_correct_painter(
-    widget: QWidget,
-    style: PieStyle,
-    label: Label,
-) -> LabelPainter:
-    if isinstance(label.display_value, Text):
-        return TextLabelPainter(widget, style, label)
-    elif isinstance(label.display_value, QPixmap):
-        return ImageLabelPainter(widget, style, label)
-    raise TypeError("Wrong type")
 
 
 @dataclass
