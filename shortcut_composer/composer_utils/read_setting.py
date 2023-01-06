@@ -1,4 +1,3 @@
-
 from api_krita import Krita
 
 
