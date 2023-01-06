@@ -6,7 +6,7 @@
 The plugin adds new shortcuts of the following types:
 - `Pie menu` - while key is pressed, displays a pie menu, which allows to pick values by hovering a mouse.
 - `Cursor tracker` - while key is pressed, tracks a cursor, switching values according to cursor offset.
-- `Preview` - Temporarily changes canvas elements while the key is pressed.
+- `Canvas preview` - Temporarily changes canvas elements while the key is pressed.
 - `Multiple assignment` - repeatedly pressing a key, cycles between multiple values of krita property.
 - `Temporary key` - temporarily activates a krita property with long press or toggles it on/off with short press.
 
@@ -78,8 +78,14 @@ Cursor tracker is an action for switching values using cursor movement, while th
   - Horizontal: scroll brush size (descrete)
   - Vertical: scroll painting opacity (contiguous)
 
-### (`Previews`):
-Preview is an action which changes canvas elements when the key is pressed, and changes them back to their original state on key release.
+- ### Scroll canvas zoom or rotation
+  Allows to control both `canvas zoom` or `canvas rotation` with a single key. Does not block the ability to paint.
+  - Key press: -
+  - Horizontal: canvas rotation (contiguous)
+  - Vertical: canvas zoom (contiguous)
+
+### (`Canvas previews`):
+Canvas preview is an action which changes canvas elements when the key is pressed, and changes them back to their original state on key release.
 
 - ### Preview current layer visibility
   Changes active layer visibility on key press and release. Allows to quickly check layer's content.

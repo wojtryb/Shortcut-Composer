@@ -68,7 +68,7 @@ class DoubleAxisTracker(ComplexAction):
 
         self._horizontal_handler = horizontal_handler
         self._vertical_handler = vertical_handler
-        self._timer = Timer(self._start_after_picking_slider, time_ms=50)
+        self._timer = Timer(self._start_after_picking_slider, interval_ms=50)
 
     def on_key_press(self) -> None:
         """Start a timer which decides which handler to start."""
@@ -78,18 +78,19 @@ class DoubleAxisTracker(ComplexAction):
 
     def _start_after_picking_slider(self) -> None:
         """Wait for inital movement to activate the right handler."""
-        if self._comparator.delta_x <= 10 and self._comparator.delta_y <= 10:
+        if self._comparator.delta_x <= 25 and self._comparator.delta_y <= 25:
             return
+        self._timer.stop()
 
         if self._comparator.is_horizontal:
             self._horizontal_handler.start()
         else:
             self._vertical_handler.start()
-        self._timer.stop()
 
     def on_every_key_release(self) -> None:
         """End tracking with handler, regardless of which one was started."""
         super().on_every_key_release()
+        self._timer.stop()
         self._horizontal_handler.stop()
         self._vertical_handler.stop()
 

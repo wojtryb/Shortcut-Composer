@@ -83,6 +83,7 @@ def create_actions() -> List[ComplexAction]: return [
     templates.MultipleAssignment(
         name="Cycle painting opacity",
         controller=controllers.OpacityController(),
+        instructions=[instructions.SetBrushOnNonPaintable()],
         default_value=100,
         values=[70, 50, 30, 100],
     ),

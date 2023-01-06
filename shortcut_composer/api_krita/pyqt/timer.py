@@ -7,14 +7,14 @@ EmptyCallback = Callable[[], None]
 class Timer:
     """Wraps PyQt5 QTimer to simplify init interface."""
 
-    def __init__(self, target: EmptyCallback, time_ms: int) -> None:
+    def __init__(self, target: EmptyCallback, interval_ms: int) -> None:
         self._timer = QTimer()
         self._timer.timeout.connect(target)
-        self._time_ms = time_ms
+        self._interval_ms = interval_ms
     
     def start(self):
         """Start a timer."""
-        self._timer.start(self._time_ms)
+        self._timer.start(self._interval_ms)
 
     def stop(self):
         """Stop a timer."""

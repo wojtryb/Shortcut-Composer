@@ -57,12 +57,13 @@ class SliderHandler:
         sleep_time = Config.get_sleep_time()
         self._deadzone_timer = Timer(
             target=self._start_after_deadzone,
-            time_ms=sleep_time)
+            interval_ms=sleep_time)
         self._main_timer = Timer(
             target=self._value_setting_loop,
-            time_ms=sleep_time)
+            interval_ms=sleep_time)
 
         self._mouse_getter: MouseGetter
+        self._start_point: MouseInput
         self._interpreter: MouseInterpreter
 
     def start(self) -> None:
