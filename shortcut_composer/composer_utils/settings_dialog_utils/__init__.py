@@ -1,4 +1,4 @@
-from .comboboxes import Comboboxes
+from .combo_boxes import ComboBoxes
 from .forms import Forms
 
-__all__ = ["Comboboxes", "Forms"]
+__all__ = ["ComboBoxes", "Forms"]

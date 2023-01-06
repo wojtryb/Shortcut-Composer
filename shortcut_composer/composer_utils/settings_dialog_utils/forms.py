@@ -15,28 +15,17 @@ class Forms(QFormLayout):
         super().__init__()
         self.forms: Dict[Config, Union[QSpinBox, QDoubleSpinBox]] = {}
 
-        def add_row(config: Config, is_int: bool):
-            form = self._create_form(config, is_int)
-            self.addRow(config.value, form)
+        self._add_row(Config.SHORT_VS_LONG_PRESS_TIME, is_int=False)
+        self._add_row(Config.SLIDER_SENSITIVITY_SCALE, is_int=False)
+        self._add_row(Config.SLIDER_DEADZONE, is_int=True)
+        self._add_row(Config.FPS_LIMIT, is_int=True)
+        self._add_row(Config.PIE_GLOBAL_SCALE, is_int=False)
+        self._add_row(Config.PIE_ICON_GLOBAL_SCALE, is_int=False)
+        self._add_row(Config.PIE_DEADZONE_GLOBAL_SCALE, is_int=False)
 
-        add_row(Config.SHORT_VS_LONG_PRESS_TIME, is_int=False)
-        add_row(Config.SLIDER_SENSITIVITY_SCALE, is_int=False)
-        add_row(Config.SLIDER_DEADZONE, is_int=True)
-        add_row(Config.FPS_LIMIT, is_int=True)
-        add_row(Config.PIE_GLOBAL_SCALE, is_int=False)
-        add_row(Config.PIE_ICON_GLOBAL_SCALE, is_int=False)
-        add_row(Config.PIE_DEADZONE_GLOBAL_SCALE, is_int=False)
-
-    def refresh(self):
-        for config, form in self.forms.items():
-            form.setValue(float(config.get()))  # type: ignore
-
-    def apply(self):
-        for form in self.forms.values():
-            write_setting(
-                name=form.objectName(),
-                value=form.value()
-            )
+    def _add_row(self, config: Config, is_int: bool):
+        form = self._create_form(config, is_int)
+        self.addRow(config.value, form)
 
     def _create_form(self, config: Config, is_int: bool):
         form = QSpinBox() if is_int else QDoubleSpinBox()
@@ -46,3 +35,14 @@ class Forms(QFormLayout):
 
         self.forms[config] = form
         return form
+
+    def refresh(self):
+        for config, form in self.forms.items():
+            form.setValue(config.get())  # type: ignore
+
+    def apply(self):
+        for form in self.forms.values():
+            write_setting(
+                name=form.objectName(),
+                value=form.value()
+            )

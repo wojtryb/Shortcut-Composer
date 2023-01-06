@@ -9,7 +9,7 @@ from PyQt5.QtGui import QCursor
 from api_krita import Krita
 from .config import Config
 
-from .settings_dialog_utils import Comboboxes, Forms
+from .settings_dialog_utils import ComboBoxes, Forms
 
 
 class SettingsDialog(QDialog):
@@ -20,12 +20,12 @@ class SettingsDialog(QDialog):
         self.setMinimumSize(QSize(300, 200))
         self.setWindowTitle("Shortcut composer settings")
 
-        self.comboboxes = Comboboxes()
+        self.combo_boxes = ComboBoxes()
         self.forms = Forms()
         ending_layout = self._create_ending_layout()
 
         layout = QVBoxLayout()
-        layout.addLayout(self.comboboxes)
+        layout.addLayout(self.combo_boxes)
         layout.addLayout(self.forms)
         layout.addLayout(ending_layout)
 
@@ -62,12 +62,12 @@ class SettingsDialog(QDialog):
             self.hide()
 
     def _apply(self):
-        self.comboboxes.apply()
+        self.combo_boxes.apply()
         self.forms.apply()
         Krita.trigger_action("Reload Shortcut Composer")
 
     def _refresh(self):
-        self.comboboxes.refresh()
+        self.combo_boxes.refresh()
         self.forms.refresh()
 
     def show(self) -> None:
