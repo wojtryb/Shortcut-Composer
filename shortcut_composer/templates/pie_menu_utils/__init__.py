@@ -1,6 +1,6 @@
 """Implementation of PieMenu."""
 
-from .angle_calculator import AngleCalculator
+from .circle_points import CirclePoints
 from .label_holder import LabelHolder
 from .pie_manager import PieManager
 from .pie_widget import PieWidget
@@ -8,7 +8,7 @@ from .pie_style import PieStyle
 from .label import Label
 
 __all__ = [
-    "AngleCalculator",
+    "CirclePoints",
     "LabelHolder",
     "PieManager",
     "PieWidget",

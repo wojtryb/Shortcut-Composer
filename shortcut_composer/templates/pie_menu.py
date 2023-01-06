@@ -12,7 +12,7 @@ from core_components import Controller, Instruction
 from input_adapter import PluginAction
 from api_krita.pyqt import Text
 from .pie_menu_utils import (
-    AngleCalculator,
+    CirclePoints,
     LabelHolder,
     PieManager,
     PieWidget,
@@ -123,10 +123,10 @@ class PieMenu(PluginAction, Generic[T]):
                 label_list.append(Label(value=value, display_value=icon))
 
         center = QPoint(self._style.widget_radius, self._style.widget_radius)
-        angle_calculator = AngleCalculator(
+        circle_points = CirclePoints(
             center=center,
             radius=self._style.pie_radius)
-        angle_iterator = angle_calculator.iterate_over_circle(len(label_list))
+        angle_iterator = circle_points.iterate_over_circle(len(label_list))
 
         label_holder = LabelHolder()
         for label, (angle, point) in zip(label_list, angle_iterator):
