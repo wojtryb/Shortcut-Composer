@@ -44,11 +44,17 @@ actions = [
         #     ],
         # ),
         vertical_handler=Handler(
-            controller=BlendingModeController,
-            values_to_cycle=['overlay', 'normal', 'darken'],
-            default_value='normal',
-            sensitivity=50
+            controller=OpacityController,
+            default_value=0.5,
+            # values_to_cycle=[0.1, 0.2, 0.3, 0.5, 0.9, 1.0]
+            values_to_cycle=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
         ),
+        # vertical_handler=Handler(
+        #     controller=BlendingModeController,
+        #     values_to_cycle=['overlay', 'normal', 'darken'],
+        #     default_value='normal',
+        #     sensitivity=50
+        # ),
     ),
     TemporaryAction(
         action_name="Freehand selection (toggle)",

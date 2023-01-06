@@ -189,24 +189,24 @@ class MouseCycleAction(PluginAction):
         cursor = Krita.get_cursor()
 
         self.horizontal_handler.set_start_value(cursor.x)
-        self.vertical_handler.set_start_value(cursor.y)
+        self.vertical_handler.set_start_value(-cursor.y)
 
         self.working = True
         while self.working:
             self.horizontal_handler.handle(cursor.x)
-            self.vertical_handler.handle(cursor.y)
+            self.vertical_handler.handle(-cursor.y)
             sleep(0.05)
 
     def __loop_separate(self):
         cursor = Krita.get_cursor()
 
         self.horizontal_handler.set_start_value(cursor.x)
-        self.vertical_handler.set_start_value(cursor.y)
+        self.vertical_handler.set_start_value(-cursor.y)
 
         self.working = True
         while self.working:
             delta_hor = abs(self.horizontal_handler.mouse.start - cursor.x)
-            delta_ver = abs(self.vertical_handler.mouse.start - cursor.y)
+            delta_ver = abs(self.vertical_handler.mouse.start + cursor.y)
             if abs(delta_hor - delta_ver) >= 10:
                 break
             sleep(0.05)
@@ -219,7 +219,7 @@ class MouseCycleAction(PluginAction):
         else:
             while self.working:
                 to_set_y = cursor.y
-                self.vertical_handler.handle(to_set_y)
+                self.vertical_handler.handle(-to_set_y)
                 sleep(0.05)
 
     def on_every_key_release(self):
