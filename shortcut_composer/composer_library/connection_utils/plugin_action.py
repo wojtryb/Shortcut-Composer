@@ -18,12 +18,11 @@ class PluginAction:
                  action_name: str,
                  time_interval: float = 0.3,
                  controller: Controller,
-                 additional_instructions: List[Instruction] = []) -> None:
+                 instructions: List[Instruction] = []) -> None:
         self.action_name = action_name
-        self.time_interval = time_interval
-        self.controller = controller
-        self.additional_instructions = InstructionHolder(
-            additional_instructions)
+        self._time_interval = time_interval
+        self._controller = controller
+        self._instructions = InstructionHolder(instructions)
 
     def on_key_press(self) -> None:
         """Called on each press of key specified in settings."""
@@ -40,4 +39,4 @@ class PluginAction:
     def _read_default_value(self, default_value: Any):
         if default_value:
             return default_value
-        return self.controller.default_value
+        return self._controller.default_value

@@ -35,8 +35,8 @@ class SingleAxisTracker(PluginAction):
     slider: Slider
     sign: Literal[1, -1] = 1
 
-    time_interval = 0.1
-    working = False
+    _time_interval = 0.1
+    _working = False
 
     def on_key_press(self) -> None:
         cursor = Krita.get_cursor()
@@ -52,8 +52,8 @@ class DoubleAxisTracker(PluginAction):
     horizontal_slider: Slider
     vertical_slider: Slider
 
-    time_interval = 0.1
-    working = False
+    _time_interval = 0.1
+    _working = False
 
     def on_key_press(self) -> None:
         Thread(target=self._pick_slider, daemon=True).start()

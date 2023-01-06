@@ -21,12 +21,12 @@ class TemporaryKey(PluginAction):
                  controller: Controller,
                  low_value: Any = None,
                  high_value: Any,
-                 additional_instructions: List[Instruction] = []) -> None:
+                 instructions: List[Instruction] = []) -> None:
         super().__init__(
             action_name=action_name,
             time_interval=time_interval,
             controller=controller,
-            additional_instructions=additional_instructions)
+            instructions=instructions)
 
         self.low_value = self._read_default_value(low_value)
         self.high_value = high_value
@@ -34,19 +34,19 @@ class TemporaryKey(PluginAction):
 
     def _set_low(self) -> None:
         """Defines how to switch to low state."""
-        self.controller.set_value(self.low_value)
+        self._controller.set_value(self.low_value)
 
     def _set_high(self) -> None:
         """Defines how to switch to high state."""
-        self.controller.set_value(self.high_value)
+        self._controller.set_value(self.high_value)
 
     def _is_high_state(self) -> Any:
         """Defines how to determine that current state is high."""
-        return self.controller.get_value() == self.high_value
+        return self._controller.get_value() == self.high_value
 
     def on_key_press(self) -> None:
         """Set high state only if state before press was low."""
-        self.additional_instructions.enter()
+        self._instructions.enter()
         self._was_high_before_press = self._is_high_state()
         if not self._was_high_before_press:
             self._set_high()
@@ -61,4 +61,4 @@ class TemporaryKey(PluginAction):
         self._set_low()
 
     def on_every_key_release(self) -> None:
-        self.additional_instructions.exit()
+        self._instructions.exit()

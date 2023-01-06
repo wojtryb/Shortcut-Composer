@@ -28,7 +28,7 @@ class LayerPicker(SingleAxisTracker):
     def __init__(
         self,
         action_name: str,
-        additional_instructions: List[Instruction],
+        instructions: List[Instruction],
         pick_strategy: PickStrategy = PickStrategy.ALL,
         sensitivity: float = 50.0
     ):
@@ -39,10 +39,10 @@ class LayerPicker(SingleAxisTracker):
                 controller=controllers.LayerController(),
                 values_to_cycle=[0],
                 default_value=None,
-                additional_instructions=additional_instructions,
+                instructions=instructions,
                 sensitivity=sensitivity
             ))
-        self.hide_strategy = additional_instructions
+        self.hide_strategy = instructions
         self.pick_strategy = pick_strategy
 
     def on_key_press(self) -> None:

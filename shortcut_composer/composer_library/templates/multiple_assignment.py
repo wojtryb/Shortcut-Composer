@@ -1,7 +1,7 @@
 from typing import Any, List
 from itertools import cycle
 
-from ..components import Controller, InstructionHolder, Instruction
+from ..components import Controller, Instruction
 from ..connection_utils import PluginAction
 
 
@@ -26,12 +26,12 @@ class MultipleAssignment(PluginAction):
                  controller: Controller,
                  values_to_cycle: List[Any],
                  default_value: Any = None,
-                 additional_instructions: List[Instruction] = []) -> None:
+                 instructions: List[Instruction] = []) -> None:
         super().__init__(
             action_name=action_name,
             time_interval=time_interval,
             controller=controller,
-            additional_instructions=additional_instructions)
+            instructions=instructions)
 
         self.values_to_cycle = values_to_cycle
         self.default_value = self._read_default_value(default_value)
@@ -39,23 +39,10 @@ class MultipleAssignment(PluginAction):
         self._last_value = None
         self._iterator = None
 
-    def __post_init__(self):
-        """
-        Create flag determining that cycling just started.
-
-        If default_value should be taken into consideration, it's simply
-        added to the end of cycle list.
-        """
-        if self.default_value is None:
-            self.default_value = self.controller.default_value
-
-        self.additional_instructions: InstructionHolder = InstructionHolder(
-            self.additional_instructions)
-
     def on_key_press(self) -> None:
         """Use key press event only for switching to first value."""
-        self.additional_instructions.enter()
-        current_value = self.controller.get_value()
+        self._instructions.enter()
+        current_value = self._controller.get_value()
         if current_value != self._last_value:
             self._reset_iterator()
         self._set_value(next(self._iterator))
@@ -66,11 +53,11 @@ class MultipleAssignment(PluginAction):
         self._reset_iterator()
 
     def on_every_key_release(self) -> None:
-        self.additional_instructions.exit()
+        self._instructions.exit()
 
     def _set_value(self, value: Any) -> None:
         self._last_value = value
-        self.controller.set_value(value)
+        self._controller.set_value(value)
 
     def _reset_iterator(self) -> None:
         self._iterator = cycle(self.values_to_cycle)

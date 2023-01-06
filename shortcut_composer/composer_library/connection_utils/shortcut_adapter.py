@@ -37,7 +37,7 @@ class ShortcutAdapter:
     def _on_key_release(self) -> None:
         """Run when key event is recognised as release of related key."""
         self.key_released = True
-        if time() - self.last_press_time < self.action.time_interval:
+        if time() - self.last_press_time < self.action._time_interval:
             self.action.on_short_key_release()
         else:
             self.action.on_long_key_release()
