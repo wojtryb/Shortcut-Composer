@@ -1,46 +1,40 @@
 from krita import *
-from .currentTool import getCurrentTool
+from .current_tool import get_current_tool_name
 
 from ..SETUP import CONNECTEDTOGGLES
 
 
-# ------- tools functions -------'
-
-def setTool(toolName):
+def set_tool(tool_name):
     'activates a tool of passed name'
-    Application.instance().action(toolName).trigger()
+    Application.instance().action(tool_name).trigger()
 
 
-def isToolSelected(toolName):
+def is_tool_selected(tool_name):
     'returns True if the passed tool is active'
-    return getCurrentTool() == toolName
-
-# '------- eraser functions -------'
+    return get_current_tool_name() == tool_name
 
 
-def toggleEraser():
+def toggle_eraser():
     'changes the state of the eraser, may affect alpha lock'
     if CONNECTEDTOGGLES:
         Application.action("preserve_alpha").setChecked(False)
     Application.action("erase_action").trigger()
 
 
-def isEraserActive():
+def is_eraser_active():
     'returns True if the eraser is active'
     kritaEraserAction = Application.action("erase_action")
     return kritaEraserAction.isChecked()
 
-# '------- alpha functions -------'
 
-
-def toggleAlphaLock():
+def toggle_alpha_lock():
     'changes the state of the alpha lock, may affect the eraser'
     if CONNECTEDTOGGLES:
         Application.action("erase_action").setChecked(False)
     Application.action("preserve_alpha").trigger()
 
 
-def isAlphaLocked():
+def is_alpha_locked():
     'returns True if the alpha is locked'
     kritaEraserAction = Application.action("preserve_alpha")
     return kritaEraserAction.isChecked()

@@ -1,11 +1,11 @@
 from dataclasses import dataclass
-from .keyFilter import ActionElements, KeyFilter
+
+from .key_filter import ActionElements, KeyFilter
 
 
 @dataclass
 class ActionWrapper:
     action_name: str
-    action_description: str
     krita_action: None
     krita_filter: None
 
@@ -17,7 +17,6 @@ class ActionCreator:
     def create_shortcut(
         self,
         human_name,
-        krita_name,
         set_low_function,
         set_high_function,
         is_high_state_function
@@ -27,18 +26,15 @@ class ActionCreator:
         action.setAutoRepeat(False)
         action_filter = KeyFilter(ActionElements(
             human_name,
-            krita_name,
             set_low_function,
             set_high_function,
             is_high_state_function,
         ))
 
         self.window.qwindow().installEventFilter(action_filter)
-        action.triggered.connect(action_filter.keyPress)
+        action.triggered.connect(action_filter.handle_key_press)
 
-        # return action_filter
         return ActionWrapper(
-            krita_name,
             human_name,
             action,
             action_filter

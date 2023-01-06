@@ -1,8 +1,9 @@
+from time import time
 from dataclasses import dataclass
 from typing import Callable
+
 from krita import *
 from PyQt5.QtCore import QEvent
-from time import time
 
 from ..SETUP import INTERVAL
 
@@ -10,7 +11,6 @@ from ..SETUP import INTERVAL
 @dataclass
 class ActionElements:
     human_name: str
-    krita_name: str
     set_low_function: Callable[[], None]
     set_high_function: Callable[[], None]
     is_high_state_function: Callable[[], None]
@@ -28,7 +28,7 @@ class KeyFilter(QMdiArea):
         self.key_released = True
         self.last_press_time = time()
 
-    def keyPress(self):
+    def handle_key_press(self):
         'run when user presses a key assigned to this action'
         self.key_released = False
         self.last_press_time = time()
@@ -38,7 +38,7 @@ class KeyFilter(QMdiArea):
         if not self.state:
             self.elements.set_high_function()
 
-    def keyRelease(self):
+    def handle_key_release(self):
         'run when user released a related key'
 
         self.key_released = True
@@ -51,13 +51,14 @@ class KeyFilter(QMdiArea):
         if e.type() != QEvent.KeyRelease:
             return False
 
-        # user did not release key yet
         if (
-            Krita.instance().action(
-                self.elements.human_name).shortcut().matches(e.key()) > 0
+            self.tool_shortcut.matches(e.key()) > 0
             and not e.isAutoRepeat()
             and not self.key_released
         ):
-            self.keyRelease()
-
+            self.handle_key_release()
         return False
+
+    @property
+    def tool_shortcut(self):
+        return Krita.instance().action(self.elements.human_name).shortcut()
