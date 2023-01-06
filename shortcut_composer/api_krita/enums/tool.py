@@ -48,44 +48,47 @@ class Tool(Enum):
     - `POLYGONAL_SELECTION`
     """
 
-    FREEHAND_BRUSH = "KritaShape/KisToolBrush"
-    FREEHAND_SELECTION = "KisToolSelectOutline"
-    GRADIENT = "KritaFill/KisToolGradient"
-    LINE = "KritaShape/KisToolLine"
-    TRANSFORM = "KisToolTransform"
-    MOVE = "KritaTransform/KisToolMove"
-    RECTANGULAR_SELECTION = "KisToolSelectRectangular"
-    CONTIGUOUS_SELECTION = "KisToolSelectContiguous"
-    REFERENCE = "ToolReferenceImages"
-    CROP = "KisToolCrop"
-    BEZIER_PATH = "KisToolPath"
-    FREEHAND_PATH = "KisToolPencil"
-    POLYLINE = "KisToolPolyline"
-    SHAPE_SELECT = "InteractionTool"
-    ASSISTANTS = "KisAssistantTool"
-    COLOR_SAMPLER = "KritaSelected/KisToolColorSampler"
-    POLYGON = "KisToolPolygon"
-    MEASUREMENT = "KritaShape/KisToolMeasure"
-    TEXT = "SvgTextTool"
-    ELLIPSE = "KritaShape/KisToolEllipse"
-    FILL = "KritaFill/KisToolFill"
-    BEZIER_SELECTION = "KisToolSelectPath"
-    DYNAMIC_BRUSH = "KritaShape/KisToolDyna"
-    RECTANGLE = "KritaShape/KisToolRectangle"
-    PAN = "PanTool"
-    MULTI_BRUSH = "KritaShape/KisToolMultiBrush"
-    EDIT_SHAPES = "PathTool"
-    ELIPTICAL_SELECTION = "KisToolSelectElliptical"
-    SMART_PATCH = "KritaShape/KisToolSmartPatch"
-    COLORIZE_MASK = "KritaShape/KisToolLazyBrush"
-    SIMILAR_COLOR_SELECTION = "KisToolSelectSimilar"
-    ZOOM = "ZoomTool"
-    MAGNETIC_SELECTION = "KisToolSelectMagnetic"
-    CALLIGRAPHY = "KarbonCalligraphyTool"
-    POLYGONAL_SELECTION = "KisToolSelectPolygonal"
+    FREEHAND_BRUSH = "KritaShape/KisToolBrush", "krita_tool_freehand"
+    FREEHAND_SELECTION = "KisToolSelectOutline", "tool_outline_selection"
+    GRADIENT = "KritaFill/KisToolGradient", "krita_tool_gradient"
+    LINE = "KritaShape/KisToolLine", "krita_tool_line"
+    TRANSFORM = "KisToolTransform", "krita_tool_transform"
+    MOVE = "KritaTransform/KisToolMove", "krita_tool_move"
+    RECTANGULAR_SELECTION = "KisToolSelectRectangular", "tool_rect_selection"
+    CONTIGUOUS_SELECTION = ("KisToolSelectContiguous",
+                            "tool_contiguous_selection")
+    REFERENCE = "ToolReferenceImages", "krita_tool_reference_images"
+    CROP = "KisToolCrop", "tool_crop"
+    BEZIER_PATH = "KisToolPath", "krita_draw_path"
+    FREEHAND_PATH = "KisToolPencil", "krita_tool_freehandvector"
+    POLYLINE = "KisToolPolyline", "polyline"
+    SHAPE_SELECT = "InteractionTool", "select"
+    ASSISTANTS = "KisAssistantTool", "krita_tool_assistant"
+    COLOR_SAMPLER = ("KritaSelected/KisToolColorSampler",
+                     "krita_tool_color_picker")
+    POLYGON = "KisToolPolygon", "krita_tool_polygon"
+    MEASUREMENT = "KritaShape/KisToolMeasure", "krita_tool_measure"
+    TEXT = "SvgTextTool", "draw-text"
+    ELLIPSE = "KritaShape/KisToolEllipse", "krita_tool_ellipse"
+    FILL = "KritaFill/KisToolFill", "krita_tool_color_fill"
+    BEZIER_SELECTION = "KisToolSelectPath", "tool_path_selection"
+    DYNAMIC_BRUSH = "KritaShape/KisToolDyna", "krita_tool_dyna"
+    RECTANGLE = "KritaShape/KisToolRectangle", "krita_tool_rectangle"
+    PAN = "PanTool", "tool_pan"
+    MULTI_BRUSH = "KritaShape/KisToolMultiBrush", "krita_tool_multihand"
+    EDIT_SHAPES = "PathTool", "shape_handling"
+    ELIPTICAL_SELECTION = ("KisToolSelectElliptical",
+                           "tool_elliptical_selection")
+    SMART_PATCH = "KritaShape/KisToolSmartPatch", "krita_tool_smart_patch"
+    COLORIZE_MASK = "KritaShape/KisToolLazyBrush", "colorizeMask"
+    SIMILAR_COLOR_SELECTION = "KisToolSelectSimilar", "tool_similar_selection"
+    ZOOM = "ZoomTool", "tool_zoom"
+    MAGNETIC_SELECTION = "KisToolSelectMagnetic", "tool_magnetic_selection"
+    CALLIGRAPHY = "KarbonCalligraphyTool", "calligraphy"
+    POLYGONAL_SELECTION = "KisToolSelectPolygonal", "tool_polygonal_selection"
 
     def activate(self):
-        Api.instance().action(self.value).trigger()
+        Api.instance().action(super().value[0]).trigger()
 
     @staticmethod
     def is_paintable(tool: 'Tool'):
@@ -93,9 +96,12 @@ class Tool(Enum):
         return tool in _PAINTABLE
 
     @property
+    def value(self):
+        super().value[0]
+
+    @property
     def icon(self) -> QIcon:
-        icon_name = _ICON_MAP.get(self, "krita_tool_freehand")
-        return Api.instance().icon(icon_name)
+        return Api.instance().icon(super().value[1])
 
 
 _PAINTABLE = {
@@ -106,11 +112,4 @@ _PAINTABLE = {
     Tool.RECTANGLE,
     Tool.MULTI_BRUSH,
     Tool.POLYLINE,
-}
-
-_ICON_MAP = {
-    Tool.CROP: "tool_crop",
-    Tool.PAN: "tool_pan",
-    Tool.FREEHAND_SELECTION: "tool_outline_selection",
-    Tool.FREEHAND_BRUSH: "krita_tool_freehand",
 }
