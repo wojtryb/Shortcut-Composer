@@ -1,3 +1,5 @@
+"""Wrappers and utilities based on PyQt5 objects."""
+
 from .pixmap_transform import PixmapTransform
 from .colorizer import Colorizer
 from .painter import Painter
