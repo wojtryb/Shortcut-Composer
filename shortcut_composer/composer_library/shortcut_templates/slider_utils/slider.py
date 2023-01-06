@@ -3,9 +3,9 @@ from time import sleep
 from typing import Any, Callable, List, Union
 
 from ...krita_api.controllers import Controller
+from ..instructions import InstructionHolder, Instruction
 from .mouse_interpreter import MouseInterpreter
 from .slider_values import create_slider_values, Range
-from .additional_instructions import AdditionalInstruction
 
 
 class Slider:
@@ -15,14 +15,15 @@ class Slider:
         controller: Controller,
         values_to_cycle: Union[List[Any], Range],
         default_value: Any,
-        additional_instruction=AdditionalInstruction,
+        additional_instructions: List[Instruction] = [],
         sensitivity: int = 50
     ):
         self.__controller = controller
         self.__default_value = default_value
         self.__to_cycle = self.set_values_to_cycle(values_to_cycle)
         self.__sensitivity = sensitivity
-        self.__additional_instruction = additional_instruction
+        self.__additional_instructions = InstructionHolder(
+            additional_instructions)
         self.__working = False
 
         self.__interpreter: MouseInterpreter
@@ -47,10 +48,10 @@ class Slider:
         self.__working = False
 
     def _loop(self, mouse_getter: Callable[[], int]) -> None:
-        with self.__additional_instruction() as additional_instruction:
+        with self.__additional_instructions:
             while self.__working:
                 self._handle(mouse_getter())
-                additional_instruction.update()
+                self.__additional_instructions.update()
                 sleep(0.05)
 
     def _handle(self, mouse: int) -> None:
