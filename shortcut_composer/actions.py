@@ -97,13 +97,12 @@ actions = [
             BlendingMode.NORMAL,
         ],
     ),
-    templates.MouseTracker(
-        name="Scroll brush presets",
+    templates.MultipleAssignment(
+        name="Cycle brush presets",
+        controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        horizontal_slider=Slider(
-            controller=controllers.PresetController(),
-            values=Tag("Digital"),
-        )
+        values_to_cycle=Tag("Digital"),
+        default_value="b) Basic-5 Size Opacity",
     ),
     templates.MouseTracker(
         name="Scroll undo stack",

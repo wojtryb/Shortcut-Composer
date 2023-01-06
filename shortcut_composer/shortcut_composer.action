@@ -27,8 +27,8 @@
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Scroll brush presets">
-        <text>Scroll brush presets</text>
+        <Action name="Cycle brush presets">
+        <text>Cycle brush presets</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
