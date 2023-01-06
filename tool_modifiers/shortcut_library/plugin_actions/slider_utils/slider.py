@@ -1,41 +1,22 @@
 from dataclasses import dataclass
-from typing import Any, List, Protocol, Union
+from typing import Any, List, Union
 
-from ..convenience_utils import Range
-from .interpreters import Interpreter
-from .value_proxy import create_proxy
-
-
-class Controller(Protocol):
-    default_value: Any
-    def get_value(self): ...
-    def set_value(self, value): ...
+from ...api_adapter import Controller
+from .mouse_interpreter import MouseInterpreter
+from .slider_values import create_slider_values, Range
 
 
-class EmptyHandler:
+class Slider:
 
-    def delta(self):
-        """TODO: not really working"""
-        return 0
+    @dataclass
+    class MouseTracker:
+        start: float = .0
+        last: float = .0
 
-    def set_start_value(self, mouse: int):
-        pass
+        @property
+        def delta(self):
+            return self.start - self.last
 
-    def handle(self, mouse: int):
-        pass
-
-
-@dataclass
-class MouseTracker:
-    start: float = .0
-    last: float = .0
-
-    @property
-    def delta(self):
-        return self.start - self.last
-
-
-class Handler(EmptyHandler):
     def __init__(
         self,
         controller: Controller,
@@ -44,9 +25,9 @@ class Handler(EmptyHandler):
         sensitivity: int = 50
     ):
         self.__controller = controller
-        self.__to_cycle = create_proxy(values_to_cycle, default_value)
-        self.interpreter = Interpreter(self.__to_cycle, sensitivity)
-        self.mouse = MouseTracker()
+        self.__to_cycle = create_slider_values(values_to_cycle, default_value)
+        self.interpreter = MouseInterpreter(self.__to_cycle, sensitivity)
+        self.mouse = self.MouseTracker()
 
     def set_start_value(self, mouse: int):
         self.mouse.start = mouse
@@ -67,3 +48,10 @@ class Handler(EmptyHandler):
             return self.__to_cycle.index(self.__controller.get_value())
         except ValueError:
             return self.__to_cycle.default_value
+
+
+class EmptySlider(Slider):
+
+    def __init__(self): ...
+    def set_start_value(self, mouse: int): ...
+    def handle(self, mouse: int): ...

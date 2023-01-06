@@ -1,22 +1,22 @@
+from abc import ABC, abstractmethod
 from typing import Any
 
-from ..convenience_utils import Krita, Tool
+from .krita_api import Krita
+from .enums import Tool
 
 
-class Controller:
+class Controller(ABC):
 
     default_value: Any = None
-
-    def get_value(self):
-        pass
-
-    def set_value(self, value):
-        pass
+    @abstractmethod
+    def get_value(self): ...
+    @abstractmethod
+    def set_value(self, value): ...
 
 
 class ToolController(Controller):
 
-    default_value: Tool = Tool.freehand_brush
+    default_value: Tool = Tool.FREEHAND_BRUSH
 
     @staticmethod
     def get_value() -> Tool:

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from ..convenience_utils import Krita
-from .interfaces import TemporaryAction
+from ..api_adapter import Krita
+from .temporary_action import TemporaryAction
 
 
 @dataclass

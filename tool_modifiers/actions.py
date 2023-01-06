@@ -1,31 +1,26 @@
 """File that acts as config - define all action objects here."""
 
-from .shortcut_library.convenience_utils import Tool
-from .shortcut_library.plugin_actions import (
-    MouseCycleAction,
-    TemporaryAction,
-    CyclicAction,
-    TemporaryEraser,
-    TemporaryPreserveAlpha,
-    controllers
-)
-
-from .shortcut_library.slider_utils import Handler
-from .shortcut_library.convenience_utils import Tag, Range
+from .shortcut_library import plugin_actions as templates
+from .shortcut_library.api_adapter import controller, Tool, Tag
+from .shortcut_library.plugin_actions.slider_utils import Slider, Range
 
 actions = [
-    TemporaryEraser(),
-    TemporaryPreserveAlpha(),
-    MouseCycleAction(
+    templates.TemporaryEraser(),
+    templates.TemporaryPreserveAlpha(),
+    templates.VirtualSliderAction(
         action_name="Mouse cycle",
-        separate_handlers=True,
-        horizontal_handler=Handler(
-            controller=controllers.OpacityController,
+        separate_sliders=True,
+        horizontal_slider=Slider(
+            controller=controller.OpacityController(),
             default_value=0.5,
             values_to_cycle=Range(0.1, 0.9)
-            # values_to_cycle=[0.2, 0.3, 0.5, 0.9, 1.0]
         ),
-        # horizontal_handler=Handler(
+        vertical_slider=Slider(
+            controller=controller.OpacityController(),
+            default_value=0.5,
+            values_to_cycle=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+        ),
+        # horizontal_slider=Slider(
         #     controller=controllers.ToolController,
         #     default_value=Tool.freehand_selection,
         #     values_to_cycle=[
@@ -38,79 +33,73 @@ actions = [
         #         Tool.reference,
         #     ],
         # ),
-        vertical_handler=Handler(
-            controller=controllers.OpacityController,
-            default_value=0.5,
-            # values_to_cycle=[0.1, 0.2, 0.3, 0.5, 0.9, 1.0]
-            values_to_cycle=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-        ),
-        # vertical_handler=Handler(
+        # vertical_slider=Slider(
         #     controller=controllers.BlendingModeController,
         #     values_to_cycle=['overlay', 'normal', 'darken'],
         #     default_value='normal',
         #     sensitivity=50
         # ),
     ),
-    TemporaryAction(
+    templates.TemporaryAction(
         action_name="Freehand selection (toggle)",
-        controller=controllers.ToolController(),
-        high_value=Tool.freehand_selection,
+        controller=controller.ToolController(),
+        high_value=Tool.FREEHAND_SELECTION,
     ),
-    TemporaryAction(
+    templates.TemporaryAction(
         action_name="Gradient (toggle)",
-        controller=controllers.ToolController(),
-        high_value=Tool.gradient,
+        controller=controller.ToolController(),
+        high_value=Tool.GRADIENT,
     ),
-    TemporaryAction(
+    templates.TemporaryAction(
         action_name="Line tool (toggle)",
-        controller=controllers.ToolController(),
-        high_value=Tool.line,
+        controller=controller.ToolController(),
+        high_value=Tool.LINE,
     ),
-    TemporaryAction(
+    templates.TemporaryAction(
         action_name="Transform tool (toggle)",
-        controller=controllers.ToolController(),
-        high_value=Tool.transform,
+        controller=controller.ToolController(),
+        high_value=Tool.TRANSFORM,
         time_interval=1.0
     ),
-    TemporaryAction(
+    templates.TemporaryAction(
         action_name="Move tool (toggle)",
-        controller=controllers.ToolController(),
-        high_value=Tool.move,
+        controller=controller.ToolController(),
+        high_value=Tool.MOVE,
     ),
-    CyclicAction(
+    templates.CyclicAction(
         action_name="Selections tools (cycle)",
-        controller=controllers.ToolController(),
+        controller=controller.ToolController(),
         values_to_cycle=[
-            Tool.freehand_selection,
-            Tool.rectangular_selection,
-            Tool.contiquous_selection,
+            Tool.FREEHAND_SELECTION,
+            Tool.RECTANGULAR_SELECTION,
+            Tool.CONTIGUOUS_SELECTION,
         ],
     ),
-    CyclicAction(
+    templates.CyclicAction(
         action_name="Misc tools (cycle)",
-        controller=controllers.ToolController(),
+        controller=controller.ToolController(),
         values_to_cycle=[
-            Tool.gradient,
-            Tool.line,
-            Tool.transform,
-            Tool.reference,
+            Tool.GRADIENT,
+            Tool.LINE,
+            Tool.TRANSFORM,
+            Tool.REFERENCE,
         ],
     ),
-    CyclicAction(
+    templates.CyclicAction(
         action_name="Preset (cycle)",
-        controller=controllers.PresetController(),
+        controller=controller.PresetController(),
         default_value="y) Texture Big",
         values_to_cycle=Tag("Digital")
     ),
-    CyclicAction(
+    templates.CyclicAction(
         action_name="Opacity (cycle)",
-        controller=controllers.OpacityController(),
+        controller=controller.OpacityController(),
         values_to_cycle=[0.75, 0.50],
         include_default_in_cycle=True,
     ),
-    CyclicAction(
+    templates.CyclicAction(
         action_name="Blending mode (cycle)",
-        controller=controllers.BlendingModeController(),
+        controller=controller.BlendingModeController(),
         values_to_cycle=["overlay"],
         include_default_in_cycle=True,
     ),

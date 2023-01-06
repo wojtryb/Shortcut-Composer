@@ -1,5 +1,4 @@
-from dataclasses import dataclass
-from .krita_api_wrapper import KritaDatabase
+from .krita_api import KritaDatabase
 
 
 class Tag:
@@ -14,9 +13,3 @@ class Tag:
 
     def __getitem__(self, index: int):
         return self.data[index]
-
-
-@dataclass
-class Range:
-    min: float
-    max: float

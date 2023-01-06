@@ -2,8 +2,8 @@ from time import time
 
 from PyQt5.QtGui import QKeyEvent
 
-from ..convenience_utils import Krita
-from ..plugin_actions import PluginAction
+from ..api_adapter import Krita
+from .plugin_action import PluginAction
 
 
 class ShortcutAdapter:

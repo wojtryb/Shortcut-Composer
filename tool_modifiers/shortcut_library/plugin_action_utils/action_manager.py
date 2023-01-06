@@ -8,29 +8,9 @@ from typing import List
 
 from PyQt5.QtWidgets import QWidgetAction
 
-from ..plugin_actions import PluginAction
+from .plugin_action import PluginAction
 from .event_filter import ReleaseKeyEventFilter
 from .shortcut_adapter import ShortcutAdapter
-
-
-@dataclass
-class ActionContainer:
-    """
-    Holds action components:
-
-    action -- contains logic to perform on CUSTOM key events
-    krita_action -- krita/Qt5 action object visible in krita settings
-    shortcut -- maps krita key events to custom ones
-    """
-
-    action: PluginAction
-    krita_action: QWidgetAction
-    shortcut: ShortcutAdapter
-
-    def __post_init__(self):
-        """Bind key_press method to action 'trigger' event."""
-        self.krita_action.setAutoRepeat(False)
-        self.krita_action.triggered.connect(self.shortcut.on_key_press)
 
 
 class ActionManager:
@@ -41,7 +21,26 @@ class ActionManager:
     shortcut binding and krita action.
     """
 
-    def __init__(self, window, event_filter: ReleaseKeyEventFilter):
+    @dataclass
+    class ActionContainer:
+        """
+        Holds action components:
+
+        action -- contains logic to perform on CUSTOM key events
+        krita_action -- krita/Qt5 action object visible in krita settings
+        shortcut -- maps krita key events to custom ones
+        """
+
+        action: PluginAction
+        krita_action: QWidgetAction
+        shortcut: ShortcutAdapter
+
+        def __post_init__(self):
+            """Bind key_press method to action 'trigger' event."""
+            self.krita_action.setAutoRepeat(False)
+            self.krita_action.triggered.connect(self.shortcut.on_key_press)
+
+    def __init__(self, window):
         """
         Store objects needed for creating action components:
 
@@ -51,10 +50,10 @@ class ActionManager:
           collector.
         """
         self._window = window
-        self._event_filter = event_filter
-        self._stored_actions: List[ActionContainer] = []
+        self._event_filter = ReleaseKeyEventFilter()
+        self._stored_actions: List[self.ActionContainer] = []
 
-    def bind_action(self, action: PluginAction) -> ActionContainer:
+    def bind_action(self, action: PluginAction) -> 'ActionContainer':
         """Creates action components and stores them together."""
         krita_action: QWidgetAction = self._window.createAction(
             action.action_name,
@@ -65,7 +64,7 @@ class ActionManager:
         self._event_filter.register_release_callback(
             shortcut.event_filter_callback)
 
-        container = ActionContainer(action, krita_action, shortcut)
+        container = self.ActionContainer(action, krita_action, shortcut)
         self._stored_actions.append(container)
 
         return container
