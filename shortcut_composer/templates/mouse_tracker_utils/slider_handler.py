@@ -14,6 +14,34 @@ from .slider_values import (
 
 
 class SliderHandler:
+    """
+    When started, tracks the mouse, interprets it and sets corresponding value.
+
+    Arguments:
+    - `slider` - configuration dataclass created by the user.
+    - `is_horizontal` - allows to track the correct axes.
+
+    On initialization, values to cycle stored in `slider` are wrapped in
+    proper `SliderValues` which will provide controller compatibile
+    values.
+
+    The handler is running between `start()` and `stop()` calls.
+
+    Right after start, the handler waits for the mouse to move past the
+    deadzone which allows to prevent unwanted changes.
+
+    After the deadzone is reached, the value interpreter is created
+    using the current mouse position.
+
+    Main handler loop starts:
+    - the mouse offset is being interpreted
+    - interpreted values allow to fetch controller compatibile values
+      from the `SliderValues`
+    - `SliderValues` values are being set using the controller.
+
+    Calling stop cancels the process at any step, so that the main loop
+    can never be started.
+    """
 
     def __init__(self, slider: Slider, is_horizontal: bool):
         self.__slider = slider

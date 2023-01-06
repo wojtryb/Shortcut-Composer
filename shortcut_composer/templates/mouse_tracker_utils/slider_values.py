@@ -14,8 +14,8 @@ class SliderValues(ABC):
 
     Valid interpreted values are a contiguous range - each child of this
     class must contain public attributes:
-    - `min`     - first valid interpreted value / range beginning
-    - `max`     - last valid interpreted value / range end
+    - `min` - first valid interpreted value / range beginning
+    - `max` - last valid interpreted value / range end
     """
 
     min: Interpreted
