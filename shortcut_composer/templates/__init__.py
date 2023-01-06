@@ -18,6 +18,7 @@ from .raw_instructions import RawInstructions
 from .multiple_assignment import MultipleAssignment
 from .temporary_key import TemporaryKey
 from .mouse_tracker import MouseTracker
+from .pie_menu import PieMenu
 
 
 __all__ = [
@@ -25,4 +26,5 @@ __all__ = [
     'RawInstructions',
     'TemporaryKey',
     'MouseTracker',
+    'PieMenu',
 ]
