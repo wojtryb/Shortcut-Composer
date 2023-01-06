@@ -3,13 +3,13 @@ from dataclasses import dataclass, field
 from threading import Thread
 from time import sleep
 
-from ..api_adapter import Krita
-from ..plugin_action_utils import PluginAction
+from ..krita_api import Krita
+from ..shortcut_connection_utils import PluginAction
 from .slider_utils import Slider, EmptySlider
 
 
 @dataclass
-class VirtualSliderAction(PluginAction):
+class MouseTracker(PluginAction):
 
     action_name: str
     horizontal_slider: Slider = field(default_factory=EmptySlider)

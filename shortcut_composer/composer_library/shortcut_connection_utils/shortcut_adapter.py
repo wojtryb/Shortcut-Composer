@@ -2,7 +2,7 @@ from time import time
 
 from PyQt5.QtGui import QKeyEvent
 
-from ..api_adapter import Krita
+from ..krita_api import Krita
 from .plugin_action import PluginAction
 
 
