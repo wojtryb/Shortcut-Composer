@@ -25,6 +25,21 @@ actions = [
         pick_strategy=PickStrategy.VISIBLE
     ),
     templates.VirtualSliderAction(
+        action_name="Brush size mouse",
+        separate_sliders=True,
+        horizontal_slider=Slider(
+            controller=controller.BrushSizeController(),
+            default_value=100,
+            values_to_cycle=Range(1, 1000),
+            sensitivity=0.5
+        ),
+        vertical_slider=Slider(
+            controller=controller.BrushSizeController(),
+            default_value=100,
+            values_to_cycle=[50, 100, 200, 250, 500, 1000]
+        ),
+    ),
+    templates.VirtualSliderAction(
         action_name="Mouse cycle",
         separate_sliders=True,
         horizontal_slider=Slider(

@@ -79,5 +79,9 @@
         <text>Canvas cycle</text>
         </Action>
 
+        <Action name="Brush size mouse">
+        <text>Brush size mouse</text>
+        </Action>
+
     </Actions>
 </ActionCollection>

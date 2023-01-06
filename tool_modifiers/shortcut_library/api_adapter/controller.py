@@ -147,24 +147,40 @@ class PreserveAlphaController(Controller):
 
 
 class FlowController(Controller):
-    pass
+    @staticmethod
+    def get_value() -> float:
+        return Krita.get_active_view().current_flow()
+
+    @staticmethod
+    def set_value(value: float):
+        Krita.get_active_view().set_flow(value)
 
 
 class BrushSizeController(Controller):
-    pass
+    @staticmethod
+    def get_value() -> float:
+        return Krita.get_active_view().current_brush_size()
+
+    @staticmethod
+    def set_value(value: float):
+        Krita.get_active_view().set_brush_size(value)
 
 
 class CanvasZoomController(Controller):
-    def get_value(self) -> float:
+    @staticmethod
+    def get_value() -> float:
         return Krita.get_active_canvas().zoom()
 
-    def set_value(self, value: float):
+    @staticmethod
+    def set_value(value: float):
         Krita.get_active_canvas().set_zoom(value)
 
 
 class CanvasRotationController(Controller):
-    def get_value(self) -> float:
+    @staticmethod
+    def get_value() -> float:
         return Krita.get_active_canvas().rotation()
 
-    def set_value(self, value: float):
+    @staticmethod
+    def set_value(value: float):
         Krita.get_active_canvas().set_rotation(value)
