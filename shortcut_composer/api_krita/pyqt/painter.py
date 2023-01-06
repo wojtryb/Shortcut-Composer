@@ -26,12 +26,11 @@ class Painter:
         self._painter.fillPath(path, color)
 
     def paint_pixmap(self, center: QPoint, pixmap: QPixmap):
-        self._painter.drawPixmap(
-            QPoint(
-                center.x() - pixmap.width()//2,
-                center.y() - pixmap.height()//2),
-            pixmap
+        left_top_corner = QPoint(
+            center.x() - pixmap.width()//2,
+            center.y() - pixmap.height()//2
         )
+        self._painter.drawPixmap(left_top_corner, pixmap)
 
     def end(self):
         self._painter.end()

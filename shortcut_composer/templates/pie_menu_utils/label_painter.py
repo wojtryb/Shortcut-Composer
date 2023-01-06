@@ -42,7 +42,7 @@ class TextLabelPainter(LabelPainter):
         painter.paint_wheel(
             center=self.label.center,
             outer_radius=self.style.icon_radius,
-            color=self.style.color
+            color=self.style.icon_color
         )
         painter.paint_wheel(
             center=self.label.center,
@@ -67,10 +67,10 @@ class TextLabelPainter(LabelPainter):
         )
         label.setStyleSheet(
             f"""background-color:rgba(
-                {self.style.color.red()},
-                {self.style.color.green()},
-                {self.style.color.blue()},
-                {self.style.color.alpha()}
+                {self.style.icon_color.red()},
+                {self.style.icon_color.green()},
+                {self.style.icon_color.blue()},
+                {self.style.icon_color.alpha()}
             );"""
             "color: white;"
         )
@@ -91,7 +91,13 @@ class ImageLabelPainter(LabelPainter):
         painter.paint_wheel(
             center=self.label.center,
             outer_radius=self.style.icon_radius,
-            color=self.style.border_color
+            color=self.style.icon_color
+        )
+        painter.paint_wheel(
+            center=self.label.center,
+            outer_radius=self.style.icon_radius-self.style.border_thickness//2,
+            color=self.style.border_color,
+            thickness=self.style.border_thickness,
         )
         painter.paint_pixmap(self.label.center, self.ready_image)
 

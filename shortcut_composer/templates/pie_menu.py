@@ -30,9 +30,9 @@ class PieMenu(PluginAction, Generic[T]):
         values: List[T],
         instructions: List[Instruction] = [],
         short_vs_long_press_time: float = SHORT_VS_LONG_PRESS_TIME,
-        pie_radius_px: int = PIE_RADIUS_PX,
-        icon_radius_px: int = ICON_RADIUS_PX,
-        color: QColor = QColor(55, 55, 55, 230),
+        pie_radius: int = PIE_RADIUS_PX,
+        icon_radius: int = ICON_RADIUS_PX,
+        area_color: QColor = QColor(55, 55, 55, 230),
     ) -> None:
         super().__init__(
             name=name,
@@ -40,13 +40,9 @@ class PieMenu(PluginAction, Generic[T]):
             instructions=instructions)
         self._controller = controller
         self._style = PieStyle(
-            pie_radius=pie_radius_px,
-            icon_radius=icon_radius_px,
-            widget_radius=pie_radius_px + icon_radius_px,
-            border_thickness=round(icon_radius_px*0.1),
-            area_thickness=round(pie_radius_px*0.4),
-            color=color,
-            border_color=QColor(55, 55, 55, 255),
+            pie_radius=pie_radius,
+            icon_radius=icon_radius,
+            area_color=area_color,
         )
         self._labels = self._create_labels(values)
         self._widget = PieWidget(controller, self._labels, self._style)
