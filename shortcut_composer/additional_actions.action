@@ -3,14 +3,14 @@
     <Actions category="Scripts">
         <text>Shortcut Composer Utilities</text>
 
-        <Action name="Shortcut composer settings">
-        <text>Shortcut composer settings</text>
+        <Action name="Shortcut Composer Settings">
+        <text>Shortcut Composer Settings</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Reload shortcut composer">
-        <text>Reload shortcut composer</text>
+        <Action name="Reload Shortcut Composer">
+        <text>Reload Shortcut Composer</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>
