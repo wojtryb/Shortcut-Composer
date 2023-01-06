@@ -4,8 +4,8 @@ from PyQt5.QtGui import QColor
 
 from shortcut_composer_config import (
     SHORT_VS_LONG_PRESS_TIME,
-    ICON_RADIUS_PX,
-    PIE_RADIUS_PX,
+    ICON_RADIUS_SCALE,
+    PIE_RADIUS_SCALE,
     PIE_ACTIVE_COLOR,
     PIE_AREA_COLOR,
 )
@@ -32,8 +32,8 @@ class PieMenu(PluginAction, Generic[T]):
         values: List[T],
         instructions: List[Instruction] = [],
         short_vs_long_press_time: float = SHORT_VS_LONG_PRESS_TIME,
-        pie_radius: int = PIE_RADIUS_PX,
-        icon_radius: int = ICON_RADIUS_PX,
+        pie_radius_scale: float = PIE_RADIUS_SCALE,
+        icon_radius_scale: float = ICON_RADIUS_SCALE,
         area_color: QColor = PIE_AREA_COLOR,
         active_color: QColor = PIE_ACTIVE_COLOR,
     ) -> None:
@@ -42,9 +42,10 @@ class PieMenu(PluginAction, Generic[T]):
             short_vs_long_press_time=short_vs_long_press_time,
             instructions=instructions)
         self._controller = controller
+
         self._style = PieStyle(
-            pie_radius=pie_radius,
-            icon_radius=icon_radius,
+            pie_radius_scale=pie_radius_scale,
+            icon_radius_scale=icon_radius_scale,
             area_color=area_color,
             active_color=active_color,
         )

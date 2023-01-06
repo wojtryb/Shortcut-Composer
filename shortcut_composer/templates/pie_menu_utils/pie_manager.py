@@ -8,7 +8,7 @@ from .label_holder import LabelHolder
 from api_krita import Krita
 from api_krita.wrappers import Cursor
 from time import sleep
-from shortcut_composer_config import FPS_LIMIT, PIE_DEADZONE_PX
+from shortcut_composer_config import FPS_LIMIT
 
 
 class PieManager:
@@ -30,7 +30,7 @@ class PieManager:
     def _track_angle(self):
         self._cursor = Krita.get_cursor()
         while self._is_working:
-            if self._distance_from_center() < PIE_DEADZONE_PX:
+            if self._distance_from_center() < self._widget.deadzone:
                 label = None
             else:
                 angle = self._angle_from_cursor()

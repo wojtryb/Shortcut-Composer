@@ -5,7 +5,6 @@ from PyQt5.QtWidgets import QLabel, QWidget
 from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtCore import Qt
 
-from shortcut_composer_config import ICON_RADIUS_PX
 from api_krita.pyqt import Painter, make_pixmap_round, scale_pixmap, Text
 from .label import Label
 
@@ -57,7 +56,7 @@ class TextLabelPainter(LabelPainter):
         label = QLabel("text label", self.widget)
         label.setFont(QFont(
             'Helvetica',
-            round(ICON_RADIUS_PX*0.45),
+            round(self.style.icon_radius*0.45),
             QFont.Bold))
         label.adjustSize()
         small_radius = round(self.style.icon_radius*0.4)

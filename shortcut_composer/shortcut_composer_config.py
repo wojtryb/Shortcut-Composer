@@ -20,11 +20,11 @@ DEADZONE: Final[int] = 0
 FPS_LIMIT: Final[int] = 60
 """Maximum rate of slider refresh. 0 for no limit"""
 
-ICON_RADIUS_PX: Final[int] = 50
+ICON_RADIUS_SCALE: Final[float] = 1.0
 
-PIE_RADIUS_PX: Final[int] = 165
+PIE_RADIUS_SCALE: Final[float] = 1.0
 
-PIE_DEADZONE_PX: Final[int] = 40
+PIE_DEADZONE_SCALE: Final[float] = 1.0
 
 PIE_AREA_COLOR: Final[QColor] = QColor(75, 75, 75, 190)
 
