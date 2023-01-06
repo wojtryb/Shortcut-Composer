@@ -45,7 +45,7 @@ class PieMenu(PluginAction, Generic[T]):
             area_color=area_color,
         )
         self._labels = self._create_labels(values)
-        self._widget = PieWidget(controller, self._labels, self._style)
+        self._widget = PieWidget(self._labels, self._style)
         self._pie_manager = PieManager(self._widget, self._labels)
 
     def on_key_press(self) -> None:
@@ -53,7 +53,7 @@ class PieMenu(PluginAction, Generic[T]):
         cursor = Krita.get_cursor()
         self.start = (cursor.x(), cursor.y())
         self._widget.move_center(*self.start)
-        self._pie_manager.start_loop()
+        self._pie_manager.start()
         self._widget.show()
         super().on_key_press()
 
