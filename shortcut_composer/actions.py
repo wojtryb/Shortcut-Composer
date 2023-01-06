@@ -72,7 +72,7 @@ actions = [
         controller=controllers.PresetController(),
         default_value="b) Basic-5 Size Opacity",
         values_to_cycle=Tag("Digital"),
-        # additional_instructions=[instructions.SetBrushOnNonPaintable()],
+        additional_instructions=[instructions.SetBrushOnNonPaintable()],
     ),
     templates.LayerPicker(
         action_name="Layer scraper - isolate",
