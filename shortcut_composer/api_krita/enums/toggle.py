@@ -1,4 +1,5 @@
 from enum import Enum
+from krita import Krita as Api
 
 
 class Toggle(Enum):
@@ -35,3 +36,17 @@ class Toggle(Enum):
     VIEW_ONION_SKIN = "toggle_onion_skin"
     SNAP_ASSISTANT = "toggle_assistant"
     SNAP_TO_GRID = "view_snap_to_grid"
+
+    @property
+    def state(self) -> bool:
+        """Return state of checkable krita action called `action_name`."""
+        return Api.instance().action(self.value).isChecked()
+
+    @state.setter
+    def state(self, state: bool) -> None:
+        """Set state of checkable krita action (toggle) by its enum."""
+        return Api.instance().action(self.value).setChecked(state)
+
+    def switch_state(self):
+        """Change state from ON to OFF and vice-versa."""
+        self.state = not self.state

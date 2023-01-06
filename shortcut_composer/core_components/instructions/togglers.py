@@ -1,18 +1,17 @@
 from dataclasses import dataclass
 
-from api_krita import Krita
 from api_krita.enums import Toggle
 from ..instruction_base import Instruction
 
 
 def _set_up(self) -> None:
     """Set a krita action's state to `True`."""
-    Krita.set_toggle_state(self.toggle, True)
+    self.toggle.state = True
 
 
 def _set_down(self) -> None:
     """Set a krita action's state to `False`."""
-    Krita.set_toggle_state(self.toggle, False)
+    self.toggle.state = False
 
 
 @dataclass

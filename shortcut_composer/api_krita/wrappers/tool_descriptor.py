@@ -16,7 +16,7 @@ class ToolDescriptor:
 
     def __set__(self, _, tool_enum: Tool):
         """Set active tool by triggering related action."""
-        self.instance.action(tool_enum.value).trigger()
+        tool_enum.activate()
 
     def __get__(self, *_) -> Tool:
         """
