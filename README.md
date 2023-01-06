@@ -4,7 +4,7 @@
 
 
 The plugin adds new shortcuts of the following types:
-- `Pie menu` - while key is pressed, displays a pie menu, which allows to pick values by hovering mouse.
+- `Pie menu` - while key is pressed, displays a pie menu, which allows to pick values by hovering a mouse.
 - `Cursor tracker` - while key is pressed, tracks a cursor, switching values according to cursor offset.
 - `Preview` - Temporarily changes canvas elements while the key is pressed.
 - `Multiple assignment` - repeatedly pressing a key, cycles between multiple values of krita property.
@@ -14,24 +14,24 @@ The plugin adds new shortcuts of the following types:
 1. on [github project page](https://github.com/wojtryb/Shortcut-Composer), click the green button <kbd>code</kbd> and pick the <kbd>download zip</kbd> option. Do not extract it.
 2. in krita's topbar, open **Tools > Scripts > Import Python Plugin From File** and pick the downloaded .zip file
 3. restart krita.
-4. set custom shortcuts in **Settings > Configure Krita > Keyboard Shortcuts** under **Scripts > Shortcut Composer** section. By intention, there are no default bindings.
+4. set custom shortcuts in **Settings > Configure Krita > Keyboard Shortcuts** under **Scripts > Shortcut Composer: Complex Actions** section. By intention, there are no default bindings.
 
 <!-- Screen z akcjami w Keyboard Shortcuts -->
 
 ## Pre-made actions
-While Shortcut-Composer is highly configurable and extendable, the add-on comes with pre-made actions which can be used out-of-the-box.
+While Shortcut-Composer is highly configurable and extendable, the add-on comes with pre-made, plug-and-play actions.
 
 ### (`Pie menus`):
-Pie menu is a widget displayed on the canvas while a key is pressed. It will disappear as soon as the key is released. Moving cursor in a direction of any icon, activates its value on key release. The widget cannot be clicked. Pie menu can be cancelled if the cursor is not moved out of deadzone.
+Pie menu is a widget displayed on the canvas while a key is pressed. It will disappear as soon, as the key is released. Moving cursor in a direction of a icon, activates its value on key release. **The action does not recognise mouse clicks, and only requires hovering**. Pie menu does nothing if the cursor is not moved out of the deadzone.
 
 - ### Pick brush presets (red, green, blue)
-  Three color coded pie menus that let you pick a brush preset from related tag with brush presets. Tags can be selected in **Tools > Scripts > Shortcut Composer Settings**. Default tag mapping is as follows:
+  Three color coded pie menus that let you pick a **brush preset** from related **tag** with brush presets. Used tags can be changed in **Tools > Scripts > Shortcut Composer Settings**. Default tag mapping is as follows:
   - <span style="color:red">red</span>: "★ My Favorites"
   - <span style="color:green">green</span>: "RGBA"
   - <span style="color:blue">blue</span>: "Erasers"
 
 - ### Pick misc tools
-  Pie menu for picking active tools. Includes tools that are used rather sporadically, and may not be worth a dedicated keyboard shortcut each:
+  Pie menu for picking **active tools**. Includes tools that are used rather sporadically, and may not be worth a dedicated keyboard shortcut each:
   - crop tool,
   - reference tool,
   - gradient tool,
@@ -39,7 +39,7 @@ Pie menu is a widget displayed on the canvas while a key is pressed. It will dis
   - assistant tool
   
 - ### Pick painting blending modes
-  Pie menu for picking painting blending modes. Consists of most commonly used ones:
+  Pie menu for picking **painting blending modes**. Consists of most commonly used ones:
   - normal
   - overlay,
   - color,
@@ -50,10 +50,10 @@ Pie menu is a widget displayed on the canvas while a key is pressed. It will dis
   - lighten
   
 ### (`Cursor trackers`):
-Cursor tracker is a value-switching action, active while the key is pressed. It tracks the mouse position to change the value of single krita property. Tracker can be attached to horizontal axis, vertical axis or both. Cursor is meant only to be hovered, mouse buttons are not supported.
+Cursor tracker is an action for switching values using cursor movement, while the keyboard key is pressed. It changes a single krita property according to the cursor movement along horizontal or vertical axis. **The action does not recognise mouse clicks, and only requires hovering**
 
 - ### Scroll isolated layers
-  Scrolls the layers by sliding the cursor vertically. Can be used for picking the active layer and analizing the layer stack. While the key is pressed, isolates the active layer to give better preview of which layer is active.
+  Scrolls the layers by sliding the cursor vertically. Can be used for picking the active layer and analizing the layer stack. While the key is pressed, isolates the active layer to give better response of which layer is active.
   - Key press: isloate active layer
   - Horizontal: -
   - Vertical: scroll all layers
@@ -61,19 +61,19 @@ Cursor tracker is a value-switching action, active while the key is pressed. It 
   <!-- <img src="https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif" width="120" height="40" /> -->
 
 - ### Scroll timeline or animated layers
-  Variation on "Scroll isolated layers" for animators. Layer scrolling is restricted only to those pinned to animation timeline. Horizontal mouse movement changes the current frame.
+  Variation on "Scroll isolated layers" for animators. Scrolling is restricted only to layers pinned to the animation timeline. Horizontal mouse movement changes the current frame.
   - Key press: isloate active layer
   - Horizontal: scroll animation frames
   - Vertical: scroll layers pinned to timeline
 
 - ### Scroll undo stack
-  Extends the krita undo action <kbd>ctrl</kbd>+<kbd>z</kbd>. Horizontal mouse movement, while the key is pressed controls the undo stack by performing undo and redo actions. Usual undo with short key press is still possible.
+  Extends the krita undo action <kbd>ctrl</kbd>+<kbd>z</kbd>. While the key is pressed, horizontal mouse movement controls the undo stack by performing undo and redo actions. Usual undo with short key press is still possible.
   - Key press: undo last operation
-  - Horizontal: scroll left to undo, and right to redo
+  - Horizontal: scroll left to undo, or right to redo
   - Vertical: -
 
 - ### Scroll brush size or opacity
-  Allows to control both `brush size` and `opacity` with single key. Opacity changes contiguously with vertical mouse movement, while brush size snaps to custom values. It is meant to provide easy access to precise values for pixel artists.
+  Allows to control both `brush size` or `opacity` with a single key. Opacity changes contiguously with vertical mouse movement, while brush size snaps to custom values.
   - Key press: -
   - Horizontal: scroll brush size (descrete)
   - Vertical: scroll painting opacity (contiguous)
@@ -85,10 +85,10 @@ Preview is an action which changes canvas elements when the key is pressed, and 
   Changes active layer visibility on key press and release. Allows to quickly check layer's content.
 
 - ### Preview projection below
-  Hides all visible layers above the active one on key press, and reverses this change on key release. Allows to check what is the position of current layer in a stack. It is possible to paint while the key is pressed and layers above are temporarily hidden.
+  Hides all visible layers above the active one on key press, and reverses this change on key release. Allows to check what is the position of current layer in a stack. It is possible to paint while action is active.
 
 ### (`Multiple assignments`):
-Multiple assignment is an action which cycles between multiple values of single krita property on each key press. Performing a long press breaks the cycle and sets a default value.
+Multiple assignment is an action which cycles between multiple values of single krita property. Each key press activates next list element. Performing a long press breaks the cycle and sets a default value, which does not have to belong the the list.
 
 - ### Cycle selection tools
   Pressing a key repeatedly cycles most commonly used selection tools:
@@ -100,39 +100,41 @@ Multiple assignment is an action which cycles between multiple values of single 
 
 - ### Cycle painting opacity
   Pressing a key repeatedly cycles brush predefined opacity values: `100%`, `70%`, `50%`, `30%`
-  Performing a long press, goes back to the `100%` opacity. **Modified opacity can be used while the key is pressed.**
+
+  Performing a long press, goes back to the `100%` opacity. Modified opacity can be used while the key is pressed.
 
 ### (`Temporary keys`):
 - ### Temporary move tool
   Pressing a key temporarily activates the `move tool` which goes back to the `freehand brush tool` after the key release. Short key presses allow to permanently toggle between those two tools. 
 
 - ### Temporary eraser
-  Pressing a key temporarily activates the `eraser` mode which gets turned off after the key release. Short key presses allow to permanently toggle between those two states. 
+  Pressing a key temporarily activates the `eraser` mode which gets turned off after the key is released. Short key presses allow to permanently toggle between those two states. 
 
 - ### Temporary preserve alpha
-  Pressing a key temporarily activates the `preserve alpha` mode which gets turned off after the key release. Short key presses allow to permanently toggle between those two states. 
+  Pressing a key temporarily activates the `preserve alpha` mode which gets turned off after the key is released. Short key presses allow to permanently toggle between those two states. 
 
 ## Modifying default plugin behaviour
 
 ### Tweaking the global parameters
-Shortcut-Composer comes with a settings dialog available from krita topbar: **Tools > Scripts > Shortcut Composer Settings**. The dialog allows to change the global values for the actions:
+Shortcut-Composer comes with a settings dialog available from krita topbar: **Tools > Scripts > Shortcut Composer Settings**. The dialog allows to change the following aspects of actions:
+
 - Preset pie-menus mapping
   - `Tag (red)` - tag to be used in red preset pie-menu
   - `Tag (green)` - tag to be used in green preset pie-menu
   - `Tag (blue)` - tag to be used in blue preset pie-menu
 - Common settings
   - `Short vs long press time` - Time in seconds distinguishing short key presses from long ones.
-  - `FPS limit` - Maximum rate of slider refresh. 0 for no limit
+  - `FPS limit` - Maximum rate of Mouse Tracker and Pie Menu refresh.
 - Cursor trackers
-  - `Slider sensitivity scale` - Sensitivity multiplier of sliders. 
-  - `Slider deadzone` - Amount of pixels a mouse needs to moved for slider to start work.
+  - `Slider sensitivity scale` - Sensitivity multiplier of all Mouse Trackers. 
+  - `Slider deadzone` - Amount of pixels a mouse needs to moved for Mouse Trackers to start work.
 - Pie menus display
-  - `Pie global scale` - Global scale factor for all the pie menus.
-  - `Pie icon global scale` - Global scale factor for all the pie menu icons.
-  - `Pie deadzone global scale` - Global scale factor for all the deadzone areas in pie menus.
+  - `Pie global scale` - Global scale factor for base of every pie menu.
+  - `Pie icon global scale` - Global scale factor for icons of every pie menu.
+  - `Pie deadzone global scale` - Global scale factor for the deadzone area of every pie menu.
 
 ### Modifying actions and creating custom ones
-While the settings dialog allows to tweak the general values common for plugin actions, it does not allow to modify the behaviour of the actions or create new ones.
+While the settings dialog allows to tweak the values common for plugin actions, it does not allow to modify the behaviour of the actions or create new ones.
 
 To achieve that it is required to modify actions implementation: 
 - in krita's topbar, open **Settings > Manage Resources > Open Resource Folder**
