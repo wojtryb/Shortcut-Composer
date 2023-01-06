@@ -1,9 +1,9 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from threading import Thread
-from time import sleep
 from typing import Callable, Iterable
+
+from PyQt5.QtCore import QTimer
 
 from composer_utils import Config
 from api_krita import Krita
@@ -53,23 +53,30 @@ class SliderHandler:
         """Store the slider configuration, create value adapter."""
         self._slider = slider
         self._to_cycle = self._create_slider_values(slider)
-        self._working = False
         self._is_horizontal = is_horizontal
+
+        self._deadzone_timer = QTimer()
+        self._deadzone_timer.timeout.connect(self._start_after_deadzone)
+
+        self._main_timer = QTimer()
+        self._main_timer.timeout.connect(self._value_setting_loop)
 
         self._mouse_getter: MouseGetter
         self._interpreter: MouseInterpreter
         self._sleep_time = Config.get_sleep_time()
 
     def start(self) -> None:
-        """Start a deadzone phase in a new thread."""
+        """Start a deadzone phase in a timer."""
         self._working = True
         self._slider.controller.refresh()
         self._mouse_getter = self._pick_mouse_getter()
-        Thread(target=self._start_after_deadzone, daemon=True).start()
+        self._start_point = self.read_mouse()
+        self._deadzone_timer.start(self._sleep_time)
 
     def stop(self) -> None:
-        """Stop a process by setting a flag which ends any loop."""
-        self._working = False
+        """Stop a process by stopping any timers."""
+        self._deadzone_timer.stop()
+        self._main_timer.stop()
 
     def read_mouse(self) -> MouseInput:
         """Fetch current mouse position."""
@@ -77,21 +84,18 @@ class SliderHandler:
 
     def _start_after_deadzone(self) -> None:
         """Block a thread until mouse reaches deadzone. Then start a loop."""
-        start_point = self.read_mouse()
-        while abs(start_point - self.read_mouse()) <= self._slider.deadzone:
-            if not self._working:
-                return
-            sleep(self._sleep_time)
-        self._value_setting_loop()
+        current = self.read_mouse()
+        if abs(self._start_point - current) <= self._slider.deadzone:
+            return
+        self._deadzone_timer.stop()
+        self._update_interpreter()
+        self._main_timer.start(self._sleep_time)
 
     def _value_setting_loop(self) -> None:
-        """Block a thread contiguously setting values from `SliderValues`."""
-        self._update_interpreter()
-        while self._working:
-            clipped_value = self._interpreter.interpret(self.read_mouse())
-            to_set = self._to_cycle.at(clipped_value)
-            self._slider.controller.set_value(to_set)
-            sleep(self._sleep_time)
+        """Set current value from `SliderValues`."""
+        clipped_value = self._interpreter.interpret(self.read_mouse())
+        to_set = self._to_cycle.at(clipped_value)
+        self._slider.controller.set_value(to_set)
 
     def _update_interpreter(self) -> None:
         """Store a new interpreter with current mouse and current value."""

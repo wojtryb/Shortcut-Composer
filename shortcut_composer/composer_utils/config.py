@@ -70,10 +70,10 @@ class Config(Enum):
             field.write(default)
 
     @staticmethod
-    def get_sleep_time() -> float:
+    def get_sleep_time() -> int:
         """Read sleep time from FPS_LIMIT config field."""
         fps_limit = Config.FPS_LIMIT.read()
-        return 1/fps_limit if fps_limit else 0.001
+        return round(1000/fps_limit) if fps_limit else 1
 
 
 _defaults = {

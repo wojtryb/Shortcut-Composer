@@ -165,6 +165,22 @@ def create_actions() -> List[ComplexAction]: return [
         ),
     ),
 
+    # Scroll canvas rotation sizes by sliding the cursor
+    # horizontally or canvas zoom by sliding it vertically
+    templates.CursorTracker(
+        name="Scroll canvas zoom or rotation",
+        horizontal_slider=Slider(
+            controller=controllers.CanvasRotationController(),
+            values=Range(-180, 180),
+            sensitivity_scale=10,
+        ),
+        vertical_slider=Slider(
+            controller=controllers.CanvasZoomController(),
+            values=Range(0.1, 10),
+            sensitivity_scale=0.2,
+        ),
+    ),
+
     # Use pie menu to pick one of the sporadically used tools.
     templates.PieMenu(
         name="Pick misc tools",

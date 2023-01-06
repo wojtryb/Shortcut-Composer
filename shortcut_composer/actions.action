@@ -63,6 +63,11 @@
         <activationConditions>1</activationConditions>
         </Action>
 
+        <Action name="Scroll canvas zoom or rotation">
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
+        </Action>
+
         <Action name="Pick misc tools">
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>

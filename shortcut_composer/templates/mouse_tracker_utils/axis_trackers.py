@@ -1,9 +1,9 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from threading import Thread, Lock
-from time import sleep
 from typing import List, Optional
+
+from PyQt5.QtCore import QTimer
 
 from api_krita import Krita
 from input_adapter import ComplexAction
@@ -69,36 +69,31 @@ class DoubleAxisTracker(ComplexAction):
 
         self._horizontal_handler = horizontal_handler
         self._vertical_handler = vertical_handler
-        self._lock = Lock()
-        self._is_working = False
+        self._timer = QTimer()
+        self._timer.timeout.connect(self._start_after_picking_slider)
 
     def on_key_press(self) -> None:
-        """Start a thread which decides which handler to start."""
+        """Start a timer which decides which handler to start."""
         super().on_key_press()
-        Thread(target=self._start_after_picking_slider, daemon=True).start()
+        self._comparator = self.MouseComparator()
+        self._timer.start(50)
 
     def _start_after_picking_slider(self) -> None:
         """Wait for inital movement to activate the right handler."""
-        comparator = self.MouseComparator()
-        with self._lock:
-            self._is_working = True
-            while comparator.delta_x <= 10 and comparator.delta_y <= 10:
-                if not self._is_working:
-                    return
-                sleep(0.05)
+        if self._comparator.delta_x <= 10 and self._comparator.delta_y <= 10:
+            return
 
-            if comparator.is_horizontal:
-                self._horizontal_handler.start()
-            else:
-                self._vertical_handler.start()
+        if self._comparator.is_horizontal:
+            self._horizontal_handler.start()
+        else:
+            self._vertical_handler.start()
+        self._timer.stop()
 
     def on_every_key_release(self) -> None:
         """End tracking with handler, regardless of which one was started."""
         super().on_every_key_release()
-        self._is_working = False
-        with self._lock:
-            self._horizontal_handler.stop()
-            self._vertical_handler.stop()
+        self._horizontal_handler.stop()
+        self._vertical_handler.stop()
 
     class MouseComparator:
         """Compares current mouse position with position from init phase."""
