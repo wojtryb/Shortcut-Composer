@@ -96,7 +96,7 @@ class TextLabelPainter(LabelPainter):
         if not isinstance(self.label.text, Text):
             raise TypeError("Label supposed to be text.")
 
-        font_size = round(self.style.icon_radius*0.45)
+        font_size = round(self.style.font_size)
         heigth = round(self.style.icon_radius*0.8)
 
         label = QLabel(self.widget)

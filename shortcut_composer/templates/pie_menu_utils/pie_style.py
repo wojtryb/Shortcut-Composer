@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import math
+import platform
 from dataclasses import dataclass
 from copy import copy
 
@@ -63,6 +64,9 @@ class PieStyle:
             255
         )
 
+        font_multiplier = self.SYSTEM_FONT_SIZE[platform.system()]
+        self.font_size = round(self.icon_radius*font_multiplier)
+
     def adapt_to_item_amount(self, amount: int) -> None:
         """Modify the style to make it fit the given amount of labels."""
         if not amount:
@@ -70,3 +74,10 @@ class PieStyle:
             return
         max_icon_size = round(self.pie_radius * math.pi / amount)
         self.icon_radius = min(self.icon_radius, max_icon_size)
+
+    SYSTEM_FONT_SIZE = {
+        "Linux": 0.45,
+        "Windows": 0.25,
+        "Darwin": 0.25,
+        "": 0.25,
+    }
