@@ -24,8 +24,9 @@ class SettingsHandler:
     def __init__(self, window: Window):
         self._window = window
         self._dialog = SettingsDialog()
+        self._create_settings()
 
-    def create_settings(self):
+    def _create_settings(self):
         self.settings_action = self._window.createAction(
             "Shortcut Composer Settings",
             "Shortcut Composer Settings",

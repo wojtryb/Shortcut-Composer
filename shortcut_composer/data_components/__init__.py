@@ -8,6 +8,7 @@ complex logic.
 
 from .current_layer_stack import CurrentLayerStack
 from .pick_strategy import PickStrategy
+from .read_setting import read_setting
 from .slider import Slider
 from .range import Range
 from .tag import Tag
@@ -15,6 +16,7 @@ from .tag import Tag
 __all__ = [
     "CurrentLayerStack",
     "PickStrategy",
+    "read_setting",
     "Slider",
     "Range",
     "Tag",
