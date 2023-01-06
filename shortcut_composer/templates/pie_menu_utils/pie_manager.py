@@ -3,19 +3,20 @@ from threading import Thread
 from typing import Optional
 from time import sleep
 
+from PyQt5.QtGui import QCursor
+
 from shortcut_composer_config import FPS_LIMIT
 from api_krita import Krita
 from api_krita.wrappers import Cursor
 from .pie_widget import PieWidget
-from .label_holder import LabelHolder
 from .label import Label
 
 
 class PieManager:
 
-    def __init__(self, widget: PieWidget, labels: LabelHolder) -> None:
+    def __init__(self, widget: PieWidget) -> None:
         self._widget = widget
-        self._labels = labels
+        self._labels = widget.labels
         self._is_working = False
         self._sleep_time = 1/FPS_LIMIT if FPS_LIMIT else 0.001
 
@@ -23,9 +24,12 @@ class PieManager:
 
     def start(self):
         self._is_working = True
+        self._widget.move_center(QCursor().pos())
+        self._widget.show()
         Thread(target=self._track_angle, daemon=True).start()
 
     def stop(self):
+        self._widget.hide()
         self._is_working = False
 
     def _track_angle(self):

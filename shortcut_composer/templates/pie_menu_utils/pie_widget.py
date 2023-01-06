@@ -18,7 +18,7 @@ class PieWidget(QWidget):
         parent=None
     ):
         QWidget.__init__(self, parent)
-        self._labels = labels
+        self.labels = labels
         self._style = style
         self._label_painters = self._create_label_painters()
 
@@ -97,18 +97,18 @@ class PieWidget(QWidget):
         )
 
     def _paint_active_pie(self, painter: Painter) -> None:
-        if not self._labels.active:
+        if not self.labels.active:
             return
 
         painter.paint_pie(
             center=self.center,
             outer_radius=self._outer_radius,
-            angle=self._labels.active.angle,
+            angle=self.labels.active.angle,
             span=360//len(self._label_painters),
             color=self._style.active_color,
             thickness=self._style.area_thickness,
         )
 
     def _create_label_painters(self) -> List[LabelPainter]: return [
-        create_painter(label, self._style, self) for label in self._labels
+        create_painter(label, self._style, self) for label in self.labels
     ]
