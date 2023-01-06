@@ -3,15 +3,15 @@ from threading import Thread
 from time import sleep
 from typing import List, Literal, Optional
 
-from ..api import Krita
-from ..connection_utils import PluginAction
-from ..components import Instruction, InstructionHolder
+from api_krita import Krita
+from connection_utils import PluginAction
+from components import Instruction, InstructionHolder
 from .slider_utils import Slider
 
 
 class MouseTracker:
     """
-    Action template for switching values by horizontal/vertical mouse movement.
+    Switch values with horizontal or vertical mouse movement.
 
     Action tracks mouse during key being pressed, and switches values
     accordingly to mouse movement.

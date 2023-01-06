@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from functools import partialmethod
 
-from ...api import Krita
-from ...api.enums import Toggle
+from api_krita import Krita
+from api_krita.enums import Toggle
 from ..instruction_base import Instruction
 
 

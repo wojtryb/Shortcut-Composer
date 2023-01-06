@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
-from ...api import Krita
-from ...api.wrappers import Node
-from ...api.enums import Tool, Toggle
+from api_krita import Krita
+from api_krita.wrappers import Node
+from api_krita.enums import Tool, Toggle
 from ..controller_base import Controller
 
 

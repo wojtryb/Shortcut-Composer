@@ -1,5 +1,5 @@
-from ...api import Krita
-from ...api.enums import BlendingMode
+from api_krita import Krita
+from api_krita.enums import BlendingMode
 from ..controller_base import Controller
 
 

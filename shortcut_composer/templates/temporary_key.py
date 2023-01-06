@@ -1,12 +1,12 @@
 from typing import Any, List
 
-from ..components import Controller, Instruction
-from ..connection_utils import PluginAction
+from components import Controller, Instruction
+from connection_utils import PluginAction
 
 
 class TemporaryKey(PluginAction):
     """
-    Action template for temporary activation (long press) or toggling (short).
+    Temporarily activate (long press) a value or toggle it (short press).
 
     Action switches between two states: `low_value` and `high_value`.
     - pressing a key ensures `high_state`
@@ -41,7 +41,7 @@ class TemporaryKey(PluginAction):
         controller=controllers.OpacityController(),
         low_value=100,
         high_value=50,
-        instructions=[], # See instruction for more info
+        instructions=[], # See instructions for more info
         time_interval=0.3,
     )
     ```

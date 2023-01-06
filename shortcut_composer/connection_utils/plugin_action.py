@@ -1,5 +1,6 @@
 from typing import List, Any
-from ..components import Controller, InstructionHolder, Instruction
+
+from components import Controller, InstructionHolder, Instruction
 
 
 class PluginAction:

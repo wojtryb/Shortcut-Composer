@@ -1,13 +1,13 @@
 from typing import Any, List
 from itertools import cycle
 
-from ..components import Controller, Instruction
-from ..connection_utils import PluginAction
+from components import Controller, Instruction
+from connection_utils import PluginAction
 
 
 class MultipleAssignment(PluginAction):
     """
-    Action template for cycling multiple values and returning to default value.
+    Cycle multiple values (short press) or return to default (long press).
 
     Action cycles the values in `values_to_cycle` list:
     - short key press moves to next value in list.
