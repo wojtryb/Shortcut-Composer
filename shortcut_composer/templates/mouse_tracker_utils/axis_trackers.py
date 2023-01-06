@@ -2,6 +2,7 @@ from threading import Thread, Lock
 from time import sleep
 from typing import List
 
+from shortcut_composer_config import SHORT_VS_LONG_PRESS_TIME
 from api_krita import Krita
 from input_adapter import PluginAction
 from core_components import Instruction
@@ -17,14 +18,16 @@ class SingleAxisTracker(PluginAction):
     logic is located in passed SliderHandler.
     """
 
-    def __init__(self, *,
-                 name: str,
-                 slider_handler: SliderHandler,
-                 instructions: List[Instruction] = [],
-                 time_interval: float = 0.3) -> None:
+    def __init__(
+        self, *,
+        name: str,
+        slider_handler: SliderHandler,
+        instructions: List[Instruction] = [],
+        short_vs_long_press_time: float = SHORT_VS_LONG_PRESS_TIME
+    ) -> None:
         super().__init__(
             name=name,
-            time_interval=time_interval,
+            short_vs_long_press_time=short_vs_long_press_time,
             instructions=instructions)
 
         self._handler = slider_handler
@@ -49,15 +52,17 @@ class DoubleAxisTracker(PluginAction):
     logic is located in SliderHandler which uses passed Slider.
     """
 
-    def __init__(self, *,
-                 name: str,
-                 horizontal_handler: SliderHandler,
-                 vertical_handler: SliderHandler,
-                 instructions: List[Instruction] = [],
-                 time_interval: float = 0.3) -> None:
+    def __init__(
+        self, *,
+        name: str,
+        horizontal_handler: SliderHandler,
+        vertical_handler: SliderHandler,
+        instructions: List[Instruction] = [],
+        short_vs_long_press_time: float = SHORT_VS_LONG_PRESS_TIME
+    ) -> None:
         super().__init__(
             name=name,
-            time_interval=time_interval,
+            short_vs_long_press_time=short_vs_long_press_time,
             instructions=instructions)
 
         self._horizontal_handler = horizontal_handler

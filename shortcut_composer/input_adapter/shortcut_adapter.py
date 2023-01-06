@@ -35,7 +35,7 @@ class ShortcutAdapter:
     def _on_key_release(self) -> None:
         """Run proper key release methods based on time elapsed from press."""
         self.key_released = True
-        if time() - self.last_press_time < self.action._time_interval:
+        if time() - self.last_press_time < self._short_vs_long_press_time:
             self.action.on_short_key_release()
         else:
             self.action.on_long_key_release()
@@ -58,6 +58,11 @@ class ShortcutAdapter:
         """Handle key release if the event is related to the action."""
         if self._is_event_key_release(release_event):
             self._on_key_release()
+
+    @property
+    def _short_vs_long_press_time(self):
+        """Time in seconds distinguishing short key presses from long ones."""
+        return self.action._short_vs_long_press_time
 
     @property
     def tool_shortcut(self) -> QKeySequence:
