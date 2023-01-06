@@ -20,15 +20,17 @@ class Slider:
         self.__default_value = default_value
         self.__to_cycle = self.set_values_to_cycle(values_to_cycle)
         self.__sensitivity = sensitivity
-        self.__working = False
+        self._working = False
 
         self.__interpreter: MouseInterpreter
 
     def set_values_to_cycle(self, values_to_cycle: List[Any]) -> None:
-        return create_slider_values(values_to_cycle, self.__default_value)
+        values = create_slider_values(values_to_cycle, self.__default_value)
+        self.__to_cycle = values
+        return values
 
     def start(self, mouse_getter: Callable[[], int]) -> None:
-        self.__working = True
+        self._working = True
         self.__interpreter = MouseInterpreter(
             min=self.__to_cycle.min,
             max=self.__to_cycle.max,
@@ -39,10 +41,10 @@ class Slider:
         Thread(target=self._loop, args=[mouse_getter], daemon=True).start()
 
     def stop(self):
-        self.__working = False
+        self._working = False
 
     def _loop(self, mouse_getter: Callable[[], int]) -> None:
-        while self.__working:
+        while self._working:
             self._handle(mouse_getter())
             sleep(0.05)
 

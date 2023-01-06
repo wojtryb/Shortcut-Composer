@@ -48,7 +48,8 @@ class ListSliderValues(SliderValues):
         self.values_to_cycle: list = values_to_cycle
         self.min = -0.49
         self.max = len(values_to_cycle) - 0.51
-        self.default_value = values_to_cycle.index(default_value)
+        if default_value is not None:
+            self.default_value = values_to_cycle.index(default_value)
 
     def at(self, value: float) -> Any:
         return self.values_to_cycle[round(value)]
