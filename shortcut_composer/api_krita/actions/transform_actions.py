@@ -134,10 +134,10 @@ class TransformModeActions:
 
         def _fetch_apply_button(self) -> QPushButton:
             """Fetch a button that applies the transformation."""
-            for qobj in self._transform_options.findChildren(QPushButton):
-                if qobj.text() == "&Apply":
-                    return qobj  # type: ignore
-            raise RuntimeError("Could not find the apply button.")
+            buttons = self._transform_options.findChildren(QPushButton)
+            if not buttons:
+                raise RuntimeError("Could not find the apply button.")
+            return max(buttons, key=lambda button: button.x())  # type: ignore
 
         _BUTTONS_MAP = {
             Tool.TRANSFORM_FREE: "freeTransformButton",
