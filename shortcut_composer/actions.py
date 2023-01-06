@@ -85,14 +85,6 @@ actions = [
         )
     ),
     templates.MouseTracker(
-        action_name="Layer scraper - visibility",
-        instructions=[instructions.ToggleLayerVisibility()],
-        vertical_slider=Slider(
-            controller=controllers.LayerController(),
-            values=CurrentLayerStack(PickStrategy.VISIBLE),
-        )
-    ),
-    templates.MouseTracker(
         action_name="Timeline scraper (tracker)",
         horizontal_slider=Slider(
             controller=controllers.TimeController(),

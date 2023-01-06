@@ -60,33 +60,21 @@ class MouseTracker:
                 action_name=action_name,
                 sign=1,
                 instructions=instructions_holder,
-                handler=SliderHandler(
-                    slider=horizontal_slider,
-                    instructions=instructions_holder
-                ),
+                handler=SliderHandler(horizontal_slider)
             )
         if not horizontal_slider and vertical_slider:
             return SingleAxisTracker(
                 action_name=action_name,
                 sign=-1,
                 instructions=instructions_holder,
-                handler=SliderHandler(
-                    slider=vertical_slider,
-                    instructions=instructions_holder,
-                )
+                handler=SliderHandler(vertical_slider)
             )
         if horizontal_slider and vertical_slider:
             return DoubleAxisTracker(
                 action_name=action_name,
                 instructions=instructions_holder,
-                horizontal_handler=SliderHandler(
-                    slider=horizontal_slider,
-                    instructions=instructions_holder,
-                ),
-                vertical_handler=SliderHandler(
-                    slider=vertical_slider,
-                    instructions=instructions_holder,
-                )
+                horizontal_handler=SliderHandler(horizontal_slider),
+                vertical_handler=SliderHandler(vertical_slider)
             )
         raise ValueError("At least one slider needed.")
 

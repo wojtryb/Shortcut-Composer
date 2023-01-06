@@ -2,17 +2,15 @@ from threading import Thread
 from time import sleep
 from typing import Any, Callable
 
-from core_components import InstructionHolder
 from data_components import Slider
 from .mouse_interpreter import MouseInterpreter
 from .slider_values import create_slider_values
 
 
 class SliderHandler:
-    def __init__(self, slider: Slider, instructions: InstructionHolder):
+    def __init__(self, slider: Slider):
         self.__slider = slider
         self.to_cycle = create_slider_values(self.__slider.values)
-        self.__instructions = instructions
         self.__working = False
 
         self.__interpreter: MouseInterpreter
@@ -35,7 +33,6 @@ class SliderHandler:
     def _loop(self, mouse_getter: Callable[[], int]) -> None:
         while self.__working:
             self._handle(mouse_getter())
-            self.__instructions.update()
             sleep(0.05)
 
     def _handle(self, mouse: int) -> None:
