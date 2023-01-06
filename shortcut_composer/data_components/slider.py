@@ -10,21 +10,17 @@ class Slider:
     """
     Part of MouseTracker specifying what to do on single axis movement.
 
-    When the slider is started:
-    - when controlled value belongs to `values_to_cycle`, it stays as is,
-    - otherwise is set to `default_value`.
-
     While the slider is active the value is being changed relatively to
     the offset from the starting value.
 
-    The `default_value` can be either:
+    The `slider_values` can be either:
     -  a discrete list of values
     -  a contiguous range defined using Range(start, stop)
 
     ### Arguments:
 
     - `controller`      - defines which krita property will be modified
-    - `values_to_cycle` - list or range of values to switch to
+    - `slider_values` - list or range of values to switch to
                            compatibile with controller
     - `default_value`   - value to switch to when current value is not in the
                            list. It has to belong to the list.
@@ -38,8 +34,7 @@ class Slider:
     ```python
     Slider(
             controller=controllers.PresetController(),
-            default_value="b) Basic-1",
-            values_to_cycle=[
+            values=[
                 "a) Eraser Soft",
                 "b) Airbrush Soft",
                 "b) Basic-1",
@@ -54,12 +49,10 @@ class Slider:
     ```python
     Slider(
             controller=controllers.FlowController(),
-            default_value=100,
-            values_to_cycle=Range(10, 100)
+            values=Range(10, 100)
     )
     ```
     """
     controller: Controller
-    slider_values: Union[List[Any], Range]
-    default_value: Any
+    values: Union[List[Any], Range]
     sensitivity: int = 50

@@ -4,18 +4,19 @@ from typing import Any, Iterable
 from data_components import Range
 
 
-def create_slider_values(slider_values, default_value) -> 'SliderValues':
+def create_slider_values(slider_values) -> 'SliderValues':
     if isinstance(slider_values, Iterable):
-        return ListSliderValues(slider_values, default_value)
+        return ListSliderValues(slider_values)
     elif isinstance(slider_values, Range):
-        return RangeSliderValues(slider_values, default_value)
+        return RangeSliderValues(slider_values)
     raise RuntimeError(f"Wrong type: {slider_values}")
 
 
 class SliderValues(ABC):
-    values_to_cycle: Any
+    values: Any
     min: float
     max: float
+    default_value: float
 
     @abstractmethod
     def at(self, value: float) -> Any: ...
@@ -25,24 +26,26 @@ class SliderValues(ABC):
 
 
 class RangeSliderValues(SliderValues):
-    def __init__(self, slider_values: Range, default_value: float):
-        self.values_to_cycle = slider_values
-        self.min = slider_values.min
-        self.max = slider_values.max
-        self.default_value = default_value
+    def __init__(self, values: Range):
+        self.values = values
+        self.min = values.min
+        self.max = values.max
+        self.default_value = (self.min + self.max)*0.5
 
     def at(self, value: float) -> None:
         return value
 
     def index(self, value: Any) -> Any:
+        if not self.min <= value <= self.max:
+            raise ValueError("Value not in range")
         return value
 
 
 class ListSliderValues(SliderValues):
-    def __init__(self, slider_values: list, default_value: Any):
-        self.slider_values: list = slider_values
+    def __init__(self, values: list):
+        self.slider_values: list = values
         self.min = -0.49
-        self.default_value = self._get_default(default_value)
+        self.default_value = 0
 
     @property
     def max(self):
@@ -53,8 +56,3 @@ class ListSliderValues(SliderValues):
 
     def index(self, value: Any) -> int:
         return self.slider_values.index(value)
-
-    def _get_default(self, default_value):
-        if default_value is not None:
-            return self.slider_values.index(default_value)
-        return None
