@@ -23,13 +23,19 @@ actions = [
     ),
     shortcut_templates.TemporaryKey(
         action_name="Eraser (temporary)",
-        controller=controllers.EraserController(affect_preserve_alpha=True),
+        controller=controllers.EraserController(
+            affect_preserve_alpha=True,
+            set_brush_strategy=SetBrushStrategy.ON_NON_PAINTABLE
+        ),
         low_value=False,
         high_value=True,
     ),
     shortcut_templates.TemporaryKey(
         action_name="Preserve alpha (temporary)",
-        controller=controllers.PreserveAlphaController(affect_eraser=True),
+        controller=controllers.PreserveAlphaController(
+            affect_eraser=True,
+            set_brush_strategy=SetBrushStrategy.ON_NON_PAINTABLE
+        ),
         low_value=False,
         high_value=True,
     ),

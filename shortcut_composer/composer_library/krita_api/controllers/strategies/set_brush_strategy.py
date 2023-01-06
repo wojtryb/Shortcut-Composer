@@ -1,21 +1,21 @@
 from enum import Enum
 
 from ...enums import Tool
-from ..core_controllers import ToolController
+from ...core_api import Krita
 
 
 class SetBrushStrategy(Enum):
     @staticmethod
-    def __always(): ToolController.set_value(Tool.FREEHAND_BRUSH)
+    def __always(): Krita.trigger_action(Tool.FREEHAND_BRUSH.value)
 
     @staticmethod
     def __never(): ...
 
     @staticmethod
     def __on_non_paintable():
-        current_tool = ToolController.get_value()
+        current_tool = Krita.get_current_tool()
         if not Tool.is_paintable(current_tool):
-            ToolController.set_value(Tool.FREEHAND_BRUSH)
+            Krita.trigger_action(Tool.FREEHAND_BRUSH.value)
 
     ALWAYS = __always
     NEVER = __never

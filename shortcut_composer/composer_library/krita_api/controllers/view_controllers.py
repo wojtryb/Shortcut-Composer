@@ -8,10 +8,7 @@ class PresetController(Controller):
 
     presets = Krita.get_presets()
 
-    def __init__(
-        self,
-        set_brush_strategy=SetBrushStrategy.ON_NON_PAINTABLE
-    ):
+    def __init__(self, set_brush_strategy=SetBrushStrategy.ON_NON_PAINTABLE):
         self.set_brush_strategy = set_brush_strategy
 
     @staticmethod
