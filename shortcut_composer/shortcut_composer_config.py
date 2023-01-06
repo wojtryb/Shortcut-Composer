@@ -19,4 +19,6 @@ DEADZONE: Final[int] = 0
 FPS_LIMIT: Final[int] = 60
 """Maximum rate of slider refresh. 0 for no limit"""
 
-PIE_ICON_SIZE_PX: Final[int] = 100
+PIE_ICON_RADIUS_PX: Final[int] = 50
+
+PIE_RADIUS_PX: Final[int] = 300

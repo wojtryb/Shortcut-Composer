@@ -10,10 +10,14 @@ from PyQt5.QtGui import (
     QPixmap,
 )
 
-from shortcut_composer_config import SHORT_VS_LONG_PRESS_TIME, PIE_ICON_SIZE_PX
+from shortcut_composer_config import (
+    SHORT_VS_LONG_PRESS_TIME,
+    PIE_ICON_RADIUS_PX,
+    PIE_RADIUS_PX,
+)
 from core_components import Controller, Instruction
 from input_adapter import PluginAction
-from api_krita import pyqt
+from api_krita import Krita, pyqt
 
 T = TypeVar('T')
 
@@ -32,45 +36,77 @@ class MyWidget(QWidget):
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setStyleSheet("background: transparent;")
         self.setWindowTitle("Pie Menu")
+        self.setGeometry(0, 0, PIE_RADIUS_PX*2, PIE_RADIUS_PX*2)
+
+        self.changed = False
 
     def _paint_wheel(self):
         path = QPainterPath()
-        path.addEllipse(QPoint(100, 100), 100, 100)
-        path.addEllipse(QPoint(100, 100), 80, 80)
+        path.addEllipse(
+            QPoint(PIE_RADIUS_PX, PIE_RADIUS_PX),
+            PIE_RADIUS_PX,
+            PIE_RADIUS_PX)
+        path.addEllipse(
+            QPoint(PIE_RADIUS_PX, PIE_RADIUS_PX),
+            PIE_RADIUS_PX*0.7,
+            PIE_RADIUS_PX*0.7)
         self.painter.fillPath(path, QColor(100, 100, 100, 50))
 
     def _paint_label(self, pos: QPoint, value: Union[str, QPixmap]):
-        label = QLabel("text label", self)
-        label.setFont(QFont('Times', 20))
-        label.adjustSize()
-        label.setGeometry(pos.x(), pos.y(), PIE_ICON_SIZE_PX, PIE_ICON_SIZE_PX)
-        label.setStyleSheet(
-            "background-color:rgba(47, 47, 47, 255);"
-            "color: white;"
-            f"border-radius: {PIE_ICON_SIZE_PX//2}px;"
-            "border: 3px rgba(60, 60, 60, 255);"
-        )
-        label.setAlignment(Qt.AlignCenter)
-        label.setWordWrap(True)
+        path = QPainterPath()
+        path.addEllipse(
+            pos,
+            PIE_ICON_RADIUS_PX,
+            PIE_ICON_RADIUS_PX)
+        self.painter.fillPath(path, QColor(47, 47, 47, 255))
 
-        if isinstance(value, str):
-            label.setText(value)
-        elif isinstance(value, QPixmap):
+        if isinstance(value, QPixmap):
             rounded_image = pyqt.make_pixmap_round(value)
-            label.setPixmap(pyqt.scale_pixmap(
+            scaled_image = pyqt.scale_pixmap(
                 rounded_image,
-                size_px=PIE_ICON_SIZE_PX
-            ))
-        label.show()
+                size_px=PIE_ICON_RADIUS_PX*2
+            )
+            self.painter.drawPixmap(
+                QPoint(
+                    pos.x() - PIE_ICON_RADIUS_PX,
+                    pos.y() - PIE_ICON_RADIUS_PX
+                ),
+                scaled_image
+            )
+        elif isinstance(value, str):
+            label = QLabel("text label", self)
+            label.setFont(QFont('Times', 20))
+            label.adjustSize()
+            label.setGeometry(
+                round(pos.x()-PIE_ICON_RADIUS_PX*0.6),
+                round(pos.y()-PIE_ICON_RADIUS_PX*0.6),
+                round(PIE_ICON_RADIUS_PX*1.2),
+                round(PIE_ICON_RADIUS_PX*1.2))
+            label.setStyleSheet(
+                "background-color:rgba(47, 47, 47, 255);"
+                "color: white;"
+            )
+            label.setAlignment(Qt.AlignCenter)
+            label.setWordWrap(True)
+            label.setText(value)
+
+            label.show()
+
+    def show(self) -> None:
+        super().show()
+        self.changed = True
 
     def paintEvent(self, event):
-        self.painter = QPainter(self)
-        self.painter.eraseRect(event.rect())
-        self.painter.setRenderHints(QPainter.Antialiasing)
-        self._paint_wheel()
-        label = self._controller.get_label(self._values[0])
-        self._paint_label(QPoint(100, 100), label)
-        self.painter.end()
+        super().paintEvent(event)
+        if self.changed:
+            self.painter = QPainter(self)
+            self.painter.eraseRect(event.rect())
+            self.painter.setRenderHints(QPainter.Antialiasing)
+            self._paint_wheel()
+            label = self._controller.get_label(self._values[0])
+            self._paint_label(QPoint(100, 100), label)
+            self.painter.end()
+            self.changed = False
 
 
 class PieMenu(PluginAction, Generic[T]):
@@ -90,6 +126,8 @@ class PieMenu(PluginAction, Generic[T]):
         self.widget = MyWidget(controller, values)
 
     def on_key_press(self) -> None:
+        cursor = Krita.get_cursor()
+        self.widget.move(cursor.x()-PIE_RADIUS_PX, cursor.y()-PIE_RADIUS_PX)
         self.widget.show()
         super().on_key_press()
 
