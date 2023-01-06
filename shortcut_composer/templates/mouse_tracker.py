@@ -6,7 +6,6 @@ from data_components import Slider
 from .mouse_tracker_utils import (
     SingleAxisTracker,
     DoubleAxisTracker,
-    SliderHandler,
 )
 
 
@@ -55,7 +54,7 @@ class MouseTracker:
         instructions: List[Instruction] = [],
     ) -> PluginAction:
         """
-        Pick and create correct tracker based on provided sliders.
+        Pick and create correct ActionPlugin based on provided sliders.
 
         Horizontal slider requires SingleAxisTracker.
         Vertical slider requires SingleAxisTracker with negated axis.
@@ -66,20 +65,20 @@ class MouseTracker:
                 name=name,
                 is_horizontal=True,
                 instructions=instructions,
-                handler=SliderHandler(horizontal_slider),
+                slider=horizontal_slider,
             )
         if not horizontal_slider and vertical_slider:
             return SingleAxisTracker(
                 name=name,
                 is_horizontal=False,
                 instructions=instructions,
-                handler=SliderHandler(vertical_slider),
+                slider=vertical_slider,
             )
         if horizontal_slider and vertical_slider:
             return DoubleAxisTracker(
                 name=name,
                 instructions=instructions,
-                horizontal_handler=SliderHandler(horizontal_slider),
-                vertical_handler=SliderHandler(vertical_slider),
+                horizontal_slider=horizontal_slider,
+                vertical_slider=vertical_slider,
             )
         raise ValueError("At least one slider needed.")
