@@ -1,6 +1,7 @@
 from typing import List, TypeVar, Generic, Union
 
 from PyQt5.QtGui import QColor, QPixmap
+from PyQt5.QtCore import QPoint
 
 from shortcut_composer_config import (
     SHORT_VS_LONG_PRESS_TIME,
@@ -51,8 +52,7 @@ class PieMenu(PluginAction, Generic[T]):
         self._labels = self._create_labels(values)
         self._style.adapt_to_item_amount(len(self._labels))
 
-        self._widget = PieWidget(self._labels, self._style)
-        self._pie_manager = PieManager(self._widget)
+        self._pie_manager = PieManager(PieWidget(self._labels, self._style))
 
     def on_key_press(self) -> None:
         self._controller.refresh()
@@ -71,8 +71,9 @@ class PieMenu(PluginAction, Generic[T]):
             if icon := self._get_icon_if_possible(value):
                 label_list.append(Label(value=value, display_value=icon))
 
+        center = QPoint(self._style.widget_radius, self._style.widget_radius)
         angle_calculator = AngleCalculator(
-            center=self._widget.center,
+            center=center,
             radius=self._style.pie_radius)
         angle_iterator = angle_calculator.iterate_over_circle(len(label_list))
 
