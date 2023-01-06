@@ -140,6 +140,7 @@ Shortcut-Composer comes with a settings dialog available from krita topbar: **To
   - `Pie global scale` - Global scale factor for base of every pie menu.
   - `Pie icon global scale` - Global scale factor for icons of every pie menu.
   - `Pie deadzone global scale` - Global scale factor for the deadzone area of every pie menu.
+  - `Pie animation time` - Time (in seconds) for fade-in animation when showing the pie menu.
 
 ### Modifying actions and creating custom ones
 While the settings dialog allows to tweak the values common for plugin actions, it does not allow to modify the behaviour of the actions or create new ones.

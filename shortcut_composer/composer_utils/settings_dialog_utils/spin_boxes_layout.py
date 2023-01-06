@@ -35,6 +35,7 @@ class SpinBoxesLayout(QFormLayout):
         self._add_row(Config.PIE_GLOBAL_SCALE, is_int=False)
         self._add_row(Config.PIE_ICON_GLOBAL_SCALE, is_int=False)
         self._add_row(Config.PIE_DEADZONE_GLOBAL_SCALE, is_int=False)
+        self._add_row(Config.PIE_ANIMATION_TIME, is_int=False)
 
     def _add_row(self, config: Config, is_int: bool) -> None:
         """Add a spin box to the layout along with its desctiption."""

@@ -7,13 +7,36 @@ from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QColor, QPaintEvent
 
-from api_krita.pyqt import Painter
+from api_krita.pyqt import Painter, Timer
+from composer_utils import Config
 from .pie_style import PieStyle
 from .label import LabelPainter
 from .label_holder import LabelHolder
 
 
-class PieWidget(QWidget):
+class AnimatedWidget(QWidget):
+    """Adds the fade-in animation when the widget is shown."""
+
+    def __init__(self, parent) -> None:
+        super().__init__(parent)
+        self._animation_interval = 0.0167/Config.PIE_ANIMATION_TIME.read()
+        self._animation_timer = Timer(self._increase_opacity, 17)
+
+    def _increase_opacity(self):
+        """Add interval to current opacity, stop the timer when full."""
+        current_opacity = self.windowOpacity()
+        self.setWindowOpacity(current_opacity+self._animation_interval)
+        if current_opacity >= 1:
+            self._animation_timer.stop()
+
+    def show(self):
+        """Decrease opacity to 0, and start a timer which animates it."""
+        self.setWindowOpacity(0)
+        self._animation_timer.start()
+        super().show()
+
+
+class PieWidget(AnimatedWidget):
     """
     PyQt5 widget with icons on ring that can be selected by hovering.
 
@@ -36,7 +59,7 @@ class PieWidget(QWidget):
         style: PieStyle,
         parent=None
     ):
-        QWidget.__init__(self, parent)
+        super().__init__(parent)
         self.labels = labels
         self._style = style
         self._label_painters = self._create_label_painters()

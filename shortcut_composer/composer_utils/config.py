@@ -19,6 +19,7 @@ class Config(Enum):
     - `PIE_GLOBAL_SCALE` = 1.0
     - `PIE_ICON_GLOBAL_SCALE` = 1.0
     - `PIE_DEADZONE_GLOBAL_SCALE` = 1.0
+    - `PIE_ANIMATION_TIME` = 0.2
     - `TAG_RED` = "★ My Favorites"
     - `TAG_GREEN` = "RGBA"
     - `TAG_BLUE` = "Erasers"
@@ -38,6 +39,7 @@ class Config(Enum):
     PIE_GLOBAL_SCALE = "Pie global scale"
     PIE_ICON_GLOBAL_SCALE = "Pie icon global scale"
     PIE_DEADZONE_GLOBAL_SCALE = "Pie deadzone global scale"
+    PIE_ANIMATION_TIME = "pie animation time"
     TAG_RED = "Tag (red)"
     TAG_GREEN = "Tag (green)"
     TAG_BLUE = "Tag (blue)"
@@ -84,6 +86,7 @@ _defaults = {
     Config.PIE_GLOBAL_SCALE: 1.0,
     Config.PIE_ICON_GLOBAL_SCALE: 1.0,
     Config.PIE_DEADZONE_GLOBAL_SCALE: 1.0,
+    Config.PIE_ANIMATION_TIME: 0.2,
     Config.TAG_RED: "★ My Favorites",
     Config.TAG_GREEN: "RGBA",
     Config.TAG_BLUE: "Erasers",
