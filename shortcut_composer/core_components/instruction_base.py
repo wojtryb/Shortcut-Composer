@@ -1,4 +1,5 @@
 from typing import List
+from functools import partialmethod
 
 
 class Instruction:
@@ -9,10 +10,10 @@ class Instruction:
     press and release.
     """
 
-    def enter(self) -> 'Instruction': return self
-    def exit(self, *_) -> None: ...
-    def __enter__(self) -> 'Instruction': return self.enter()
-    def __exit__(self, *_) -> None: self.exit()
+    def on_key_press(self) -> None: ...
+    def on_short_key_release(self) -> None: ...
+    def on_long_key_release(self) -> None: ...
+    def on_every_key_release(self, *_) -> None: ...
 
 
 class InstructionHolder:
@@ -20,17 +21,11 @@ class InstructionHolder:
     def __init__(self, instructions: List[Instruction] = []) -> None:
         self.__instructions = instructions
 
-    def enter(self) -> 'InstructionHolder':
+    def on_all(self, method_name: str) -> None:
         for instruction in self.__instructions:
-            instruction.enter()
-        return self
+            getattr(instruction, method_name)()
 
-    def exit(self, *_) -> None:
-        for instruction in self.__instructions:
-            instruction.exit()
-
-    def __enter__(self) -> 'InstructionHolder':
-        return self.enter()
-
-    def __exit__(self, *_) -> None:
-        self.exit()
+    on_key_press = partialmethod(on_all, "on_key_press")
+    on_short_key_release = partialmethod(on_all, "on_short_key_release")
+    on_long_key_release = partialmethod(on_all, "on_long_key_release")
+    on_every_key_release = partialmethod(on_all, "on_every_key_release")

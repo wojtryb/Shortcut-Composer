@@ -81,23 +81,21 @@ class TemporaryKey(PluginAction):
     def on_key_press(self) -> None:
         """Set high state only if state before press was low."""
         self._controller.refresh()
-        self._instructions.enter()
+        super().on_key_press()
         self._was_high_before_press = self._is_high_state()
         if not self._was_high_before_press:
             self._set_high()
 
     def on_short_key_release(self) -> None:
         """Set low state only when going from high state."""
+        super().on_short_key_release()
         if self._was_high_before_press:
             self._set_low()
 
     def on_long_key_release(self) -> None:
         """End of long press ensures low state."""
+        super().on_long_key_release()
         self._set_low()
-
-    def on_every_key_release(self) -> None:
-        """End the additional instructions on every key release."""
-        self._instructions.exit()
 
     def _read_default_value(self, value: Any):
         """Read value from controller if it was not given."""

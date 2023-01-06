@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from input_adapter import PluginAction
-from core_components import Instruction, InstructionHolder
+from core_components import Instruction
 from data_components import Slider
 from .mouse_tracker_utils import (
     SingleAxisTracker,
@@ -61,25 +61,24 @@ class MouseTracker:
         Vertical slider requires SingleAxisTracker with negated axis.
         Both sliders require DoubleAxisTracker.
         """
-        instructions_holder = InstructionHolder(instructions)
         if horizontal_slider and not vertical_slider:
             return SingleAxisTracker(
                 name=name,
                 sign=1,
-                instructions=instructions_holder,
+                instructions=instructions,
                 handler=SliderHandler(horizontal_slider)
             )
         if not horizontal_slider and vertical_slider:
             return SingleAxisTracker(
                 name=name,
                 sign=-1,
-                instructions=instructions_holder,
+                instructions=instructions,
                 handler=SliderHandler(vertical_slider)
             )
         if horizontal_slider and vertical_slider:
             return DoubleAxisTracker(
                 name=name,
-                instructions=instructions_holder,
+                instructions=instructions,
                 horizontal_handler=SliderHandler(horizontal_slider),
                 vertical_handler=SliderHandler(vertical_slider)
             )
