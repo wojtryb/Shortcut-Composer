@@ -1,3 +1,5 @@
+from typing import Optional
+
 from PyQt5.QtGui import QPainter, QPainterPath, QColor, QPixmap
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtCore import QPoint
@@ -14,13 +16,12 @@ class Painter:
         center: QPoint,
         outer_radius: float,
         color: QColor,
-        fill_part: float = 1.0,
+        thickness: Optional[float] = None,
     ):
-        # fill : (0.0-1.0>
         path = QPainterPath()
         path.addEllipse(center, outer_radius, outer_radius)
-        if fill_part != 1.0:
-            inner_radius = outer_radius * (1-fill_part)
+        if thickness:
+            inner_radius = outer_radius - thickness
             path.addEllipse(center, inner_radius, inner_radius)
         self._painter.fillPath(path, color)
 

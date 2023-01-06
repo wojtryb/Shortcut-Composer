@@ -110,6 +110,6 @@ class ImageLabel:
         rounded_image = make_pixmap_round(self.picture)
         scaled_image = scale_pixmap(
             pixmap=rounded_image,
-            size_px=self.radius*2
+            size_px=round(self.radius*1.8)
         )
         painter.paint_pixmap(self.center, scaled_image)
