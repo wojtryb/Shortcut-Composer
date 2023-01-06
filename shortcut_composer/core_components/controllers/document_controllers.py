@@ -34,7 +34,7 @@ class TimeController(Controller):
     default_value = 0
 
     @staticmethod
-    def get_value() -> Node:
+    def get_value() -> int:
         return Krita.get_active_document().current_time()
 
     @staticmethod

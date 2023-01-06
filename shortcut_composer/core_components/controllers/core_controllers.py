@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
 from api_krita import Krita
-from api_krita.wrappers import Node
 from api_krita.enums import Tool, Toggle
 from ..controller_base import Controller
 
@@ -40,8 +39,8 @@ class ToggleController(Controller):
     toggle: Toggle
     default_value = False
 
-    def get_value(self) -> Node:
+    def get_value(self) -> Toggle:
         return Krita.get_toggle_state(self.toggle)
 
-    def set_value(self, value: bool) -> None:
+    def set_value(self, value: Toggle) -> None:
         Krita.set_toggle_state(self.toggle, value)

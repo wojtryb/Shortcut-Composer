@@ -34,11 +34,11 @@ class BrushSizeController(Controller):
     default_value: int = 100
 
     @staticmethod
-    def get_value() -> float:
+    def get_value() -> int:
         return Krita.get_active_view().current_brush_size()
 
     @staticmethod
-    def set_value(value: float) -> None:
+    def set_value(value: int) -> None:
         Krita.get_active_view().set_brush_size(value)
 
 
