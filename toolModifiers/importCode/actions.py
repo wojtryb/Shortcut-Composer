@@ -1,15 +1,13 @@
 from typing import List
 from krita import Krita
 from abc import ABC
-from dataclasses import dataclass
 
 from .current_tool import get_current_tool_name
 from ..config import connected_toggles
 
 
 class Action(ABC):
-    krita_name: str
-    human_name: str
+    action_name: str
 
     def set_low(self):
         pass
@@ -19,34 +17,12 @@ class Action(ABC):
 
     def is_high_state(self):
         pass
-
-
-@dataclass
-class ToolWrapper(Action):
-    krita_name: str
-    human_name: str
-
-    def set_low(self):
-        self._set_tool("KritaShape/KisToolBrush")
-
-    def set_high(self):
-        self._set_tool(self.krita_name)
-
-    def is_high_state(self):
-        'returns True if the passed tool is active'
-        return get_current_tool_name() == self.krita_name
-
-    @staticmethod
-    def _set_tool(tool_name):
-        'activates a tool of passed name'
-        Krita.instance().action(tool_name).trigger()
 
 
 class CyclicTool(Action):
-    def __init__(self, tools: List[str]):
+    def __init__(self, action_name: str, tools: List[str]):
         self.tools = tools + [tools[0]]
-        self.krita_name = 'Cyclic tool'
-        self.human_name = 'Cyclic tool'
+        self.action_name = action_name
 
     def set_low(self):
         self._set_tool(self.tools[0])
@@ -70,8 +46,7 @@ class CyclicTool(Action):
 
 class EraserWrapper(Action):
     def __init__(self):
-        self.krita_name = 'Eraser (toggle)'
-        self.human_name = 'Eraser (toggle)'
+        self.action_name = 'Eraser (toggle)'
 
     def set_low(self):
         self._toggle_eraser()
@@ -94,8 +69,7 @@ class EraserWrapper(Action):
 
 class AlphaWrapper(Action):
     def __init__(self):
-        self.krita_name = 'Preserve alpha (toggle)'
-        self.human_name = 'Preserve alpha (toggle)'
+        self.action_name = 'Preserve alpha (toggle)'
 
     def set_low(self):
         self._toggle_alpha_lock()
