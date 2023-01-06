@@ -32,7 +32,7 @@ actions = [
         high_value=True,
         instructions=[
             instructions.SetBrushOnNonPaintable(),
-            instructions.TurnOff(Toggle.PRESERVE_ALPHA),
+            instructions.EnsureOff(Toggle.PRESERVE_ALPHA),
         ],
     ),
     templates.TemporaryKey(
@@ -42,7 +42,7 @@ actions = [
         high_value=True,
         instructions=[
             instructions.SetBrushOnNonPaintable(),
-            instructions.TurnOff(Toggle.ERASER),
+            instructions.EnsureOff(Toggle.ERASER),
         ],
     ),
     templates.MultipleAssignment(
@@ -108,7 +108,7 @@ actions = [
     templates.MouseTracker(
         action_name="Blending mode (tracker)",
         horizontal_slider=Slider(
-            controller=controllers.BrushSizeController(),
+            controller=controllers.BlendingModeController(),
             default_value=BlendingMode.NORMAL,
             values_to_cycle=[
                 BlendingMode.NORMAL,

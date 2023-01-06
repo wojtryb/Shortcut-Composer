@@ -31,7 +31,10 @@ class PickStrategy(Enum):
 
 
 class CurrentLayerStack:
-    def __init__(self, pick_strategy: PickStrategy) -> None:
+    def __init__(
+        self,
+        pick_strategy: PickStrategy = PickStrategy.ALL
+    ) -> None:
         self.pick_strategy = pick_strategy
         self.layers = self.get_layers()
 

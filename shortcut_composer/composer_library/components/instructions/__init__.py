@@ -3,8 +3,8 @@ from .set_brush_strategy import SetBrush, SetBrushOnNonPaintable
 from .togglers import (
     TemporaryOff,
     TemporaryOn,
-    TurnOff,
-    TurnOn,
+    EnsureOff,
+    EnsureOn,
 )
 
 __all__ = [
@@ -13,6 +13,6 @@ __all__ = [
     'TemporaryOff',
     'TemporaryOn',
     'SetBrush',
-    'TurnOff',
-    'TurnOn',
+    'EnsureOff',
+    'EnsureOn',
 ]

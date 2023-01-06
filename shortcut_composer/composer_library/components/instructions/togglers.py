@@ -17,12 +17,12 @@ class _ToggleInstruction(Instruction):
     toggle: Toggle
 
 
-class TurnOn(_ToggleInstruction):
+class EnsureOn(_ToggleInstruction):
 
     enter = partialmethod(_set_toggle, state=True)
 
 
-class TurnOff(_ToggleInstruction):
+class EnsureOff(_ToggleInstruction):
 
     enter = partialmethod(_set_toggle, state=False)
 
