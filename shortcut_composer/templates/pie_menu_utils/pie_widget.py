@@ -58,13 +58,12 @@ class PieWidget(QWidget):
         if not self.changed:
             return
 
-        painter = Painter(self, event)
-        self._paint_wheel(painter)
+        with Painter(self, event) as painter:
+            self._paint_wheel(painter)
 
-        for label in self._label_painters:
-            label.paint(painter)
+            for label_painter in self._label_painters:
+                label_painter.paint(painter)
 
-        painter.end()
         self.changed = False
 
     def _paint_wheel(self, painter: Painter):
