@@ -37,7 +37,7 @@ class PluginAction(ABC):
 
 class TemporaryAction(PluginAction):
     """
-    Abstract class with custom key event interface for 'sticky keys'
+    Abstract class with custom key event interface for 'temporary keys'
 
     Action consists of two states: low and high.
     - short key presses toggle between states
@@ -85,8 +85,8 @@ class CyclicPluginAction(PluginAction):
 
     Action cycles around passed 'values_to_cycle':
 
-    - short key moves to next value.
-    - when none of the values is active, move to first one
+    - before the cycle starts, long press works as 'temporary key'
+    - then, short key press moves to next value.
     - end of long press moves to passed 'default value'
 
     Child class has to define how to set and determine value:
@@ -98,9 +98,14 @@ class CyclicPluginAction(PluginAction):
     default_value: Any
 
     def __post_init__(self):
-        """Create flag that helps to determine state of cycling."""
+        """
+        Create flag determining that cycling just started.
+
+        If default_value should be taken into consideration, it's simply
+        added to the end of cycle list.
+        """
         self.include_default_in_cycle: bool
-        self._wait_for_release: bool = False
+        self._cycling_just_started: bool = False
 
         if self.include_default_in_cycle:
             self.values_to_cycle.append(self.default_value)
@@ -121,11 +126,11 @@ class CyclicPluginAction(PluginAction):
             or current_value == self.default_value
         ):
             self._set_value(self.values_to_cycle[0])
-            self._wait_for_release = True
+            self._cycling_just_started = True
 
     def on_short_key_release(self):
         """Use short press for cycling (apart from starting cycle)"""
-        if not self._wait_for_release:
+        if not self._cycling_just_started:
             self._set_next_value()
 
     def on_long_key_release(self):
@@ -133,14 +138,11 @@ class CyclicPluginAction(PluginAction):
         self._set_value(self.default_value)
 
     def on_every_key_release(self):
-        self._wait_for_release = False
-
-    def _set_starting_value(self):
-        current_value = self._get_current_value()
-        if current_value not in self.values_to_cycle:
-            self._set_value(self.values_to_cycle[0])
+        """Reset flag for 'temporary keys' on first value."""
+        self._cycling_just_started = False
 
     def _set_next_value(self):
+        """Move to next value in list. """
         current_value = self._get_current_value()
         for tool, next_tool in zip_longest(
                 self.values_to_cycle,

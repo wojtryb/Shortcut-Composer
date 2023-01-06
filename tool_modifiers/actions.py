@@ -4,7 +4,7 @@ from .shortcut_library.plugin_actions.enums import Tool, BlendingMode
 from .shortcut_library.plugin_actions import (
     TemporaryTool,
     TemporaryEraser,
-    TemporaryAlphaLock,
+    TemporaryPreserveAlpha,
     CyclicTool,
     CyclicPreset,
     CyclicOpacity,
@@ -13,7 +13,7 @@ from .shortcut_library.plugin_actions import (
 
 actions = [
     TemporaryEraser(),
-    TemporaryAlphaLock(),
+    TemporaryPreserveAlpha(),
     TemporaryTool(
         action_name="Freehand selection (toggle)",
         krita_tool=Tool.freehand_selection,
