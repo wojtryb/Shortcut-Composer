@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPainter, QPixmap
+from PyQt5.QtCore import Qt, QPoint
 
 from api_krita import Krita
 from api_krita.enums import Tool, Toggle
@@ -28,7 +29,19 @@ class ToolController(Controller):
         Krita.active_tool = value
 
     def get_label(self, value: Tool) -> QPixmap:
-        return value.icon.pixmap(60, 60)
+        return self._add_border(value.icon.pixmap(60, 60))
+
+    @staticmethod
+    def _add_border(pixmap: QPixmap):
+        result = QPixmap(100, 100)
+        result.fill(Qt.transparent)
+        painter = QPainter(result)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setCompositionMode(QPainter.CompositionMode_SourceOver)
+        painter.drawPixmap(QPoint(), result)
+        painter.drawPixmap(20, 20, 60, 60, pixmap)
+        painter.end()
+        return result
 
 
 @dataclass

@@ -1,11 +1,4 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import (
-    QPainter,
-    QPixmap,
-    QImage,
-    QBrush,
-    QWindow
-)
+from PyQt5.QtGui import QPixmap, QImage
 
 from api_krita import Krita
 from api_krita.enums import BlendingMode
@@ -39,37 +32,8 @@ class PresetController(ViewBasedController):
         self.view.brush_preset = value
 
     def get_label(self, value: str) -> QPixmap:
-        image = Krita.get_presets()[value].image()
-        return self._mask_image(image, size=100)
-
-    @staticmethod
-    def _mask_image(image: QImage, size=100) -> QPixmap:
-        image.convertToFormat(QImage.Format_ARGB32)
-
-        imgsize = min(image.width(), image.height())
-        out_img = QImage(imgsize, imgsize, QImage.Format_ARGB32)
-        out_img.fill(Qt.transparent)
-
-        brush = QBrush(image)
-        painter = QPainter(out_img)
-        painter.setBrush(brush)
-        painter.setPen(Qt.NoPen)
-        painter.setRenderHint(QPainter.Antialiasing, True)
-        painter.drawEllipse(0, 0, imgsize, imgsize)
-        painter.end()
-
-        pixel_ratio = QWindow().devicePixelRatio()
-        pixmap = QPixmap.fromImage(out_img)
-        pixmap.setDevicePixelRatio(pixel_ratio)
-        new_size = round(size * pixel_ratio)
-        pixmap = pixmap.scaled(
-            new_size,
-            new_size,
-            Qt.KeepAspectRatio,
-            Qt.SmoothTransformation
-        )
-
-        return pixmap
+        image: QImage = Krita.get_presets()[value].image()
+        return QPixmap.fromImage(image)
 
 
 class BrushSizeController(ViewBasedController):
