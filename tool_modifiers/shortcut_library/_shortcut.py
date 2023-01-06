@@ -1,8 +1,8 @@
-from krita import Krita
 from time import time
 
 from PyQt5.QtGui import QKeyEvent
 
+from .plugin_actions.krita_api_wrapper import Krita
 from .plugin_actions._interfaces import PluginAction
 from ..config import interval
 
@@ -43,4 +43,4 @@ class Shortcut:
 
     @property
     def tool_shortcut(self):
-        return Krita.instance().action(self.action.action_name).shortcut()
+        Krita.get_action_shortcut(self.action.action_name)

@@ -1,7 +1,7 @@
-from krita import QMdiArea
 from typing import Callable
 
 from PyQt5.QtCore import QEvent
+from .plugin_actions.krita_api_wrapper import QMdiArea
 
 
 class ReleaseKeyEventFilter(QMdiArea):
