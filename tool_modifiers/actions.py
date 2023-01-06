@@ -15,11 +15,16 @@ from .shortcut_library.plugin_actions.controllers import (
     PresetController,
     ToolController
 )
+from .shortcut_library.plugin_actions.mouse_cycle import Handler
 
 actions = [
     TemporaryEraser(),
     TemporaryPreserveAlpha(),
-    MouseCycle(action_name="Mouse cycle"),
+    MouseCycle(
+        action_name="Mouse cycle",
+        horizontal_handler=Handler(),
+        vertical_handler=Handler(),
+    ),
     TemporaryAction(
         action_name="Freehand selection (toggle)",
         controller=ToolController(),
