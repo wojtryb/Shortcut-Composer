@@ -1,3 +1,4 @@
+from threading import Thread
 from time import sleep
 from typing import Any, Callable, List, Union
 
@@ -24,6 +25,10 @@ class Slider:
         self.__interpreter: MouseInterpreter
 
     def start(self, mouse_getter: Callable[[], int]) -> None:
+        self.__working = True
+        Thread(target=self._loop, args=[mouse_getter], daemon=True).start()
+
+    def _loop(self, mouse_getter: Callable[[], int]) -> None:
         self.__interpreter = MouseInterpreter(
             min=self.__to_cycle.min,
             max=self.__to_cycle.max,
@@ -31,7 +36,6 @@ class Slider:
             start_value=self.__get_current_value(),
             sensitivity=self.__sensitivity,
         )
-        self.__working = True
         while self.__working:
             self._handle(mouse_getter())
             sleep(0.05)
