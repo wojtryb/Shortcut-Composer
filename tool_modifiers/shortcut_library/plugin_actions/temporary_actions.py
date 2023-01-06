@@ -26,11 +26,9 @@ class TemporaryTool(TemporaryAction):
 @dataclass
 class TemporaryEraser(TemporaryAction):
 
+    action_name = 'Eraser (toggle)'
     connected_toggles: bool = True
     time_interval: float = 0.3
-
-    def __init__(self):
-        self.action_name = 'Eraser (toggle)'
 
     def _set_low(self):
         self._set_eraser(False)
@@ -38,9 +36,9 @@ class TemporaryEraser(TemporaryAction):
     def _set_high(self):
         self._set_eraser(True)
 
-    def _is_high_state(self):
+    def _is_high_state(self) -> bool:
         'returns True if the passed tool is active'
-        Krita.get_action_state("erase_action")
+        return Krita.get_action_state("erase_action")
 
     def _set_eraser(self, state: bool):
         'changes the state of the eraser, may affect alpha lock'
@@ -62,9 +60,9 @@ class TemporaryAlphaLock(TemporaryAction):
     def _set_high(self):
         self._set_alpha_lock(True)
 
-    def _is_high_state(self):
+    def _is_high_state(self) -> bool:
         'returns True if the alpha is locked'
-        Krita.get_action_state("preserve_alpha")
+        return Krita.get_action_state("preserve_alpha")
 
     def _set_alpha_lock(self, state: bool):
         'changes the state of the alpha lock, may affect the eraser'
