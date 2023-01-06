@@ -35,6 +35,7 @@ class TransformModeActions:
 
     def create_actions(self, window):
         _ACTION_MAP = {
+            "Transform tool: free": self.set_free,
             "Transform tool: perspective": self.set_perspective,
             "Transform tool: warp": self.set_warp,
             "Transform tool: cage": self.set_cage,
@@ -49,6 +50,7 @@ class TransformModeActions:
                 callback=implementation
             )
 
+    set_free = partialmethod(_set_mode, Tool.TRANSFORM_FREE)
     set_perspective = partialmethod(_set_mode, Tool.TRANSFORM_PERSPECTIVE)
     set_warp = partialmethod(_set_mode, Tool.TRANSFORM_WARP)
     set_cage = partialmethod(_set_mode, Tool.TRANSFORM_CAGE)
@@ -97,6 +99,7 @@ class TransformModeActions:
             raise RuntimeError("Transform options not found.")
 
         _BUTTONS_MAP = {
+            Tool.TRANSFORM_FREE: "freeTransformButton",
             Tool.TRANSFORM_PERSPECTIVE: "perspectiveTransformButton",
             Tool.TRANSFORM_WARP: "warpButton",
             Tool.TRANSFORM_CAGE: "cageButton",

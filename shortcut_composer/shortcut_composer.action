@@ -9,8 +9,8 @@
         <activationConditions>1</activationConditions>
         </Action>
 
-        <Action name="Temporary transform tool">
-        <text>Temporary transform tool</text>
+        <Action name="Cycle transform tool modes">
+        <text>Cycle transform tool modes</text>
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         </Action>

@@ -58,6 +58,7 @@ class Tool(Enum):
     GRADIENT = "KritaFill/KisToolGradient"
     LINE = "KritaShape/KisToolLine"
     TRANSFORM = "KisToolTransform"
+    TRANSFORM_FREE = "Transform tool: free"
     TRANSFORM_PERSPECTIVE = "Transform tool: perspective"
     TRANSFORM_WARP = "Transform tool: warp"
     TRANSFORM_CAGE = "Transform tool: cage"
@@ -107,6 +108,24 @@ class Tool(Enum):
         icon_name = _ICON_MAP.get(self, "edit-delete")
         return Api.instance().icon(icon_name)
 
+    def __eq__(self, other):
+        if self in _TRANSFORMS and other in _TRANSFORMS:
+            return True
+        return Enum.__eq__(self, other)
+
+    def __hash__(self):
+        return hash(self.value)
+
+
+_TRANSFORMS = {
+    Tool.TRANSFORM,
+    Tool.TRANSFORM_FREE,
+    Tool.TRANSFORM_PERSPECTIVE,
+    Tool.TRANSFORM_WARP,
+    Tool.TRANSFORM_CAGE,
+    Tool.TRANSFORM_LIQUIFY,
+    Tool.TRANSFORM_MESH,
+}
 
 _PAINTABLE = {
     Tool.FREEHAND_BRUSH,
@@ -123,7 +142,7 @@ _ICON_MAP = {
     Tool.FREEHAND_SELECTION: "tool_outline_selection",
     Tool.GRADIENT: "krita_tool_gradient",
     Tool.LINE: "krita_tool_line",
-    Tool.TRANSFORM: "krita_tool_transform",
+    Tool.TRANSFORM_FREE: "krita_tool_transform",
     Tool.TRANSFORM_PERSPECTIVE: "transform_icons_perspective",
     Tool.TRANSFORM_WARP: "transform_icons_warp",
     Tool.TRANSFORM_CAGE: "transform_icons_cage",
