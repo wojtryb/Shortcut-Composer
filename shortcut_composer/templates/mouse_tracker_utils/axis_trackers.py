@@ -22,7 +22,6 @@ class SingleAxisTracker(PluginAction):
                  handler: SliderHandler,
                  is_horizontal: bool,
                  instructions: List[Instruction] = [],
-                 deadzone: int = 10,
                  time_interval: float = 0.3) -> None:
         super().__init__(
             name=name,
@@ -31,32 +30,17 @@ class SingleAxisTracker(PluginAction):
 
         self._is_horizontal = is_horizontal
         self._handler = handler
-        self._deadzone = deadzone
-        self._lock = Lock()
-        self._is_working = False
 
     def on_key_press(self) -> None:
         """Start tracking with handler."""
         super().on_key_press()
-        Thread(target=self._start_after_deadzone, daemon=True).start()
-
-    def _start_after_deadzone(self) -> None:
-        mouse_getter = self._get_mouse_getter()
-        start_point = mouse_getter()
-        with self._lock:
-            self._is_working = True
-            while abs(start_point - mouse_getter()) <= self._deadzone:
-                if not self._is_working:
-                    return
-                sleep(0.05)
-            self._handler.start(mouse_getter)
+        self._handler.start(self._get_mouse_getter())
 
     def on_every_key_release(self) -> None:
         """End tracking with handler."""
         super().on_every_key_release()
         self._is_working = False
-        with self._lock:
-            self._handler.stop()
+        self._handler.stop()
 
     def _get_mouse_getter(self):
         cursor = Krita.get_cursor()
@@ -80,7 +64,6 @@ class DoubleAxisTracker(PluginAction):
                  horizontal_handler: SliderHandler,
                  vertical_handler: SliderHandler,
                  instructions: List[Instruction] = [],
-                 deadzone: int = 10,
                  time_interval: float = 0.3) -> None:
         super().__init__(
             name=name,
@@ -89,7 +72,6 @@ class DoubleAxisTracker(PluginAction):
 
         self._horizontal_handler = horizontal_handler
         self._vertical_handler = vertical_handler
-        self._deadzone = deadzone
         self._lock = Lock()
         self._is_working = False
 
@@ -104,15 +86,14 @@ class DoubleAxisTracker(PluginAction):
         start_point = (cursor.x(), cursor.y())
         with self._lock:
             self._is_working = True
-            while self._is_working:
+            delta_hor = 0
+            delta_ver = 0
+            while abs(delta_hor - delta_ver) <= 10:
                 delta_hor = abs(start_point[0] - cursor.x())
                 delta_ver = abs(start_point[1] - cursor.y())
-                if abs(delta_hor - delta_ver) >= self._deadzone:
-                    break
+                if not self._is_working:
+                    return
                 sleep(0.05)
-
-            if not self._is_working:
-                return
 
             if delta_hor > delta_ver:
                 self._horizontal_handler.start(cursor.x)
