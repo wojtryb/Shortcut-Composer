@@ -2,51 +2,69 @@
 
 from .shortcut_library.plugin_actions.enums import Tool, BlendingMode
 from .shortcut_library.plugin_actions import (
-    TemporaryTool,
     TemporaryEraser,
     TemporaryPreserveAlpha,
-    CyclicTool,
-    CyclicPreset,
-    CyclicOpacity,
-    CyclicBlendingModes,
     MouseCycle,
+    TemporaryAction,
+    CyclicAction
+
+)
+from .shortcut_library.plugin_actions.controllers import (
+    BlendingModeController,
+    OpacityController,
+    PresetController,
+    ToolController
 )
 
 actions = [
-    TemporaryEraser(action_name="Eraser (toggle)"),
+    TemporaryEraser(),
+    TemporaryPreserveAlpha(),
     MouseCycle(action_name="Mouse cycle"),
-    TemporaryPreserveAlpha(action_name="Preserve alpha (toggle)"),
-    TemporaryTool(
+    TemporaryAction(
         action_name="Freehand selection (toggle)",
-        krita_tool=Tool.freehand_selection,
+        controller=ToolController(),
+        # default_value=Tool.freehand_brush,
+        high_value=Tool.freehand_selection,
     ),
-    TemporaryTool(
+    TemporaryAction(
         action_name="Gradient (toggle)",
-        krita_tool=Tool.gradient,
+        controller=ToolController(),
+        # default_value=Tool.freehand_brush,
+        high_value=Tool.gradient,
     ),
-    TemporaryTool(
+    TemporaryAction(
         action_name="Line tool (toggle)",
-        krita_tool=Tool.line,
+        controller=ToolController(),
+        # default_value=Tool.freehand_brush,
+        high_value=Tool.line,
     ),
-    TemporaryTool(
+    TemporaryAction(
         action_name="Transform tool (toggle)",
-        krita_tool=Tool.transform,
+        controller=ToolController(),
+        # default_value=Tool.freehand_brush,
+        high_value=Tool.transform,
         time_interval=1.0
     ),
-    TemporaryTool(
+    TemporaryAction(
         action_name="Move tool (toggle)",
-        krita_tool=Tool.move,
+        controller=ToolController(),
+        # default_value=Tool.freehand_brush,
+        high_value=Tool.move,
     ),
-    CyclicTool(
+    CyclicAction(
         action_name="Selections tools (cycle)",
+        controller=ToolController(),
+        # default_value=Tool.freehand_brush,
         values_to_cycle=[
             Tool.freehand_selection,
             Tool.rectangular_selection,
             Tool.contiquous_selection,
         ],
     ),
-    CyclicTool(
+    CyclicAction(
         action_name="Misc tools (cycle)",
+        controller=ToolController(),
+        # default_value=Tool.freehand_brush,
         values_to_cycle=[
             Tool.gradient,
             Tool.line,
@@ -54,8 +72,9 @@ actions = [
             Tool.reference,
         ],
     ),
-    CyclicPreset(
+    CyclicAction(
         action_name="Preset (cycle)",
+        controller=PresetController(),
         default_value="wojtryb6 R 01 horizontal DA",
         values_to_cycle=[
             "wojtryb6 R 02a square DA impasto",
@@ -65,14 +84,17 @@ actions = [
             "wojtryb6 R 05 watercolor",
         ],
     ),
-    CyclicOpacity(
+    CyclicAction(
         action_name="Opacity (cycle)",
-        default_value=100,
-        values_to_cycle=[75, 50],
+        controller=OpacityController(),
+        # default_value=1.0,
+        values_to_cycle=[0.75, 0.50],
         include_default_in_cycle=True,
     ),
-    CyclicBlendingModes(
+    CyclicAction(
         action_name="Blending mode (cycle)",
+        controller=BlendingModeController(),
+        # default_value=BlendingMode.normal,
         values_to_cycle=[BlendingMode.overlay],
         include_default_in_cycle=True,
     ),
