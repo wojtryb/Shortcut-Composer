@@ -53,6 +53,10 @@ class CyclicTool(Action):
 
     def set_high(self):
         current_tool = get_current_tool_name()
+        if current_tool not in self.tools:
+            self._set_tool(self.tools[0])
+            return
+
         for tool, next_tool in zip_longest(
                 self.tools,
                 self.tools[1:],
@@ -62,7 +66,7 @@ class CyclicTool(Action):
                 return
 
     def is_high_state(self):
-        return get_current_tool_name() not in self.tools
+        return False
 
     @staticmethod
     def _set_tool(tool_name: str):

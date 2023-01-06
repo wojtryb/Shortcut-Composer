@@ -2,13 +2,11 @@
 
 tools = {
     "Selections tools (cycle)": [
-        "KritaShape/KisToolBrush",
         "KisToolSelectOutline",
         "KisToolSelectRectangular",
         "KisToolSelectContiguous",
     ],
     "Misc tools (cycle)": [
-        "KritaShape/KisToolBrush",
         "KritaFill/KisToolGradient",
         "KritaShape/KisToolLine",
         "KisToolTransform",
