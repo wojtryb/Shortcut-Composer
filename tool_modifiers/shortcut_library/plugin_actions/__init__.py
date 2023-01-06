@@ -2,7 +2,7 @@ from .temporary_action import TemporaryAction
 from .cyclic_action import CyclicAction
 from .virtual_slider_action import VirtualSliderAction
 from .special_actions import TemporaryEraser, TemporaryPreserveAlpha
-from .layer_picker import LayerPicker, HideStrategy
+from .layer_picker import LayerPicker, HideStrategy, PickStrategy
 
 __all__ = [
     'TemporaryAction',
@@ -13,4 +13,5 @@ __all__ = [
     'TemporaryPreserveAlpha',
     'LayerPicker',
     'HideStrategy',
+    'PickStrategy',
 ]
