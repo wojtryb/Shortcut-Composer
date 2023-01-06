@@ -43,14 +43,14 @@ class ShortcutAdapter:
 
     def _is_event_key_release(self, release_event: QKeyEvent) -> None:
         """Decide if the key release event is matches shortcut and is valid."""
-        event_string = QKeySequence(
-            release_event.modifiers() |
-            release_event.key()
-        ).toString()
+        event_sequence = QKeySequence(
+            release_event.modifiers() | release_event.key())
         return (
-            event_string == self.tool_shortcut.toString()
-            and not release_event.isAutoRepeat()
+            not release_event.isAutoRepeat()
             and not self.key_released
+            and self._match_shortcuts(
+                event_sequence.toString(),
+                self.tool_shortcut.toString())
         )
 
     def event_filter_callback(self, release_event: QKeyEvent) -> None:
@@ -62,3 +62,7 @@ class ShortcutAdapter:
     def tool_shortcut(self) -> QKeySequence:
         """Return shortcut assigned to shortcut red from krita settings."""
         return Krita.get_action_shortcut(self.action.name)
+
+    @staticmethod
+    def _match_shortcuts(_a: str, _b: str, /) -> bool:
+        return _a in _b or _b in _a
