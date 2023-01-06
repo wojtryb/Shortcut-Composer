@@ -5,14 +5,14 @@ from .shortcut_library.plugin_action_utils import ActionManager
 from .actions import actions
 
 
-class ToolModifiers(Extension):
+class ShortcutComposer(Extension):
     """Krita extension that adds complex keyboard shortcuts."""
 
     manager: ActionManager
 
     def __init__(self, parent):
         """Initialize extension, create single event filter."""
-        super(ToolModifiers, self).__init__(parent)
+        super(ShortcutComposer, self).__init__(parent)
 
     def setup(self):
         """Obligatory override of abstract class."""
@@ -25,4 +25,4 @@ class ToolModifiers(Extension):
 
 
 # Add extension to krita
-Krita.add_extension(ToolModifiers)
+Krita.add_extension(ShortcutComposer)
