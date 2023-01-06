@@ -8,8 +8,6 @@ from ._interfaces import CyclicPluginAction
 @dataclass
 class CyclicTool(CyclicPluginAction):
 
-    action_name: str
-    _values_to_cycle: List[str]
     _default_value: str = "KritaShape/KisToolBrush"
 
     def _set_value(self, value: str) -> None:
@@ -20,12 +18,7 @@ class CyclicTool(CyclicPluginAction):
         return Krita.get_current_tool_name()
 
 
-@dataclass
 class CyclicPreset(CyclicPluginAction):
-
-    action_name: str
-    _values_to_cycle: List[str]
-    _default_value: str
 
     def _set_value(self, value: str):
         presets = Krita.get_presets()
@@ -38,16 +31,13 @@ class CyclicPreset(CyclicPluginAction):
 @dataclass
 class CyclicBlendingModes(CyclicPluginAction):
 
-    action_name: str
-    _values_to_cycle: List[str]
-    _default_value: str
+    _default_value: str = "normal"
 
     def _set_value(self, value: str):
         print("setting", value)
         Krita.get_active_view().set_blending_mode(value)
 
     def _get_current_value(self) -> str:
-        print(Krita.get_active_view().current_blending_mode())
         return Krita.get_active_view().current_blending_mode()
 
 
@@ -57,7 +47,7 @@ class CyclicOpacity(CyclicPluginAction):
         self,
         action_name: str,
         _values_to_cycle: List[float],
-        _default_value: float
+        _default_value: float = 100.0
     ):
         self.action_name = action_name
         self._values_to_cycle = [round(val/100, 4) for val in _values_to_cycle]
