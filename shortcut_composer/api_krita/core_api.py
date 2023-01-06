@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import QMainWindow, QDesktopWidget
+from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QWidgetAction
 from PyQt5.QtGui import QKeySequence
+from typing import Callable, Protocol
 from krita import Krita as Api, Extension
 
 from .wrappers import (
@@ -60,6 +61,27 @@ class KritaInstance:
     def write_setting(self, group: str, name: str, value: str) -> None:
         self.instance.writeSetting(group, name, value)
 
+    def create_action(
+        self,
+        window: 'KritaWindow',
+        name: str,
+        group: str = "",
+        callback: Callable[[], None] = lambda: None
+    ):
+        krita_action = window.createAction(name, name, group)
+        krita_action.setAutoRepeat(False)
+        krita_action.triggered.connect(callback)
+        return krita_action
+
     def add_extension(self, extension: Extension) -> None:
         """Add extension/plugin/add-on to krita."""
         self.instance.addExtension(extension(self.instance))
+
+
+class KritaWindow(Protocol):
+    def createAction(
+        self,
+        name: str,
+        description: str,
+        menu: str, /
+    ) -> QWidgetAction: ...

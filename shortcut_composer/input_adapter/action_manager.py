@@ -4,10 +4,11 @@ key_release events.
 """
 
 from dataclasses import dataclass
-from typing import Dict, Protocol
+from typing import Dict
 
 from PyQt5.QtWidgets import QWidgetAction
 
+from api_krita import Krita
 from .plugin_action import PluginAction
 from .event_filter import ReleaseKeyEventFilter
 from .shortcut_adapter import ShortcutAdapter
@@ -42,15 +43,7 @@ class ActionManager:
     bind_action() method.
     """
 
-    class Window(Protocol):
-        def createAction(
-            self,
-            name: str,
-            description: str,
-            menu: str, /
-        ) -> QWidgetAction: ...
-
-    def __init__(self, window: Window):
+    def __init__(self, window):
         self._window = window
         self._event_filter = ReleaseKeyEventFilter()
         self._stored_actions: Dict[str, ActionContainer] = {}
@@ -69,21 +62,13 @@ class ActionManager:
 
         container = ActionContainer(
             plugin_action=action,
-            krita_action=self._create_krita_action(action),
+            krita_action=Krita.create_action(
+                window=self._window,
+                name=action.name),
             shortcut=self._create_adapter(action)
         )
         self._stored_actions[action.name] = container
         return container
-
-    def _create_krita_action(self, action: PluginAction) -> QWidgetAction:
-        """Create QWidgetAction recognised by krita."""
-        krita_action = self._window.createAction(
-            action.name,
-            action.name,
-            ""
-        )
-        krita_action.setAutoRepeat(False)
-        return krita_action
 
     def _create_adapter(self, action: PluginAction) -> ShortcutAdapter:
         """
