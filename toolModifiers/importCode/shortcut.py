@@ -2,65 +2,53 @@ from time import time
 from dataclasses import dataclass
 from typing import Callable
 
-from krita import Krita, QMdiArea
-from PyQt5.QtCore import QEvent
+from krita import Krita
 
 from ..config import interval
 
 
 @dataclass
 class ActionElements:
+    # methods written explicitly, not passed from somewhere?
     human_name: str
     set_low_function: Callable[[], None]
     set_high_function: Callable[[], None]
     is_high_state_function: Callable[[], None]
 
 
-class KeyFilter(QMdiArea):
-    """
-    object that handles one shortcut, installed on krita window and
-    catches all keyboard inputs waiting for the correct one
-    """
+class Shortcut:
 
     def __init__(self, elements: ActionElements):
-        super().__init__(None)
         self.elements = elements
         self.key_released = True
         self.last_press_time = time()
 
-    def handle_key_press(self):
+    def on_key_press(self):
         'run when user presses a key assigned to this action'
         self.key_released = False
         self.last_press_time = time()
 
-        # if the handled action wasnt already active, activate it
         self.state = self.elements.is_high_state_function()
         if not self.state:
             self.elements.set_high_function()
 
-    def handle_key_release(self):
+    def on_key_release(self):
         'run when user released a related key'
 
         self.key_released = True
-        if (
-            time() - self.last_press_time > interval
-            or self.state
-        ):
+        if time() - self.last_press_time > interval or self.state:
             self.elements.set_low_function()
 
-    def eventFilter(self, obj, e):
-        'activated each time user does anything - search for key releases'
-
-        if e.type() != QEvent.KeyRelease:
-            return False
-
-        if (
-            self.tool_shortcut.matches(e.key()) > 0
-            and not e.isAutoRepeat()
+    def _is_event_key_release(self, event):
+        return (
+            self.tool_shortcut.matches(event.key()) > 0
+            and not event.isAutoRepeat()
             and not self.key_released
-        ):
-            self.handle_key_release()
-        return False
+        )
+
+    def event_filter_callback(self, event):
+        if self._is_event_key_release(event):
+            self.on_key_release()
 
     @property
     def tool_shortcut(self):
