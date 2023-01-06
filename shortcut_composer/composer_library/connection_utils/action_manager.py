@@ -14,7 +14,7 @@ from .shortcut_adapter import ShortcutAdapter
 
 
 class Window(Protocol):
-    def createAction(*, name: str, description: str, menu: str) -> None: ...
+    def createAction(name: str, description: str, menu: str, /) -> None: ...
 
 
 class ActionManager:

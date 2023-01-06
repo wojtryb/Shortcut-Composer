@@ -1,3 +1,20 @@
+"""
+Component that allows to get and set a specific property of krita.
+
+Available controllers:
+    - `ToolController`
+    - `BrushSizeController`
+    - `BlendingModeController`
+    - `OpacityController`
+    - `FlowController`
+    - `PresetController`
+    - `TimeController`
+    - `LayerController`
+    - `CanvasRotationController`
+    - `CanvasZoomController`
+    - `ToggleController`
+"""
+
 from .document_controllers import LayerController, TimeController
 from .canvas_controllers import (
     CanvasRotationController,
@@ -18,7 +35,7 @@ __all__ = [
     "CanvasZoomController",
     "BrushSizeController",
     "OpacityController",
-    'ToggleController',
+    "ToggleController",
     "PresetController",
     "LayerController",
     "TimeController",

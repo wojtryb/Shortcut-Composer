@@ -7,6 +7,12 @@ from ..controller_base import Controller
 
 
 class ToolController(Controller):
+    """
+    Gives access to tools from toolbox.
+
+    - Operates on `Tool`
+    - Defaults to `Tool.FREEHAND_BRUSH`
+    """
 
     default_value: Tool = Tool.FREEHAND_BRUSH
 
@@ -23,6 +29,13 @@ class ToolController(Controller):
 
 @dataclass
 class ToggleController(Controller):
+    """
+    Gives access to picked krita toggle action.
+
+    - Pick an action by providing a specific `Toggle`.
+    - Operates on booleans
+    - Defaults to False
+    """
 
     toggle: Toggle
     default_value = False

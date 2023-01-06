@@ -10,6 +10,42 @@ from .slider_utils import Slider
 
 
 class MouseTracker:
+    """
+    Action template for switching values by horizontal/vertical mouse movement.
+
+    Action tracks mouse during key being pressed, and switches values
+    accordingly to mouse movement.
+
+    Class requires providing a Slider in `horizontal_slider` or
+    `vertical_slider`. When both are passed, snaps to the axis which has
+    the strongest initial movement.
+
+    Providing 'instructions' list allows to add additional logic on key, press,
+    release and perform operations in a loop during the key being pressed.
+
+    ### Arguments:
+
+    - `action_name`       -- unique name of action. Must match the definition
+                              in shortcut_composer.action file
+    - `horizontal_slider` -- defines what to do on horizontal mouse movement
+    - `vertical_slider`   -- defines what to do on vertical mouse movement
+    - `instructions`      -- list of additional instructions to perform on
+                              key press, release and during key being pressed.
+
+    ### Action implementation examples:
+
+    ```python
+    MouseTracker(
+        action_name="Horizontal axis tracker",
+        horizontal_slider=Slider(...), # See slider documentation
+    )
+    MouseTracker(
+        action_name="Double axis tracker",
+        horizontal_slider=Slider(...),
+        vertical_slider=Slider(...),
+    )
+    ```
+    """
     def __new__(
         cls,
         action_name: str,

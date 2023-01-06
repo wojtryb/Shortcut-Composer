@@ -4,6 +4,12 @@ from ..controller_base import Controller
 
 
 class PresetController(Controller):
+    """
+    Gives access to presets.
+
+    - Operates on strings with preset names
+    - Does not have a default
+    """
 
     presets = Krita.get_presets()
 
@@ -18,6 +24,12 @@ class PresetController(Controller):
 
 
 class BrushSizeController(Controller):
+    """
+    Gives access to brush size.
+
+    - Operates on integers representing brush size in pixels
+    - Defaults to `100`
+    """
 
     default_value: int = 100
 
@@ -31,6 +43,12 @@ class BrushSizeController(Controller):
 
 
 class BlendingModeController(Controller):
+    """
+    Gives access to brush blending mode.
+
+    - Operates on `BlendingMode`
+    - Defaults to `BlendingMode.NORMAL`
+    """
 
     default_value = BlendingMode.NORMAL
 
@@ -46,6 +64,12 @@ class BlendingModeController(Controller):
 
 
 class OpacityController(Controller):
+    """
+    Gives access to brush opacity in %.
+
+    - Operates on integers `<0-100>`
+    - Defaults to `100`
+    """
 
     default_value: int = 100
 
@@ -61,6 +85,12 @@ class OpacityController(Controller):
 
 
 class FlowController(Controller):
+    """
+    Gives access to brush flow in %.
+
+    - Operates on integers `<0-100>`
+    - Defaults to `100`
+    """
 
     default_value: int = 100
 
