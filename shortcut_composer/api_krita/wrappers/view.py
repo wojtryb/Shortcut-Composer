@@ -1,5 +1,7 @@
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Protocol, Dict
+from functools import cached_property
+from krita import Krita as Api
 
 from ..enums import BlendingMode
 
@@ -26,32 +28,46 @@ class View:
 
     view: KritaView
 
-    def current_brush_preset_name(self) -> str:
+    @cached_property
+    def preset_map(self) -> Dict[str, KritaPreset]:
+        return Api.instance().resources('preset')
+
+    @property
+    def brush_preset(self) -> str:
         return self.view.currentBrushPreset().name()
 
-    def current_blending_mode(self) -> BlendingMode:
+    @brush_preset.setter
+    def brush_preset(self, preset_name: str) -> None:
+        self.view.setCurrentBrushPreset(self.preset_map[preset_name])
+
+    @property
+    def blending_mode(self) -> BlendingMode:
         return BlendingMode(self.view.currentBlendingMode())
 
-    def current_opacity(self) -> int:
+    @blending_mode.setter
+    def blending_mode(self, mode: BlendingMode) -> None:
+        self.view.setCurrentBlendingMode(mode.value)
+
+    @property
+    def opacity(self) -> int:
         return round(100*self.view.paintingOpacity())
 
-    def current_flow(self) -> int:
-        return round(100*self.view.paintingFlow())
-
-    def current_brush_size(self) -> float:
-        return self.view.brushSize()
-
-    def set_brush_preset(self, preset) -> None:
-        self.view.setCurrentBrushPreset(preset)
-
-    def set_blending_mode(self, mode_name: BlendingMode) -> None:
-        self.view.setCurrentBlendingMode(mode_name.value)
-
-    def set_opacity(self, opacity: int) -> None:
+    @opacity.setter
+    def opacity(self, opacity: int) -> None:
         self.view.setPaintingOpacity(0.01*round(opacity))
 
-    def set_flow(self, flow: int) -> None:
+    @property
+    def flow(self) -> int:
+        return round(100*self.view.paintingFlow())
+
+    @flow.setter
+    def flow(self, flow: int) -> None:
         self.view.setPaintingFlow(0.01*round(flow))
 
-    def set_brush_size(self, brush_size: float) -> None:
+    @property
+    def brush_size(self) -> float:
+        return self.view.brushSize()
+
+    @brush_size.setter
+    def brush_size(self, brush_size: float) -> None:
         self.view.setBrushSize(brush_size)

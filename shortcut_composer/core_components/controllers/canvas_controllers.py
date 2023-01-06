@@ -14,11 +14,11 @@ class CanvasZoomController(Controller):
 
     @staticmethod
     def get_value() -> float:
-        return Krita.get_active_canvas().zoom()
+        return Krita.get_active_canvas().zoom
 
     @staticmethod
     def set_value(value: float) -> None:
-        Krita.get_active_canvas().set_zoom(value)
+        Krita.get_active_canvas().zoom = value
 
 
 class CanvasRotationController(Controller):
@@ -33,8 +33,8 @@ class CanvasRotationController(Controller):
 
     @staticmethod
     def get_value() -> float:
-        return Krita.get_active_canvas().rotation()
+        return Krita.get_active_canvas().rotation
 
     @staticmethod
     def set_value(value: float) -> None:
-        Krita.get_active_canvas().set_rotation(value)
+        Krita.get_active_canvas().rotation = value
