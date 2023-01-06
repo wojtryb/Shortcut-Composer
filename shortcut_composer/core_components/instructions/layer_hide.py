@@ -31,7 +31,7 @@ class ToggleShowBelow(Instruction):
         self.document.refresh()
         return self
 
-    def on_every_key_release(self, *_) -> None:
+    def on_every_key_release(self) -> None:
         for node in self.visible_nodes:
             node.visible = True
         self.document.refresh()
