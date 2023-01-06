@@ -20,16 +20,14 @@ class MouseInterpreter:
     def _recalibrate(self, value: float) -> None:
         delta = (self.min - value)*self.pixels_in_unit
         if delta > 0:
-            self.mouse_origin = MouseInput(self.mouse_origin - delta)
+            self.mouse_origin = MouseInput(round(self.mouse_origin - delta))
 
         delta = (self.max - value)*self.pixels_in_unit
         if delta < 0:
-            self.mouse_origin = MouseInput(self.mouse_origin - delta)
+            self.mouse_origin = MouseInput(round(self.mouse_origin - delta))
 
     def _delta(self, mouse: float) -> float:
         return (mouse - self.mouse_origin)/self.pixels_in_unit
 
     def _clip(self, value: float) -> Interpreted:
-        return Interpreted(
-            min(max(self.min, value), self.max)
-        )
+        return Interpreted(min(max(self.min, value), self.max))
