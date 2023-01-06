@@ -1,5 +1,3 @@
-from typing import Any
-
 from PyQt5.QtWidgets import QWidget, QToolButton
 from krita import Krita as Api
 
@@ -51,9 +49,10 @@ class ToolDescriptor:
                         return qobj.objectName()
             raise RuntimeError("No active tool found.")
 
-        def __init_toolbox(self) -> Any:
-            """Find and return reference to unwrapper toolbox object."""
+        def __init_toolbox(self) -> QWidget:
+            """Find and return reference to unwrapped toolbox object."""
             qwindow = self.instance.activeWindow().qwindow()
             for qobj in qwindow.findChildren(QWidget):
                 if qobj.metaObject().className() == "KoToolBox":
                     return qobj
+            raise RuntimeError("Toolbox not found.")
