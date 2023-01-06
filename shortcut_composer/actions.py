@@ -10,7 +10,7 @@ from PyQt5.QtGui import QColor
 import templates
 from api_krita.enums import BlendingMode, Tool, Toggle
 from core_components import instructions, controllers
-from composer_utils import read_setting
+from composer_utils import Config
 from data_components import (
     CurrentLayerStack,
     PickStrategy,
@@ -211,7 +211,7 @@ def create_actions(): return [
         name="Pick brush presets (red)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        values=Tag(read_setting(name="Tag (red)", default="Digital")),
+        values=Tag(Config.TAG_RED.read()),
         background_color=QColor(95, 65, 65, 190),
         active_color=QColor(200, 70, 70),
     ),
@@ -222,7 +222,7 @@ def create_actions(): return [
         name="Pick brush presets (green)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        values=Tag(read_setting(name="Tag (green)", default="RGBA")),
+        values=Tag(Config.TAG_GREEN.read()),
         background_color=QColor(65, 95, 65, 190),
         active_color=QColor(70, 200, 70),
     ),
@@ -233,7 +233,7 @@ def create_actions(): return [
         name="Pick brush presets (blue)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        values=Tag(read_setting(name="Tag (blue)", default="Erasers")),
+        values=Tag(Config.TAG_BLUE.read()),
         background_color=QColor(70, 70, 105, 190),
         active_color=QColor(110, 160, 235),
     ),
