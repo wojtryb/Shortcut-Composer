@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from .actions import Action
 
 from .event_filter import ReleaseKeyEventFilter
-from .shortcut import ActionElements, Shortcut
+from .shortcut import Shortcut
 
 
 @dataclass
@@ -34,22 +34,3 @@ class ActionCreator:
             shortcut.event_filter_callback)
 
         return ActionContainer(action, krita_action, shortcut)
-
-    # def create_action(
-    #     self,
-    #     human_name,
-    #     set_low_function,
-    #     set_high_function,
-    #     is_high_state_function
-    # ) -> Action:
-    #     'creates a single shortcut action'
-    #     krita_action = self.window.createAction(human_name, human_name, "")
-
-        # shortcut = Shortcut(ActionElements(
-        #     human_name,
-        #     set_low_function,
-        #     set_high_function,
-        #     is_high_state_function,
-        # ))
-    #     self.event_filter.register_release_callback(
-    #         shortcut.event_filter_callback)
