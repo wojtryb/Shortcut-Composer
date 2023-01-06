@@ -147,6 +147,7 @@ class PieValues(QWidget):
 
         self.list_widget = QListWidget(self)
         self.list_widget.setDragDropMode(QAbstractItemView.InternalMove)
+        self.list_widget.setSelectionMode(QAbstractItemView.ExtendedSelection)
 
         self.combo_box = QComboBox()
         self.combo_box.addItems(self.allowed_values)
@@ -170,14 +171,25 @@ class PieValues(QWidget):
         self.setLayout(layout)
 
     def add(self):
-        current_row = self.list_widget.currentRow()
+        if not self.list_widget.selectedIndexes():
+            current_row = self.list_widget.count()
+        else:
+            current_row = self.list_widget.currentRow()
         value = self.combo_box.currentText()
         self.list_widget.insertItem(current_row+1, value)
+        self.list_widget.clearSelection()
         self.list_widget.setCurrentRow(current_row+1)
 
     def remove(self):
-        current_row = self.list_widget.currentRow()
-        self.list_widget.takeItem(current_row)
+        selected = self.list_widget.selectedIndexes()
+        indices = [item.row() for item in selected]
+        for index in sorted(indices, reverse=True):
+            self.list_widget.takeItem(index)
+
+        if selected:
+            first_deleted_row = min([item.row() for item in selected])
+            self.list_widget.clearSelection()
+            self.list_widget.setCurrentRow(first_deleted_row-1)
 
     def apply(self):
         texts = []
