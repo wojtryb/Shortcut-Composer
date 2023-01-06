@@ -64,14 +64,9 @@ class PieWidget(AnimatedWidget):
         self._style = style
         self._label_painters = self._create_label_painters()
 
-        self.setWindowFlags(
-            self.windowFlags() |
-            Qt.Window |  # type: ignore
-            Qt.FramelessWindowHint
-        )
+        self.setWindowFlags(Qt.Popup)
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setStyleSheet("background: transparent;")
-        self.setWindowTitle("Pie Menu")
         self.setCursor(Qt.CrossCursor)
 
         size = self._style.widget_radius*2
@@ -112,7 +107,7 @@ class PieWidget(AnimatedWidget):
         painter.paint_wheel(
             center=self.center,
             outer_radius=self._style.no_border_radius,
-            color=QColor(0, 0, 0, 1),
+            color=QColor(128, 128, 128, 1),
         )
         painter.paint_wheel(
             center=self.center,

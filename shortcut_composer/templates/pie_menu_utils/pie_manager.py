@@ -24,7 +24,7 @@ class PieManager:
     def __init__(self, widget: PieWidget) -> None:
         self._widget = widget
         self._timer = Timer(self._track_angle, Config.get_sleep_time())
-        
+
         self._circle: CirclePoints
 
     def start(self):

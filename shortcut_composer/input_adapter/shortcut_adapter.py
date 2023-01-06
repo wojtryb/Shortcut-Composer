@@ -46,16 +46,11 @@ class ShortcutAdapter:
 
     def _is_event_key_release(self, release_event: QKeyEvent) -> bool:
         """Decide if the key release event is matches shortcut and is valid."""
-        event_sequence = QKeySequence(
-            release_event.modifiers() | release_event.key()  # type: ignore
-        )
-        return (
-            not release_event.isAutoRepeat()
-            and not self.key_released
-            and self._match_shortcuts(
-                event_sequence.toString(),
-                self.tool_shortcut.toString())
-        )
+        return (not release_event.isAutoRepeat()
+                and not self.key_released
+                and self._match_shortcuts(
+                    self._key_sequence_from_event(release_event),
+                    self.tool_shortcut))
 
     def event_filter_callback(self, release_event: QKeyEvent) -> None:
         """Handle key release if the event is related to the action."""
@@ -73,6 +68,12 @@ class ShortcutAdapter:
         return Krita.get_action_shortcut(self.action.name)
 
     @staticmethod
-    def _match_shortcuts(_a: str, _b: str, /) -> bool:
+    def _key_sequence_from_event(event: QKeyEvent):
+        return QKeySequence(event.modifiers() | event.key())  # type: ignore
+
+    @staticmethod
+    def _match_shortcuts(_a: QKeySequence, _b: QKeySequence, /) -> bool:
         """Custom match pattern - one string is preset in another one."""
-        return _a in _b or _b in _a
+        parsed_a = _a.toString()
+        parsed_b = _b.toString()
+        return parsed_a in parsed_b or parsed_b in parsed_a

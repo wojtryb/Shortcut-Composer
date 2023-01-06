@@ -4,6 +4,7 @@ from PyQt5.QtCore import QTimer
 
 EmptyCallback = Callable[[], None]
 
+
 class Timer:
     """Wraps PyQt5 QTimer to simplify init interface."""
 
@@ -11,7 +12,7 @@ class Timer:
         self._timer = QTimer()
         self._timer.timeout.connect(target)
         self._interval_ms = interval_ms
-    
+
     def start(self):
         """Start a timer."""
         self._timer.start(self._interval_ms)
