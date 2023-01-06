@@ -69,7 +69,10 @@ class Slider:
         self.values = values
 
         sensitivity = Config.TRACKER_SENSITIVITY_SCALE.read()*sensitivity_scale
-        self.pixels_in_unit = round(50 / sensitivity)
+        try:
+            self.pixels_in_unit = round(50 / sensitivity)
+        except ZeroDivisionError:
+            self.pixels_in_unit = float("inf")
 
         self.deadzone = self._read(deadzone, Config.TRACKER_DEADZONE)
 
