@@ -174,14 +174,21 @@ actions = [
         values=[
             BlendingMode.NORMAL,
             BlendingMode.OVERLAY,
-            BlendingMode.MULTIPLY,
             BlendingMode.COLOR,
+            BlendingMode.MULTIPLY,
             BlendingMode.ADD,
+            BlendingMode.SCREEN,
             BlendingMode.BEHIND,
             BlendingMode.DARKEN,
             BlendingMode.LIGHTEN,
         ],
     ),
+
+    # templates.PieMenu(
+    #     name="Pick painting opacity",
+    #     controller=controllers.OpacityController(),
+    #     values=[100, 90, 80, 70, 60, 50, 40, 30, 20, 10],
+    # ),
 
     templates.PieMenu(
         name="Pick misc tools",
@@ -191,7 +198,9 @@ actions = [
             Tool.REFERENCE,
             Tool.GRADIENT,
             Tool.MULTI_BRUSH,
+            Tool.ASSISTANTS,
         ],
+        pie_radius_scale=0.85
     ),
 
     # Pick a brush preset from the tag named "RGBA" using a pie menu
@@ -200,7 +209,7 @@ actions = [
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
         values=Tag("RGBA"),
-        area_color=QColor(120, 50, 50, 150),
-        active_color=QColor(200, 50, 50, 255),
+        area_color=QColor(95, 65, 65, 190),
+        active_color=QColor(200, 70, 50),
     ),
 ]
