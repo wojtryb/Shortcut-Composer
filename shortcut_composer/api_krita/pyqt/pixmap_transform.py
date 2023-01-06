@@ -12,8 +12,7 @@ class PixmapTransform:
     @staticmethod
     def add_border(pixmap: QPixmap, border_part: float = 0.33):
         original_size = pixmap.width()
-        border_size = round(original_size * border_part)
-        new_size = original_size + 2*border_size
+        new_size = original_size + 2*border_px
 
         result = QPixmap(new_size, new_size)
         result.fill(Qt.transparent)
@@ -21,7 +20,7 @@ class PixmapTransform:
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setCompositionMode(QPainter.CompositionMode_SourceOver)
         painter.drawPixmap(QPoint(), result)
-        painter.drawPixmap(border_size, border_size, pixmap)
+        painter.drawPixmap(border_px, border_px, pixmap)
         painter.end()
         return result
 

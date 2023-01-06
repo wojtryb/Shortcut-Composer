@@ -29,7 +29,10 @@ class ToolController(Controller):
         Krita.active_tool = value
 
     def get_label(self, value: Tool) -> QPixmap:
-        return PixmapTransform.add_border(value.icon.pixmap(200, 200))
+        return PixmapTransform.add_border(
+            pixmap=value.icon.pixmap(200, 200),
+            border_px=66
+        )
 
 
 @dataclass
