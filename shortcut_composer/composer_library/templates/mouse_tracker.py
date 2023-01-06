@@ -4,8 +4,8 @@ from threading import Thread
 from time import sleep
 from typing import Literal, Optional
 
-from ..krita_api import Krita
-from ..shortcut_connection_utils import PluginAction
+from ..api import Krita
+from ..connection_utils import PluginAction
 from .slider_utils import Slider
 
 

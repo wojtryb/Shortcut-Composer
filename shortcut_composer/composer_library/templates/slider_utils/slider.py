@@ -2,8 +2,7 @@ from threading import Thread
 from time import sleep
 from typing import Any, Callable, List, Union
 
-from ...krita_api.controllers import Controller
-from ..instructions import InstructionHolder, Instruction
+from ...components import Controller, InstructionHolder, Instruction
 from .mouse_interpreter import MouseInterpreter
 from .slider_values import create_slider_values, Range
 

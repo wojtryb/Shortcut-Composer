@@ -1,6 +1,6 @@
-from ..core_api import Krita
-from ..wrappers import Node
-from .base import Controller
+from ...api import Krita
+from ...api.wrappers import Node
+from ..controller_base import Controller
 
 
 class LayerController(Controller):

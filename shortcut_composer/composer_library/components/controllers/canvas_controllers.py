@@ -1,5 +1,5 @@
-from ..core_api import Krita
-from .base import Controller
+from ...api import Krita
+from ..controller_base import Controller
 
 
 class CanvasZoomController(Controller):

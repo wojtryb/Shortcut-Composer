@@ -1,27 +1,30 @@
 """File that acts as config - define all action objects here."""
 
-from .composer_library.krita_api import controllers
-from .composer_library.krita_api.enums import BlendingMode, Tool
-from .composer_library.krita_api.wrappers import Tag
-from .composer_library.krita_api.controllers.strategies import SetBrushStrategy
-from .composer_library import shortcut_templates
-from .composer_library.shortcut_templates import instructions, PickStrategy
-from .composer_library.shortcut_templates.slider_utils import Slider, Range
+from .composer_library.api.enums import BlendingMode, Tool
+from .composer_library.api.wrappers import Tag
+
+from .composer_library import templates
+from .composer_library.templates import PickStrategy
+from .composer_library.templates.slider_utils import Slider, Range
+
+from .composer_library.components import instructions, controllers
+from .composer_library.components.controllers.strategies \
+    import SetBrushStrategy
 
 
 actions = [
-    shortcut_templates.TemporaryKey(
+    templates.TemporaryKey(
         action_name="Move tool (temporary)",
         controller=controllers.ToolController(),
         high_value=Tool.MOVE,
     ),
-    shortcut_templates.TemporaryKey(
+    templates.TemporaryKey(
         action_name="Transform tool (temporary)",
         controller=controllers.ToolController(),
         high_value=Tool.TRANSFORM,
         time_interval=1.0
     ),
-    shortcut_templates.TemporaryKey(
+    templates.TemporaryKey(
         action_name="Eraser (temporary)",
         controller=controllers.EraserController(
             affect_preserve_alpha=True,
@@ -30,7 +33,7 @@ actions = [
         low_value=False,
         high_value=True,
     ),
-    shortcut_templates.TemporaryKey(
+    templates.TemporaryKey(
         action_name="Preserve alpha (temporary)",
         controller=controllers.PreserveAlphaController(
             affect_eraser=True,
@@ -39,13 +42,13 @@ actions = [
         low_value=False,
         high_value=True,
     ),
-    shortcut_templates.MultipleAssignment(
+    templates.MultipleAssignment(
         action_name="Opacity (cycle)",
         controller=controllers.OpacityController(),
         default_value=100,
         values_to_cycle=[70, 50, 30, 100],
     ),
-    shortcut_templates.MultipleAssignment(
+    templates.MultipleAssignment(
         action_name="Selection tools (cycle)",
         controller=controllers.ToolController(),
         values_to_cycle=[
@@ -54,7 +57,7 @@ actions = [
             Tool.CONTIGUOUS_SELECTION,
         ],
     ),
-    shortcut_templates.MultipleAssignment(
+    templates.MultipleAssignment(
         action_name="Misc tools (cycle)",
         controller=controllers.ToolController(),
         values_to_cycle=[
@@ -64,7 +67,7 @@ actions = [
             Tool.MULTI_BRUSH,
         ],
     ),
-    shortcut_templates.MultipleAssignment(
+    templates.MultipleAssignment(
         action_name="Preset (cycle)",
         controller=controllers.PresetController(
             set_brush_strategy=SetBrushStrategy.ON_NON_PAINTABLE
@@ -72,17 +75,17 @@ actions = [
         default_value="b) Basic-5 Size Opacity",
         values_to_cycle=Tag("Digital")
     ),
-    shortcut_templates.LayerPicker(
+    templates.LayerPicker(
         action_name="Layer scraper - isolate",
         additional_instructions=[instructions.IsolateLayer()],
         pick_strategy=PickStrategy.ALL
     ),
-    shortcut_templates.LayerPicker(
+    templates.LayerPicker(
         action_name="Layer scraper - visibility",
         additional_instructions=[instructions.ToggleLayerVisibility()],
         pick_strategy=PickStrategy.VISIBLE
     ),
-    shortcut_templates.MouseTracker(
+    templates.MouseTracker(
         action_name="Blending mode (tracker)",
         horizontal_slider=Slider(
             controller=controllers.BrushSizeController(),
@@ -99,7 +102,7 @@ actions = [
             ],
         ),
     ),
-    shortcut_templates.MouseTracker(
+    templates.MouseTracker(
         action_name="Discrete brush settings (tracker)",
         horizontal_slider=Slider(
             controller=controllers.BrushSizeController(),
@@ -117,7 +120,7 @@ actions = [
             values_to_cycle=[10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
         ),
     ),
-    shortcut_templates.MouseTracker(
+    templates.MouseTracker(
         action_name="Contiguous brush settings (tracker)",
         horizontal_slider=Slider(
             controller=controllers.BrushSizeController(),

@@ -1,4 +1,3 @@
-from .base import Controller
 from .document_controllers import LayerController
 from .canvas_controllers import (
     CanvasRotationController,
@@ -15,7 +14,6 @@ from .view_controllers import (
     FlowController)
 
 __all__ = [
-    "Controller",
     "LayerController",
     "CanvasRotationController",
     "CanvasZoomController",

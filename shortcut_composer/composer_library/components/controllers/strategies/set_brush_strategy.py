@@ -1,7 +1,7 @@
 from enum import Enum
 
-from ...enums import Tool
-from ...core_api import Krita
+from ....api import Krita
+from ....api.enums import Tool
 
 
 class SetBrushStrategy(Enum):
