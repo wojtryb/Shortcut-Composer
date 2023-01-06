@@ -2,32 +2,33 @@ from dataclasses import dataclass
 
 from .krita_api_wrapper import Krita
 from ._interfaces import TemporaryAction
+from .enums import Tools
 
 
 @dataclass
 class TemporaryTool(TemporaryAction):
 
     action_name: str
-    krita_tool_name: str
-    default_tool_name: str = "KritaShape/KisToolBrush"
+    krita_tool: Tools
+    default_tool: Tools = Tools.freehand_brush
     time_interval: float = 0.3
 
     def _set_low(self):
-        Krita.trigger_action(self.default_tool_name)
+        Krita.trigger_action(self.default_tool.value)
 
     def _set_high(self):
-        Krita.trigger_action(self.krita_tool_name)
+        Krita.trigger_action(self.krita_tool.value)
 
     def _is_high_state(self):
         'returns True if the passed tool is active'
-        return Krita.get_current_tool_name() == self.krita_tool_name
+        return Tools(Krita.get_current_tool_name()) == self.krita_tool
 
 
 @dataclass
 class TemporaryEraser(TemporaryAction):
 
-    time_interval: float = 0.3
     connected_toggles: bool = True
+    time_interval: float = 0.3
 
     def __init__(self):
         self.action_name = 'Eraser (toggle)'
