@@ -2,7 +2,7 @@ from threading import Thread
 from time import sleep
 from typing import Any, Callable, List, Union
 
-from ...components import Controller, InstructionHolder, Instruction
+from ...components import Controller, InstructionHolder
 from .mouse_interpreter import MouseInterpreter
 from .slider_values import create_slider_values, Range
 
@@ -14,22 +14,24 @@ class Slider:
         controller: Controller,
         values_to_cycle: Union[List[Any], Range],
         default_value: Any,
-        instructions: List[Instruction] = [],
         sensitivity: int = 50
     ):
         self.__controller = controller
         self.__default_value = default_value
         self.__to_cycle = self.set_values_to_cycle(values_to_cycle)
         self.__sensitivity = sensitivity
-        self.__instructions = InstructionHolder(instructions)
         self.__working = False
 
+        self.__instructions: InstructionHolder
         self.__interpreter: MouseInterpreter
 
     def set_values_to_cycle(self, values_to_cycle: List[Any]) -> None:
         values = create_slider_values(values_to_cycle, self.__default_value)
         self.__to_cycle = values
         return values
+
+    def set_instructions(self, instructions: InstructionHolder) -> None:
+        self.__instructions = instructions
 
     def start(self, mouse_getter: Callable[[], int]) -> None:
         self.__working = True
@@ -46,11 +48,10 @@ class Slider:
         self.__working = False
 
     def _loop(self, mouse_getter: Callable[[], int]) -> None:
-        with self.__instructions:
-            while self.__working:
-                self._handle(mouse_getter())
-                self.__instructions.update()
-                sleep(0.05)
+        while self.__working:
+            self._handle(mouse_getter())
+            self.__instructions.update()
+            sleep(0.05)
 
     def _handle(self, mouse: int) -> None:
         clipped_value = self.__interpreter.mouse_to_value(mouse)

@@ -3,7 +3,7 @@ from typing import List
 
 from ..api import Krita
 from ..api.wrappers import Document, Node
-from ..components import Instruction, controllers
+from ..components import Instruction, controllers, InstructionHolder
 from .mouse_tracker import SingleAxisTracker
 from .slider_utils import Slider
 
@@ -34,15 +34,14 @@ class LayerPicker(SingleAxisTracker):
     ):
         super().__init__(
             action_name=action_name,
+            instructions=InstructionHolder(instructions),
             sign=-1,
             slider=Slider(
                 controller=controllers.LayerController(),
                 values_to_cycle=[0],
                 default_value=None,
-                instructions=instructions,
                 sensitivity=sensitivity
             ))
-        self.hide_strategy = instructions
         self.pick_strategy = pick_strategy
 
     def on_key_press(self) -> None:
