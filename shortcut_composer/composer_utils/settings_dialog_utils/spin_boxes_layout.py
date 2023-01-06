@@ -2,10 +2,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Dict, Union
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QDoubleSpinBox,
     QFormLayout,
+    QSplitter,
     QSpinBox,
+    QLabel,
 )
 
 from ..config import Config
@@ -20,10 +23,15 @@ class SpinBoxesLayout(QFormLayout):
         super().__init__()
         self._forms: Dict[Config, SpinBox] = {}
 
+        self._add_label("Common settings")
         self._add_row(Config.SHORT_VS_LONG_PRESS_TIME, is_int=False)
+        self._add_row(Config.FPS_LIMIT, is_int=True)
+
+        self._add_label("Mouse trackers")
         self._add_row(Config.SLIDER_SENSITIVITY_SCALE, is_int=False)
         self._add_row(Config.SLIDER_DEADZONE, is_int=True)
-        self._add_row(Config.FPS_LIMIT, is_int=True)
+
+        self._add_label("Pie menus display")
         self._add_row(Config.PIE_GLOBAL_SCALE, is_int=False)
         self._add_row(Config.PIE_ICON_GLOBAL_SCALE, is_int=False)
         self._add_row(Config.PIE_DEADZONE_GLOBAL_SCALE, is_int=False)
@@ -31,6 +39,12 @@ class SpinBoxesLayout(QFormLayout):
     def _add_row(self, config: Config, is_int: bool) -> None:
         """Add a spin box to the layout along with its desctiption."""
         self.addRow(config.value, self._create_form(config, is_int))
+
+    def _add_label(self, text: str):
+        label = QLabel(text)
+        label.setAlignment(Qt.AlignCenter)
+        self.addRow(QSplitter(Qt.Horizontal))
+        self.addRow(label)
 
     def _create_form(self, config: Config, is_int: bool) -> SpinBox:
         """Store and return new spin box for required type (int or float)."""
