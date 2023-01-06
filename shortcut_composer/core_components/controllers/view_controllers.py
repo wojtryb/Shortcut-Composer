@@ -30,16 +30,16 @@ class BrushSizeController(ViewBasedController):
     """
     Gives access to brush size.
 
-    - Operates on integers representing brush size in pixels
+    - Operates on floats representing brush size in pixels
     - Defaults to `100`
     """
 
-    default_value: int = 100
+    default_value: float = 100
 
-    def get_value(self) -> int:
+    def get_value(self) -> float:
         return self.view.brush_size
 
-    def set_value(self, value: int) -> None:
+    def set_value(self, value: float) -> None:
         self.view.brush_size = value
 
 
@@ -92,7 +92,7 @@ class FlowController(ViewBasedController):
     default_value: int = 100
 
     def get_value(self) -> int:
-        return self.view.current_flow
+        return self.view.flow
 
     def set_value(self, value: int) -> None:
-        self.view.set_flow = value
+        self.view.flow = value

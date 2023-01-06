@@ -20,11 +20,11 @@ class MouseInterpreter:
     def _recalibrate(self, value: float) -> None:
         delta = (self.min - value)*self.sensitivity
         if delta > 0:
-            self.mouse_origin -= delta
+            self.mouse_origin = MouseInput(self.mouse_origin - delta)
 
         delta = (self.max - value)*self.sensitivity
         if delta < 0:
-            self.mouse_origin -= delta
+            self.mouse_origin = MouseInput(self.mouse_origin - delta)
 
     def _delta(self, mouse: float) -> float:
         return (mouse - self.mouse_origin)/self.sensitivity

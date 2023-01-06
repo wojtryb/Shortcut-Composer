@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any, List, Iterator
 from itertools import cycle
 
 from core_components import Controller, Instruction
@@ -65,7 +65,7 @@ class MultipleAssignment(PluginAction):
         self.default_value = self._read_default_value(default_value)
 
         self._last_value = None
-        self._iterator = None
+        self._iterator: Iterator[Any]
 
     def on_key_press(self) -> None:
         """Use key press event only for switching to first value."""

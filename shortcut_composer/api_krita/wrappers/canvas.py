@@ -27,5 +27,5 @@ class Canvas:
         return self.canvas.zoomLevel()
 
     @zoom.setter
-    def zoom(self, zoom: int) -> None:
+    def zoom(self, zoom: float) -> None:
         self.canvas.setZoomLevel(zoom)
