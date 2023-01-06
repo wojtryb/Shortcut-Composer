@@ -57,9 +57,11 @@ class KritaInstance:
         return self.instance.activeWindow().qwindow()
 
     def read_setting(self, group: str, name: str, default: str) -> str:
+        """Read setting from .kritarc file as string."""
         return self.instance.readSetting(group, name, default)
 
     def write_setting(self, group: str, name: str, value: Any) -> None:
+        """Write setting to .kritarc file. Value type will be lost."""
         self.instance.writeSetting(group, name, str(value))
 
     def create_action(
@@ -69,6 +71,12 @@ class KritaInstance:
         group: str = "",
         callback: Callable[[], None] = lambda: None
     ):
+        """
+        Create a new action in krita.
+
+        Requires providing a krita window received in createActions()
+        method of the main extension file.
+        """
         krita_action = window.createAction(name, name, group)
         krita_action.setAutoRepeat(False)
         krita_action.triggered.connect(callback)
@@ -80,6 +88,7 @@ class KritaInstance:
 
 
 class KritaWindow(Protocol):
+    """Krita window received in createActions() of main extension file."""
     def createAction(
         self,
         name: str,

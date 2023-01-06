@@ -25,6 +25,7 @@ class Database:
         ))
 
     def _single_column_query(self, sql_query: str, value: str) -> List[Any]:
+        """Use SQL query to get single column in a form of a list."""
         if not self.database.open():
             return []
 
@@ -40,7 +41,7 @@ class Database:
         return return_list
 
     def get_preset_names_from_tag(self, tag_name: str) -> List[str]:
-        """Return list of all preset names that belong to passed tag."""
+        """Return list of all preset names that belong to given tag."""
         sql_query = f'''
             SELECT r.name AS preset
             FROM tags t
@@ -53,6 +54,7 @@ class Database:
         return self._single_column_query(sql_query, "preset")
 
     def get_brush_tags(self) -> List[str]:
+        "Return list of all tag names."
         sql_query = '''
             SELECT t.name AS tag
             FROM tags t

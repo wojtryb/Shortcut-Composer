@@ -26,7 +26,7 @@ class PieMenu(PluginAction, Generic[T]):
     - Moving mouse in a direction of a value activates in on key release
     - When the mouse was not moved past deadzone, value is not changed
 
-    # Arguments:
+    ### Arguments:
 
     - `name`          -- unique name of action. Must match the
                          definition in shortcut_composer.action file
@@ -41,7 +41,7 @@ class PieMenu(PluginAction, Generic[T]):
     - `background_color`  -- (optional) rgba color of background
     - `active_color`      -- (optional) rgba color of active pie
 
-    # Action implementation example:
+    ### Action implementation example:
 
     Action is meant to change opacity of current layer to one of
     predefined values using the pie menu widget.
