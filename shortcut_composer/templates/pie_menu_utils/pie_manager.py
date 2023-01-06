@@ -16,7 +16,6 @@ class PieManager:
 
     def __init__(self, widget: PieWidget) -> None:
         self._widget = widget
-        self._labels = widget.labels
         self._is_working = False
         self._sleep_time = 1/FPS_LIMIT if FPS_LIMIT else 0.001
 
@@ -55,6 +54,6 @@ class PieManager:
         )) % 360
 
     def _set_active_label(self, label: Optional[Label]):
-        if self._labels.active != label:
-            self._labels.active = label
+        if self._widget.labels.active != label:
+            self._widget.labels.active = label
             self._widget.repaint()
