@@ -7,6 +7,7 @@ from .shortcut_library.plugin_actions.slider_utils import Slider, Range
 actions = [
     templates.TemporaryEraser(),
     templates.TemporaryPreserveAlpha(),
+    templates.LayerPicker(),
     templates.VirtualSliderAction(
         action_name="Mouse cycle",
         separate_sliders=True,

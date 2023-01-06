@@ -47,7 +47,62 @@ class KritaView:
         self.view.setPaintingOpacity(opacity)
 
 
+@dataclass
+class Node():
+
+    node: Any
+
+    def name(self) -> bool:
+        return self.node.name()
+
+    def is_visible(self) -> bool:
+        return self.node.visible()
+
+    def set_visible(self):
+        return self.node.setVisible()
+
+    def type(self) -> bool:
+        return self.node.type()
+
+    def child_nodes(self):
+        return [Node(node) for node in self.node.childNodes()]
+
+    def unique_id(self):
+        return self.node.uniqueId()
+
+    def __eq__(self, node: 'Node'):
+        return self.unique_id() == node.unique_id()
+
+
+@dataclass
+class KritaDocument:
+
+    document: Any
+
+    def current_node(self) -> Node:
+        return Node(self.document.activeNode())
+
+    def set_current_node(self, node: Node) -> None:
+        self.document.setActiveNode(node.node)
+
+    def nodes(self) -> List[Node]:
+        return [Node(node) for node in self.document.topLevelNodes()]
+
+
 class Krita:
+
+    @staticmethod
+    def get_active_view() -> KritaView:
+        return KritaView(Api.instance().activeWindow().activeView())
+
+    @classmethod
+    def get_cursor(cls) -> Cursor:
+        qwin = cls.get_active_qwindow()
+        return Cursor(qwin)
+
+    @staticmethod
+    def get_active_document() -> KritaDocument:
+        return KritaDocument(Api.instance().activeDocument())
 
     @staticmethod
     def trigger_action(action_name) -> None:
@@ -70,17 +125,8 @@ class Krita:
         return Api.instance().resources('preset')
 
     @staticmethod
-    def get_active_view() -> KritaView:
-        return KritaView(Api.instance().activeWindow().activeView())
-
-    @staticmethod
     def get_active_qwindow() -> QMainWindow:
         return Api.instance().activeWindow().qwindow()
-
-    @classmethod
-    def get_cursor(cls) -> Cursor:
-        qwin = cls.get_active_qwindow()
-        return Cursor(qwin)
 
     @staticmethod
     def add_extension(extension: Extension) -> None:

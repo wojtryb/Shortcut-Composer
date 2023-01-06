@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from .krita_api import Krita
+from .krita_api import Krita, Node
 from .enums import Tool
 
 
@@ -71,3 +71,16 @@ class OpacityController(Controller):
     def set_value(value: float):
         """Set passed brush opacity."""
         Krita.get_active_view().set_opacity(value)
+
+
+class LayerController(Controller):
+
+    @staticmethod
+    def get_value() -> Node:
+        """Get current node."""
+        return Krita.get_active_document().current_node()
+
+    @staticmethod
+    def set_value(value: Node):
+        """Set passed node as current."""
+        Krita.get_active_document().set_current_node(value)
