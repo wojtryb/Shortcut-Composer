@@ -102,10 +102,12 @@ class TransformModeActions:
         def ensure_initialized(self, mode: TransformMode) -> None:
             """Fetch widget, apply and mode buttons if not done already."""
             if not self._initialized:
-                Tool.TRANSFORM.activate()
+                last_tool = Krita.active_tool
+                Krita.active_tool = Tool.TRANSFORM
                 self._transform_options = self._fetch_transform_options()
                 self._apply_button = self._fetch_apply_button()
                 self._initialized = True
+                Krita.active_tool = last_tool
 
             if mode not in self._mode_buttons:
                 self._mode_buttons[mode] = self._fetch_mode_button(mode)
