@@ -37,39 +37,28 @@ class MyWidget(QWidget):
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setStyleSheet("background: transparent;")
         self.setWindowTitle("Pie Menu")
-        self.setGeometry(0, 0, self.center_value*2, self.center_value*2)
+        size = PIE_RADIUS_PX*2
+        self.setGeometry(0, 0, size, size)
 
         self.changed = False
 
     @property
-    def center_value(self):
-        return PIE_ICON_RADIUS_PX + PIE_RADIUS_PX
-
-    @property
     def center(self):
-        return QPoint(self.center_value, self.center_value)
+        return QPoint(PIE_RADIUS_PX, PIE_RADIUS_PX)
 
     def move_center(self, x: int, y: int):
-        self.move(x-self.center_value, y-self.center_value)
+        self.move(x-PIE_RADIUS_PX, y-PIE_RADIUS_PX)
 
     def _paint_main_wheel(self):
         path = QPainterPath()
-        path.addEllipse(
-            self.center,
-            PIE_RADIUS_PX,
-            PIE_RADIUS_PX)
-        path.addEllipse(
-            self.center,
-            PIE_RADIUS_PX*0.7,
-            PIE_RADIUS_PX*0.7)
-        self.painter.fillPath(path, QColor(100, 100, 100, 50))
+        size = PIE_RADIUS_PX-PIE_ICON_RADIUS_PX*0.7
+        path.addEllipse(self.center, size, size)
+        path.addEllipse(self.center, size*0.7, size*0.7)
+        self.painter.fillPath(path, QColor(100, 100, 100, 150))
 
     def _paint_label(self, center: QPoint, value: Union[str, QPixmap]):
         path = QPainterPath()
-        path.addEllipse(
-            center,
-            PIE_ICON_RADIUS_PX,
-            PIE_ICON_RADIUS_PX)
+        path.addEllipse(center, PIE_ICON_RADIUS_PX, PIE_ICON_RADIUS_PX)
         self.painter.fillPath(path, QColor(47, 47, 47, 255))
 
         if isinstance(value, QPixmap):
@@ -118,16 +107,17 @@ class MyWidget(QWidget):
             iterator = range(0, 360, round(360/len(self._values)))
             for value, angle in zip(self._values, iterator):
                 label = self._controller.get_label(value)
-                point = self._center_from_angle(angle)
+                distance = PIE_RADIUS_PX-PIE_ICON_RADIUS_PX
+                point = self._center_from_angle(angle, distance)
                 self._paint_label(point, label)
             self.painter.end()
             self.changed = False
 
-    def _center_from_angle(self, angle: int):
+    def _center_from_angle(self, angle: int, distance: int):
         rad_angle = math.radians(angle)
         return QPoint(
-            round(self.center_value + PIE_RADIUS_PX*math.sin(rad_angle)),
-            round(self.center_value - PIE_RADIUS_PX*math.cos(rad_angle)),
+            round(PIE_RADIUS_PX + distance*math.sin(rad_angle)),
+            round(PIE_RADIUS_PX - distance*math.cos(rad_angle)),
         )
 
 
