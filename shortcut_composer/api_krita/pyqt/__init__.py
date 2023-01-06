@@ -5,3 +5,4 @@ from .pixmap_transform import (
 )
 
 from .painter import Painter
+from .label import Label

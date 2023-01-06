@@ -2,10 +2,9 @@ from typing import List, TypeVar, Generic, Union
 import math
 
 from PyQt5.QtCore import Qt, QPoint
-from PyQt5.QtWidgets import QWidget, QLabel
+from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import (
     QColor,
-    QFont,
     QPixmap,
 )
 
@@ -59,10 +58,11 @@ class MyWidget(QWidget):
         self.move(x-self._pie_radius_px, y-self._pie_radius_px)
 
     def _paint_label(self, center: QPoint, value: Union[str, QPixmap]):
+        label_color = QColor(47, 47, 47, 255)
         self.painter.paint_wheel(
             center=center,
             outer_radius=self._pie_icon_radius_px,
-            color=QColor(47, 47, 47, 255)
+            color=label_color
         )
         if isinstance(value, QPixmap):
             rounded_image = pyqt.make_pixmap_round(value)
@@ -72,23 +72,13 @@ class MyWidget(QWidget):
             )
             self.painter.paint_pixmap(center, scaled_image)
         elif isinstance(value, str):
-            label = QLabel("text label", self)
-            label.setFont(QFont('Times', 20))
-            label.adjustSize()
-            label.setGeometry(
-                round(center.x()-self._pie_icon_radius_px*0.6),
-                round(center.y()-self._pie_icon_radius_px*0.6),
-                round(self._pie_icon_radius_px*1.2),
-                round(self._pie_icon_radius_px*1.2))
-            label.setStyleSheet(
-                "background-color:rgba(47, 47, 47, 255);"
-                "color: white;"
+            pyqt.Label(
+                widget=self,
+                center=center,
+                size=round(self._pie_icon_radius_px*1.2),
+                bg_color=label_color,
+                text=value,
             )
-            label.setAlignment(Qt.AlignCenter)
-            label.setWordWrap(True)
-            label.setText(value)
-
-            label.show()
 
     def show(self) -> None:
         super().show()
