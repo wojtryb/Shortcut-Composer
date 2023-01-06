@@ -46,6 +46,7 @@ class MouseTracker:
     )
     ```
     """
+
     def __new__(
         cls,
         name: str,
@@ -82,3 +83,11 @@ class MouseTracker:
                 vertical_slider=vertical_slider,
             )
         raise ValueError("At least one slider needed.")
+
+    def __init__(
+        self,
+        name: str,
+        horizontal_slider: Optional[Slider] = None,
+        vertical_slider: Optional[Slider] = None,
+        instructions: List[Instruction] = [],
+    ): ...
