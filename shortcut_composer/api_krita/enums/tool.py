@@ -102,7 +102,7 @@ class Tool(Enum):
         Api.instance().action(self.value).trigger()
 
     @staticmethod
-    def is_paintable(tool: 'Tool'):
+    def is_paintable(tool: 'Tool') -> bool:
         """Is the user able to paint when the given tool is activated."""
         return tool in _PAINTABLE
 
@@ -112,13 +112,13 @@ class Tool(Enum):
         icon_name = _ICON_NAME_MAP.get(self, "edit-delete")
         return Api.instance().icon(icon_name)
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         """All subtools of transform tool are technically the same tool."""
         if self in _TRANSFORMS and other in _TRANSFORMS:
             return True
         return Enum.__eq__(self, other)
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         """Identify tool by its krita name."""
         return hash(self.value)
 

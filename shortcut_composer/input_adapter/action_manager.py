@@ -29,11 +29,11 @@ class ActionContainer:
     krita_action: QWidgetAction
     shortcut: ShortcutAdapter
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Bind key_press method to action 'trigger' event."""
         self.krita_action.triggered.connect(self.shortcut.on_key_press)
 
-    def replace_action(self, new_action: PluginAction):
+    def replace_action(self, new_action: PluginAction) -> None:
         """Replace plugin action managed by this container."""
         self.plugin_action = new_action
         self.shortcut.action = new_action
@@ -48,12 +48,12 @@ class ActionManager:
     bind_action() method.
     """
 
-    def __init__(self, window):
+    def __init__(self, window) -> None:
         self._window = window
         self._event_filter = ReleaseKeyEventFilter()
         self._stored_actions: Dict[str, ActionContainer] = {}
 
-    def bind_action(self, action: PluginAction):
+    def bind_action(self, action: PluginAction) -> None:
         """
         Create action components and stores them together.
 

@@ -14,7 +14,7 @@ from ..config import Config
 class ComboBoxesLayout(QGridLayout):
     """Dialog zone consisting of combo boxes."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.setAlignment(Qt.AlignTop)
         self._combo_boxes: Dict[Config, QComboBox] = {}
@@ -24,7 +24,7 @@ class ComboBoxesLayout(QGridLayout):
         self._add_row(Config.TAG_GREEN)
         self._add_row(Config.TAG_BLUE)
 
-    def _add_row(self, config: Config):
+    def _add_row(self, config: Config) -> None:
         """Add a combobox to the layout along with its description."""
         row_id = next(self._row_counter)
         label = QLabel(config.value)
@@ -32,14 +32,14 @@ class ComboBoxesLayout(QGridLayout):
         self.addWidget(label, row_id, 0)
         self.addWidget(self._create_combobox(config), row_id, 1)
 
-    def _create_combobox(self, config: Config):
+    def _create_combobox(self, config: Config) -> QComboBox:
         """Store and return combobox that represents given config field."""
         combo_box = QComboBox()
         combo_box.setObjectName(config.value)
         self._combo_boxes[config] = combo_box
         return combo_box
 
-    def refresh(self):
+    def refresh(self) -> None:
         """Read list of tags and set it to all stored comboboxes."""
         with Database() as database:
             tags = database.get_brush_tags()
@@ -49,7 +49,7 @@ class ComboBoxesLayout(QGridLayout):
             combo_box.addItems(sorted(tags, key=str.lower))
             combo_box.setCurrentText(config.read())
 
-    def apply(self):
+    def apply(self) -> None:
         """Write values from all stored comboboxes to krita config file."""
         for config, combo in self._combo_boxes.items():
             config.write(combo.currentText())

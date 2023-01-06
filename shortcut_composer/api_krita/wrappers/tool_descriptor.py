@@ -9,10 +9,10 @@ class ToolDescriptor:
 
     _tool_finder: 'ToolFinder'
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.instance = Api.instance()
 
-    def __set__(self, _, tool_enum: Tool):
+    def __set__(self, _, tool_enum: Tool) -> None:
         """Set active tool by triggering related action."""
         tool_enum.activate()
 

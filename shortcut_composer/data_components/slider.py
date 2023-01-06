@@ -70,7 +70,7 @@ class Slider:
 
         self.deadzone = self._read(deadzone, Config.SLIDER_DEADZONE)
 
-    def _read(self, passed: Optional[int], field: Config):
+    def _read(self, passed: Optional[int], field: Config) -> int:
         if passed is not None:
             return passed
         return field.read()

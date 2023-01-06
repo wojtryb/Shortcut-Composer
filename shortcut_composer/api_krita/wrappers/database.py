@@ -65,10 +65,10 @@ class Database:
         """Close the connection with the database."""
         self.database.close()
 
-    def __enter__(self):
+    def __enter__(self) -> 'Database':
         """Return self. Connection already initialized in init."""
         return self
 
-    def __exit__(self, *_):
+    def __exit__(self, *_) -> None:
         """Close the connection with the database on exit."""
         self.close()

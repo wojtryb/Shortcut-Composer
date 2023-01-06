@@ -29,7 +29,7 @@ class Painter:
         outer_radius: float,
         color: QColor,
         thickness: Optional[float] = None,
-    ):
+    ) -> None:
         """
         Paint a wheel at center providing its radius, color and thickness.
 
@@ -50,7 +50,7 @@ class Painter:
         span: int,
         color: QColor,
         thickness: Optional[float] = None,
-    ):
+    ) -> None:
         """Paint part of wheel a, that spans left and right by span/2."""
         angle = -angle + 90
         path = QPainterPath()
@@ -65,7 +65,7 @@ class Painter:
 
         self._painter.fillPath(path, color)
 
-    def paint_pixmap(self, center: QPoint, pixmap: QPixmap):
+    def paint_pixmap(self, center: QPoint, pixmap: QPixmap) -> None:
         """Paint pixmap providing a center instead of top-left corner."""
         left_top_corner = QPoint(
             center.x() - pixmap.width()//2,
@@ -73,18 +73,18 @@ class Painter:
         )
         self._painter.drawPixmap(left_top_corner, pixmap)
 
-    def _square(self, center: QPoint, width: int):
+    def _square(self, center: QPoint, width: int) -> QRectF:
         """Return a square of given `width` at `center` point."""
         return QRectF(center.x()-width//2, center.y()-width//2, width, width)
 
-    def end(self):
+    def end(self) -> None:
         """End painting a widget provided in __init__."""
         self._painter.end()
 
-    def __enter__(self):
+    def __enter__(self) -> 'Painter':
         """Start using a painter using context manager."""
         return self
 
-    def __exit__(self, *_):
+    def __exit__(self, *_) -> None:
         """End using a painter using context manager."""
         self.end()

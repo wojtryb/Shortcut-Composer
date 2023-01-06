@@ -11,7 +11,7 @@ class PixmapTransform:
     """Utilities for `QPixmap` transformation."""
 
     @staticmethod
-    def add_border(pixmap: QPixmap, border_px: int):
+    def add_border(pixmap: QPixmap, border_px: int) -> QPixmap:
         """Add a transparent border of `border_px` pixels on each side."""
         original_size = pixmap.width()
         new_size = original_size + 2*border_px
