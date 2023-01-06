@@ -10,6 +10,13 @@ from .slider_handler import SliderHandler
 from .new_types import MouseInput
 
 
+def pick_mouse_getter(is_horizontal: bool):
+    cursor = Krita.get_cursor()
+    if is_horizontal:
+        return lambda: MouseInput(cursor.x())
+    return lambda: MouseInput(-cursor.y())
+
+
 class SingleAxisTracker(PluginAction):
     """
     Track the mouse along one axis to switch values.
@@ -36,20 +43,12 @@ class SingleAxisTracker(PluginAction):
     def on_key_press(self) -> None:
         """Start tracking with handler."""
         super().on_key_press()
-        self._handler.start(self._get_mouse_getter())
+        self._handler.start(pick_mouse_getter(self._is_horizontal))
 
     def on_every_key_release(self) -> None:
         """End tracking with handler."""
         super().on_every_key_release()
-        self._is_working = False
         self._handler.stop()
-
-    def _get_mouse_getter(self):
-        cursor = Krita.get_cursor()
-
-        if self._is_horizontal:
-            return lambda: MouseInput(cursor.x())
-        return lambda: MouseInput(-cursor.y())
 
 
 class DoubleAxisTracker(PluginAction):
@@ -80,27 +79,23 @@ class DoubleAxisTracker(PluginAction):
     def on_key_press(self) -> None:
         """Start a thread which decides which handler to start."""
         super().on_key_press()
-        Thread(target=self._pick_slider, daemon=True).start()
+        Thread(target=self._start_after_picking_slider, daemon=True).start()
 
-    def _pick_slider(self) -> None:
+    def _start_after_picking_slider(self) -> None:
         """Wait for inital movement to activate the right handler."""
-        cursor = Krita.get_cursor()
-        start_point = (cursor.x(), cursor.y())
+        comparer = self.MouseComparator()
         with self._lock:
             self._is_working = True
-            delta_hor = 0
-            delta_ver = 0
-            while abs(delta_hor - delta_ver) <= 10:
-                delta_hor = abs(start_point[0] - cursor.x())
-                delta_ver = abs(start_point[1] - cursor.y())
+            while comparer.delta_x <= 10 and comparer.delta_y <= 10:
                 if not self._is_working:
                     return
                 sleep(0.05)
 
-            if delta_hor > delta_ver:
-                self._horizontal_handler.start(lambda: MouseInput(cursor.x()))
+            mouse_getter = pick_mouse_getter(comparer.is_horizontal)
+            if comparer.is_horizontal:
+                self._horizontal_handler.start(mouse_getter)
             else:
-                self._vertical_handler.start(lambda: MouseInput(-cursor.y()))
+                self._vertical_handler.start(mouse_getter)
 
     def on_every_key_release(self) -> None:
         """End tracking with handler, regardless of which one was started."""
@@ -109,3 +104,16 @@ class DoubleAxisTracker(PluginAction):
         with self._lock:
             self._horizontal_handler.stop()
             self._vertical_handler.stop()
+
+    class MouseComparator:
+        def __init__(self) -> None:
+            self.cursor = Krita.get_cursor()
+            self.start_x = self.cursor.x()
+            self.start_y = self.cursor.y()
+
+        @property
+        def delta_x(self): return abs(self.start_x - self.cursor.x())
+        @property
+        def delta_y(self): return abs(self.start_y - self.cursor.y())
+        @property
+        def is_horizontal(self) -> bool: return self.delta_x > self.delta_y
