@@ -14,18 +14,18 @@ from data_components import (
 
 actions = [
     templates.TemporaryKey(
-        action_name="Move tool (temporary)",
+        name="Move tool (temporary)",
         controller=controllers.ToolController(),
         high_value=Tool.MOVE,
     ),
     templates.TemporaryKey(
-        action_name="Transform tool (temporary)",
+        name="Transform tool (temporary)",
         controller=controllers.ToolController(),
         high_value=Tool.TRANSFORM,
         time_interval=1.0
     ),
     templates.TemporaryKey(
-        action_name="Eraser (temporary)",
+        name="Eraser (temporary)",
         controller=controllers.ToggleController(Toggle.ERASER),
         low_value=False,
         high_value=True,
@@ -35,7 +35,7 @@ actions = [
         ],
     ),
     templates.TemporaryKey(
-        action_name="Preserve alpha (temporary)",
+        name="Preserve alpha (temporary)",
         controller=controllers.ToggleController(Toggle.PRESERVE_ALPHA),
         low_value=False,
         high_value=True,
@@ -45,21 +45,21 @@ actions = [
         ],
     ),
     templates.RawInstructions(
-        action_name="Toggle visibility (temporary)",
+        name="Toggle visibility (temporary)",
         instructions=[instructions.ToggleLayerVisibility()],
     ),
     templates.RawInstructions(
-        action_name="Toggle show below (temporary)",
+        name="Toggle show below (temporary)",
         instructions=[instructions.ToggleShowBelow()],
     ),
     templates.MultipleAssignment(
-        action_name="Opacity (cycle)",
+        name="Opacity (cycle)",
         controller=controllers.OpacityController(),
         default_value=100,
         values_to_cycle=[70, 50, 30, 100],
     ),
     templates.MultipleAssignment(
-        action_name="Selection tools (cycle)",
+        name="Selection tools (cycle)",
         controller=controllers.ToolController(),
         values_to_cycle=[
             Tool.FREEHAND_SELECTION,
@@ -68,7 +68,7 @@ actions = [
         ],
     ),
     templates.MultipleAssignment(
-        action_name="Misc tools (cycle)",
+        name="Misc tools (cycle)",
         controller=controllers.ToolController(),
         values_to_cycle=[
             Tool.CROP,
@@ -78,14 +78,14 @@ actions = [
         ],
     ),
     templates.MultipleAssignment(
-        action_name="Preset (cycle)",
+        name="Preset (cycle)",
         controller=controllers.PresetController(),
         default_value="b) Basic-5 Size Opacity",
         values_to_cycle=Tag("Digital"),
         instructions=[instructions.SetBrushOnNonPaintable()],
     ),
     templates.MouseTracker(
-        action_name="Layer scraper (tracker)",
+        name="Layer scraper (tracker)",
         instructions=[instructions.TemporaryOn(Toggle.ISOLATE_LAYER)],
         vertical_slider=Slider(
             controller=controllers.LayerController(),
@@ -93,14 +93,14 @@ actions = [
         )
     ),
     templates.MouseTracker(
-        action_name="Timeline scraper (tracker)",
+        name="Timeline scraper (tracker)",
         horizontal_slider=Slider(
             controller=controllers.TimeController(),
             values=Range(0, float('inf')),
         )
     ),
     templates.MouseTracker(
-        action_name="Blending mode (tracker)",
+        name="Blending mode (tracker)",
         horizontal_slider=Slider(
             controller=controllers.BlendingModeController(),
             values=[
@@ -116,7 +116,7 @@ actions = [
         ),
     ),
     templates.MouseTracker(
-        action_name="Brush basic settings (tracker)",
+        name="Brush basic settings (tracker)",
         horizontal_slider=Slider(
             controller=controllers.BrushSizeController(),
             values=[

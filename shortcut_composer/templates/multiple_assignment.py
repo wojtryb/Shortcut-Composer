@@ -17,7 +17,7 @@ class MultipleAssignment(PluginAction):
 
     ### Arguments:
 
-    - `action_name`     -- unique name of action. Must match the definition in
+    - `name`            -- unique name of action. Must match the definition in
                             shortcut_composer.action file
     - `controller`      -- defines which krita property will be modified
     - `values_to_cycle` -- list of values compatibile with controller to cycle
@@ -40,7 +40,7 @@ class MultipleAssignment(PluginAction):
 
     ```python
     MultipleAssignment(
-        action_name="Brush size (cycle)",
+        name="Brush size (cycle)",
         controller=controllers.BrushSizeController(),
         default_value=100,
         values_to_cycle=[5, 10, 20, 50],
@@ -49,14 +49,14 @@ class MultipleAssignment(PluginAction):
     """
 
     def __init__(self, *,
-                 action_name: str,
+                 name: str,
                  controller: Controller,
                  values_to_cycle: List[Any],
                  default_value: Any = None,
                  instructions: List[Instruction] = [],
                  time_interval: float = 0.3) -> None:
         super().__init__(
-            action_name=action_name,
+            name=name,
             time_interval=time_interval,
             controller=controller,
             instructions=instructions)
@@ -90,3 +90,7 @@ class MultipleAssignment(PluginAction):
 
     def _reset_iterator(self) -> None:
         self._iterator = cycle(self.values_to_cycle)
+
+    def _read_default_value(self, value: Any):
+        """Read value from controller if it was not given."""
+        return value if value else self._controller.default_value

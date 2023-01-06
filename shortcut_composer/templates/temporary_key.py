@@ -17,7 +17,7 @@ class TemporaryKey(PluginAction):
 
     ### Arguments:
 
-    - `action_name`   -- unique name of action. Must match the
+    - `name`          -- unique name of action. Must match the
                           definition in shortcut_composer.action file
     - `controller`    -- defines which krita property will be modified
     - `low_value`     -- value compatibile with controller
@@ -39,7 +39,7 @@ class TemporaryKey(PluginAction):
 
     ```python
     TemporaryKey(
-        action_name="Change opacity between 100 and 50,
+        name="Change opacity between 100 and 50,
         controller=controllers.OpacityController(),
         low_value=100,
         high_value=50,
@@ -50,14 +50,14 @@ class TemporaryKey(PluginAction):
     """
 
     def __init__(self, *,
-                 action_name: str,
+                 name: str,
                  controller: Controller,
                  low_value: Optional[T] = None,
                  high_value: T,
                  instructions: List[Instruction] = [],
                  time_interval: float = 0.3) -> None:
         super().__init__(
-            action_name=action_name,
+            name=name,
             time_interval=time_interval,
             controller=controller,
             instructions=instructions)
@@ -98,3 +98,7 @@ class TemporaryKey(PluginAction):
     def on_every_key_release(self) -> None:
         """End the additional instructions on every key release."""
         self._instructions.exit()
+
+    def _read_default_value(self, value: Any):
+        """Read value from controller if it was not given."""
+        return value if value else self._controller.default_value

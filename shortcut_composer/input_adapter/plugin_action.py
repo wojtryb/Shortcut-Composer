@@ -16,11 +16,11 @@ class PluginAction:
     """
 
     def __init__(self, *,
-                 action_name: str,
+                 name: str,
                  time_interval: float = 0.3,
                  controller: Controller = Controller(),
                  instructions: List[Instruction] = []) -> None:
-        self.action_name = action_name
+        self.name = name
         self._time_interval = time_interval
         self._controller = controller
         self._instructions = InstructionHolder(instructions)
@@ -36,8 +36,3 @@ class PluginAction:
 
     def on_every_key_release(self) -> None:
         """Called on each release of related key, after short/long callback."""
-
-    def _read_default_value(self, default_value: Any):
-        if default_value:
-            return default_value
-        return self._controller.default_value
