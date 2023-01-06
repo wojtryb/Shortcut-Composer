@@ -11,6 +11,7 @@ class CurrentLayerStack:
 
     def get_layers(self):
         if document := Krita.get_active_document():
+            document.active_node.get_parent_node().collapsed = False
             return self.pick_strategy.value(document)
         return []
 
