@@ -1,4 +1,4 @@
-from .document_controllers import LayerController
+from .document_controllers import LayerController, TimeController
 from .canvas_controllers import (
     CanvasRotationController,
     CanvasZoomController)
@@ -21,6 +21,7 @@ __all__ = [
     'ToggleController',
     "PresetController",
     "LayerController",
+    "TimeController",
     "ToolController",
     "FlowController",
 ]

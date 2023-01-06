@@ -27,5 +27,11 @@ class Document:
             return found_so_far
         return recursive_search(self.top_nodes(), [])
 
+    def current_time(self) -> int:
+        return self.document.currentTime()
+
+    def set_current_time(self, time: int) -> None:
+        self.document.setCurrentTime(time)
+
     def refresh(self) -> None:
         self.document.refreshProjection()
