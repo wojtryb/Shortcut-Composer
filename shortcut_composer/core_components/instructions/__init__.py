@@ -8,13 +8,14 @@ Available instructions:
     - `SetBrush`
     - `SetBrushOnNonPaintable`
     - `ToggleLayerVisibility`
+    - `ToggleVisibilityAbove`
     - `EnsureOn`
     - `EnsureOff`
     - `TemporaryOn`
     - `TemporaryOff`
 """
 
-from .layer_hide import ToggleLayerVisibility, ToggleShowBelow
+from .layer_hide import ToggleLayerVisibility, ToggleVisibilityAbove
 from .set_brush_strategy import SetBrush, SetBrushOnNonPaintable
 from .togglers import (
     TemporaryOff,
@@ -27,10 +28,10 @@ from .undo import UndoOnShortPress
 __all__ = [
     'SetBrushOnNonPaintable',
     'ToggleLayerVisibility',
-    'ToggleShowBelow',
+    'ToggleVisibilityAbove',
+    'UndoOnShortPress',
     'TemporaryOff',
     'TemporaryOn',
-    'UndoOnShortPress',
     'SetBrush',
     'EnsureOff',
     'EnsureOn',

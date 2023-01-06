@@ -1,4 +1,4 @@
-"""Central file which defines extension class and adds it to krita."""
+"""Main file which defines extension class and adds it to krita."""
 
 from api_krita import Krita, Extension  # type: ignore
 from input_adapter import ActionManager
@@ -10,15 +10,11 @@ class ShortcutComposer(Extension):
 
     manager: ActionManager
 
-    def __init__(self, parent):
-        """Initialize extension, create single event filter."""
-        super(ShortcutComposer, self).__init__(parent)
-
     def setup(self) -> None:
         """Obligatory override of abstract class."""
 
     def createActions(self, window) -> None:
-        """Initialize manager of actions which binds them to event filter."""
+        """Initialize manager of actions which binds them to krita."""
         self.manager = ActionManager(window)
         for action in actions:
             self.manager.bind_action(action)
