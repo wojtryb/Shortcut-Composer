@@ -6,6 +6,6 @@ class Controller:
 
     default_value: Any = None
 
-    def refresh(self) -> None: ...
-    def get_value(self) -> Any: ...
-    def set_value(self, value: Any) -> None: ...
+    def refresh(self) -> None: """Refresh stored krita components."""
+    def get_value(self) -> Any: """Get handled value from krita."""
+    def set_value(self, value: Any) -> None: """Set handled value in krita."""

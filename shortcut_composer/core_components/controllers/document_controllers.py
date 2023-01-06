@@ -4,17 +4,19 @@ from ..controller_base import Controller
 
 
 class DocumentBasedController(Controller):
+    """Family of controllers which operate on values from active document."""
 
     def refresh(self):
+        """Refresh currently stored active document."""
         self.document = Krita.get_active_document()
 
 
 class LayerController(DocumentBasedController):
     """
-    Gives access to nodes (layers, masks etc.) from layer stack.
+    Gives access to nodes (layers, groups, masks...) from layer stack.
 
-    - Operates on internal Layer objects. Use `CurrentLayerStack()` to
-      always use current layer stack
+    - Operates on internal layer objects. Use `CurrentLayerStack(...)`
+      to always use current layer stack
     - Does not have a default
     """
 
@@ -31,8 +33,8 @@ class TimeController(DocumentBasedController):
     """
     Gives access to animation timeline.
 
-    - Operates on positive integers representing frame numbers
-    - Defaults to 0
+    - Operates on `positive integers` representing `frame numbers`
+    - Defaults to `0`
     """
 
     default_value = 0

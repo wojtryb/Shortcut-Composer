@@ -32,8 +32,8 @@ class ToggleController(Controller):
     Gives access to picked krita toggle action.
 
     - Pick an action by providing a specific `Toggle`.
-    - Operates on booleans
-    - Defaults to False
+    - Operates on `bool`
+    - Defaults to `False`
     """
 
     toggle: Toggle
@@ -48,13 +48,25 @@ class ToggleController(Controller):
 
 @dataclass
 class UndoController(Controller):
+    """
+    Gives access to `undo` and `redo` actions.
+
+    - Operates on `int` representing position on undo stack
+    - Starts from `0`
+    - Controller remembers its position on undo stack.
+    - Setting a value smaller than currently remembered performs `undo`
+    - Setting a value greater than currently remembered performs `redo`
+    - Each Undo and redo change remembered position by 1
+    """
 
     state = 0
 
     def get_value(self) -> int:
+        """Return remembered position on undo stack"""
         return self.state
 
     def set_value(self, value: float) -> None:
+        """Compares value with remembered position and performs undo/redo."""
         value = round(value)
 
         if value == self.state:

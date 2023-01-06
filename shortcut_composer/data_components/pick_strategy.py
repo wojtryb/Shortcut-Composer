@@ -6,10 +6,12 @@ from api_krita.wrappers import Document, Node
 
 
 def _pick_all(document: Document) -> List[Node]:
+    """Pick all nodes from document as list without group hierarchy"""
     return document.get_all_nodes()
 
 
 def _pick_current_visibility(document: Document) -> List[Node]:
+    """Pick nodes from document that has the same visibility as active one."""
     nodes = document.get_all_nodes()
     current_visibility = document.active_node.visible
     return [node for node in nodes
@@ -17,14 +19,32 @@ def _pick_current_visibility(document: Document) -> List[Node]:
 
 
 def _pick_node_attribute(document: Document, attribute: str) -> List[Node]:
+    """Pick nodes from document based on a single attribute."""
     nodes = document.get_all_nodes()
     return [node for node in nodes
             if getattr(node, attribute) or node == document.active_node]
 
 
 class PickStrategy(Enum):
+    """
+    Specifies what layers to pick when scrolling through layers.
 
+    Available strategies are:
+    - `ALL` - picks all the nodes (layers, groups, masks...).
+    - `VISIBLE` - picks active node and all the nodes that are visible.
+    - `CURRENT_VISIBILITY`- picks all the nodes with the same visibility
+        as the active node.
+    - `ANIMATED`- picks active node and all the nodes that have animation
+        frames.
+
+
+    ### Usage Example:
+
+    ```python
+    PickStrategy.CURRENT_VISIBILITY
+    ```
+    """
     ALL = partial(_pick_all)
     VISIBLE = partial(_pick_node_attribute, attribute="visible")
-    ANIMATED = partial(_pick_node_attribute, attribute="is_animated")
     CURRENT_VISIBILITY = partial(_pick_current_visibility)
+    ANIMATED = partial(_pick_node_attribute, attribute="is_animated")

@@ -4,17 +4,21 @@ from ..controller_base import Controller
 
 
 class ViewBasedController(Controller):
+    """Family of controllers which operate on values from active view."""
 
     def refresh(self):
+        """Refresh currently stored active view."""
         self.view = Krita.get_active_view()
 
 
 class PresetController(ViewBasedController):
     """
-    Gives access to presets.
+    Gives access to `presets`.
 
-    - Operates on strings with preset names
+    - Operates on `string` representing name of preset
     - Does not have a default
+
+    Example preset name: `"b) Basic-5 Size Opacity"`
     """
 
     def get_value(self) -> str:
@@ -28,9 +32,9 @@ class PresetController(ViewBasedController):
 
 class BrushSizeController(ViewBasedController):
     """
-    Gives access to brush size.
+    Gives access to `brush size`.
 
-    - Operates on floats representing brush size in pixels
+    - Operates on `float` representing brush size in pixels
     - Defaults to `100`
     """
 
@@ -45,7 +49,7 @@ class BrushSizeController(ViewBasedController):
 
 class BlendingModeController(ViewBasedController):
     """
-    Gives access to brush blending mode.
+    Gives access to `brush blending mode`.
 
     - Operates on `BlendingMode`
     - Defaults to `BlendingMode.NORMAL`
@@ -64,9 +68,9 @@ class BlendingModeController(ViewBasedController):
 
 class OpacityController(ViewBasedController):
     """
-    Gives access to brush opacity in %.
+    Gives access to `brush opacity` in %.
 
-    - Operates on integers `<0-100>`
+    - Operates on `integer` in range `0 to 100`
     - Defaults to `100`
     """
 
@@ -83,9 +87,9 @@ class OpacityController(ViewBasedController):
 
 class FlowController(ViewBasedController):
     """
-    Gives access to brush flow in %.
+    Gives access to `brush flow` in %.
 
-    - Operates on integers `<0-100>`
+    - Operates on `integer` in range `0 to 100`
     - Defaults to `100`
     """
 

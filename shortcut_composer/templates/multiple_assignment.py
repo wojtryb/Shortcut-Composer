@@ -1,8 +1,10 @@
-from typing import Any, List, Iterator
+from typing import Any, List, Iterator, TypeVar
 from itertools import cycle
 
 from core_components import Controller, Instruction
 from input_adapter import PluginAction
+
+T = TypeVar('T')
 
 
 class MultipleAssignment(PluginAction):
@@ -51,8 +53,8 @@ class MultipleAssignment(PluginAction):
     def __init__(self, *,
                  name: str,
                  controller: Controller,
-                 values_to_cycle: List[Any],
-                 default_value: Any = None,
+                 values_to_cycle: List[T],
+                 default_value: T = None,
                  instructions: List[Instruction] = [],
                  time_interval: float = 0.3) -> None:
         super().__init__(
