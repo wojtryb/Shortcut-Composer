@@ -2,15 +2,14 @@ from dataclasses import dataclass
 
 from .krita_api_wrapper import Krita
 from ._interfaces import TemporaryAction
-from .enums import Tools
+from .enums import Tool
 
 
 @dataclass
 class TemporaryTool(TemporaryAction):
 
-    action_name: str
-    krita_tool: Tools
-    default_tool: Tools = Tools.freehand_brush
+    krita_tool: Tool
+    default_tool: Tool = Tool.freehand_brush
     time_interval: float = 0.3
 
     def _set_low(self):
@@ -21,7 +20,7 @@ class TemporaryTool(TemporaryAction):
 
     def _is_high_state(self):
         'returns True if the passed tool is active'
-        return Tools(Krita.get_current_tool_name()) == self.krita_tool
+        return Tool(Krita.get_current_tool_name()) == self.krita_tool
 
 
 @dataclass

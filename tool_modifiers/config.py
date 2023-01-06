@@ -1,4 +1,4 @@
-from .shortcut_library.plugin_actions.enums import Tools, BlendingModes
+from .shortcut_library.plugin_actions.enums import Tool, BlendingMode
 from .shortcut_library.plugin_actions import (
     TemporaryTool,
     TemporaryEraser,
@@ -14,40 +14,40 @@ actions = [
     TemporaryAlphaLock(),
     TemporaryTool(
         action_name="Freehand selection (toggle)",
-        krita_tool=Tools.freehand_selection,
+        krita_tool=Tool.freehand_selection,
     ),
     TemporaryTool(
         action_name="Gradient (toggle)",
-        krita_tool=Tools.gradient,
+        krita_tool=Tool.gradient,
     ),
     TemporaryTool(
         action_name="Line tool (toggle)",
-        krita_tool=Tools.line,
+        krita_tool=Tool.line,
     ),
     TemporaryTool(
         action_name="Transform tool (toggle)",
-        krita_tool=Tools.transform,
+        krita_tool=Tool.transform,
         time_interval=1.0
     ),
     TemporaryTool(
         action_name="Move tool (toggle)",
-        krita_tool=Tools.move,
+        krita_tool=Tool.move,
     ),
     CyclicTool(
         action_name="Selections tools (cycle)",
         values_to_cycle=[
-            Tools.freehand_selection,
-            Tools.rectangular_selection,
-            Tools.contiquous_selection,
+            Tool.freehand_selection,
+            Tool.rectangular_selection,
+            Tool.contiquous_selection,
         ],
     ),
     CyclicTool(
         action_name="Misc tools (cycle)",
         values_to_cycle=[
-            Tools.gradient,
-            Tools.line,
-            Tools.transform,
-            Tools.reference,
+            Tool.gradient,
+            Tool.line,
+            Tool.transform,
+            Tool.reference,
         ],
     ),
     CyclicPreset(
@@ -69,7 +69,7 @@ actions = [
     ),
     CyclicBlendingModes(
         action_name="Blending mode (cycle)",
-        values_to_cycle=[BlendingModes.overlay],
+        values_to_cycle=[BlendingMode.overlay],
         include_default_in_cycle=True,
     ),
 ]

@@ -1,23 +1,25 @@
 from dataclasses import dataclass
+from typing import List
 
 from .krita_api_wrapper import Krita
 from ._interfaces import CyclicPluginAction
-from .enums import Tools, BlendingModes
+from .enums import Tool, BlendingMode
 
 
 @dataclass
 class CyclicTool(CyclicPluginAction):
 
-    default_value: str = Tools.freehand_brush
+    values_to_cycle: List[Tool]
+    default_value: str = Tool.freehand_brush
     time_interval: float = 0.3
     include_default_in_cycle: bool = False
 
-    def _set_value(self, value: Tools) -> None:
+    def _set_value(self, value: Tool) -> None:
         'activates a tool of passed name'
         Krita.trigger_action(value.value)
 
     def _get_current_value(self) -> str:
-        return Tools(Krita.get_current_tool_name())
+        return Tool(Krita.get_current_tool_name())
 
 
 @dataclass
@@ -37,15 +39,16 @@ class CyclicPreset(CyclicPluginAction):
 @dataclass
 class CyclicBlendingModes(CyclicPluginAction):
 
-    default_value: str = BlendingModes.normal
+    values_to_cycle: List[BlendingMode]
+    default_value: str = BlendingMode.normal
     time_interval: float = 0.3
     include_default_in_cycle: bool = True
 
-    def _set_value(self, value: BlendingModes):
+    def _set_value(self, value: BlendingMode):
         Krita.get_active_view().set_blending_mode(value.value)
 
     def _get_current_value(self) -> str:
-        return Tools(Krita.get_active_view().current_blending_mode())
+        return Tool(Krita.get_active_view().current_blending_mode())
 
 
 @dataclass
@@ -56,6 +59,7 @@ class CyclicOpacity(CyclicPluginAction):
     include_default_in_cycle: bool = True
 
     def __post_init__(self):
+        super().__post_init__()
         self.values_to_cycle = \
             [round(val/100, 4) for val in self.values_to_cycle]
         self.default_value = round(self.default_value/100, 4)
