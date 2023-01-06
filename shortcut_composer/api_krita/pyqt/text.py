@@ -5,5 +5,5 @@ from PyQt5.QtGui import QColor
 @dataclass
 class Text:
 
-    text: str
+    value: str
     color: QColor = QColor("white")

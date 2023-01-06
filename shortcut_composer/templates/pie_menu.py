@@ -1,6 +1,6 @@
 from typing import List, TypeVar, Generic, Union
 
-from PyQt5.QtGui import QColor, QPixmap, QCursor
+from PyQt5.QtGui import QColor, QPixmap
 
 from shortcut_composer_config import (
     SHORT_VS_LONG_PRESS_TIME,

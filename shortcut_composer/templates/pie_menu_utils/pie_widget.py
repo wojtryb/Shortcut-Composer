@@ -6,8 +6,8 @@ from PyQt5.QtGui import QColor, QPaintEvent
 
 from api_krita.pyqt import Painter
 from .pie_style import PieStyle
+from .label import LabelPainter
 from .label_holder import LabelHolder
-from .label_painter import LabelPainter, create_painter
 
 
 class PieWidget(QWidget):
@@ -69,7 +69,7 @@ class PieWidget(QWidget):
     def _paint_base_wheel(self, painter: Painter) -> None:
         painter.paint_wheel(
             center=self.center,
-            outer_radius=self._outer_radius,
+            outer_radius=self._no_border_radius,
             color=self._style.background_color,
             thickness=self._style.area_thickness,
         )
@@ -105,13 +105,13 @@ class PieWidget(QWidget):
 
         painter.paint_pie(
             center=self.center,
-            outer_radius=self._outer_radius,
+            outer_radius=self._no_border_radius,
             angle=self.labels.active.angle,
             span=360//len(self._label_painters),
             color=self._style.active_color,
             thickness=self._style.area_thickness,
         )
 
-    def _create_label_painters(self) -> List[LabelPainter]: return [
-        create_painter(label, self._style, self) for label in self.labels
-    ]
+    def _create_label_painters(self) -> List[LabelPainter]:
+        """Wrap all labels with LabelPainter which can paint it."""
+        return [label.get_painter(self, self._style) for label in self.labels]
