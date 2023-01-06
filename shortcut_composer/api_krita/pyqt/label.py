@@ -1,38 +1,109 @@
-from PyQt5.QtWidgets import QLabel
-from PyQt5.QtGui import QFont, QColor
+from typing import Union, Protocol
+
+from PyQt5.QtWidgets import QLabel, QWidget
+from PyQt5.QtGui import QFont, QColor, QPixmap
 from PyQt5.QtCore import QPoint, Qt
-from PyQt5.QtWidgets import QWidget
+
+from .painter import Painter
+from .pixmap_transform import make_pixmap_round, scale_pixmap
 
 
-class Label:
+class Label(Protocol):
+    center: QPoint
+    radius: int
+    bg_color: QColor
+    def paint(self, painter: Painter): ...
+
+
+def pick_correct_label(
+    widget: QWidget,
+    center: QPoint,
+    radius: int,
+    value: Union[str, QPixmap],
+    bg_color: QColor = QColor(47, 47, 47, 255),
+) -> Label:
+    if isinstance(value, str):
+        return TextLabel(widget, center, radius, value, bg_color)
+    elif isinstance(value, QPixmap):
+        return ImageLabel(widget, center, radius, value, bg_color)
+
+
+class TextLabel:
+    def __init__(
+        self,
+        widget: QWidget,
+        center: QPoint,
+        radius: int,
+        text: str,
+        bg_color: QColor = QColor(47, 47, 47, 255)
+    ):
+        self.widget = widget
+        self.center = center
+        self.radius = radius
+        self.text = text
+        self.bg_color = bg_color
+        self._pyqt_label = self._create_pyqt_label()
+
+    def paint(self, painter: Painter):
+        painter.paint_wheel(
+            center=self.center,
+            outer_radius=self.radius,
+            color=self.bg_color
+        )
+
+    def _create_pyqt_label(self, ):
+        label = QLabel("text label", self.widget)
+        label.setFont(QFont('Times', 20))
+        label.adjustSize()
+        small_radius = round(self.radius*0.6)
+        label.setGeometry(
+            round(self.center.x()-small_radius),
+            round(self.center.y()-small_radius),
+            round(small_radius*2),
+            round(small_radius*2)
+        )
+        label.setStyleSheet(
+            f"""background-color:rgba(
+                {self.bg_color.red()},
+                {self.bg_color.green()},
+                {self.bg_color.blue()},
+                {self.bg_color.alpha()}
+            );"""
+            "color: white;"
+        )
+        label.setAlignment(Qt.AlignCenter)
+        label.setWordWrap(True)
+        label.setText(self.text)
+
+        label.show()
+        return label
+
+
+class ImageLabel:
     def __init__(
         self,
         widget: QWidget,
         center: QPoint,
         size: int,
-        text: str,
+        picture: QPixmap,
         bg_color: QColor = QColor(47, 47, 47, 255)
     ):
-        self.label = QLabel("text label", widget)
-        self.label.setFont(QFont('Times', 20))
-        self.label.adjustSize()
-        self.label.setGeometry(
-            round(center.x()-size//2),
-            round(center.y()-size//2),
-            size,
-            size
-        )
-        self.label.setStyleSheet(
-            f"""background-color:rgba(
-                {bg_color.red()},
-                {bg_color.green()},
-                {bg_color.blue()},
-                {bg_color.alpha()}
-            );"""
-            "color: white;"
-        )
-        self.label.setAlignment(Qt.AlignCenter)
-        self.label.setWordWrap(True)
-        self.label.setText(text)
+        self.widget = widget
+        self.center = center
+        self.radius = size
+        self.picture = picture
+        self.bg_color = bg_color
 
-        self.label.show()
+    def paint(self, painter: Painter):
+        painter.paint_wheel(
+            center=self.center,
+            outer_radius=self.radius,
+            color=self.bg_color
+        )
+
+        rounded_image = make_pixmap_round(self.picture)
+        scaled_image = scale_pixmap(
+            pixmap=rounded_image,
+            size_px=self.radius*2
+        )
+        painter.paint_pixmap(self.center, scaled_image)

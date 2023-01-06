@@ -1,11 +1,10 @@
-from typing import List, TypeVar, Generic, Union
+from typing import List, TypeVar, Generic
 import math
 
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import (
     QColor,
-    QPixmap,
 )
 
 from shortcut_composer_config import (
@@ -15,7 +14,8 @@ from shortcut_composer_config import (
 )
 from core_components import Controller, Instruction
 from input_adapter import PluginAction
-from api_krita import Krita, pyqt
+from api_krita import Krita
+from api_krita.pyqt import Painter, Label, pick_correct_label
 
 T = TypeVar('T')
 
@@ -48,71 +48,64 @@ class MyWidget(QWidget):
         size = PIE_RADIUS_PX*2
         self.setGeometry(0, 0, size, size)
 
+        self.labels = self._create_labels()
         self.changed = False
 
     @property
-    def center(self):
+    def center(self) -> QPoint:
         return QPoint(self._pie_radius_px, self._pie_radius_px)
 
-    def move_center(self, x: int, y: int):
+    def move_center(self, x: int, y: int) -> None:
         self.move(x-self._pie_radius_px, y-self._pie_radius_px)
-
-    def _paint_label(self, center: QPoint, value: Union[str, QPixmap]):
-        label_color = QColor(47, 47, 47, 255)
-        self.painter.paint_wheel(
-            center=center,
-            outer_radius=self._pie_icon_radius_px,
-            color=label_color
-        )
-        if isinstance(value, QPixmap):
-            rounded_image = pyqt.make_pixmap_round(value)
-            scaled_image = pyqt.scale_pixmap(
-                rounded_image,
-                size_px=self._pie_icon_radius_px*2
-            )
-            self.painter.paint_pixmap(center, scaled_image)
-        elif isinstance(value, str):
-            pyqt.Label(
-                widget=self,
-                center=center,
-                size=round(self._pie_icon_radius_px*1.2),
-                bg_color=label_color,
-                text=value,
-            )
 
     def show(self) -> None:
         super().show()
         self.changed = True
 
-    def paintEvent(self, event):
+    def paintEvent(self, event) -> None:
         super().paintEvent(event)
-        if self.changed:
-            self.painter = pyqt.Painter(self, event)
-            self.painter.paint_wheel(
-                center=self.center,
-                outer_radius=self._pie_radius_px-self._pie_icon_radius_px*0.7,
-                color=self._color,
-                fill_part=0.3,
-            )
-            iterator = range(0, 360, round(360/len(self._values)))
-            for value, angle in zip(self._values, iterator):
-                label = self._controller.get_label(value)
-                distance = self._pie_radius_px-self._pie_icon_radius_px
-                point = self._center_from_angle(angle, distance)
-                self._paint_label(point, label)
-            self.painter.end()
-            self.changed = False
+        if not self.changed:
+            return
 
-    def _center_from_angle(self, angle: int, distance: int):
+        self.painter = Painter(self, event)
+        self.painter.paint_wheel(
+            center=self.center,
+            outer_radius=self._pie_radius_px-self._pie_icon_radius_px*0.7,
+            color=self._color,
+            fill_part=0.3,
+        )
+        for label in self.labels:
+            label.paint(self.painter)
+
+        self.painter.end()
+        self.changed = False
+
+    def _center_from_angle(self, angle: int, distance: int) -> QPoint:
         rad_angle = math.radians(angle)
         return QPoint(
             round(self._pie_radius_px + distance*math.sin(rad_angle)),
             round(self._pie_radius_px - distance*math.cos(rad_angle)),
         )
 
+    def _create_labels(self) -> List[Label]:
+        labels = []
+
+        iterator = range(0, 360, round(360/len(self._values)))
+        for value, angle in zip(self._values, iterator):
+            distance = self._pie_radius_px-self._pie_icon_radius_px
+            label_center = self._center_from_angle(angle, distance)
+
+            labels.append(pick_correct_label(
+                widget=self,
+                center=label_center,
+                radius=self._pie_icon_radius_px,
+                value=self._controller.get_label(value),
+                bg_color=QColor(47, 47, 47, 255)
+            ))
+        return labels
+
 
 class PieMenu(PluginAction, Generic[T]):
-
     def __init__(
         self, *,
         name: str,
