@@ -14,7 +14,7 @@ class CyclicTool(CyclicPluginAction):
 
     def _set_value(self, value: str) -> None:
         'activates a tool of passed name'
-        Krita.instance().action(value).trigger()
+        Krita.trigger_action(value)
 
     def _get_current_value(self) -> str:
         return Krita.get_current_tool_name()
