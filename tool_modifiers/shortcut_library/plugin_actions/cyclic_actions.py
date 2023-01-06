@@ -19,3 +19,21 @@ class CyclicTool(CyclicPluginAction):
 
     def _get_current_value(self) -> str:
         return get_current_tool_name()
+
+
+@dataclass
+class CyclicPreset(CyclicPluginAction):
+
+    action_name: str
+    _values_to_cycle: List[str]
+    _default_value: str
+
+    def _set_value(self, value: str):
+        presets = Krita.instance().resources('preset')
+
+        current_view = Krita.instance().activeWindow().activeView()
+        current_view.setCurrentBrushPreset(presets[value])
+
+    def _get_current_value(self) -> str:
+        current_view = Krita.instance().activeWindow().activeView()
+        return current_view.currentBrushPreset().name()

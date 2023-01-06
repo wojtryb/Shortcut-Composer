@@ -49,3 +49,8 @@
 - used keyboard shortcut should consist of a single key (don't add ctrl, shift... )
 - while long-pressed, pressing ctrl or shift to modify tools behaviour may not work and collide with other shortcuts
 - impact on krita performance is not yet fully tested. 
+
+``` python
+for key in Krita.instance().resources('preset').keys():
+    print(key)
+```

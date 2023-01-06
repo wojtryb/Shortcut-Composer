@@ -5,7 +5,9 @@ from .shortcut_library.plugin_actions import (
     TemporaryTool,
     TemporaryEraser,
     TemporaryAlphaLock,
-    CyclicTool)
+    CyclicTool,
+    CyclicPreset,
+)
 
 from .config import cyclic_tools, temporary_tools
 
@@ -31,6 +33,17 @@ class ToolModifiers(Extension):
 
         creator.bind_action(TemporaryEraser())
         creator.bind_action(TemporaryAlphaLock())
+        creator.bind_action(CyclicPreset(
+            action_name="Preset (cycle)",
+            _values_to_cycle=[
+                "wojtryb6 R 02a square DA impasto",
+                "wojtryb6 R 02b square DA impasto pat",
+                "wojtryb6 R 03 square strong impasto",
+                "wojtryb6 R 04 square twoSided impasto",
+                "wojtryb6 R 05 watercolor",
+            ],
+            _default_value="wojtryb6 R 01 horizontal DA"
+        ))
 
 
 Krita.instance().addExtension(ToolModifiers(Krita.instance()))
