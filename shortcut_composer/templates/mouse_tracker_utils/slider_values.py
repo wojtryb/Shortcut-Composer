@@ -48,18 +48,18 @@ class RangeSliderValues(SliderValues):
     def __init__(self, values: Range) -> None:
         self.min = Interpreted(values.min)
         self.max = Interpreted(values.max)
-        self.__default = Interpreted((self.min + self.max)*0.5)
+        self._default = Interpreted((self.min + self.max)*0.5)
 
     def at(self, value: Interpreted) -> float:
         """Check if element belongs to the range, and return it as is."""
         if not self.min <= value <= self.max:
-            return self.__default
+            return self._default
         return value
 
     def index(self, value: float) -> Interpreted:
         """Check if element belongs to the range, and return it as is."""
         if not self.min <= value <= self.max:
-            return self.__default
+            return self._default
         return Interpreted(value)
 
 
@@ -78,13 +78,13 @@ class ListSliderValues(SliderValues, Generic[Controlled]):
     """
 
     def __init__(self, values: List[Controlled]) -> None:
-        self.__values = values
+        self._values = values
         self.min = Interpreted(-0.49)
 
     @property
     def max(self) -> Interpreted:
         """Calculate max as last float, which rounded, returns last element."""
-        return Interpreted(len(self.__values) - 0.51)
+        return Interpreted(len(self._values) - 0.51)
 
     def at(self, value: Interpreted) -> Controlled:
         """
@@ -94,13 +94,13 @@ class ListSliderValues(SliderValues, Generic[Controlled]):
         """
         if not self.min <= value <= self.max:
             value = Interpreted(sorted((self.min, value, self.max))[1])
-        return self.__values[round(value)]
+        return self._values[round(value)]
 
     def index(self, value: Controlled) -> Interpreted:
         """Return index of list element directly from it."""
-        if value not in self.__values:
+        if value not in self._values:
             value = self._handle_nonpresent_element(value)
-        return Interpreted(self.__values.index(value))
+        return Interpreted(self._values.index(value))
 
     def _handle_nonpresent_element(self, value: Controlled) -> Controlled:
         """
@@ -110,9 +110,9 @@ class ListSliderValues(SliderValues, Generic[Controlled]):
         For sortable elements, snap given value to closest element in a list.
         """
         if not isinstance(value, (int, float)):
-            return self.__values[0]
+            return self._values[0]
 
-        sorted_values: List[Any] = sorted(self.__values)
+        sorted_values: List[Any] = sorted(self._values)
         for list_element in sorted_values:
             if list_element >= value:
                 return list_element

@@ -4,4 +4,4 @@ ServiceTypes=Krita/PythonPlugin
 X-KDE-Library=shortcut_composer
 X-Python-2-Compatible=false
 Name=Shortcut Composer
-Comment=Api for creating complex krita shortcuts like sticky keys, multiple assignment or virtual sliders. 
+Comment=Api for creating complex krita keyboard shortcuts. 

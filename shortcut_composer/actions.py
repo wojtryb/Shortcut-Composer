@@ -25,6 +25,7 @@ from data_components import (
     Range,
     Tag,
 )
+infinity = float("inf")
 
 
 def create_actions() -> List[ComplexAction]: return [
@@ -107,7 +108,7 @@ def create_actions() -> List[ComplexAction]: return [
         instructions=[instructions.UndoOnPress()],
         horizontal_slider=Slider(
             controller=controllers.UndoController(),
-            values=Range(float('-inf'), float('inf')),
+            values=Range(-infinity, infinity),
             deadzone=100,
         ),
     ),
@@ -132,7 +133,7 @@ def create_actions() -> List[ComplexAction]: return [
         instructions=[instructions.TemporaryOn(Toggle.ISOLATE_LAYER)],
         horizontal_slider=Slider(
             controller=controllers.TimeController(),
-            values=Range(0, float('inf')),
+            values=Range(0, infinity),
         ),
         vertical_slider=Slider(
             controller=controllers.ActiveLayerController(),
@@ -196,7 +197,7 @@ def create_actions() -> List[ComplexAction]: return [
         ],
     ),
 
-    # Pick one of available  modes in transform tool.
+    # Pick one of the transform tool modes.
     templates.PieMenu(
         name="Pick transform tool modes",
         controller=controllers.ToolController(),
@@ -242,4 +243,10 @@ def create_actions() -> List[ComplexAction]: return [
         background_color=QColor(70, 70, 105, 190),
         active_color=QColor(110, 160, 235),
     ),
+
+    # .......................................
+    # Insert your actions implementation here
+    # .......................................
+
+
 ]
