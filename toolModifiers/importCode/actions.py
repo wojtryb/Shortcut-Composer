@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from itertools import zip_longest
 from typing import List
 from krita import Krita
-from abc import ABC
+from abc import ABC, abstractmethod
 
 from .current_tool import get_current_tool_name
 from ..config import connected_toggles
@@ -42,36 +42,52 @@ class ToolWrapper(Action):
         Krita.instance().action(tool_name).trigger()
 
 
-@dataclass
-class CyclicTool(Action):
+class CyclicShortcut(Action):
     action_name: str
-    tools: List[str]
-    default_tool: str = "KritaShape/KisToolBrush"
+    values: List[str]
+    default_value: str
+
+    @abstractmethod
+    def _set_value(self, value: str) -> None:
+        pass
+
+    @abstractmethod
+    def _get_current_value(self) -> str:
+        pass
 
     def set_low(self):
-        self._set_tool(self.default_tool)
+        self._set_value(self.default_value)
 
     def set_high(self):
-        current_tool = get_current_tool_name()
-        if current_tool not in self.tools:
-            self._set_tool(self.tools[0])
+        current_value = self._get_current_value()
+        if current_value not in self.values:
+            self._set_value(self.values[0])
             return
 
         for tool, next_tool in zip_longest(
-                self.tools,
-                self.tools[1:],
-                fillvalue=self.tools[0]):
-            if tool == current_tool:
-                self._set_tool(next_tool)
+                self.values,
+                self.values[1:],
+                fillvalue=self.values[0]):
+            if tool == current_value:
+                self._set_value(next_tool)
                 return
 
     def is_high_state(self):
         return False
 
-    @staticmethod
-    def _set_tool(tool_name: str):
+
+@dataclass
+class CyclicTool(CyclicShortcut):
+    action_name: str
+    values: List[str]
+    default_value: str = "KritaShape/KisToolBrush"
+
+    def _set_value(self, value: str) -> None:
         'activates a tool of passed name'
-        Krita.instance().action(tool_name).trigger()
+        Krita.instance().action(value).trigger()
+
+    def _get_current_value(self) -> str:
+        return get_current_tool_name()
 
 
 class EraserWrapper(Action):
