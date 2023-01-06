@@ -1,10 +1,15 @@
 from dataclasses import dataclass
-from typing import Any, List, Union
+from typing import Any, List, Protocol, Union
 
-from ..plugin_actions.controllers import Controller
-from ..convenience_utils.helpers import Range
+from ..convenience_utils import Range
 from .interpreters import Interpreter
 from .value_proxy import create_proxy
+
+
+class Controller(Protocol):
+    default_value: Any
+    def get_value(self): ...
+    def set_value(self, value): ...
 
 
 class EmptyHandler:

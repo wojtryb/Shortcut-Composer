@@ -5,9 +5,9 @@ from dataclasses import dataclass, field
 from threading import Thread
 from time import sleep
 
+from ..slider_utils import Handler, EmptyHandler
+from ..convenience_utils import Krita
 from .controllers import Controller
-from ..convenience_utils.krita_api_wrapper import Krita
-from ..slider_utils.handlers import Handler, EmptyHandler
 
 
 @dataclass

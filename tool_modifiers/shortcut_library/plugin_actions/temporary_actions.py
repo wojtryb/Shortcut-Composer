@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from ..convenience_utils.krita_api_wrapper import Krita
+from ..convenience_utils import Krita
 from .interfaces import TemporaryAction
 
 
