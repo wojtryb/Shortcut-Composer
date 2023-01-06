@@ -6,6 +6,7 @@ Remember to define every action under exactly the same name in the
 visible in `keyboard shortcuts` menu in krita settings.
 """
 
+from PyQt5.QtGui import QColor
 import templates
 from api_krita.enums import BlendingMode, Tool, Toggle
 from core_components import instructions, controllers
@@ -211,9 +212,19 @@ actions = [
         name="Pie",
         # controller=controllers.OpacityController(),
         # values=[100, 70, 50, 30, 10],
+        controller=controllers.BlendingModeController(),
+        values=[BlendingMode.OVERLAY, BlendingMode.ADD, BlendingMode.SUBTRACT],
+        # controller=controllers.PresetController(),
+        # values=Tag("RGBA"),
+        # controller=controllers.ToolController(),
+        # values=[Tool.CROP, Tool.FREEHAND_BRUSH, Tool.FREEHAND_SELECTION,
+        #         Tool.POLYLINE, Tool.PAN, Tool.ZOOM],
+    ),
+    templates.PieMenu(
+        name="Pie2",
         controller=controllers.PresetController(),
         values=Tag("RGBA"),
-        # controller=controllers.ToolController(),
-        # values=[Tool.CROP, Tool.FREEHAND_BRUSH, Tool.FREEHAND_SELECTION],
+        area_color=QColor(120, 50, 50, 150),
+        active_color=QColor(200, 50, 50, 255),
     ),
 ]

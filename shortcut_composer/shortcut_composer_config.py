@@ -4,6 +4,7 @@ Defines global, default values for action templates.
 Used, when no specific per-action configuration is given.
 """
 
+from PyQt5.QtGui import QColor
 from typing import Final
 
 
@@ -24,3 +25,7 @@ ICON_RADIUS_PX: Final[int] = 50
 PIE_RADIUS_PX: Final[int] = 165
 
 PIE_DEADZONE_PX: Final[int] = 40
+
+PIE_AREA_COLOR: Final[QColor] = QColor(75, 75, 75, 190)
+
+PIE_ACTIVE_COLOR: Final[QColor] = QColor(100, 150, 230, 255)

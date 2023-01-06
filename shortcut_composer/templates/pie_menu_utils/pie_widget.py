@@ -1,4 +1,4 @@
-from typing import TypeVar, List
+from typing import List
 
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtWidgets import QWidget
@@ -9,8 +9,6 @@ from api_krita.pyqt import Painter
 from .pie_style import PieStyle
 from .label_holder import LabelHolder
 from .label_painter import pick_correct_painter, LabelPainter
-
-T = TypeVar('T')
 
 
 class PieWidget(QWidget):

@@ -9,6 +9,12 @@
         <activationConditions>1</activationConditions>
         </Action>
 
+        <Action name="Pie2">
+        <text>Pie2</text>
+        <activationFlags>1</activationFlags>
+        <activationConditions>1</activationConditions>
+        </Action>
+
         <Action name="Temporary move tool">
         <text>Temporary move tool</text>
         <activationFlags>1</activationFlags>
