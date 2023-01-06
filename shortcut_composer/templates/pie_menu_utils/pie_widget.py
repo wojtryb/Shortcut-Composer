@@ -41,7 +41,8 @@ class PieWidget(AnimatedWidget):
         self._style = style
         self._label_painters = self._create_label_painters()
 
-        self.setWindowFlags(Qt.Popup)
+        flags = self.windowFlags() | Qt.FramelessWindowHint  # type: ignore
+        self.setWindowFlags(flags)
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setStyleSheet("background: transparent;")
         self.setCursor(Qt.CrossCursor)
