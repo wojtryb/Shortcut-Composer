@@ -1,6 +1,5 @@
 from typing import List, TypeVar, Generic, Optional
 
-from composer_utils import Config
 from core_components import Controller, Instruction
 from input_adapter import PluginAction
 
@@ -61,7 +60,7 @@ class TemporaryKey(PluginAction, Generic[T]):
         high_value: T,
         low_value: Optional[T] = None,
         instructions: List[Instruction] = [],
-        short_vs_long_press_time: float = Config.SHORT_VS_LONG_PRESS_TIME.get()
+        short_vs_long_press_time: Optional[float] = None
     ) -> None:
         super().__init__(
             name=name,

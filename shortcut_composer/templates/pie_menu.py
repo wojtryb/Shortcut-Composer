@@ -1,9 +1,8 @@
-from typing import List, TypeVar, Generic, Union
+from typing import List, TypeVar, Generic, Union, Optional
 
 from PyQt5.QtGui import QColor, QPixmap
 from PyQt5.QtCore import QPoint
 
-from composer_utils import Config
 from core_components import Controller, Instruction
 from input_adapter import PluginAction
 from api_krita.pyqt import Text
@@ -79,7 +78,7 @@ class PieMenu(PluginAction, Generic[T]):
         icon_radius_scale: float = 1.0,
         background_color: QColor = QColor(75, 75, 75, 190),
         active_color: QColor = QColor(100, 150, 230, 255),
-        short_vs_long_press_time: float = Config.SHORT_VS_LONG_PRESS_TIME.get()
+        short_vs_long_press_time: Optional[float] = None
     ) -> None:
         super().__init__(
             name=name,
