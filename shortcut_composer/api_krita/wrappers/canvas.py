@@ -31,9 +31,9 @@ class Canvas:
     @property
     def zoom(self) -> float:
         """Settable property with zoom level expressed in %."""
-        return self.canvas.zoomLevel() * 100
+        return self.canvas.zoomLevel()/0.04166666
 
     @zoom.setter
     def zoom(self, zoom: float) -> None:
         """Set zoom of canvas by providing zoom level expressed in %."""
-        self.canvas.setZoomLevel(zoom * 0.01)
+        self.canvas.setZoomLevel(zoom*0.01)

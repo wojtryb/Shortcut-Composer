@@ -171,13 +171,13 @@ def create_actions() -> List[ComplexAction]: return [
         name="Scroll canvas zoom or rotation",
         horizontal_slider=Slider(
             controller=controllers.CanvasRotationController(),
-            values=Range(-180, 180),
+            values=Range(-infinity, infinity),
             sensitivity_scale=10,
         ),
         vertical_slider=Slider(
             controller=controllers.CanvasZoomController(),
-            values=Range(0.1, 10),
-            sensitivity_scale=0.2,
+            values=Range(0, infinity),
+            sensitivity_scale=10,
         ),
     ),
 
