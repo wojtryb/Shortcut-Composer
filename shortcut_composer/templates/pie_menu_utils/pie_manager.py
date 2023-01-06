@@ -3,9 +3,9 @@
 
 from typing import Optional
 
-from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QCursor
 
+from api_krita.pyqt import Timer
 from composer_utils import Config
 from .pie_widget import PieWidget
 from .label import Label
@@ -23,16 +23,14 @@ class PieManager:
 
     def __init__(self, widget: PieWidget) -> None:
         self._widget = widget
-        self._timer = QTimer()
-        self._timer.timeout.connect(self._track_angle)
-        self._sleep_time = Config.get_sleep_time()
+        self._timer = Timer(self._track_angle, Config.get_sleep_time())
 
     def start(self):
         """Show widget under the mouse and start the mouse tracking loop."""
         self._widget.move_center(QCursor().pos())
         self._widget.show()
         self._circle = CirclePoints(self._widget.center_global, 0)
-        self._timer.start(self._sleep_time)
+        self._timer.start()
 
     def stop(self):
         """Hide the widget and stop the mouse tracking loop."""

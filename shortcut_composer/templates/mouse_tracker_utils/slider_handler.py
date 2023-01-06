@@ -3,10 +3,9 @@
 
 from typing import Callable, Iterable
 
-from PyQt5.QtCore import QTimer
-
 from composer_utils import Config
 from api_krita import Krita
+from api_krita.pyqt import Timer
 from data_components import Slider, Range
 from .new_types import MouseInput, Interpreted
 from .mouse_interpreter import MouseInterpreter
@@ -55,15 +54,16 @@ class SliderHandler:
         self._to_cycle = self._create_slider_values(slider)
         self._is_horizontal = is_horizontal
 
-        self._deadzone_timer = QTimer()
-        self._deadzone_timer.timeout.connect(self._start_after_deadzone)
-
-        self._main_timer = QTimer()
-        self._main_timer.timeout.connect(self._value_setting_loop)
+        sleep_time = Config.get_sleep_time()
+        self._deadzone_timer = Timer(
+            target=self._start_after_deadzone,
+            time_ms=sleep_time)
+        self._main_timer = Timer(
+            target=self._value_setting_loop,
+            time_ms=sleep_time)
 
         self._mouse_getter: MouseGetter
         self._interpreter: MouseInterpreter
-        self._sleep_time = Config.get_sleep_time()
 
     def start(self) -> None:
         """Start a deadzone phase in a timer."""
@@ -71,7 +71,7 @@ class SliderHandler:
         self._slider.controller.refresh()
         self._mouse_getter = self._pick_mouse_getter()
         self._start_point = self.read_mouse()
-        self._deadzone_timer.start(self._sleep_time)
+        self._deadzone_timer.start()
 
     def stop(self) -> None:
         """Stop a process by stopping any timers."""
@@ -89,7 +89,7 @@ class SliderHandler:
             return
         self._deadzone_timer.stop()
         self._update_interpreter()
-        self._main_timer.start(self._sleep_time)
+        self._main_timer.start()
 
     def _value_setting_loop(self) -> None:
         """Set current value from `SliderValues`."""

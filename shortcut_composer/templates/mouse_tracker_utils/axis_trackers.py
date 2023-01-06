@@ -3,9 +3,8 @@
 
 from typing import List, Optional
 
-from PyQt5.QtCore import QTimer
-
 from api_krita import Krita
+from api_krita.pyqt import Timer
 from input_adapter import ComplexAction
 from core_components import Instruction
 from .slider_handler import SliderHandler
@@ -69,14 +68,13 @@ class DoubleAxisTracker(ComplexAction):
 
         self._horizontal_handler = horizontal_handler
         self._vertical_handler = vertical_handler
-        self._timer = QTimer()
-        self._timer.timeout.connect(self._start_after_picking_slider)
+        self._timer = Timer(self._start_after_picking_slider, time_ms=50)
 
     def on_key_press(self) -> None:
         """Start a timer which decides which handler to start."""
         super().on_key_press()
         self._comparator = self.MouseComparator()
-        self._timer.start(50)
+        self._timer.start()
 
     def _start_after_picking_slider(self) -> None:
         """Wait for inital movement to activate the right handler."""
