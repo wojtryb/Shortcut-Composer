@@ -10,6 +10,9 @@ available here so that the imports to omit unresolved warnings there.
 """
 
 from krita import Extension, QMdiArea
-from .core_api import Krita
+from .core_api import KritaInstance
+
+Krita = KritaInstance()
+"""Wraps krita API for typing, documentation and PEP8 compatibility."""
 
 __all__ = ["Extension", "QMdiArea", "Krita"]
