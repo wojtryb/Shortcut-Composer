@@ -112,37 +112,49 @@ class PieValuesTab(QWidget):
     def __init__(self) -> None:
         super().__init__()
         layout = QVBoxLayout()
-        self.widgets = [
-            PieValues(
+        self.combo_widget_picker = QComboBox()
+        self.widgets = {
+            "Blending modes": PieValues(
                 allowed_values=set(BlendingMode._member_names_),
                 config=Config.BLENDING_MODES_VALUES
             ),
-            PieValues(
+            "Selection tools": PieValues(
                 allowed_values=set(Tool._member_names_),
                 config=Config.SELECTION_TOOLS_VALUES
             ),
-            PieValues(
+            "Misc tools": PieValues(
                 allowed_values=set(Tool._member_names_),
                 config=Config.MISC_TOOLS_VALUES
             ),
-            PieValues(
+            "Transform modes": PieValues(
                 allowed_values=set(Tool._member_names_),
                 config=Config.TRANSFORM_MODES_VALUES
             ),
-        ]
-        for widget in self.widgets:
+        }
+        self.combo_widget_picker.addItems(self.widgets.keys())
+        self.combo_widget_picker.currentTextChanged.connect(
+            self._change_widget)
+
+        layout.addWidget(self.combo_widget_picker)
+        for widget in self.widgets.values():
+            widget.hide()
             layout.addWidget(widget)
-        layout.addStretch()
+        self.widgets["Blending modes"].show()
         self.setLayout(layout)
+
+    def _change_widget(self):
+        for widget in self.widgets.values():
+            widget.hide()
+        self.widgets[self.combo_widget_picker.currentText()].show()
 
     def apply(self) -> None:
         """Ask all dialog zones to apply themselves."""
-        for widget in self.widgets:
+        for widget in self.widgets.values():
             widget.apply()
 
     def refresh(self) -> None:
         """Ask all dialog zones to refresh themselves."""
-        for widget in self.widgets:
+        for widget in self.widgets.values():
             widget.refresh()
 
 
@@ -192,7 +204,6 @@ class PieValues(QWidget):
         self.list_widget.clear()
         currently_set: str = self.config.read()
         self.list_widget.addItems(currently_set.split(";"))
-        self.list_widget.adjust_height()
 
 
 class ValueList(QListWidget):
@@ -211,7 +222,6 @@ class ValueList(QListWidget):
         self.insertItem(position+1, value)
         self.clearSelection()
         self.setCurrentRow(position+1)
-        self.adjust_height()
 
     def remove_selected(self):
         selected = self.selectedIndexes()
@@ -223,8 +233,3 @@ class ValueList(QListWidget):
             first_deleted_row = min([item.row() for item in selected])
             self.clearSelection()
             self.setCurrentRow(first_deleted_row-1)
-        self.adjust_height()
-
-    def adjust_height(self):
-        heigth = (self.count()+1) * self.sizeHintForRow(1)
-        self.setMaximumHeight(heigth)
