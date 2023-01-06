@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 from typing import Dict, Union
 from PyQt5.QtWidgets import (
     QDoubleSpinBox,
