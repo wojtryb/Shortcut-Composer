@@ -62,7 +62,7 @@ class ShortcutAdapter:
     @property
     def _short_vs_long_press_time(self):
         """Time in seconds distinguishing short key presses from long ones."""
-        return self.action._short_vs_long_press_time
+        return self.action.short_vs_long_press_time
 
     @property
     def tool_shortcut(self) -> QKeySequence:

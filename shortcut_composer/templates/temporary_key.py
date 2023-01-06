@@ -62,24 +62,24 @@ class TemporaryKey(PluginAction, Generic[T]):
         super().__init__(
             name=name,
             short_vs_long_press_time=short_vs_long_press_time,
-            controller=controller,
             instructions=instructions)
 
-        self.low_value = self._read_default_value(low_value)
-        self.high_value = high_value
+        self._controller = controller
+        self._low_value = self._read_default_value(low_value)
+        self._high_value = high_value
         self._was_high_before_press = False
 
     def _set_low(self) -> None:
         """Defines how to switch to low state."""
-        self._controller.set_value(self.low_value)
+        self._controller.set_value(self._low_value)
 
     def _set_high(self) -> None:
         """Defines how to switch to high state."""
-        self._controller.set_value(self.high_value)
+        self._controller.set_value(self._high_value)
 
     def _is_high_state(self) -> bool:
         """Defines how to determine that current state is high."""
-        return self._controller.get_value() == self.high_value
+        return self._controller.get_value() == self._high_value
 
     def on_key_press(self) -> None:
         """Set high state only if state before press was low."""
