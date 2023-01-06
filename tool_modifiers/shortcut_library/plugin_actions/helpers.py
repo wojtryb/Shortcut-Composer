@@ -1,10 +1,5 @@
+from dataclasses import dataclass
 from .krita_api_wrapper import KritaDatabase
-
-
-# def tag(tag_name):
-#     with KritaDatabase() as database:
-#         preset_names = database.get_preset_names_from_tag(tag_name)
-#     return sorted(set(preset_names))
 
 
 class Tag:
@@ -19,3 +14,9 @@ class Tag:
 
     def __getitem__(self, index: int):
         return self.data[index]
+
+
+@dataclass
+class Range:
+    min: float
+    max: float

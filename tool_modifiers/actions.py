@@ -4,7 +4,7 @@ from .shortcut_library.plugin_actions.enums import Tool
 from .shortcut_library.plugin_actions import (
     TemporaryEraser,
     TemporaryPreserveAlpha,
-    MouseCycle,
+    MouseCycleAction,
     TemporaryAction,
     CyclicAction
 
@@ -15,13 +15,13 @@ from .shortcut_library.plugin_actions.controllers import (
     PresetController,
     ToolController
 )
-from .shortcut_library.plugin_actions.mouse_cycle import Handler
+from .shortcut_library.plugin_actions.handlers import Handler
 from .shortcut_library.plugin_actions.helpers import Tag
 
 actions = [
     TemporaryEraser(),
     TemporaryPreserveAlpha(),
-    MouseCycle(
+    MouseCycleAction(
         action_name="Mouse cycle",
         horizontal_handler=Handler(
             controller=BlendingModeController,
@@ -31,6 +31,7 @@ actions = [
         ),
         vertical_handler=Handler(
             controller=ToolController,
+            default_value=Tool.freehand_selection,
             values_to_cycle=[
                 Tool.freehand_selection,
                 Tool.rectangular_selection,

@@ -2,14 +2,13 @@ from .temporary_actions import (
     TemporaryEraser,
     TemporaryPreserveAlpha,
 )
-from .mouse_cycle import MouseCycle
-from .interfaces import TemporaryAction, CyclicAction
+from .interfaces import TemporaryAction, CyclicAction, MouseCycleAction
 
 
 __all__ = [
     'TemporaryEraser',
     'TemporaryPreserveAlpha',
-    'MouseCycle',
+    'MouseCycleAction',
     'TemporaryAction',
     'CyclicAction',
 ]
