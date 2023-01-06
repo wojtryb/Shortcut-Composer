@@ -14,7 +14,7 @@ Available instructions:
     - `TemporaryOff`
 """
 
-from .layer_hide import ToggleLayerVisibility
+from .layer_hide import ToggleLayerVisibility, ToggleShowBelow
 from .set_brush_strategy import SetBrush, SetBrushOnNonPaintable
 from .togglers import (
     TemporaryOff,
@@ -26,6 +26,7 @@ from .togglers import (
 __all__ = [
     'SetBrushOnNonPaintable',
     'ToggleLayerVisibility',
+    'ToggleShowBelow',
     'TemporaryOff',
     'TemporaryOn',
     'SetBrush',
