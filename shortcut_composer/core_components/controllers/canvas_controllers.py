@@ -2,7 +2,13 @@ from api_krita import Krita
 from ..controller_base import Controller
 
 
-class CanvasZoomController(Controller):
+class CanvasBasedController(Controller):
+
+    def refresh(self):
+        self.canvas = Krita.get_active_canvas()
+
+
+class CanvasZoomController(CanvasBasedController):
     """
     Gives access to zoom.
 
@@ -12,16 +18,14 @@ class CanvasZoomController(Controller):
 
     default_value: float = 1.0
 
-    @staticmethod
-    def get_value() -> float:
-        return Krita.get_active_canvas().zoom
+    def get_value(self) -> float:
+        return self.canvas.zoom
 
-    @staticmethod
-    def set_value(value: float) -> None:
-        Krita.get_active_canvas().zoom = value
+    def set_value(self, value: float) -> None:
+        self.canvas.zoom = value
 
 
-class CanvasRotationController(Controller):
+class CanvasRotationController(CanvasBasedController):
     """
     Gives access to canvas rotation in degrees.
 
@@ -31,10 +35,8 @@ class CanvasRotationController(Controller):
 
     default_value: float = 0.0
 
-    @staticmethod
-    def get_value() -> float:
-        return Krita.get_active_canvas().rotation
+    def get_value(self) -> float:
+        return self.canvas.rotation
 
-    @staticmethod
-    def set_value(value: float) -> None:
-        Krita.get_active_canvas().rotation = value
+    def set_value(self, value: float) -> None:
+        self.canvas.rotation = value

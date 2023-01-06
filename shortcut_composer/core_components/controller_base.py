@@ -9,6 +9,7 @@ class Controller(ABC):
 
     default_value: Optional[T] = None
 
+    def refresh(self) -> None: ...
     @abstractmethod
     def get_value(self) -> T: ...
     @abstractmethod
