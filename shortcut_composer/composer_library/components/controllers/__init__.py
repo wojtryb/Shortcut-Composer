@@ -3,8 +3,7 @@ from .canvas_controllers import (
     CanvasRotationController,
     CanvasZoomController)
 from .core_controllers import (
-    PreserveAlphaController,
-    EraserController,
+    ToggleController,
     ToolController)
 from .view_controllers import (
     BlendingModeController,
@@ -14,15 +13,14 @@ from .view_controllers import (
     FlowController)
 
 __all__ = [
-    "LayerController",
     "CanvasRotationController",
-    "CanvasZoomController",
-    "PreserveAlphaController",
-    "EraserController",
-    "ToolController",
     "BlendingModeController",
+    "CanvasZoomController",
     "BrushSizeController",
     "OpacityController",
+    'ToggleController',
     "PresetController",
+    "LayerController",
+    "ToolController",
     "FlowController",
 ]

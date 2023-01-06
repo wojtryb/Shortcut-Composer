@@ -1,6 +1,6 @@
 """File that acts as config - define all action objects here."""
 
-from .composer_library.api.enums import BlendingMode, Tool
+from .composer_library.api.enums import BlendingMode, Tool, Toggle
 from .composer_library.api.wrappers import Tag
 
 from .composer_library import templates
@@ -24,22 +24,22 @@ actions = [
     ),
     templates.TemporaryKey(
         action_name="Eraser (temporary)",
-        controller=controllers.EraserController(),
+        controller=controllers.ToggleController(Toggle.ERASER),
         low_value=False,
         high_value=True,
         instructions=[
             instructions.SetBrushOnNonPaintable(),
-            instructions.UnlockAlpha(),
+            instructions.TurnOff(Toggle.PRESERVE_ALPHA),
         ],
     ),
     templates.TemporaryKey(
         action_name="Preserve alpha (temporary)",
-        controller=controllers.PreserveAlphaController(),
+        controller=controllers.ToggleController(Toggle.PRESERVE_ALPHA),
         low_value=False,
         high_value=True,
         instructions=[
             instructions.SetBrushOnNonPaintable(),
-            instructions.TurnOffEraser(),
+            instructions.TurnOff(Toggle.ERASER),
         ],
     ),
     templates.MultipleAssignment(
@@ -76,7 +76,7 @@ actions = [
     ),
     templates.LayerPicker(
         action_name="Layer scraper - isolate",
-        instructions=[instructions.IsolateLayer()],
+        instructions=[instructions.TemporaryOn(Toggle.ISOLATE_LAYER)],
         pick_strategy=PickStrategy.ALL
     ),
     templates.LayerPicker(

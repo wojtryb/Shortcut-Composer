@@ -6,7 +6,7 @@ from .wrappers.document import Document
 from .wrappers.canvas import Canvas
 from .wrappers.view import View
 from .wrappers.cursor import Cursor
-from .enums import Tool
+from .enums import Tool, Toggle
 
 
 class Krita:
@@ -37,12 +37,12 @@ class Krita:
         return Api.instance().action(action_name).shortcut()
 
     @staticmethod
-    def get_action_state(action_name: str) -> bool:
-        return Api.instance().action(action_name).isChecked()
+    def get_toggle_state(toggle: Toggle) -> bool:
+        return Api.instance().action(toggle.value).isChecked()
 
     @staticmethod
-    def set_action_state(action_name: str, state: bool) -> None:
-        return Api.instance().action(action_name).setChecked(state)
+    def set_toggle_state(toggle: Toggle, state: bool) -> None:
+        return Api.instance().action(toggle.value).setChecked(state)
 
     @staticmethod
     def get_presets() -> dict:
