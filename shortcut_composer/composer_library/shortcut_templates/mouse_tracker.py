@@ -2,35 +2,63 @@ from dataclasses import dataclass
 from threading import Thread
 
 from time import sleep
-from typing import Optional
+from typing import Literal, Optional
 
 from ..krita_api import Krita
 from ..shortcut_connection_utils import PluginAction
 from .slider_utils import Slider
 
 
-@dataclass
-class MouseTracker(PluginAction):
+class MouseTracker:
+    def __new__(
+        cls,
+        action_name: str,
+        horizontal_slider: Optional[Slider] = None,
+        vertical_slider: Optional[Slider] = None,
+    ) -> PluginAction:
+        if horizontal_slider and not vertical_slider:
+            return SingleAxisTracker(action_name, horizontal_slider, sign=1)
+        if not horizontal_slider and vertical_slider:
+            return SingleAxisTracker(action_name, vertical_slider, sign=-1)
+        if horizontal_slider and vertical_slider:
+            return DoubleAxisTracker(
+                action_name,
+                horizontal_slider,
+                vertical_slider
+            )
+        raise RuntimeError()
 
+
+@dataclass
+class SingleAxisTracker(PluginAction):
     action_name: str
-    horizontal_slider: Optional[Slider] = None
-    vertical_slider: Optional[Slider] = None
+    slider: Slider
+    sign: Literal[1, -1] = 1
 
     time_interval = 0.1
     working = False
 
     def on_key_press(self) -> None:
         cursor = Krita.get_cursor()
+        return self.slider.start(lambda: self.sign*cursor.y())
 
-        if self.horizontal_slider and not self.vertical_slider:
-            return self.horizontal_slider.start(cursor.x)
-        if not self.horizontal_slider and self.vertical_slider:
-            return self.vertical_slider.start(lambda: -cursor.y())
-        if not self.horizontal_slider and not self.vertical_slider:
-            return
+    def on_every_key_release(self) -> None:
+        self.slider.stop()
+
+
+@dataclass
+class DoubleAxisTracker(PluginAction):
+    action_name: str
+    horizontal_slider: Slider
+    vertical_slider: Slider
+
+    time_interval = 0.1
+    working = False
+
+    def on_key_press(self) -> None:
         Thread(target=self._pick_slider, daemon=True).start()
 
-    def _pick_slider(self):
+    def _pick_slider(self) -> None:
         cursor = Krita.get_cursor()
         start_point = (cursor.x(), cursor.y())
         while True:
@@ -46,7 +74,5 @@ class MouseTracker(PluginAction):
             self.vertical_slider.start(lambda: -cursor.y())
 
     def on_every_key_release(self) -> None:
-        if self.horizontal_slider:
-            self.horizontal_slider.stop()
-        if self.vertical_slider:
-            self.vertical_slider.stop()
+        self.horizontal_slider.stop()
+        self.vertical_slider.stop()
