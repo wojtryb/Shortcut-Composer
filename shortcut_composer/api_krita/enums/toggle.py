@@ -2,6 +2,26 @@ from enum import Enum
 
 
 class Toggle(Enum):
+    """
+    Contains all known actions that toggle (can be activated and deactivated).
+
+    Example usage: `Toggle.ERASER`
+
+    Available toggle actions:
+    - `ERASER`
+    - `PRESERVE_ALPHA`
+    - `MIRROR_CANVAS`
+    - `SOFT_PROOFING`
+    - `ISOLATE_LAYER`
+    - `VIEW_REFERENCE_IMAGES`
+    - `VIEW_ASSISTANTS`
+    - `VIEW_ASSISTANTS_PREVIEWS`
+    - `VIEW_GRID`
+    - `VIEW_RULER`
+    - `VIEW_ONION_SKIN`
+    - `SNAP_ASSISTANT`
+    - `SNAP_TO_GRID`
+    """
     ERASER = "erase_action"
     PRESERVE_ALPHA = "preserve_alpha"
     MIRROR_CANVAS = "mirror_canvas"
