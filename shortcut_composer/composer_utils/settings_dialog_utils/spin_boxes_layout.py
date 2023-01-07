@@ -53,6 +53,10 @@ class SpinBoxesLayout(QFormLayout):
         form.setObjectName(config.value)
         form.setMinimum(0)
         form.setSingleStep(1 if is_int else 0.05)  # type: ignore
+        
+        if config.value == "FPS limit": 
+            form.setMaximum(300)
+            form.setSingleStep(10)
 
         self._forms[config] = form
         return form
