@@ -6,6 +6,7 @@ from typing import Callable, Protocol, Any
 
 from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QWidgetAction
 from PyQt5.QtGui import QKeySequence, QColor
+from PyQt5.QtCore import QTimer
 
 from .wrappers import (
     ToolDescriptor,
@@ -25,6 +26,7 @@ class KritaInstance:
     def __init__(self) -> None:
         self.instance = Api.instance()
         self.screen_size = QDesktopWidget().screenGeometry(-1).width()
+        self.main_window: Any = None
 
     def get_active_view(self) -> View:
         """Return wrapper of krita `View`."""
@@ -88,6 +90,13 @@ class KritaInstance:
     def add_extension(self, extension: Extension) -> None:
         """Add extension/plugin/add-on to krita."""
         self.instance.addExtension(extension(self.instance))
+
+    def add_theme_change_callback(self, callback: Callable[[], None]) -> Any:
+        def connect_callback():
+            self.main_window = self.instance.activeWindow()
+            if self.main_window is not None:
+                self.main_window.themeChanged.connect(callback)
+        QTimer.singleShot(1000, connect_callback)
 
     @property
     def is_light_theme_active(self) -> bool:
