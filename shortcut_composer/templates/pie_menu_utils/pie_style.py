@@ -78,6 +78,6 @@ class PieStyle:
     SYSTEM_FONT_SIZE = {
         "Linux": 0.40,
         "Windows": 0.25,
-        "Darwin": 0.25,
+        "Darwin": 0.6,
         "": 0.25,
     }
