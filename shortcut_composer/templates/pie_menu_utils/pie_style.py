@@ -3,6 +3,7 @@
 
 import math
 import platform
+from typing import Optional
 from dataclasses import dataclass
 from copy import copy
 
@@ -24,12 +25,19 @@ class PieStyle:
     fit the given amount of labels.
     """
 
-    pie_radius_scale: float
-    icon_radius_scale: float
-    background_color: QColor
-    active_color: QColor
+    def __init__(
+        self,
+        pie_radius_scale: float,
+        icon_radius_scale: float,
+        background_color: Optional[QColor],
+        active_color: QColor,
+    ) -> None:
 
-    def __post_init__(self):
+        self.pie_radius_scale = pie_radius_scale
+        self.icon_radius_scale = icon_radius_scale
+        self.background_color = self._pick_background_color(background_color)
+        self.active_color = active_color
+
         base_size = Krita.screen_size/2560
 
         self.pie_radius = round(
@@ -74,6 +82,13 @@ class PieStyle:
             return
         max_icon_size = round(self.pie_radius * math.pi / amount)
         self.icon_radius = min(self.icon_radius, max_icon_size)
+
+    def _pick_background_color(self, color: Optional[QColor]) -> QColor:
+        if color is not None:
+            return color
+        if Krita.is_light_theme_active:
+            return QColor(210, 210, 210, 190)
+        return QColor(75, 75, 75, 190)
 
     SYSTEM_FONT_SIZE = {
         "Linux": 0.40,

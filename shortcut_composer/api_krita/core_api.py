@@ -1,11 +1,11 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from krita import Krita as Api, Extension
+from krita import Krita as Api, Extension, qApp
 from typing import Callable, Protocol, Any
 
 from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QWidgetAction
-from PyQt5.QtGui import QKeySequence
+from PyQt5.QtGui import QKeySequence, QColor
 
 from .wrappers import (
     ToolDescriptor,
@@ -89,9 +89,16 @@ class KritaInstance:
         """Add extension/plugin/add-on to krita."""
         self.instance.addExtension(extension(self.instance))
 
+    @property
+    def is_light_theme_active(self) -> bool:
+        main_color: QColor = qApp.palette().window().color()
+        average = (main_color.red()+main_color.green()+main_color.blue()) // 3
+        return average > 128
+
 
 class KritaWindow(Protocol):
     """Krita window received in createActions() of main extension file."""
+
     def createAction(
         self,
         name: str,

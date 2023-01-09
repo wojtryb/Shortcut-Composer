@@ -83,7 +83,7 @@ class PieMenu(ComplexAction, Generic[T]):
         instructions: List[Instruction] = [],
         pie_radius_scale: float = 1.0,
         icon_radius_scale: float = 1.0,
-        background_color: QColor = QColor(75, 75, 75, 190),
+        background_color: Optional[QColor] = None,
         active_color: QColor = QColor(100, 150, 230, 255),
         short_vs_long_press_time: Optional[float] = None
     ) -> None:
