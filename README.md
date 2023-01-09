@@ -12,13 +12,23 @@ The plugin adds new shortcuts of the following types:
 
 [![PIE MENUS - introducing Shortcut Composer](http://img.youtube.com/vi/hrjBycVYFZM/0.jpg)](https://www.youtube.com/watch?v=hrjBycVYFZM "PIE MENUS - introducing Shortcut Composer")
 
+## What's new in v1.0.1
+Fixes following issues:
+- Fix displaying inactive presets and tags
+- Detect and support light krita theme, switch between them when changed
+- PieWidget as popup - pies no longer recognized by OS as windows
+- Allow different parameters for each configuration value
+- Use default font to fix MacOS helvetica issue
+- Allow using actions when active layer is locked
+- Work around krita bug: zoom being dependent on document dpi
+
 ## Requirements
-Shortcut Composer **v1.0** Requires krita **5.1.0** or later.
+Shortcut Composer **v1.0.1** Requires krita **5.1.0** or later.
 
 Supported operating systems:
 - [x] Windows 10/11
 - [x] Linux
-- [ ] MacOS (Not tested yet - your feedback is very appreciated)
+- [ ] MacOS (Known bug of canvas losing focus after using PieMenu)
 - [ ] Android (Does not support python plugins yet)
 
 ## Installation:
