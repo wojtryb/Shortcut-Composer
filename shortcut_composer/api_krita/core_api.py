@@ -92,6 +92,12 @@ class KritaInstance:
         self.instance.addExtension(extension(self.instance))
 
     def add_theme_change_callback(self, callback: Callable[[], None]) -> Any:
+        """
+        Add method which should be run after the theme is changed.
+
+        Method is delayed with a timer to allow running it on plugin
+        initialization phase.
+        """
         def connect_callback():
             self.main_window = self.instance.activeWindow()
             if self.main_window is not None:
@@ -100,6 +106,7 @@ class KritaInstance:
 
     @property
     def is_light_theme_active(self) -> bool:
+        """Return if currently set theme is light using it's main color."""
         main_color: QColor = qApp.palette().window().color()
         average = (main_color.red()+main_color.green()+main_color.blue()) // 3
         return average > 128

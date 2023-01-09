@@ -38,12 +38,12 @@ class Colorizer(QColor):
             return cls.BLENDING_MODES_LIGHT[mode].value
         return cls.BLENDING_MODES_DARK[mode].value
 
-    @ classmethod
+    @classmethod
     def percentage(cls, percent: int) -> QColor:
         """Return a QColor associated with percentage value."""
         return cls._percentage(percent).value
 
-    @ staticmethod
+    @staticmethod
     def _percentage(percent: int) -> Color:
         """Mapping of percentage values to custom colors."""
         if Krita.is_light_theme_active:

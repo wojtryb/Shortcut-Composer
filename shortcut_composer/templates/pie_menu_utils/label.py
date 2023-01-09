@@ -110,6 +110,7 @@ class TextLabelPainter(LabelPainter):
 
     @property
     def _font(self) -> QFont:
+        """Return font which to use in pyqt label."""
         font = QFontDatabase.systemFont(QFontDatabase.TitleFont)
         font.setPointSize(self.style.font_size)
         font.setBold(True)

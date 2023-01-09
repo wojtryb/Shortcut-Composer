@@ -61,6 +61,7 @@ class Document:
 
     @property
     def dpi(self):
+        """Return dpi (dot per inch) of the document."""
         return self.document.resolution()
 
     def refresh(self) -> None:
