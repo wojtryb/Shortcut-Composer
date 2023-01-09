@@ -2,21 +2,29 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Protocol, Any
+
+from .document import Document
 
 
 class KritaCanvas(Protocol):
     """Krita `Canvas` object API."""
+
     def rotation(self) -> float: ...
     def setRotation(self, angle_deg: float) -> None: ...
     def zoomLevel(self) -> float: ...
     def setZoomLevel(self, zoom: float) -> None: ...
+    def view(self) -> Any: ...
 
 
 @dataclass
 class Canvas:
+    """Wraps krita `Canvas` for typing, docs and PEP8 compatibility."""
 
     canvas: KritaCanvas
+
+    def __post_init__(self):
+        self._zoom_scale = Document(self.canvas.view().document()).dpi/7200
 
     @property
     def rotation(self) -> float:
@@ -30,8 +38,12 @@ class Canvas:
 
     @property
     def zoom(self) -> float:
-        """Settable property with zoom level expressed in %."""
-        return self.canvas.zoomLevel()/0.04166666
+        """
+        Settable property with zoom level expressed in %.
+
+        Add a workaround for zoom detected by krita affected by document dpi.
+        """
+        return self.canvas.zoomLevel() / self._zoom_scale
 
     @zoom.setter
     def zoom(self, zoom: float) -> None:
