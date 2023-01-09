@@ -52,7 +52,9 @@ class Database:
                     ON t.id=rt.tag_id
                 JOIN resources r
                     ON r.id = rt.resource_id
-            WHERE t.name='{tag_name}'
+            WHERE
+                t.name='{tag_name}'
+                AND rt.active = 1
         '''
         return self._single_column_query(sql_query, "preset")
 
@@ -61,6 +63,9 @@ class Database:
         sql_query = '''
             SELECT t.name AS tag
             FROM tags t
+            WHERE
+                t.active = 1
+                AND t.resource_type_id = 5
         '''
         return self._single_column_query(sql_query, "tag")
 
