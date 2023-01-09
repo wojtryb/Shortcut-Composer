@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from abc import ABC, abstractmethod
 
 from PyQt5.QtCore import QPoint, Qt
-from PyQt5.QtGui import QFont, QPixmap, QColor, QIcon
+from PyQt5.QtGui import QFont, QPixmap, QColor, QIcon, QFontDatabase
 from PyQt5.QtWidgets import QLabel, QWidget
 
 from api_krita.pyqt import Painter, Text, PixmapTransform
@@ -95,7 +95,7 @@ class TextLabelPainter(LabelPainter):
 
         label = QLabel(self.widget)
         label.setText(to_display.value)
-        label.setFont(QFont('Helvetica', self.style.font_size, QFont.Bold))
+        label.setFont(self._font)
         label.setAlignment(Qt.AlignCenter)
         label.setGeometry(0, 0, round(heigth*2), round(heigth))
         label.move(self.label.center.x()-heigth,
@@ -107,6 +107,14 @@ class TextLabelPainter(LabelPainter):
 
         label.show()
         return label
+
+    @property
+    def _font(self) -> QFont:
+        """Return font which to use in pyqt label."""
+        font = QFontDatabase.systemFont(QFontDatabase.TitleFont)
+        font.setPointSize(self.style.font_size)
+        font.setBold(True)
+        return font
 
     @staticmethod
     def _color_to_str(color: QColor) -> str: return f'''

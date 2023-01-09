@@ -9,9 +9,11 @@ from .node import Node, KritaNode
 
 class KritaDocument(Protocol):
     """Krita `Document` object API."""
+
     def activeNode(self) -> KritaNode: ...
     def setActiveNode(self, node: KritaNode): ...
     def topLevelNodes(self) -> List[KritaNode]: ...
+    def resolution(self) -> int: ...
     def currentTime(self) -> int: ...
     def setCurrentTime(self, time: int) -> None: ...
     def refreshProjection(self) -> None: ...
@@ -56,6 +58,11 @@ class Document:
                 found_so_far.append(node)
             return found_so_far
         return recursive_search(self.get_top_nodes(), [])
+
+    @property
+    def dpi(self):
+        """Return dpi (dot per inch) of the document."""
+        return self.document.resolution()
 
     def refresh(self) -> None:
         """Refresh OpenGL projection of this document."""
