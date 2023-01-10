@@ -24,6 +24,7 @@ class PieManager:
     def __init__(self, widget: PieWidget) -> None:
         self._widget = widget
         self._timer = Timer(self._track_angle, Config.get_sleep_time())
+        self._animator = ActiveOpacityAnimator(widget)
 
         self._circle: CirclePoints
 
@@ -53,4 +54,31 @@ class PieManager:
         """Mark label as active and ask the widget to repaint."""
         if self._widget.labels.active != label:
             self._widget.labels.active = label
+            self._animator.start()
+
+
+class ActiveOpacityAnimator:
+    def __init__(self, widget: PieWidget) -> None:
+        self._widget = widget
+        self._labels = widget.labels
+        self._timer = Timer(self._update, 17)
+
+    def start(self):
+        self._timer.start()
+
+    def _update(self):
+        changed = False
+        for label in self._labels:
+            if self._labels.active == label:
+                if label.bg_opacity < 1:
+                    label.bg_opacity += 0.13
+                    changed = True
+            else:
+                if label.bg_opacity > 0:
+                    label.bg_opacity -= 0.13
+                    changed = True
+
+        if not changed:
+            self._timer.stop()
+        else:
             self._widget.repaint()
