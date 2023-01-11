@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import List
-from copy import copy
 
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QColor, QPaintEvent
@@ -128,19 +127,33 @@ class PieWidget(AnimatedWidget):
     def _paint_active_pie(self, painter: Painter) -> None:
         """Paint a pie representing active label if there is one."""
         for label in self.labels:
-            if label.bg_opacity <= 0:
+            if not label.activation_progress:
                 continue
-            color = copy(self._style.active_color)
-            color.setAlphaF(label.bg_opacity)
+
+            thickness_addition = round(
+                0.15 * label.activation_progress
+                * self._style.area_thickness)
+
             painter.paint_pie(
                 center=self.center,
-                outer_radius=self._style.no_border_radius,
+                outer_radius=self._style.no_border_radius + thickness_addition,
                 angle=label.angle,
                 span=360//len(self._label_painters),
-                color=color,
-                thickness=self._style.area_thickness,
+                color=self._overlay_colors(
+                    base=self._style.active_dark_color,
+                    over=self._style.active_color,
+                    opacity=label.activation_progress),
+                thickness=self._style.area_thickness + thickness_addition,
             )
 
     def _create_label_painters(self) -> List[LabelPainter]:
         """Wrap all labels with LabelPainter which can paint it."""
         return [label.get_painter(self, self._style) for label in self.labels]
+
+    @ staticmethod
+    def _overlay_colors(base: QColor, over: QColor, opacity: float):
+        opacity_negation = 1-opacity
+        return QColor(
+            round(base.red()*opacity_negation + over.red()*opacity),
+            round(base.green()*opacity_negation + over.green()*opacity),
+            round(base.blue()*opacity_negation + over.blue()*opacity))

@@ -70,12 +70,12 @@ class ActiveOpacityAnimator:
         changed = False
         for label in self._labels:
             if self._labels.active == label:
-                if label.bg_opacity < 1:
-                    label.bg_opacity += 0.13
+                if label.activation_progress < 1:
+                    label.activation_progress += 0.13
                     changed = True
             else:
-                if label.bg_opacity > 0:
-                    label.bg_opacity -= 0.13
+                if label.activation_progress > 0:
+                    label.activation_progress -= 0.13
                     changed = True
 
         if not changed:
