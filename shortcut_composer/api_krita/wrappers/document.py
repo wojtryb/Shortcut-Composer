@@ -53,7 +53,7 @@ class Document:
         """Return a list of all `Nodes` in this document bottom to top."""
         def recursive_search(nodes: List[Node], found_so_far: List[Node]):
             for node in nodes:
-                if node.is_group_layer and not node.collapsed:
+                if not node.collapsed:
                     recursive_search(node.get_child_nodes(), found_so_far)
                 found_so_far.append(node)
             return found_so_far
