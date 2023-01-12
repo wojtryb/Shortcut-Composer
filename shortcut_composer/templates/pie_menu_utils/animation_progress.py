@@ -1,3 +1,5 @@
+from composer_utils import Config
+
 
 class AnimationProgress:
     """
@@ -13,7 +15,7 @@ class AnimationProgress:
 
     def __init__(self, speed_scale: float = 1.0, steep: float = 1.0) -> None:
         self._value = 0
-        self._speed = 0.07*speed_scale/steep
+        self._speed = 0.004*Config.get_sleep_time()*speed_scale
         self._steep = steep
 
     def up(self):

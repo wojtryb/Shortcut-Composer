@@ -1,6 +1,8 @@
 from api_krita.pyqt import Timer
 from .pie_widget import PieWidget
 
+from composer_utils import Config
+
 
 class LabelAnimator:
     """
@@ -12,7 +14,7 @@ class LabelAnimator:
     def __init__(self, widget: PieWidget) -> None:
         self._widget = widget
         self._labels = widget.labels
-        self._timer = Timer(self._update, 17)
+        self._timer = Timer(self._update, Config.get_sleep_time())
 
     def start(self):
         """Start animating. The animation will stop automatically."""
