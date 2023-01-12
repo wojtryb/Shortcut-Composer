@@ -131,7 +131,7 @@ class PieWidget(AnimatedWidget):
                 continue
 
             thickness_addition = round(
-                0.15 * label.activation_progress
+                0.15 * label.activation_progress.read()
                 * self._style.area_thickness)
 
             painter.paint_pie(
@@ -140,9 +140,9 @@ class PieWidget(AnimatedWidget):
                 angle=label.angle,
                 span=360//len(self._label_painters),
                 color=self._overlay_colors(
-                    base=self._style.active_dark_color,
+                    base=self._style.active_color_dark,
                     over=self._style.active_color,
-                    opacity=label.activation_progress),
+                    opacity=label.activation_progress.read()),
                 thickness=self._style.area_thickness + thickness_addition,
             )
 
@@ -150,7 +150,7 @@ class PieWidget(AnimatedWidget):
         """Wrap all labels with LabelPainter which can paint it."""
         return [label.get_painter(self, self._style) for label in self.labels]
 
-    @ staticmethod
+    @staticmethod
     def _overlay_colors(base: QColor, over: QColor, opacity: float):
         opacity_negation = 1-opacity
         return QColor(
