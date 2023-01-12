@@ -10,6 +10,7 @@ from composer_utils import Config
 from .pie_widget import PieWidget
 from .label import Label
 from .circle_points import CirclePoints
+from .label_animator import LabelAnimator
 
 
 class PieManager:
@@ -24,7 +25,7 @@ class PieManager:
     def __init__(self, widget: PieWidget) -> None:
         self._widget = widget
         self._timer = Timer(self._track_angle, Config.get_sleep_time())
-        self._animator = ActiveOpacityAnimator(widget)
+        self._animator = LabelAnimator(widget)
 
         self._circle: CirclePoints
 
@@ -53,30 +54,7 @@ class PieManager:
         self._set_active_label(label)
 
     def _set_active_label(self, label: Optional[Label]):
-        """Mark label as active and ask the widget to repaint."""
+        """Mark label as active and start animating the change."""
         if self._widget.labels.active != label:
             self._widget.labels.active = label
             self._animator.start()
-
-
-class ActiveOpacityAnimator:
-    def __init__(self, widget: PieWidget) -> None:
-        self._widget = widget
-        self._labels = widget.labels
-        self._timer = Timer(self._update, 17)
-
-    def start(self):
-        self._timer.start()
-
-    def _update(self):
-        for label in self._labels:
-            if self._labels.active == label:
-                label.activation_progress.up()
-            else:
-                label.activation_progress.down()
-
-        self._widget.repaint()
-        for label in self._labels:
-            if not label.activation_progress.read() in (0, 1):
-                return
-        self._timer.stop()
