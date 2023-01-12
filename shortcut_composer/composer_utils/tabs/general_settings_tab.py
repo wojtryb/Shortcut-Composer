@@ -3,6 +3,7 @@
 
 from PyQt5.QtWidgets import (
     QVBoxLayout,
+    QHBoxLayout,
     QWidget,
 )
 
@@ -22,10 +23,15 @@ class GeneralSettingsTab(QWidget):
             "ComboBoxes": ComboBoxesLayout(),
             "SpinBoxes": SpinBoxesLayout(),
         }
-        full_layout = QVBoxLayout()
-        for layout in self._layouts_dict.values():
-            full_layout.addLayout(layout)
-        self.setLayout(full_layout)
+        layout = QVBoxLayout()
+        for layout_part in self._layouts_dict.values():
+            layout.addLayout(layout_part)
+
+        stretched = QHBoxLayout()
+        stretched.addStretch()
+        stretched.addLayout(layout)
+        stretched.addStretch()
+        self.setLayout(stretched)
 
     def apply(self) -> None:
         """Ask all dialog zones to apply themselves."""
