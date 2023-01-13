@@ -9,7 +9,7 @@ from PyQt5.QtGui import QColor, QPaintEvent
 from api_krita.pyqt import AnimatedWidget, Painter
 from composer_utils import Config
 from .pie_style import PieStyle
-from .label import LabelWidget
+from .label_widgets import LabelWidget, create_label_widget
 from .label_holder import LabelHolder
 
 
@@ -25,7 +25,7 @@ class PieWidget(AnimatedWidget):
     Overrides paintEvent(QPaintEvent) which tells how the widget looks
 
     - Paints the widget: its base, and active pie and deadzone indicator
-    - Wraps Labels with LabelPainter which activated, paint them
+    - Wraps Labels with LabelWidgets which activated, paint them
     - Extends widget interface to allow moving the widget on screen by
       providing the widget center.
     """
@@ -146,8 +146,8 @@ class PieWidget(AnimatedWidget):
             )
 
     def _create_label_widgets(self) -> List[LabelWidget]:
-        """Wrap all labels with LabelPainter which can paint it."""
-        return [label.create_label_widget(self._style, self)
+        """Create LabelWidgets that represent the labels."""
+        return [create_label_widget(label, self._style, self)
                 for label in self.labels]
 
     @staticmethod
