@@ -2,12 +2,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from PyQt5.QtCore import Qt, QPoint
-from PyQt5.QtGui import QColor, QPaintEvent
+from PyQt5.QtGui import QPaintEvent
 
 from api_krita.pyqt import Painter
 from .pie_style import PieStyle
 from .label_holder import LabelHolder
 from .drag_widget import DragWidget
+from .pie_painter import PiePainter
 
 
 class PieWidget(DragWidget):
@@ -50,14 +51,14 @@ class PieWidget(DragWidget):
         self.setGeometry(0, 0, size, size)
 
     @property
-    def center(self) -> QPoint:
+    def _center(self) -> QPoint:
         """Return point with center widget's point in its coordinates."""
-        return QPoint(self._style.widget_radius, self._style.widget_radius)
+        return QPoint(self.size().width()//2, self.size().height()//2)
 
     @property
     def center_global(self) -> QPoint:
         """Return point with center widget's point in screen coordinates."""
-        return self.pos() + self.center  # type: ignore
+        return self.pos() + self._center  # type: ignore
 
     @property
     def deadzone(self) -> float:
@@ -67,82 +68,8 @@ class PieWidget(DragWidget):
     def paintEvent(self, event: QPaintEvent) -> None:
         """Paint the entire widget using the Painter wrapper."""
         with Painter(self, event) as painter:
-            self._paint_deadzone_indicator(painter)
-            self._paint_base_wheel(painter)
-            self._paint_active_pie(painter)
-            self._paint_base_border(painter)
+            PiePainter(painter, self.labels, self._style)
 
     def move_center(self, new_center: QPoint) -> None:
         """Move the widget by providing a new center point."""
-        self.move(new_center-self.center)  # type: ignore
-
-    def _paint_base_wheel(self, painter: Painter) -> None:
-        """Paint a base circle and low opacity background to trick Windows."""
-        painter.paint_wheel(
-            center=self.center,
-            outer_radius=self._style.no_border_radius,
-            color=QColor(128, 128, 128, 1),
-        )
-        painter.paint_wheel(
-            center=self.center,
-            outer_radius=self._style.no_border_radius,
-            color=self._style.background_color,
-            thickness=self._style.area_thickness,
-        )
-
-    def _paint_base_border(self, painter: Painter) -> None:
-        """Paint a border on the inner edge of base circle."""
-        painter.paint_wheel(
-            center=self.center,
-            outer_radius=self._style.inner_edge_radius,
-            color=self._style.border_color,
-            thickness=self._style.border_thickness,
-        )
-
-    def _paint_deadzone_indicator(self, painter: Painter) -> None:
-        """Paint the circle representing deadzone, when its valid."""
-        if self.deadzone == float("inf"):
-            return
-
-        painter.paint_wheel(
-            center=self.center,
-            outer_radius=self.deadzone,
-            color=QColor(128, 255, 128, 120),
-            thickness=1,
-        )
-        painter.paint_wheel(
-            center=self.center,
-            outer_radius=self.deadzone-1,
-            color=QColor(255, 128, 128, 120),
-            thickness=1,
-        )
-
-    def _paint_active_pie(self, painter: Painter) -> None:
-        """Paint a pie representing active label if there is one."""
-        for label in self.labels:
-            if not label.activation_progress.value:
-                continue
-
-            thickness_addition = round(
-                0.15 * label.activation_progress.value
-                * self._style.area_thickness)
-
-            painter.paint_pie(
-                center=self.center,
-                outer_radius=self._style.no_border_radius + thickness_addition,
-                angle=label.angle,
-                span=360//len(self._label_widgets),
-                color=self._overlay_colors(
-                    base=self._style.active_color_dark,
-                    over=self._style.active_color,
-                    opacity=label.activation_progress.value),
-                thickness=self._style.area_thickness + thickness_addition,
-            )
-
-    @staticmethod
-    def _overlay_colors(base: QColor, over: QColor, opacity: float):
-        opacity_negation = 1-opacity
-        return QColor(
-            round(base.red()*opacity_negation + over.red()*opacity),
-            round(base.green()*opacity_negation + over.green()*opacity),
-            round(base.blue()*opacity_negation + over.blue()*opacity))
+        self.move(new_center-self._center)  # type: ignore
