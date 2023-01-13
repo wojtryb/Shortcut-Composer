@@ -101,7 +101,7 @@ class PieWidget(AnimatedWidget):
             return e.accept()
 
         angle = self._circle_points.angle_from_point(pos)
-        widget = self.widget_holder.from_angle(round(angle))
+        widget = self.widget_holder.on_angle(angle)
         if widget == source_widget:
             return e.accept()
 
