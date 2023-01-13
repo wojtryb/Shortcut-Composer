@@ -8,7 +8,8 @@ from PyQt5.QtGui import QPaintEvent, QDragMoveEvent, QDragEnterEvent
 
 from api_krita.pyqt import Painter, AnimatedWidget
 from .pie_style import PieStyle
-from .label_holder import LabelHolder
+from .widget_holder import WidgetHolder
+from .label import Label
 from .pie_painter import PiePainter
 from .label_widgets import LabelWidget, create_label_widget
 from .circle_points import CirclePoints
@@ -37,14 +38,15 @@ class PieWidget(AnimatedWidget):
     def __init__(
         self,
         style: PieStyle,
-        labels: LabelHolder,
+        labels: List[Label],
         parent=None
     ):
         super().__init__(parent, Config.PIE_ANIMATION_TIME.read())
 
         self._style = style
         self.labels = labels
-        self._label_widgets = self._create_label_widgets()
+        self.children_widgets = self._create_children_holder()
+        self.widget_holder = self._put_children_in_holder()
         self._circle_points: CirclePoints
 
         self.setAcceptDrops(True)
@@ -99,22 +101,34 @@ class PieWidget(AnimatedWidget):
             return e.accept()
 
         angle = self._circle_points.angle_from_point(pos)
-        label = self.labels.from_angle(round(angle))
-        if label == source_widget.label:
+        widget = self.widget_holder.from_angle(round(angle))
+        if widget == source_widget:
             return e.accept()
 
-        self.labels.swap(label, source_widget.label)
-        for widget in self._label_widgets:
-            widget.move_to_label()
-
+        self.widget_holder.swap(widget, source_widget)
         self.repaint()
         e.accept()
 
-    def _create_label_widgets(self) -> List[LabelWidget]:
+    def _create_children_holder(self) -> List[LabelWidget]:
         """Create LabelWidgets that represent the labels."""
-        childred: List[LabelWidget] = []
+        children: List[LabelWidget] = []
         for label in self.labels:
-            label_widget = create_label_widget(label, self._style, self)
-            label_widget.move_to_label()
-            childred.append(label_widget)
-        return childred
+            children.append(create_label_widget(label, self._style, self))
+        return children
+
+    def _put_children_in_holder(self) -> WidgetHolder:
+        children = self.children_widgets
+        center = QPoint(self._style.widget_radius, self._style.widget_radius)
+        circle_points = CirclePoints(
+            center=center,
+            radius=self._style.pie_radius)
+
+        angle_iterator = circle_points.iterate_over_circle(len(children))
+        label_holder = WidgetHolder()
+        for child, (angle, point) in zip(children, angle_iterator):
+            child.label.angle = angle
+            child.label.center = point
+            child.move_to_label()
+            label_holder.add(child)
+
+        return label_holder

@@ -13,7 +13,7 @@ class LabelAnimator:
 
     def __init__(self, widget: PieWidget) -> None:
         self._widget = widget
-        self._labels = widget.labels
+        self._children = widget.widget_holder
         self._timer = Timer(self._update, Config.get_sleep_time())
 
     def start(self):
@@ -22,14 +22,14 @@ class LabelAnimator:
 
     def _update(self):
         """Move all labels to next animation state. End animation if needed."""
-        for label in self._labels:
-            if self._labels.active == label:
-                label.activation_progress.up()
+        for widget in self._children:
+            if self._children.active == widget:
+                widget.label.activation_progress.up()
             else:
-                label.activation_progress.down()
+                widget.label.activation_progress.down()
 
         self._widget.repaint()
-        for label in self._labels:
-            if label.activation_progress.value not in (0, 1):
+        for widget in self._children:
+            if widget.label.activation_progress.value not in (0, 1):
                 return
         self._timer.stop()

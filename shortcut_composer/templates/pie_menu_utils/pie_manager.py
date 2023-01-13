@@ -8,7 +8,7 @@ from PyQt5.QtGui import QCursor
 from api_krita.pyqt import Timer
 from composer_utils import Config
 from .pie_widget import PieWidget
-from .label import Label
+from .label_widgets import LabelWidget
 from .circle_points import CirclePoints
 from .label_animator import LabelAnimator
 
@@ -47,14 +47,14 @@ class PieManager:
         """Block a thread contiguously setting an active label."""
         cursor = QCursor().pos()
         if self._circle.distance(cursor) < self._widget.deadzone:
-            label = None
+            widget = None
         else:
             angle = self._circle.angle_from_point(cursor)
-            label = self._widget.labels.from_angle(round(angle))
-        self._set_active_label(label)
+            widget = self._widget.widget_holder.from_angle(round(angle))
+        self._set_active_widget(widget)
 
-    def _set_active_label(self, label: Optional[Label]):
+    def _set_active_widget(self, widget: Optional[LabelWidget]):
         """Mark label as active and start animating the change."""
-        if self._widget.labels.active != label:
-            self._widget.labels.active = label
+        if self._widget.widget_holder.active != widget:
+            self._widget.widget_holder.active = widget
             self._animator.start()
