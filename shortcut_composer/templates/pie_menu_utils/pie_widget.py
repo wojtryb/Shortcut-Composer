@@ -1,17 +1,23 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from PyQt5.QtCore import Qt, QPoint
-from PyQt5.QtGui import QPaintEvent
+from typing import List
 
-from api_krita.pyqt import Painter
+from PyQt5.QtCore import Qt, QPoint
+from PyQt5.QtGui import QPaintEvent, QDragMoveEvent, QDragEnterEvent
+
+from api_krita.pyqt import Painter, AnimatedWidget
 from .pie_style import PieStyle
 from .label_holder import LabelHolder
-from .drag_widget import DragWidget
 from .pie_painter import PiePainter
+from .label_widgets import LabelWidget, create_label_widget
+from .circle_points import CirclePoints
 
 
-class PieWidget(DragWidget):
+from composer_utils import Config
+
+
+class PieWidget(AnimatedWidget):
     """
     PyQt5 widget with icons on ring that can be selected by hovering.
 
@@ -30,14 +36,18 @@ class PieWidget(DragWidget):
 
     def __init__(
         self,
-        labels: LabelHolder,
         style: PieStyle,
+        labels: LabelHolder,
         parent=None
     ):
-        super().__init__(labels, style, parent)
-        self.labels = labels
-        self._style = style
+        super().__init__(parent, Config.PIE_ANIMATION_TIME.read())
 
+        self._style = style
+        self.labels = labels
+        self._label_widgets = self._create_label_widgets()
+        self._circle_points: CirclePoints
+
+        self.setAcceptDrops(True)
         self.setWindowFlags((
             self.windowFlags() |  # type: ignore
             Qt.Popup |
@@ -65,11 +75,46 @@ class PieWidget(DragWidget):
         """Return the deadzone distance."""
         return self._style.deadzone_radius
 
+    def move_center(self, new_center: QPoint) -> None:
+        """Move the widget by providing a new center point."""
+        self.move(new_center-self._center)  # type: ignore
+
     def paintEvent(self, event: QPaintEvent) -> None:
         """Paint the entire widget using the Painter wrapper."""
         with Painter(self, event) as painter:
             PiePainter(painter, self.labels, self._style)
 
-    def move_center(self, new_center: QPoint) -> None:
-        """Move the widget by providing a new center point."""
-        self.move(new_center-self._center)  # type: ignore
+    def dragEnterEvent(self, e: QDragEnterEvent) -> None:
+        self._circle_points = CirclePoints(
+            center=self._center,
+            radius=self._style.pie_radius)
+        e.accept()
+
+    def dragMoveEvent(self, e: QDragMoveEvent) -> None:
+        pos = e.pos()
+        source_widget = e.source()
+
+        if (self._circle_points.distance(pos) < self._style.deadzone_radius
+                or not isinstance(source_widget, LabelWidget)):
+            return e.accept()
+
+        angle = self._circle_points.angle_from_point(pos)
+        label = self.labels.from_angle(round(angle))
+        if label == source_widget.label:
+            return e.accept()
+
+        self.labels.swap(label, source_widget.label)
+        for widget in self._label_widgets:
+            widget.move_to_label()
+
+        self.repaint()
+        e.accept()
+
+    def _create_label_widgets(self) -> List[LabelWidget]:
+        """Create LabelWidgets that represent the labels."""
+        childred: List[LabelWidget] = []
+        for label in self.labels:
+            label_widget = create_label_widget(label, self._style, self)
+            label_widget.move_to_label()
+            childred.append(label_widget)
+        return childred
