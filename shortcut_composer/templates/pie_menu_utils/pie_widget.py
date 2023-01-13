@@ -9,7 +9,7 @@ from PyQt5.QtGui import QColor, QPaintEvent
 from api_krita.pyqt import AnimatedWidget, Painter
 from composer_utils import Config
 from .pie_style import PieStyle
-from .label import LabelPainter
+from .label import LabelWidget
 from .label_holder import LabelHolder
 
 
@@ -39,7 +39,9 @@ class PieWidget(AnimatedWidget):
         super().__init__(parent, Config.PIE_ANIMATION_TIME.read())
         self.labels = labels
         self._style = style
-        self._label_painters = self._create_label_painters()
+        self._label_widgets = self._create_label_widgets()
+        for label_widget in self._label_widgets:
+            label_widget.move_to_label()
 
         self.setWindowFlags((
             self.windowFlags() |  # type: ignore
@@ -79,9 +81,6 @@ class PieWidget(AnimatedWidget):
             self._paint_base_wheel(painter)
             self._paint_active_pie(painter)
             self._paint_base_border(painter)
-
-            for label_painter in self._label_painters:
-                label_painter.paint(painter)
 
     def _paint_base_wheel(self, painter: Painter) -> None:
         """Paint a base circle and low opacity background to trick Windows."""
@@ -138,7 +137,7 @@ class PieWidget(AnimatedWidget):
                 center=self.center,
                 outer_radius=self._style.no_border_radius + thickness_addition,
                 angle=label.angle,
-                span=360//len(self._label_painters),
+                span=360//len(self._label_widgets),
                 color=self._overlay_colors(
                     base=self._style.active_color_dark,
                     over=self._style.active_color,
@@ -146,9 +145,10 @@ class PieWidget(AnimatedWidget):
                 thickness=self._style.area_thickness + thickness_addition,
             )
 
-    def _create_label_painters(self) -> List[LabelPainter]:
+    def _create_label_widgets(self) -> List[LabelWidget]:
         """Wrap all labels with LabelPainter which can paint it."""
-        return [label.get_painter(self, self._style) for label in self.labels]
+        return [label.create_label_widget(self._style, self)
+                for label in self.labels]
 
     @staticmethod
     def _overlay_colors(base: QColor, over: QColor, opacity: float):
