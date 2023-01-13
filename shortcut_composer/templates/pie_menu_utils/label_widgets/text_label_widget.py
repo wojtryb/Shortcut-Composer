@@ -44,7 +44,7 @@ class TextLabelWidget(LabelWidget):
 
     def _create_pyqt_label(self) -> QLabel:
         """Create and show a new Qt5 label. Does not need redrawing."""
-        to_display = self._label.display_value
+        to_display = self.label.display_value
 
         if not isinstance(to_display, Text):
             raise TypeError("Label supposed to be text.")

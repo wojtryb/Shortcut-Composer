@@ -40,6 +40,15 @@ class LabelHolder:
         closest = min(self.angles(), key=angle_difference)
         return self._labels[closest]
 
+    def at(self, label: Label):
+        return [k for k, v in self._labels.items() if v == label][0]
+
+    def swap(self, _a: Label, _b: Label):
+        _a.angle, _b.angle = _b.angle, _a.angle
+        _a.center, _b.center = _b.center, _a.center
+        key_a, key_b = self.at(_a), self.at(_b)
+        self._labels[key_a], self._labels[key_b] = _b, _a
+
     def __iter__(self) -> Iterator[Label]:
         """Iterate over all held labels."""
         return iter(self._labels.values())
