@@ -33,6 +33,6 @@ class AnimationProgress:
         """Get current state of animation. Is in range <0-1>."""
         return self._value
 
-    def reset(self):
-        """Reset the animation to 0."""
-        self._value = 0
+    def set(self, value: float):
+        """Arbitralily set a value"""
+        self._value = value

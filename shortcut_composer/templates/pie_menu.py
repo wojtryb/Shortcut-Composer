@@ -111,6 +111,8 @@ class PieMenu(ComplexAction, Generic[T]):
     def on_every_key_release(self) -> None:
         """Stop the widget. Set selected value if deadzone was reached."""
         super().on_every_key_release()
+        if self._pie_widget.edit_mode:
+            return
         self._pie_manager.stop()
         if widget := self._pie_widget.widget_holder.active:
             self._controller.set_value(widget.label.value)

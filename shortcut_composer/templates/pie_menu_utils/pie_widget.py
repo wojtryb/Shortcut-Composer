@@ -5,7 +5,9 @@ from typing import List
 
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QPaintEvent, QDragMoveEvent, QDragEnterEvent
+from PyQt5.QtWidgets import QPushButton
 
+from api_krita import Krita
 from api_krita.pyqt import Painter, AnimatedWidget
 from .pie_style import PieStyle
 from .widget_holder import WidgetHolder
@@ -45,9 +47,28 @@ class PieWidget(AnimatedWidget):
 
         self._style = style
         self.labels = labels
+        self.edit_mode = False
         self.children_widgets = self._create_children_holder()
         self.widget_holder = self._put_children_in_holder()
         self._circle_points: CirclePoints
+
+        size = self._style.widget_radius*2
+        self.setGeometry(0, 0, size, size)
+
+        self.accept_button = QPushButton(Krita.get_icon("dialog-ok"), "", self)
+        radius = round(self._style.deadzone_radius*0.9)
+        self.accept_button.setGeometry(
+            self._center.x() - radius,
+            self._center.y() - radius,
+            radius*2,
+            radius*2)
+        self.accept_button.setStyleSheet(f"""
+            border-radius: {radius};
+            background-color : green;
+            qproperty-iconSize: {round(radius*1.5)}px;
+        """)
+        self.accept_button.clicked.connect(self.hide)
+        self.accept_button.hide()
 
         self.setAcceptDrops(True)
         self.setWindowFlags((
@@ -58,9 +79,6 @@ class PieWidget(AnimatedWidget):
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setStyleSheet("background: transparent;")
         self.setCursor(Qt.CrossCursor)
-
-        size = self._style.widget_radius*2
-        self.setGeometry(0, 0, size, size)
 
     @property
     def _center(self) -> QPoint:
@@ -77,6 +95,11 @@ class PieWidget(AnimatedWidget):
         """Return the deadzone distance."""
         return self._style.deadzone_radius
 
+    def hide(self):
+        self.edit_mode = False
+        self.accept_button.hide()
+        super().hide()
+
     def move_center(self, new_center: QPoint) -> None:
         """Move the widget by providing a new center point."""
         self.move(new_center-self._center)  # type: ignore
@@ -87,6 +110,8 @@ class PieWidget(AnimatedWidget):
             PiePainter(painter, self.labels, self._style)
 
     def dragEnterEvent(self, e: QDragEnterEvent) -> None:
+        self.edit_mode = True
+        self.accept_button.show()
         self._circle_points = CirclePoints(
             center=self._center,
             radius=self._style.pie_radius)
