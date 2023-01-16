@@ -10,6 +10,7 @@ from composer_utils import Config
 from .pie_widget import PieWidget
 from .label import Label
 from .circle_points import CirclePoints
+from .label_animator import LabelAnimator
 
 
 class PieManager:
@@ -24,6 +25,7 @@ class PieManager:
     def __init__(self, widget: PieWidget) -> None:
         self._widget = widget
         self._timer = Timer(self._track_angle, Config.get_sleep_time())
+        self._animator = LabelAnimator(widget)
 
         self._circle: CirclePoints
 
@@ -37,6 +39,8 @@ class PieManager:
     def stop(self):
         """Hide the widget and stop the mouse tracking loop."""
         self._timer.stop()
+        for label in self._widget.labels:
+            label.activation_progress.reset()
         self._widget.hide()
 
     def _track_angle(self):
@@ -50,7 +54,7 @@ class PieManager:
         self._set_active_label(label)
 
     def _set_active_label(self, label: Optional[Label]):
-        """Mark label as active and ask the widget to repaint."""
+        """Mark label as active and start animating the change."""
         if self._widget.labels.active != label:
             self._widget.labels.active = label
-            self._widget.repaint()
+            self._animator.start()

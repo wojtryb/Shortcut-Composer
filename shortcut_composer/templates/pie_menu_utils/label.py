@@ -10,6 +10,7 @@ from PyQt5.QtGui import QFont, QPixmap, QColor, QIcon, QFontDatabase
 from PyQt5.QtWidgets import QLabel, QWidget
 
 from api_krita.pyqt import Painter, Text, PixmapTransform
+from .animation_progress import AnimationProgress
 from .pie_style import PieStyle
 
 
@@ -36,6 +37,9 @@ class Label:
     center: QPoint = QPoint(0, 0)
     angle: int = 0
     display_value: Union[QPixmap, QIcon, Text, None] = None
+
+    def __post_init__(self):
+        self.activation_progress = AnimationProgress(speed_scale=1, steep=1)
 
     def get_painter(self, widget: QWidget, style: PieStyle) -> 'LabelPainter':
         """Return LabelPainter which can display this label."""

@@ -126,18 +126,34 @@ class PieWidget(AnimatedWidget):
 
     def _paint_active_pie(self, painter: Painter) -> None:
         """Paint a pie representing active label if there is one."""
-        if not self.labels.active:
-            return
+        for label in self.labels:
+            if not label.activation_progress.value:
+                continue
 
-        painter.paint_pie(
-            center=self.center,
-            outer_radius=self._style.no_border_radius,
-            angle=self.labels.active.angle,
-            span=360//len(self._label_painters),
-            color=self._style.active_color,
-            thickness=self._style.area_thickness,
-        )
+            thickness_addition = round(
+                0.15 * label.activation_progress.value
+                * self._style.area_thickness)
+
+            painter.paint_pie(
+                center=self.center,
+                outer_radius=self._style.no_border_radius + thickness_addition,
+                angle=label.angle,
+                span=360//len(self._label_painters),
+                color=self._overlay_colors(
+                    base=self._style.active_color_dark,
+                    over=self._style.active_color,
+                    opacity=label.activation_progress.value),
+                thickness=self._style.area_thickness + thickness_addition,
+            )
 
     def _create_label_painters(self) -> List[LabelPainter]:
         """Wrap all labels with LabelPainter which can paint it."""
         return [label.get_painter(self, self._style) for label in self.labels]
+
+    @staticmethod
+    def _overlay_colors(base: QColor, over: QColor, opacity: float):
+        opacity_negation = 1-opacity
+        return QColor(
+            round(base.red()*opacity_negation + over.red()*opacity),
+            round(base.green()*opacity_negation + over.green()*opacity),
+            round(base.blue()*opacity_negation + over.blue()*opacity))
