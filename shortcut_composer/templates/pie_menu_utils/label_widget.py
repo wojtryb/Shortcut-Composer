@@ -3,12 +3,11 @@
 
 from PyQt5.QtCore import QPoint, Qt, QMimeData
 from PyQt5.QtWidgets import QWidget
-
-from ..pie_style import PieStyle
-from ..label import Label
-
 from PyQt5.QtGui import QDrag, QPixmap, QMouseEvent
+
 from api_krita.pyqt import PixmapTransform
+from .pie_style import PieStyle
+from .label import Label
 
 
 class LabelWidget(QWidget):

@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import QWidget
 from api_krita.pyqt import Text
 from ..pie_style import PieStyle
 from ..label import Label
-from .label_widget import LabelWidget
+from ..label_widget import LabelWidget
 from .icon_label_widget import IconLabelWidget
 from .text_label_widget import TextLabelWidget
 from .image_label_widget import ImageLabelWidget

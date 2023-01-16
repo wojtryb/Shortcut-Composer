@@ -7,8 +7,8 @@ from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QColor
 
 from api_krita.pyqt import Painter
-from .pie_style import PieStyle
-from .label import Label
+from ..pie_style import PieStyle
+from ..label import Label
 
 
 class PiePainter:
