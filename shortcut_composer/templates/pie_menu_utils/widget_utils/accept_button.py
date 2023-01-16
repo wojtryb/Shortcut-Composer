@@ -1,5 +1,4 @@
 from PyQt5.QtWidgets import QWidget, QPushButton
-from PyQt5.QtCore import QPoint
 from ..pie_style import PieStyle
 from api_krita.pyqt import MovableWidget
 from api_krita import Krita
@@ -22,8 +21,7 @@ class AcceptButton(QPushButton, MovableWidget):
         color_3 = "rgba(90, 170, 90)"
         color_4 = "rgba(120, 200, 120)"
         self.setStyleSheet(
-            "QPushButton {"
-            f"""
+            f"""QPushButton [
                 color: #333;
                 border:{self._style.border_thickness}px {color_1};
                 border-radius: {self.radius}px;
@@ -34,19 +32,12 @@ class AcceptButton(QPushButton, MovableWidget):
                 );
                 padding: 5px;
                 qproperty-iconSize:{round(self.radius*1.5)}px;
-            """
-            "} QPushButton:hover {"
-            f"""background: qradialgradient(
-                cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
-                radius: 1.35, stop: 0 {color_4}, stop: 1 {color_3}
-            );""" + '}'
+            ]
+            QPushButton:hover [
+                background: qradialgradient(
+                    cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+                    radius: 1.35, stop: 0 {color_4}, stop: 1 {color_3}
+                )
+            ]
+        """.replace('[', '{').replace(']', '}')
         )
-
-    @property
-    def _center(self) -> QPoint:
-        """Return point with center widget's point in its coordinates."""
-        return QPoint(self.size().width()//2, self.size().height()//2)
-
-    def move_center(self, new_center: QPoint) -> None:
-        """Move the widget by providing a new center point."""
-        self.move(new_center-self._center)  # type: ignore

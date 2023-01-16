@@ -5,19 +5,22 @@ from .timer import Timer
 
 
 class MovableWidget(QWidget):
+    def __init__(self, parent, *args, **kwargs) -> None:
+        super().__init__(parent)
+
     @property
-    def _center(self) -> QPoint:
+    def center(self) -> QPoint:
         """Return point with center widget's point in its coordinates."""
         return QPoint(self.size().width()//2, self.size().height()//2)
 
     @property
     def center_global(self) -> QPoint:
         """Return point with center widget's point in screen coordinates."""
-        return self.pos() + self._center  # type: ignore
+        return self.pos() + self.center  # type: ignore
 
     def move_center(self, new_center: QPoint) -> None:
         """Move the widget by providing a new center point."""
-        self.move(new_center-self._center)  # type: ignore
+        self.move(new_center-self.center)  # type: ignore
 
 
 class AnimatedWidget(QWidget):
