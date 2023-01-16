@@ -6,6 +6,7 @@ from typing import List, TypeVar, Generic, Union, Optional
 from PyQt5.QtGui import QColor, QPixmap, QIcon
 
 from api_krita.pyqt import Text
+from composer_utils import Config
 from core_components import Controller, Instruction
 from input_adapter import ComplexAction
 from .pie_menu_utils import (
@@ -77,6 +78,7 @@ class PieMenu(ComplexAction, Generic[T]):
         name: str,
         controller: Controller,
         values: List[T],
+        related_config: Optional[Config] = None,
         instructions: List[Instruction] = [],
         pie_radius_scale: float = 1.0,
         icon_radius_scale: float = 1.0,
@@ -99,7 +101,7 @@ class PieMenu(ComplexAction, Generic[T]):
         self._labels = self._create_labels(values)
         self._style.adapt_to_item_amount(len(self._labels))
 
-        self._pie_widget = PieWidget(self._style, self._labels)
+        self._pie_widget = PieWidget(self._style, self._labels, related_config)
         self._pie_manager = PieManager(self._pie_widget)
 
     def on_key_press(self) -> None:

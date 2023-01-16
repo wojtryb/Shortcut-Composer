@@ -6,6 +6,7 @@ from enum import Enum
 
 from api_krita import Krita
 from api_krita.enums import Tool, BlendingMode
+from api_krita.wrappers import Database
 
 T = TypeVar('T', bound=Enum)
 
@@ -53,6 +54,10 @@ class Config(Enum):
     TAG_GREEN = "Tag (green)"
     TAG_BLUE = "Tag (blue)"
 
+    TAG_RED_VALUES = "Tag (red) values"
+    TAG_GREEN_VALUES = "Tag (green) values"
+    TAG_BLUE_VALUES = "Tag (blue) values"
+
     BLENDING_MODES_VALUES = "Blending modes values"
     MISC_TOOLS_VALUES = "Misc tools values"
     SELECTION_TOOLS_VALUES = "Selection tools values"
@@ -79,11 +84,6 @@ class Config(Enum):
             value=value
         )
 
-    def read_as_enums(self, enum: Type[T]) -> List[T]:
-        value_string: str = self.read()
-        values_list = value_string.split(";")
-        return [enum[value] for value in values_list]
-
     @staticmethod
     def reset_defaults() -> None:
         """Reset all config files."""
@@ -96,9 +96,26 @@ class Config(Enum):
         fps_limit = Config.FPS_LIMIT.read()
         return round(1000/fps_limit) if fps_limit else 1
 
+    def read_as_enums(self, enum: Type[T]) -> List[T]:
+        value_string: str = self.read()
+        values_list = value_string.split(";")
+        return [enum[value] for value in values_list]
 
-def _format_enums(enums: List[Enum]):
-    return ";".join([enum.name for enum in enums])
+    @staticmethod
+    def format_enums(enums: List[Enum]) -> str:
+        return ";".join([enum.name for enum in enums])
+
+    @staticmethod
+    def read_presets(tag: 'Config', presets: 'Config') -> List[str]:
+        with Database() as database:
+            tag_presets = database.get_preset_names_from_tag(tag.read())
+
+        preset_string: str = presets.read()
+        preset_order = preset_string.split(";")
+        preset_order = [p for p in preset_order if p in tag_presets]
+
+        missing = [p for p in tag_presets if p not in preset_order]
+        return preset_order + missing
 
 
 _defaults = {
@@ -115,19 +132,23 @@ _defaults = {
     Config.TAG_GREEN: "RGBA",
     Config.TAG_BLUE: "Erasers",
 
-    Config.SELECTION_TOOLS_VALUES: _format_enums([
+    Config.TAG_RED_VALUES: "",
+    Config.TAG_GREEN_VALUES: "",
+    Config.TAG_BLUE_VALUES: "",
+
+    Config.SELECTION_TOOLS_VALUES: Config.format_enums([
         Tool.FREEHAND_SELECTION,
         Tool.RECTANGULAR_SELECTION,
         Tool.CONTIGUOUS_SELECTION,
     ]),
-    Config.MISC_TOOLS_VALUES: _format_enums([
+    Config.MISC_TOOLS_VALUES: Config.format_enums([
         Tool.CROP,
         Tool.REFERENCE,
         Tool.GRADIENT,
         Tool.MULTI_BRUSH,
         Tool.ASSISTANTS,
     ]),
-    Config.BLENDING_MODES_VALUES: _format_enums([
+    Config.BLENDING_MODES_VALUES: Config.format_enums([
         BlendingMode.NORMAL,
         BlendingMode.OVERLAY,
         BlendingMode.COLOR,
@@ -137,7 +158,7 @@ _defaults = {
         BlendingMode.DARKEN,
         BlendingMode.LIGHTEN,
     ]),
-    Config.TRANSFORM_MODES_VALUES: _format_enums([
+    Config.TRANSFORM_MODES_VALUES: Config.format_enums([
         Tool.TRANSFORM_FREE,
         Tool.TRANSFORM_PERSPECTIVE,
         Tool.TRANSFORM_WARP,

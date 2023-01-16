@@ -56,7 +56,8 @@ class WidgetHolder:
 
     def __iter__(self) -> Iterator[LabelWidget]:
         """Iterate over all held LabelWidgets."""
-        return iter(self._widgets.values())
+        for angle in sorted(self.angles()):
+            yield self._widgets[angle]
 
     def __len__(self) -> int:
         """Return amount of held LabelWidgets."""
