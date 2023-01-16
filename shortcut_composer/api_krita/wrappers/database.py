@@ -46,7 +46,7 @@ class Database:
     def get_preset_names_from_tag(self, tag_name: str) -> List[str]:
         """Return list of all preset names that belong to given tag."""
         sql_query = f'''
-            SELECT r.name AS preset
+            SELECT DISTINCT r.name AS preset
             FROM tags t
                 JOIN resource_tags rt
                     ON t.id=rt.tag_id
@@ -61,7 +61,7 @@ class Database:
     def get_brush_tags(self) -> List[str]:
         "Return list of all tag names."
         sql_query = '''
-            SELECT t.name AS tag
+            SELECT DISTINCT t.name AS tag
             FROM tags t
             WHERE
                 t.active = 1
