@@ -5,7 +5,7 @@ from typing import List, Optional
 
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QPaintEvent, QDragMoveEvent, QDragEnterEvent
-from api_krita.pyqt import Painter, AnimatedWidget
+from api_krita.pyqt import Painter, AnimatedWidget, MovableWidget
 from composer_utils import Config
 from .pie_style import PieStyle
 from .label import Label
@@ -20,7 +20,7 @@ from .widget_utils import (
 from .label_widget_utils import create_label_widget
 
 
-class PieWidget(AnimatedWidget):
+class PieWidget(AnimatedWidget, MovableWidget):
     """
     PyQt5 widget with icons on ring that can be selected by hovering.
 
@@ -46,7 +46,7 @@ class PieWidget(AnimatedWidget):
         related_config: Optional[Config],
         parent=None
     ):
-        super().__init__(parent, Config.PIE_ANIMATION_TIME.read())
+        AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())
 
         self._style = style
         self._related_config = related_config
@@ -71,11 +71,6 @@ class PieWidget(AnimatedWidget):
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setStyleSheet("background: transparent;")
         self.setCursor(Qt.CrossCursor)
-
-    @property
-    def center_global(self) -> QPoint:
-        """Return point with center widget's point in screen coordinates."""
-        return self.pos() + self._center  # type: ignore
 
     @property
     def deadzone(self) -> float:

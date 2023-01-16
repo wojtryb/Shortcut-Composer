@@ -4,6 +4,22 @@ from PyQt5.QtCore import QPoint
 from .timer import Timer
 
 
+class MovableWidget(QWidget):
+    @property
+    def _center(self) -> QPoint:
+        """Return point with center widget's point in its coordinates."""
+        return QPoint(self.size().width()//2, self.size().height()//2)
+
+    @property
+    def center_global(self) -> QPoint:
+        """Return point with center widget's point in screen coordinates."""
+        return self.pos() + self._center  # type: ignore
+
+    def move_center(self, new_center: QPoint) -> None:
+        """Move the widget by providing a new center point."""
+        self.move(new_center-self._center)  # type: ignore
+
+
 class AnimatedWidget(QWidget):
     """Adds the fade-in animation when the widget is shown (60 FPS)."""
 
@@ -12,15 +28,6 @@ class AnimatedWidget(QWidget):
         self._animation_time = animation_time
         self._animation_interval = self._read_animation_interval()
         self._animation_timer = Timer(self._increase_opacity, 17)
-
-    @property
-    def _center(self) -> QPoint:
-        """Return point with center widget's point in its coordinates."""
-        return QPoint(self.size().width()//2, self.size().height()//2)
-
-    def move_center(self, new_center: QPoint) -> None:
-        """Move the widget by providing a new center point."""
-        self.move(new_center-self._center)  # type: ignore
 
     def show(self):
         """Decrease opacity to 0, and start a timer which animates it."""
