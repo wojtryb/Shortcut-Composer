@@ -4,7 +4,9 @@ from PyQt5.QtCore import QPoint
 from .timer import Timer
 
 
-class MovableWidget(QWidget):
+class BaseWidget(QWidget):
+    """Adds base convenience methods to the widget."""
+
     def __init__(self, parent, *args, **kwargs) -> None:
         super().__init__(parent)
 

@@ -3,7 +3,7 @@
 
 """Wrappers and utilities based on PyQt5 objects."""
 
-from .custom_widgets import AnimatedWidget, MovableWidget
+from .custom_widgets import AnimatedWidget, BaseWidget
 from .pixmap_transform import PixmapTransform
 from .colorizer import Colorizer
 from .painter import Painter
@@ -13,7 +13,7 @@ from .text import Text
 __all__ = [
     "PixmapTransform",
     "AnimatedWidget",
-    "MovableWidget",
+    "BaseWidget",
     "Colorizer",
     "Painter",
     "Timer",

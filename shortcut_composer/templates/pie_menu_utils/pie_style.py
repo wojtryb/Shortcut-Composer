@@ -45,16 +45,17 @@ class PieStyle:
 
         base_size = Krita.screen_size/2560
 
-        self.pie_radius = round(
+        self.pie_radius: int = round(
             165 * base_size
             * self.pie_radius_scale
             * Config.PIE_GLOBAL_SCALE.read()
         )
-        self.icon_radius = round(
+        self.icon_radius: int = round(
             50 * base_size
             * self.icon_radius_scale
             * Config.PIE_ICON_GLOBAL_SCALE.read()
         )
+        # NOTE: float, as radius can be an infinity when no labels given.
         self.deadzone_radius: float = (
             40 * base_size
             * Config.PIE_DEADZONE_GLOBAL_SCALE.read()
@@ -89,6 +90,7 @@ class PieStyle:
         self.icon_radius = min(self.icon_radius, max_icon_size)
 
     def _pick_background_color(self, color: Optional[QColor]) -> QColor:
+        """Default background color depends on the app theme lightness."""
         if color is not None:
             return color
         if Krita.is_light_theme_active:

@@ -24,7 +24,7 @@ class PieManager:
     def __init__(self, widget: PieWidget) -> None:
         self._widget = widget
         self._holder = self._widget.widget_holder
-        self._timer = Timer(self._track_angle, Config.get_sleep_time())
+        self._timer = Timer(self._handle_cursor, Config.get_sleep_time())
         self._animator = LabelAnimator(widget)
 
         self._circle: CirclePoints
@@ -43,8 +43,11 @@ class PieManager:
             label.activation_progress.set(0)
         self._widget.hide()
 
-    def _track_angle(self):
-        """Block a thread contiguously setting an active label."""
+    def _handle_cursor(self):
+        """Calculate zone of the cursor and mark which child is active."""
+        # NOTE: The widget can get hidden outside of stop() when key is
+        # released during the drag&drop operation or when user clicked
+        # outside the pie widget.
         if not self._widget.isVisible():
             return self.stop()
 
