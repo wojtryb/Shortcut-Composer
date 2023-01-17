@@ -6,5 +6,6 @@
 from .blending_mode import BlendingMode
 from .toggle import Toggle
 from .tool import Tool
+from .node_types import NodeType
 
-__all__ = ["BlendingMode", "Toggle", "Tool"]
+__all__ = ["BlendingMode", "Toggle", "Tool", "NodeType"]
