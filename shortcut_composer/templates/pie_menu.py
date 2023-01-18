@@ -78,7 +78,6 @@ class PieMenu(ComplexAction, Generic[T]):
         name: str,
         controller: Controller,
         values: List[T],
-        related_config: Optional[Config] = None,
         instructions: List[Instruction] = [],
         pie_radius_scale: float = 1.0,
         icon_radius_scale: float = 1.0,
@@ -101,6 +100,7 @@ class PieMenu(ComplexAction, Generic[T]):
         self._labels = self._create_labels(values)
         self._style.adapt_to_item_amount(len(self._labels))
 
+        related_config = self._get_config_to_write_back(values)
         self._pie_widget = PieWidget(self._style, self._labels, related_config)
         self._pie_manager = PieManager(self._pie_widget)
 
@@ -133,4 +133,11 @@ class PieMenu(ComplexAction, Generic[T]):
         try:
             return self._controller.get_label(value)
         except KeyError:
+            return None
+
+    def _get_config_to_write_back(self, values: List[T]) -> Optional[Config]:
+        """Some value lists can contain metadata with config to write back."""
+        try:
+            return values.config_to_write  # type: ignore
+        except AttributeError:
             return None

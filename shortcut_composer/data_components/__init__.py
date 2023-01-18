@@ -10,12 +10,15 @@ complex logic.
 """
 
 from .current_layer_stack import CurrentLayerStack
+from .writable_values import TagConfigValues, EnumConfigValues
 from .pick_strategy import PickStrategy
 from .slider import Slider
 from .range import Range
 
 __all__ = [
     "CurrentLayerStack",
+    "EnumConfigValues",
+    "TagConfigValues",
     "PickStrategy",
     "Slider",
     "Range",
