@@ -21,11 +21,11 @@ class CirclePoints:
     - iterate over points, when the circle is divided into even parts
     """
 
-    def __init__(self, center: QPoint, radius: int):
+    def __init__(self, center: QPoint, radius: int) -> None:
         self._center = center
         self._radius = radius
 
-    def distance(self, point: QPoint):
+    def distance(self, point: QPoint) -> float:
         """Count distance between pie center and cursor position."""
         distance = (self._center.x() - point.x()) ** 2
         distance += (self._center.y() - point.y()) ** 2

@@ -32,10 +32,10 @@ class Label:
     angle: int = 0
     display_value: Union[QPixmap, QIcon, Text, None] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.activation_progress = AnimationProgress(speed_scale=1, steep=1)
 
-    def swap_locations(self, other: 'Label'):
+    def swap_locations(self, other: 'Label') -> None:
         self.angle, other.angle = other.angle, self.angle
         self.center, other.center = other.center, self.center
 
@@ -57,21 +57,21 @@ class AnimationProgress:
         self._speed = 0.004*Config.get_sleep_time()*speed_scale
         self._steep = steep
 
-    def up(self):
+    def up(self) -> None:
         """Increase the animation progress."""
         difference = (1+self._steep-self._value) * self._speed
         self._value = min(self._value + difference, 1)
 
-    def down(self):
+    def down(self) -> None:
         """Decrease the animation progress."""
         difference = (self._value+self._steep) * self._speed
         self._value = max(self._value - difference, 0)
 
     @property
-    def value(self):
+    def value(self) -> float:
         """Get current state of animation. Is in range <0-1>."""
         return self._value
 
-    def set(self, value: float):
+    def set(self, value: float) -> None:
         """Arbitralily set a value"""
         self._value = value
