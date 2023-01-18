@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
-from api_krita.enums import BlendingMode, Tool
+from api_krita.enums import BlendingMode, Tool, TransformMode
 from ..utils import PieValues
 from ..config import Config
 
@@ -31,7 +31,7 @@ class PieValuesTab(QWidget):
                 config=Config.MISC_TOOLS_VALUES
             ),
             "Transform modes": PieValues(
-                allowed_values=set(Tool._member_names_),
+                allowed_values=set(TransformMode._member_names_),
                 config=Config.TRANSFORM_MODES_VALUES
             ),
         }
