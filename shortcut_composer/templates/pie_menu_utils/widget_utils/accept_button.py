@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QPushButton
 from PyQt5.QtGui import QColor
+from PyQt5.QtCore import Qt
 
 from ..pie_style import PieStyle
 from api_krita.pyqt import BaseWidget
@@ -15,6 +16,7 @@ class AcceptButton(QPushButton, BaseWidget):
         self._style = style
         self.hide()
         self.radius = int(self._style.deadzone_radius)
+        self.setCursor(Qt.ArrowCursor)
         self.setGeometry(
             0, 0,
             self.radius*2,

@@ -14,7 +14,7 @@ from typing import List
 
 from PyQt5.QtGui import QColor
 
-from api_krita.enums import BlendingMode, Tool, Toggle
+from api_krita.enums import BlendingMode, Tool, Toggle, TransformMode
 from core_components import instructions, controllers
 from composer_utils import Config
 from input_adapter import ComplexAction
@@ -199,8 +199,8 @@ def create_actions() -> List[ComplexAction]: return [
     # Pick one of the transform tool modes.
     templates.PieMenu(
         name="Pick transform tool modes",
-        controller=controllers.ToolController(),
-        values=EnumConfigValues(Config.TRANSFORM_MODES_VALUES, Tool),
+        controller=controllers.TransformModeController(),
+        values=EnumConfigValues(Config.TRANSFORM_MODES_VALUES, TransformMode),
     ),
 
     # Use pie menu to pick one of presets from tag specified in settings.

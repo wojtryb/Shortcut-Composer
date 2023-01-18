@@ -1,12 +1,14 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from typing import Optional
 from dataclasses import dataclass
 
 from PyQt5.QtGui import QIcon
 
 from api_krita import Krita
-from api_krita.enums import Tool, Toggle
+from api_krita.enums import Tool, Toggle, TransformMode
+from api_krita.actions import TransformModeFinder
 from ..controller_base import Controller
 
 
@@ -29,6 +31,35 @@ class ToolController(Controller):
     def set_value(value: Tool) -> None:
         """Set a passed tool."""
         Krita.active_tool = value
+
+    def get_label(self, value: Tool) -> QIcon:
+        return value.icon
+
+
+class TransformModeController(Controller):
+    """
+    Gives access to tools from toolbox.
+
+    - Operates on `TransformMode`
+    - Defaults to `TransformMode.FREE`
+    """
+
+    default_value: TransformMode = TransformMode.FREE
+
+    def __init__(self) -> None:
+        self.button_finder = TransformModeFinder()
+
+    def get_value(self) -> Optional[TransformMode]:
+        """Get currently active tool."""
+        for mode in TransformMode._member_map_.values():
+            self.button_finder.ensure_initialized(mode)  # type: ignore
+        return self.button_finder.get_active_mode()
+
+    @staticmethod
+    def set_value(value: Optional[TransformMode]) -> None:
+        """Set a passed tool."""
+        if value is not None:
+            value.activate()
 
     def get_label(self, value: Tool) -> QIcon:
         return value.icon
