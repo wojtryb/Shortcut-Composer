@@ -15,7 +15,7 @@ class IconLabelWidget(ImageLabelWidget):
 
     def _prepare_image(self) -> QPixmap:
         """Return icon after scaling it to fix QT_SCALE_FACTOR."""
-        to_display = self._label.display_value
+        to_display = self.label.display_value
 
         if not isinstance(to_display, QIcon):
             raise TypeError("Label supposed to be QIcon.")

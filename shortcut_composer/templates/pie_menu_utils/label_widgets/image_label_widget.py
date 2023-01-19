@@ -43,7 +43,7 @@ class ImageLabelWidget(LabelWidget):
 
     def _prepare_image(self) -> QPixmap:
         """Return image after scaling and reshaping it to circle."""
-        to_display = self._label.display_value
+        to_display = self.label.display_value
 
         if not isinstance(to_display, QPixmap):
             raise TypeError("Label supposed to be QPixmap.")

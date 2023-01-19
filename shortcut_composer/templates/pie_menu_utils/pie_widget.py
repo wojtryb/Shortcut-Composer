@@ -1,19 +1,16 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List
-
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QColor, QPaintEvent
 
-from api_krita.pyqt import AnimatedWidget, Painter
-from composer_utils import Config
+from api_krita.pyqt import Painter
 from .pie_style import PieStyle
-from .label_widgets import LabelWidget, create_label_widget
 from .label_holder import LabelHolder
+from .drag_widget import DragWidget
 
 
-class PieWidget(AnimatedWidget):
+class PieWidget(DragWidget):
     """
     PyQt5 widget with icons on ring that can be selected by hovering.
 
@@ -36,12 +33,9 @@ class PieWidget(AnimatedWidget):
         style: PieStyle,
         parent=None
     ):
-        super().__init__(parent, Config.PIE_ANIMATION_TIME.read())
+        super().__init__(labels, style, parent)
         self.labels = labels
         self._style = style
-        self._label_widgets = self._create_label_widgets()
-        for label_widget in self._label_widgets:
-            label_widget.move_to_label()
 
         self.setWindowFlags((
             self.windowFlags() |  # type: ignore
@@ -70,10 +64,6 @@ class PieWidget(AnimatedWidget):
         """Return the deadzone distance."""
         return self._style.deadzone_radius
 
-    def move_center(self, new_center: QPoint) -> None:
-        """Move the widget by providing a new center point."""
-        self.move(new_center-self.center)  # type: ignore
-
     def paintEvent(self, event: QPaintEvent) -> None:
         """Paint the entire widget using the Painter wrapper."""
         with Painter(self, event) as painter:
@@ -81,6 +71,10 @@ class PieWidget(AnimatedWidget):
             self._paint_base_wheel(painter)
             self._paint_active_pie(painter)
             self._paint_base_border(painter)
+
+    def move_center(self, new_center: QPoint) -> None:
+        """Move the widget by providing a new center point."""
+        self.move(new_center-self.center)  # type: ignore
 
     def _paint_base_wheel(self, painter: Painter) -> None:
         """Paint a base circle and low opacity background to trick Windows."""
@@ -144,11 +138,6 @@ class PieWidget(AnimatedWidget):
                     opacity=label.activation_progress.value),
                 thickness=self._style.area_thickness + thickness_addition,
             )
-
-    def _create_label_widgets(self) -> List[LabelWidget]:
-        """Create LabelWidgets that represent the labels."""
-        return [create_label_widget(label, self._style, self)
-                for label in self.labels]
 
     @staticmethod
     def _overlay_colors(base: QColor, over: QColor, opacity: float):
