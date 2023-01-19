@@ -59,7 +59,7 @@ class PieWidget(AnimatedWidget, MovableWidget):
         self.setGeometry(0, 0, size, size)
 
         self.accept_button = AcceptButton(self._style, self)
-        self.accept_button.move_center(self._center)
+        self.accept_button.move_center(self.center)
         self.accept_button.clicked.connect(self.hide)
 
         self.setAcceptDrops(True)
@@ -89,7 +89,7 @@ class PieWidget(AnimatedWidget, MovableWidget):
     def dragEnterEvent(self, e: QDragEnterEvent) -> None:
         self.edit_mode = True
         self._circle_points = CirclePoints(
-            center=self._center,
+            center=self.center,
             radius=self._style.pie_radius)
         e.accept()
 
