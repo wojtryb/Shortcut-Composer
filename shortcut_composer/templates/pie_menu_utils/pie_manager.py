@@ -67,18 +67,14 @@ class ActiveOpacityAnimator:
         self._timer.start()
 
     def _update(self):
-        changed = False
         for label in self._labels:
             if self._labels.active == label:
-                if label.activation_progress < 1:
-                    label.activation_progress += 0.13
-                    changed = True
+                label.activation_progress.up()
             else:
-                if label.activation_progress > 0:
-                    label.activation_progress -= 0.13
-                    changed = True
+                label.activation_progress.down()
 
-        if not changed:
-            self._timer.stop()
-        else:
-            self._widget.repaint()
+        self._widget.repaint()
+        for label in self._labels:
+            if not label.activation_progress.read() in (0, 1):
+                return
+        self._timer.stop()
