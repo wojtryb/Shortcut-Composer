@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import QPushButton
 
 from api_krita import Krita
 from api_krita.pyqt import Painter, AnimatedWidget
+from composer_utils import Config
 from .pie_style import PieStyle
 from .widget_holder import WidgetHolder
 from .label import Label
@@ -17,7 +18,16 @@ from .label_widgets import LabelWidget, create_label_widget
 from .circle_points import CirclePoints
 
 
-from composer_utils import Config
+class EditMode:
+    def __get__(self, obj, _):
+        return obj._edit_mode
+
+    def __set__(self, obj: 'PieWidget', mode_to_set: bool):
+        obj._edit_mode = mode_to_set
+        if mode_to_set:
+            obj.accept_button.show()
+        else:
+            obj.accept_button.hide()
 
 
 class PieWidget(AnimatedWidget):
@@ -37,6 +47,8 @@ class PieWidget(AnimatedWidget):
       providing the widget center.
     """
 
+    edit_mode = EditMode()
+
     def __init__(
         self,
         style: PieStyle,
@@ -47,16 +59,17 @@ class PieWidget(AnimatedWidget):
 
         self._style = style
         self.labels = labels
-        self.edit_mode = False
         self.children_widgets = self._create_children_holder()
         self.widget_holder = self._put_children_in_holder()
+        self._edit_mode = False
         self._circle_points: CirclePoints
 
         size = self._style.widget_radius*2
         self.setGeometry(0, 0, size, size)
 
         self.accept_button = QPushButton(Krita.get_icon("dialog-ok"), "", self)
-        radius = round(self._style.deadzone_radius*0.9)
+        self.accept_button.hide()
+        radius = round(self.deadzone*0.9)
         self.accept_button.setGeometry(
             self._center.x() - radius,
             self._center.y() - radius,
@@ -68,7 +81,6 @@ class PieWidget(AnimatedWidget):
             qproperty-iconSize: {round(radius*1.5)}px;
         """)
         self.accept_button.clicked.connect(self.hide)
-        self.accept_button.hide()
 
         self.setAcceptDrops(True)
         self.setWindowFlags((
@@ -97,7 +109,6 @@ class PieWidget(AnimatedWidget):
 
     def hide(self):
         self.edit_mode = False
-        self.accept_button.hide()
         super().hide()
 
     def move_center(self, new_center: QPoint) -> None:
@@ -111,7 +122,6 @@ class PieWidget(AnimatedWidget):
 
     def dragEnterEvent(self, e: QDragEnterEvent) -> None:
         self.edit_mode = True
-        self.accept_button.show()
         self._circle_points = CirclePoints(
             center=self._center,
             radius=self._style.pie_radius)
