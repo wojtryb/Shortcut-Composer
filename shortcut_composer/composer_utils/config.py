@@ -5,7 +5,7 @@ from typing import Union, Any, TypeVar, List
 from enum import Enum
 
 from api_krita import Krita
-from api_krita.enums import Tool, BlendingMode
+from api_krita.enums import Tool, BlendingMode, TransformMode
 
 T = TypeVar('T', bound=Enum)
 
@@ -141,12 +141,12 @@ _defaults = {
         BlendingMode.LIGHTEN,
     ]),
     Config.TRANSFORM_MODES_VALUES: Config.format_enums([
-        Tool.TRANSFORM_FREE,
-        Tool.TRANSFORM_PERSPECTIVE,
-        Tool.TRANSFORM_WARP,
-        Tool.TRANSFORM_CAGE,
-        Tool.TRANSFORM_LIQUIFY,
-        Tool.TRANSFORM_MESH,
+        TransformMode.FREE,
+        TransformMode.PERSPECTIVE,
+        TransformMode.WARP,
+        TransformMode.CAGE,
+        TransformMode.LIQUIFY,
+        TransformMode.MESH,
     ])
 }
 """Maps default values to config fields."""

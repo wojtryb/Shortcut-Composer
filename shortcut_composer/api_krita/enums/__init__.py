@@ -3,8 +3,9 @@
 
 """Enumerated values used in krita api wrappers."""
 
+from .transform_mode import TransformMode
 from .blending_mode import BlendingMode
 from .toggle import Toggle
 from .tool import Tool
 
-__all__ = ["BlendingMode", "Toggle", "Tool"]
+__all__ = ["BlendingMode", "Toggle", "Tool", "TransformMode"]
