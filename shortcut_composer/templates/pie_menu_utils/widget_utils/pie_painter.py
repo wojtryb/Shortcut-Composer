@@ -93,7 +93,7 @@ class PiePainter:
                 thickness=self.style.area_thickness + thickness_addition,
             )
 
-    def _pick_pie_color(self, label: Label):
+    def _pick_pie_color(self, label: Label) -> QColor:
         """Pick color of pie based on widget mode and animation progress."""
         if not self.edit_mode:
             return self._overlay_colors(
@@ -106,7 +106,7 @@ class PiePainter:
             opacity=label.activation_progress.value)
 
     @staticmethod
-    def _overlay_colors(base: QColor, over: QColor, opacity: float):
+    def _overlay_colors(base: QColor, over: QColor, opacity: float) -> QColor:
         opacity_negation = 1-opacity
         return QColor(
             round(base.red()*opacity_negation + over.red()*opacity),

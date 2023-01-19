@@ -30,7 +30,7 @@ class WidgetHolder:
     def on_angle(self, angle: float) -> LabelWidget:
         """Return LabelWidget which is the closest to given `angle`."""
 
-        def angle_difference(label_angle: float):
+        def angle_difference(label_angle: float) -> float:
             """Return the smallest difference between two angles."""
             nonlocal angle
             raw_difference = label_angle - angle
@@ -39,14 +39,14 @@ class WidgetHolder:
         closest = min(self.angles(), key=angle_difference)
         return self._widgets[closest]
 
-    def angle(self, widget: LabelWidget):
+    def angle(self, widget: LabelWidget) -> int:
         """Return an angle of passed LabelWidget."""
         for angle, held_widget in self._widgets.items():
             if widget == held_widget:
                 return angle
         raise ValueError(f"{widget} not in holder.")
 
-    def swap(self, _a: LabelWidget, _b: LabelWidget):
+    def swap(self, _a: LabelWidget, _b: LabelWidget) -> None:
         """Swap data and actions on which two LabelWidgets are held."""
         _a.label.swap_locations(_b.label)
         key_a, key_b = self.angle(_a), self.angle(_b)

@@ -29,21 +29,21 @@ class PieManager:
 
         self._circle: CirclePoints
 
-    def start(self):
+    def start(self) -> None:
         """Show widget under the mouse and start the mouse tracking loop."""
         self._widget.move_center(QCursor().pos())
         self._widget.show()
         self._circle = CirclePoints(self._widget.center_global, 0)
         self._timer.start()
 
-    def stop(self):
+    def stop(self) -> None:
         """Hide the widget and stop the mouse tracking loop."""
         self._timer.stop()
         for label in self._widget.labels:
             label.activation_progress.set(0)
         self._widget.hide()
 
-    def _handle_cursor(self):
+    def _handle_cursor(self) -> None:
         """Calculate zone of the cursor and mark which child is active."""
         # NOTE: The widget can get hidden outside of stop() when key is
         # released during the drag&drop operation or when user clicked
@@ -58,7 +58,7 @@ class PieManager:
         angle = self._circle.angle_from_point(cursor)
         self._set_active_widget(self._holder.on_angle(angle))
 
-    def _set_active_widget(self, widget: Optional[LabelWidget]):
+    def _set_active_widget(self, widget: Optional[LabelWidget]) -> None:
         """Mark label as active and start animating the change."""
         if self._holder.active != widget:
             self._holder.active = widget
@@ -77,11 +77,11 @@ class LabelAnimator:
         self._children = widget.widget_holder
         self._timer = Timer(self._update, Config.get_sleep_time())
 
-    def start(self):
+    def start(self) -> None:
         """Start animating. The animation will stop automatically."""
         self._timer.start()
 
-    def _update(self):
+    def _update(self) -> None:
         """Move all labels to next animation state. End animation if needed."""
         for widget in self._children:
             if self._children.active == widget:

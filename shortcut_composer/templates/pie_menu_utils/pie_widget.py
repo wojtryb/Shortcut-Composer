@@ -85,6 +85,7 @@ class PieWidget(AnimatedWidget, BaseWidget):
         return self._style.deadzone_radius
 
     def hide(self):
+        """Leave the edit mode when the widget is hidden."""
         self.edit_mode = False
         super().hide()
 

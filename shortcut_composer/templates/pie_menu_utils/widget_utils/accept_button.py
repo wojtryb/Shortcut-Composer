@@ -9,7 +9,7 @@ from api_krita import Krita
 class AcceptButton(QPushButton, BaseWidget):
     """Round button with a tick icon which uses provided PieStyle."""
 
-    def __init__(self, style: PieStyle, parent: QWidget):
+    def __init__(self, style: PieStyle, parent: QWidget) -> None:
         QPushButton.__init__(self, Krita.get_icon("dialog-ok"), "", parent)
 
         self._style = style
