@@ -26,23 +26,23 @@ class TransformModeActions:
 
     def __init__(self) -> None:
         self._finder = TransformModeFinder()
-        self._actions: Dict[str, QWidgetAction] = {}
+        self._actions: Dict[TransformMode, QWidgetAction] = {}
 
     def create_actions(self, window) -> None:
         """Create krita actions which activate new tools."""
         _ACTION_MAP = {
-            "Transform tool: free": self.set_free,
-            "Transform tool: perspective": self.set_perspective,
-            "Transform tool: warp": self.set_warp,
-            "Transform tool: cage": self.set_cage,
-            "Transform tool: liquify": self.set_liquify,
-            "Transform tool: mesh": self.set_mesh,
+            TransformMode.FREE: self.set_free,
+            TransformMode.PERSPECTIVE: self.set_perspective,
+            TransformMode.WARP: self.set_warp,
+            TransformMode.CAGE: self.set_cage,
+            TransformMode.LIQUIFY: self.set_liquify,
+            TransformMode.MESH: self.set_mesh,
         }
 
-        for action_name, implementation in _ACTION_MAP.items():
-            self._actions[action_name] = Krita.create_action(
+        for action, implementation in _ACTION_MAP.items():
+            self._actions[action] = Krita.create_action(
                 window=window,
-                name=action_name,
+                name=action.value,
                 callback=implementation
             )
 

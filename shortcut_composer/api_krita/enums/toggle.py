@@ -26,6 +26,7 @@ class Toggle(Enum):
     - `SNAP_ASSISTANT`
     - `SNAP_TO_GRID`
     """
+
     ERASER = "erase_action"
     PRESERVE_ALPHA = "preserve_alpha"
     MIRROR_CANVAS = "mirror_canvas"

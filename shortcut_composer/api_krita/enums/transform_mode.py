@@ -15,14 +15,14 @@ class TransformMode(Enum):
 
     Example usage: `Tool.FREEHAND_BRUSH`
 
-    Available tools:
-    - `TRANSFORM_FREE`
-    - `TRANSFORM_PERSPECTIVE`
-    - `TRANSFORM_WARP`
-    - `TRANSFORM_CAGE`
-    - `TRANSFORM_LIQUIFY`
-    - `TRANSFORM_MESH`
-"""
+    Available modes:
+    - `FREE`
+    - `PERSPECTIVE`
+    - `WARP`
+    - `CAGE`
+    - `LIQUIFY`
+    - `MESH`
+    """
 
     FREE = "Transform tool: free"
     PERSPECTIVE = "Transform tool: perspective"
@@ -32,16 +32,18 @@ class TransformMode(Enum):
     MESH = "Transform tool: mesh"
 
     def activate(self) -> None:
+        """Use krita action created by TransformModeActions to set mode."""
         Api.instance().action(self.value).trigger()
 
     @property
     def button_name(self) -> str:
+        """Return name of the button related to the mode."""
         return _BUTTONS_MAP[self]
 
     @property
     def icon(self) -> QIcon:
-        """Return the icon of this tool."""
-        icon_name = _ICON_NAME_MAP.get(self, "edit-delete")
+        """Return the icon of this transform mode."""
+        icon_name = _ICON_NAME_MAP[self]
         return Api.instance().icon(icon_name)
 
 
@@ -53,6 +55,7 @@ _ICON_NAME_MAP = {
     TransformMode.LIQUIFY: "transform_icons_liquify_main",
     TransformMode.MESH: "transform_icons_mesh",
 }
+"""Maps the TransformMode Tools to their icons."""
 
 _BUTTONS_MAP = {
     TransformMode.FREE: "freeTransformButton",

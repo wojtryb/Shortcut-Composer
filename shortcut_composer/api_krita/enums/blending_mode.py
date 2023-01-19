@@ -141,6 +141,7 @@ class BlendingMode(Enum):
     - `REFLECT`
     - `REFLECT_FREEZE`
     """
+
     NORMAL = "normal"
     ADD = "add"
     BURN = "burn"
