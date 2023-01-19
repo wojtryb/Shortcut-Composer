@@ -2,45 +2,22 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import List, Optional
-from enum import Enum
 
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QPaintEvent, QDragMoveEvent, QDragEnterEvent
-from PyQt5.QtWidgets import QPushButton
-
-from api_krita import Krita
 from api_krita.pyqt import Painter, AnimatedWidget
 from composer_utils import Config
 from .pie_style import PieStyle
 from .label import Label
 from .label_widget import LabelWidget
-from .widget_utils import WidgetHolder, PiePainter, CirclePoints
+from .widget_utils import (
+    WidgetHolder,
+    CirclePoints,
+    AcceptButton,
+    PiePainter,
+    EditMode,
+)
 from .label_widget_utils import create_label_widget
-
-
-class EditMode:
-    def __get__(self, obj, _):
-        return obj._edit_mode
-
-    def __set__(self, obj: 'PieWidget', mode_to_set: bool):
-        if not mode_to_set and obj._edit_mode:
-            self._write_settings(obj)
-
-        obj._edit_mode = mode_to_set
-        if mode_to_set:
-            obj.accept_button.show()
-        else:
-            obj.accept_button.hide()
-
-    def _write_settings(self, obj: 'PieWidget'):
-        if not obj.labels or obj._related_config is None:
-            return
-
-        values = [widget.label.value for widget in obj.widget_holder]
-        if isinstance(values[0], Enum):
-            obj._related_config.write(Config.format_enums(values))
-        else:
-            obj._related_config.write('\t'.join(values))
 
 
 class PieWidget(AnimatedWidget):
@@ -76,25 +53,13 @@ class PieWidget(AnimatedWidget):
         self.labels = labels
         self.children_widgets = self._create_children_holder()
         self.widget_holder = self._put_children_in_holder()
-        self._edit_mode = False
         self._circle_points: CirclePoints
 
         size = self._style.widget_radius*2
         self.setGeometry(0, 0, size, size)
 
-        self.accept_button = QPushButton(Krita.get_icon("dialog-ok"), "", self)
-        self.accept_button.hide()
-        radius = round(self.deadzone*0.9)
-        self.accept_button.setGeometry(
-            self._center.x() - radius,
-            self._center.y() - radius,
-            radius*2,
-            radius*2)
-        self.accept_button.setStyleSheet(f"""
-            border-radius: {radius};
-            background-color : green;
-            qproperty-iconSize: {round(radius*1.5)}px;
-        """)
+        self.accept_button = AcceptButton(self._style, self)
+        self.accept_button.move_center(self._center)
         self.accept_button.clicked.connect(self.hide)
 
         self.setAcceptDrops(True)
@@ -106,11 +71,6 @@ class PieWidget(AnimatedWidget):
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setStyleSheet("background: transparent;")
         self.setCursor(Qt.CrossCursor)
-
-    @property
-    def _center(self) -> QPoint:
-        """Return point with center widget's point in its coordinates."""
-        return QPoint(self.size().width()//2, self.size().height()//2)
 
     @property
     def center_global(self) -> QPoint:
@@ -125,10 +85,6 @@ class PieWidget(AnimatedWidget):
     def hide(self):
         self.edit_mode = False
         super().hide()
-
-    def move_center(self, new_center: QPoint) -> None:
-        """Move the widget by providing a new center point."""
-        self.move(new_center-self._center)  # type: ignore
 
     def paintEvent(self, event: QPaintEvent) -> None:
         """Paint the entire widget using the Painter wrapper."""

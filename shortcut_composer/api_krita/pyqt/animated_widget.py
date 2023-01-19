@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QWidget
+from PyQt5.QtCore import QPoint
 
 from .timer import Timer
 
@@ -12,18 +13,27 @@ class AnimatedWidget(QWidget):
         self._animation_interval = self._read_animation_interval()
         self._animation_timer = Timer(self._increase_opacity, 17)
 
-    def _increase_opacity(self):
-        """Add interval to current opacity, stop the timer when full."""
-        current_opacity = self.windowOpacity()
-        self.setWindowOpacity(current_opacity+self._animation_interval)
-        if current_opacity >= 1:
-            self._animation_timer.stop()
+    @property
+    def _center(self) -> QPoint:
+        """Return point with center widget's point in its coordinates."""
+        return QPoint(self.size().width()//2, self.size().height()//2)
+
+    def move_center(self, new_center: QPoint) -> None:
+        """Move the widget by providing a new center point."""
+        self.move(new_center-self._center)  # type: ignore
 
     def show(self):
         """Decrease opacity to 0, and start a timer which animates it."""
         self.setWindowOpacity(0)
         self._animation_timer.start()
         super().show()
+
+    def _increase_opacity(self):
+        """Add interval to current opacity, stop the timer when full."""
+        current_opacity = self.windowOpacity()
+        self.setWindowOpacity(current_opacity+self._animation_interval)
+        if current_opacity >= 1:
+            self._animation_timer.stop()
 
     def _read_animation_interval(self):
         """Return how much opacity (0-1) should be increased on each frame."""
