@@ -125,6 +125,7 @@ class PieValuesTab(QWidget):
         ]
         for widget in self.widgets:
             layout.addWidget(widget)
+        layout.addStretch()
         self.setLayout(layout)
 
     def apply(self) -> None:
@@ -165,8 +166,8 @@ class PieValues(QWidget):
         control_layout.addWidget(add_button)
         control_layout.addWidget(remove_button)
 
-        layout.addWidget(self.list_widget)
         layout.addLayout(control_layout)
+        layout.addWidget(self.list_widget)
 
         self.setLayout(layout)
 
@@ -179,6 +180,12 @@ class PieValues(QWidget):
         self.list_widget.insertItem(current_row+1, value)
         self.list_widget.clearSelection()
         self.list_widget.setCurrentRow(current_row+1)
+        self._adjust_height()
+
+    def _adjust_height(self):
+        heigth = self.list_widget.count()+1
+        heigth *= self.list_widget.sizeHintForRow(1)
+        self.list_widget.setMaximumHeight(heigth)
 
     def remove(self):
         selected = self.list_widget.selectedIndexes()
@@ -190,6 +197,7 @@ class PieValues(QWidget):
             first_deleted_row = min([item.row() for item in selected])
             self.list_widget.clearSelection()
             self.list_widget.setCurrentRow(first_deleted_row-1)
+        self._adjust_height()
 
     def apply(self):
         texts = []
@@ -201,3 +209,4 @@ class PieValues(QWidget):
         self.list_widget.clear()
         currently_set: str = self.config.read()
         self.list_widget.addItems(currently_set.split(";"))
+        self._adjust_height()
