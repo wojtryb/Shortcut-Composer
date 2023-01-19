@@ -58,16 +58,16 @@ class ActionValues(QWidget):
         return layout
 
     def add(self):
-        for item in self.available_list.selected:
+        for value in self.available_list.selected:
             self.current_list.insert(
                 position=self.current_list.current_row,
-                value=item.text(),
+                value=value,
             )
-            self.available_list.remove(name=item.text(),)
+            self.available_list.remove(value=value,)
 
     def remove(self):
-        selected = [item.text() for item in self.current_list.selected]
         self.current_list.remove_selected()
+        selected = self.current_list.selected
         new_available = set(self.available_list.get_all()) | set(selected)
         self.available_list.clear()
         self.available_list.addItems(sorted(new_available))
