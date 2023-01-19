@@ -24,6 +24,7 @@ class PieManager:
 
     def __init__(self, widget: PieWidget) -> None:
         self._widget = widget
+        self._holder = self._widget.widget_holder
         self._timer = Timer(self._track_angle, Config.get_sleep_time())
         self._animator = LabelAnimator(widget)
 
@@ -47,14 +48,13 @@ class PieManager:
         """Block a thread contiguously setting an active label."""
         cursor = QCursor().pos()
         if self._circle.distance(cursor) < self._widget.deadzone:
-            widget = None
-        else:
-            angle = self._circle.angle_from_point(cursor)
-            widget = self._widget.widget_holder.from_angle(round(angle))
-        self._set_active_widget(widget)
+            return self._set_active_widget(None)
+
+        angle = self._circle.angle_from_point(cursor)
+        self._set_active_widget(self._holder.on_angle(angle))
 
     def _set_active_widget(self, widget: Optional[LabelWidget]):
         """Mark label as active and start animating the change."""
-        if self._widget.widget_holder.active != widget:
-            self._widget.widget_holder.active = widget
+        if self._holder.active != widget:
+            self._holder.active = widget
             self._animator.start()
