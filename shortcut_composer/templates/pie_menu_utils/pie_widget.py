@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List
+from typing import List, Optional
+from enum import Enum
 
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QPaintEvent, QDragMoveEvent, QDragEnterEvent
@@ -23,11 +24,24 @@ class EditMode:
         return obj._edit_mode
 
     def __set__(self, obj: 'PieWidget', mode_to_set: bool):
+        if not mode_to_set and obj._edit_mode:
+            self._write_settings(obj)
+
         obj._edit_mode = mode_to_set
         if mode_to_set:
             obj.accept_button.show()
         else:
             obj.accept_button.hide()
+
+    def _write_settings(self, obj: 'PieWidget'):
+        if not obj.labels or obj._related_config is None:
+            return
+
+        values = [widget.label.value for widget in obj.widget_holder]
+        if isinstance(values[0], Enum):
+            obj._related_config.write(Config.format_enums(values))
+        else:
+            obj._related_config.write(';'.join(values))
 
 
 class PieWidget(AnimatedWidget):
@@ -53,12 +67,14 @@ class PieWidget(AnimatedWidget):
         self,
         style: PieStyle,
         labels: List[Label],
+        related_config: Optional[Config],
         parent=None
     ):
         super().__init__(parent, Config.PIE_ANIMATION_TIME.read())
 
         self._style = style
         self.labels = labels
+        self._related_config = related_config
         self.children_widgets = self._create_children_holder()
         self.widget_holder = self._put_children_in_holder()
         self._edit_mode = False
