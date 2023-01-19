@@ -10,31 +10,8 @@ from PyQt5.QtGui import QFont, QPixmap, QColor, QIcon, QFontDatabase
 from PyQt5.QtWidgets import QLabel, QWidget
 
 from api_krita.pyqt import Painter, Text, PixmapTransform
+from .animation_progress import AnimationProgress
 from .pie_style import PieStyle
-
-
-class AnimationProgress:
-    def __init__(self, speed_scale: float = 1.0, steep: float = 1.0) -> None:
-        self._value = 0
-        self._speed = 0.07*speed_scale/steep
-        self._steep = steep
-
-    def up(self):
-        difference = (1+self._steep-self._value) * self._speed
-        self._value = min(self._value + difference, 1)
-
-    def down(self):
-        difference = (self._value+self._steep) * self._speed
-        self._value = max(self._value - difference, 0)
-
-    def read(self):
-        return self._value
-
-    def reset(self):
-        self._value = 0
-
-    def __bool__(self):
-        return bool(self._value)
 
 
 @dataclass
@@ -62,7 +39,7 @@ class Label:
     display_value: Union[QPixmap, QIcon, Text, None] = None
 
     def __post_init__(self):
-        self.activation_progress = AnimationProgress()
+        self.activation_progress = AnimationProgress(speed_scale=1, steep=1)
 
     def get_painter(self, widget: QWidget, style: PieStyle) -> 'LabelPainter':
         """Return LabelPainter which can display this label."""

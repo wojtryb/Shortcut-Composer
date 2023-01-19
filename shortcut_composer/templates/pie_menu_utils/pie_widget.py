@@ -127,11 +127,11 @@ class PieWidget(AnimatedWidget):
     def _paint_active_pie(self, painter: Painter) -> None:
         """Paint a pie representing active label if there is one."""
         for label in self.labels:
-            if not label.activation_progress:
+            if not label.activation_progress.value:
                 continue
 
             thickness_addition = round(
-                0.15 * label.activation_progress.read()
+                0.15 * label.activation_progress.value
                 * self._style.area_thickness)
 
             painter.paint_pie(
@@ -142,7 +142,7 @@ class PieWidget(AnimatedWidget):
                 color=self._overlay_colors(
                     base=self._style.active_color_dark,
                     over=self._style.active_color,
-                    opacity=label.activation_progress.read()),
+                    opacity=label.activation_progress.value),
                 thickness=self._style.area_thickness + thickness_addition,
             )
 
