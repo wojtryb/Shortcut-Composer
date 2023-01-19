@@ -5,6 +5,7 @@ from typing import Union, Any, Type, TypeVar, List
 from enum import Enum
 
 from api_krita import Krita
+from api_krita.enums import Tool, BlendingMode
 
 T = TypeVar('T', bound=Type[Enum])
 
@@ -25,6 +26,11 @@ class Config(Enum):
     - `TAG_RED` = "★ My Favorites"
     - `TAG_GREEN` = "RGBA"
     - `TAG_BLUE` = "Erasers"
+    - `BLENDING_MODES_VALUES` = ...
+    - `MISC_TOOLS_VALUES` = ...
+    - `SELECTION_TOOLS_VALUES` = ...
+    - `TRANSFORM_MODES_VALUES` = ...
+
 
     Each field can:
     - return its default value
@@ -47,9 +53,10 @@ class Config(Enum):
     TAG_GREEN = "Tag (green)"
     TAG_BLUE = "Tag (blue)"
 
-    MISC_TOOLS = "Misc tools"
-    SELECTION_TOOLS = "Selection tools"
-    BLENDING_MODES = "Blending modes"
+    BLENDING_MODES_VALUES = "Blending modes values"
+    MISC_TOOLS_VALUES = "Misc tools values"
+    SELECTION_TOOLS_VALUES = "Selection tools values"
+    TRANSFORM_MODES_VALUES = "Transform modes values"
 
     @property
     def default(self) -> Union[float, int]:
@@ -90,6 +97,10 @@ class Config(Enum):
         return round(1000/fps_limit) if fps_limit else 1
 
 
+def _format_enums(enums: List[Enum]):
+    return ";".join([enum.name for enum in enums])
+
+
 _defaults = {
     Config.SHORT_VS_LONG_PRESS_TIME: 0.3,
     Config.TRACKER_SENSITIVITY_SCALE: 1.0,
@@ -104,10 +115,35 @@ _defaults = {
     Config.TAG_GREEN: "RGBA",
     Config.TAG_BLUE: "Erasers",
 
-    Config.MISC_TOOLS: "CROP;REFERENCE;GRADIENT;MULTI_BRUSH;ASSISTANTS",
-    Config.SELECTION_TOOLS: "FREEHAND_SELECTION;RECTANGULAR_SELECTION;"
-                            "CONTIGUOUS_SELECTION",
-    Config.BLENDING_MODES: "NORMAL;OVERLAY;COLOR;MULTIPLY;ADD;SCREEN;"
-                           "DARKEN;LIGHTEN",
+    Config.SELECTION_TOOLS_VALUES: _format_enums([
+        Tool.FREEHAND_SELECTION,
+        Tool.RECTANGULAR_SELECTION,
+        Tool.CONTIGUOUS_SELECTION,
+    ]),
+    Config.MISC_TOOLS_VALUES: _format_enums([
+        Tool.CROP,
+        Tool.REFERENCE,
+        Tool.GRADIENT,
+        Tool.MULTI_BRUSH,
+        Tool.ASSISTANTS,
+    ]),
+    Config.BLENDING_MODES_VALUES: _format_enums([
+        BlendingMode.NORMAL,
+        BlendingMode.OVERLAY,
+        BlendingMode.COLOR,
+        BlendingMode.MULTIPLY,
+        BlendingMode.ADD,
+        BlendingMode.SCREEN,
+        BlendingMode.DARKEN,
+        BlendingMode.LIGHTEN,
+    ]),
+    Config.TRANSFORM_MODES_VALUES: _format_enums([
+        Tool.TRANSFORM_FREE,
+        Tool.TRANSFORM_PERSPECTIVE,
+        Tool.TRANSFORM_WARP,
+        Tool.TRANSFORM_CAGE,
+        Tool.TRANSFORM_LIQUIFY,
+        Tool.TRANSFORM_MESH,
+    ])
 }
 """Maps default values to config fields."""

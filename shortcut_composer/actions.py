@@ -94,7 +94,8 @@ def create_actions() -> List[ComplexAction]: return [
         name="Cycle selection tools",
         controller=controllers.ToolController(),
         default_value=Tool.FREEHAND_BRUSH,
-        values=Config.SELECTION_TOOLS.read_as_enums(Tool),  # type: ignore
+        values=Config.SELECTION_TOOLS_VALUES.read_as_enums(
+            Tool),  # type: ignore
     ),
 
     # Control undo and redo actions by sliding the cursor horizontally
@@ -182,7 +183,7 @@ def create_actions() -> List[ComplexAction]: return [
     templates.PieMenu(
         name="Pick misc tools",
         controller=controllers.ToolController(),
-        values=Config.MISC_TOOLS.read_as_enums(Tool),
+        values=Config.MISC_TOOLS_VALUES.read_as_enums(Tool),
         pie_radius_scale=0.9
     ),
 
@@ -192,21 +193,14 @@ def create_actions() -> List[ComplexAction]: return [
         name="Pick painting blending modes",
         controller=controllers.BlendingModeController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        values=Config.BLENDING_MODES.read_as_enums(BlendingMode)
+        values=Config.BLENDING_MODES_VALUES.read_as_enums(BlendingMode)
     ),
 
     # Pick one of the transform tool modes.
     templates.PieMenu(
         name="Pick transform tool modes",
         controller=controllers.ToolController(),
-        values=[
-            Tool.TRANSFORM_FREE,
-            Tool.TRANSFORM_PERSPECTIVE,
-            Tool.TRANSFORM_WARP,
-            Tool.TRANSFORM_CAGE,
-            Tool.TRANSFORM_LIQUIFY,
-            Tool.TRANSFORM_MESH,
-        ],
+        values=Config.TRANSFORM_MODES_VALUES.read_as_enums(Tool)
     ),
 
     # Use pie menu to pick one of presets from tag specified in settings.
