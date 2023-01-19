@@ -12,20 +12,22 @@ The plugin adds new shortcuts of the following types:
 
 [![PIE MENUS - introducing Shortcut Composer](http://img.youtube.com/vi/hrjBycVYFZM/0.jpg)](https://www.youtube.com/watch?v=hrjBycVYFZM "PIE MENUS - introducing Shortcut Composer")
 
-## What's new in v1.0.1
-Fixes following issues:
-- Fix displaying inactive presets and tags
-- Detect and support light krita theme, switch between them when changed
-- PieWidget as popup - pies no longer recognized by OS as windows
-- Allow different parameters for each configuration value
-- Use default font to fix MacOS helvetica issue
-- Allow using actions when active layer is locked
-- Work around krita bug: zoom being dependent on document dpi
+## What's new in v1.1.0
+### Added
+- Edit mode for PieMenus - click or drag the value icon to enter it. While in edit mode, the values can be dragged across the PieMenu to change their order.
+- Action values tab in Configure Shortcut Composer for adding and removing values in PieMenus and MultipleAssignment actions.
+- PieValues backtrounds are now animated.
+
+### Fixed
+- Allow scrolling through masks while using layey mouse trackers  
+- Make sure that presets in PieMenu are displayed only once.
+- Allow using "Enclose and fill" tool
+- Fix icon of "Colorize Mask" tool
 
 ## Requirements
-Shortcut Composer **v1.0.1** Requires krita **5.1.0** or later.
+Shortcut Composer **v1.1.0** Requires krita **5.1.0** or later.
 
-Supported operating systems:
+OS support state:
 - [x] Windows 10/11
 - [x] Linux
 - [ ] MacOS (Known bug of canvas losing focus after using PieMenu)
@@ -42,6 +44,8 @@ While Shortcut-Composer is highly configurable and extendable, the add-on comes 
 
 ### (`Pie menus`):
 Pie menu is a widget displayed on the canvas while a key is pressed. It will disappear as soon, as the key is released. Moving cursor in a direction of a icon, activates its value on key release. **The action does not recognise mouse clicks, and only requires hovering**. Pie menu does nothing if the cursor is not moved out of the deadzone.
+
+Dragging a value enters `Edit mode` in which the keyboard button no longer needs to be pressed. In this mode values can be dragged accross the widget to change their order. When done, press the tick button to apply the changes. 
 
 - ### Pick brush presets (red, green, blue)
   Three color coded pie menus that let you pick a **brush preset** from related **tag** with brush presets. Used tags can be changed in **Tools > Scripts > Configure Shortcut Composer**. Default tag mapping is as follows:
@@ -158,6 +162,16 @@ Shortcut-Composer comes with a settings dialog available from krita topbar: **To
   - `Pie icon global scale` - Global scale factor for icons of every pie menu.
   - `Pie deadzone global scale` - Global scale factor for the deadzone area of every pie menu.
   - `Pie animation time` - Time (in seconds) for fade-in animation when showing the pie menu.
+
+### Changing the values in Pie menus and Multiple assignments
+**Configure Shortcut Composer** has a separate tab called `Action values` in which you can add new values to some of the actions, as well as remove those that are not needed.
+
+Action to modify can be selected using the combobox on the top.
+
+Values are added by selecting the list value(s) on the left and pressing the green **add** button. Analogically, selecting values on the right, and pressing the **remove** button, removes the values from action.
+
+Dragging values on the right, allow to change their order. This can also be done using the `Edit mode` directly from the PieMenu (does not apply to MultipleAssignments) 
+
 
 ### Modifying actions and creating custom ones
 While the settings dialog allows to tweak the values common for plugin actions, it does not allow to modify the behaviour of the actions or create new ones.
