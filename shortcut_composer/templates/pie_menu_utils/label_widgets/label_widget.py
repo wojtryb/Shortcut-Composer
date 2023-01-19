@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QWidget
 from ..pie_style import PieStyle
 from ..label import Label
 
-from PyQt5.QtGui import QDrag, QPixmap
+from PyQt5.QtGui import QDrag, QPixmap, QMouseEvent
 from api_krita.pyqt import PixmapTransform
 
 
@@ -29,9 +29,21 @@ class LabelWidget(QWidget):
         size = self._style.icon_radius*2
         self.setGeometry(0, 0, size, size)
 
-    def mouseMoveEvent(self, e):
+    @property
+    def center(self) -> QPoint:
+        """Return point with center widget's point in its coordinates."""
+        return QPoint(self._style.icon_radius, self._style.icon_radius)
+
+    def move_to_label(self) -> None:
+        """Move the widget by providing a new center point."""
+        self.move(self.label.center-self.center)  # type: ignore
+
+    def mousePressEvent(self, e: QMouseEvent) -> None:
         if e.buttons() != Qt.LeftButton:
             return
+
+        self.label.activation_progress.set(1)
+        self._parent.repaint()
 
         drag = QDrag(self)
         drag.setMimeData(QMimeData())
@@ -42,11 +54,6 @@ class LabelWidget(QWidget):
 
         drag.exec_(Qt.MoveAction)
 
-    @property
-    def center(self) -> QPoint:
-        """Return point with center widget's point in its coordinates."""
-        return QPoint(self._style.icon_radius, self._style.icon_radius)
-
-    def move_to_label(self) -> None:
-        """Move the widget by providing a new center point."""
-        self.move(self.label.center-self.center)  # type: ignore
+    def mouseReleaseEvent(self, e: QMouseEvent) -> None:
+        self.label.activation_progress.set(0)
+        return super().mouseReleaseEvent(e)
