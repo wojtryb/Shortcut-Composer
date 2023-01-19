@@ -86,6 +86,7 @@ class Tool(Enum):
     TEXT = "SvgTextTool"
     ELLIPSE = "KritaShape/KisToolEllipse"
     FILL = "KritaFill/KisToolFill"
+    ENCLOSE_AND_FILL = "KisToolEncloseAndFill"
     BEZIER_SELECTION = "KisToolSelectPath"
     DYNAMIC_BRUSH = "KritaShape/KisToolDyna"
     RECTANGLE = "KritaShape/KisToolRectangle"
@@ -175,6 +176,7 @@ _ICON_NAME_MAP = {
     Tool.TEXT: "draw-text",
     Tool.ELLIPSE: "krita_tool_ellipse",
     Tool.FILL: "krita_tool_color_fill",
+    Tool.ENCLOSE_AND_FILL: "krita_tool_enclose_and_fill",
     Tool.BEZIER_SELECTION: "tool_path_selection",
     Tool.DYNAMIC_BRUSH: "krita_tool_dyna",
     Tool.RECTANGLE: "krita_tool_rectangle",
@@ -183,7 +185,7 @@ _ICON_NAME_MAP = {
     Tool.EDIT_SHAPES: "shape_handling",
     Tool.ELIPTICAL_SELECTION: "tool_elliptical_selection",
     Tool.SMART_PATCH: "krita_tool_smart_patch",
-    Tool.COLORIZE_MASK: "colorizeMask",
+    Tool.COLORIZE_MASK: "krita_tool_lazybrush",
     Tool.SIMILAR_COLOR_SELECTION: "tool_similar_selection",
     Tool.ZOOM: "tool_zoom",
     Tool.MAGNETIC_SELECTION: "tool_magnetic_selection",
