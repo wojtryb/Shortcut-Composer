@@ -68,7 +68,7 @@ class TextLabelWidget(LabelWidget):
 
     @property
     def _font(self) -> QFont:
-        """Return font which to use in pyqt label."""
+        """Return font to use in pyqt label."""
         font = QFontDatabase.systemFont(QFontDatabase.TitleFont)
         font.setPointSize(self._style.font_size)
         font.setBold(True)

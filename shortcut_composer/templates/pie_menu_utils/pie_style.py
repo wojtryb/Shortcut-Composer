@@ -103,3 +103,4 @@ class PieStyle:
         "Darwin": 0.6,
         "": 0.25,
     }
+    """Scale to fix different font sizes each OS.."""

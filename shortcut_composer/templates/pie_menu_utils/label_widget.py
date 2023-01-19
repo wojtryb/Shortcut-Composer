@@ -31,11 +31,9 @@ class LabelWidget(BaseWidget):
         self.move_center(self.label.center)
 
     def mousePressEvent(self, e: QMouseEvent) -> None:
+        """Initiate a drag loop for this Widget, so Widgets can be swapped."""
         if e.buttons() != Qt.LeftButton:
             return
-
-        self.label.activation_progress.set(1)
-
         drag = QDrag(self)
         drag.setMimeData(QMimeData())
 
@@ -44,7 +42,3 @@ class LabelWidget(BaseWidget):
         drag.setPixmap(PixmapTransform.make_pixmap_round(pixmap))
 
         drag.exec_(Qt.MoveAction)
-
-    def mouseReleaseEvent(self, e: QMouseEvent) -> None:
-        self.label.activation_progress.set(0)
-        return super().mouseReleaseEvent(e)

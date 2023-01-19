@@ -17,7 +17,7 @@ from ..config import Config
 from .value_list import ValueList
 
 
-class PieValues(QWidget):
+class ActionValues(QWidget):
     def __init__(self, allowed_values: Set[str], config: Config) -> None:
         super().__init__()
         layout = QHBoxLayout()

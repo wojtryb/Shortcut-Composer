@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from .general_settings_tab import GeneralSettingsTab
-from .pie_values_tab import PieValuesTab
+from .action_values_tab import ActionValuesTab
 
 
-__all__ = ["GeneralSettingsTab", "PieValuesTab"]
+__all__ = ["GeneralSettingsTab", "ActionValuesTab"]
