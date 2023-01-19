@@ -3,9 +3,9 @@
 
 from typing import List, Optional
 
-from PyQt5.QtCore import Qt, QPoint
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPaintEvent, QDragMoveEvent, QDragEnterEvent
-from api_krita.pyqt import Painter, AnimatedWidget, MovableWidget
+from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
 from composer_utils import Config
 from .pie_style import PieStyle
 from .label import Label
@@ -20,7 +20,7 @@ from .widget_utils import (
 from .label_widget_utils import create_label_widget
 
 
-class PieWidget(AnimatedWidget, MovableWidget):
+class PieWidget(AnimatedWidget, BaseWidget):
     """
     PyQt5 widget with icons on ring that can be selected by hovering.
 
@@ -29,12 +29,18 @@ class PieWidget(AnimatedWidget, MovableWidget):
     - hide() - hides the widget
     - repaint() - updates widget display after its data was changed
 
-    Overrides paintEvent(QPaintEvent) which tells how the widget looks
+    Contains children widgets that are draggable. When one of the
+    children is dragged, the widget enters the edit mode. That can be
+    used by whoever controls this widget to handle it differently.
 
-    - Paints the widget: its base, and active pie and deadzone indicator
-    - Wraps Labels with LabelWidgets which activated, paint them
-    - Extends widget interface to allow moving the widget on screen by
-      providing the widget center.
+    Stores the values in three forms:
+    - Labels: contain bare data
+    - LabelWidgets: widget children displaying a single Label
+    - LabelHolder: container of all LabelWidgets that operate on angles
+
+    Makes changes to LabelHolder when one of children is dragged.
+    When the widget is hidden while in the edit mode, changes made to
+    the LabelHolder are saved in the related configuration.
     """
 
     edit_mode = EditMode()
@@ -47,16 +53,17 @@ class PieWidget(AnimatedWidget, MovableWidget):
         parent=None
     ):
         AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())
+        self.setGeometry(0, 0, style.widget_radius*2, style.widget_radius*2)
 
         self._style = style
         self._related_config = related_config
+        self._circle_points = CirclePoints(
+            center=self.center,
+            radius=self._style.pie_radius)
+
         self.labels = labels
         self.children_widgets = self._create_children_holder()
         self.widget_holder = self._put_children_in_holder()
-        self._circle_points: CirclePoints
-
-        size = self._style.widget_radius*2
-        self.setGeometry(0, 0, size, size)
 
         self.accept_button = AcceptButton(self._style, self)
         self.accept_button.move_center(self.center)
@@ -84,16 +91,16 @@ class PieWidget(AnimatedWidget, MovableWidget):
     def paintEvent(self, event: QPaintEvent) -> None:
         """Paint the entire widget using the Painter wrapper."""
         with Painter(self, event) as painter:
-            PiePainter(painter, self.labels, self._style)
+            PiePainter(painter, self.labels, self._style, self.edit_mode)
 
     def dragEnterEvent(self, e: QDragEnterEvent) -> None:
+        """Start edit mode when one of the draggable children gets dragged."""
         self.edit_mode = True
-        self._circle_points = CirclePoints(
-            center=self.center,
-            radius=self._style.pie_radius)
+        self.repaint()
         e.accept()
 
     def dragMoveEvent(self, e: QDragMoveEvent) -> None:
+        """Swap children during drag when mouse is moved to another zone."""
         pos = e.pos()
         source_widget = e.source()
 
@@ -101,6 +108,7 @@ class PieWidget(AnimatedWidget, MovableWidget):
                 or not isinstance(source_widget, LabelWidget)):
             return e.accept()
 
+        # NOTE: This computation is too heavy to be done on each call
         angle = self._circle_points.angle_from_point(pos)
         widget = self.widget_holder.on_angle(angle)
         if widget == source_widget:
@@ -118,14 +126,11 @@ class PieWidget(AnimatedWidget, MovableWidget):
         return children
 
     def _put_children_in_holder(self) -> WidgetHolder:
+        """Create WidgetHolder which manages child widgets angles."""
         children = self.children_widgets
-        center = QPoint(self._style.widget_radius, self._style.widget_radius)
-        circle_points = CirclePoints(
-            center=center,
-            radius=self._style.pie_radius)
-
-        angle_iterator = circle_points.iterate_over_circle(len(children))
+        angle_iterator = self._circle_points.iterate_over_circle(len(children))
         label_holder = WidgetHolder()
+
         for child, (angle, point) in zip(children, angle_iterator):
             child.label.angle = angle
             child.label.center = point

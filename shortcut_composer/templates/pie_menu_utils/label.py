@@ -17,7 +17,7 @@ from composer_utils import Config
 @dataclass
 class Label:
     """
-    Paintable representation of value in PieWidget.
+    Data representing a single value in PieWidget.
 
     - `value` -- Value to set using the controller
     - `center -- Label position in widget coordinates
