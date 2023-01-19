@@ -6,13 +6,23 @@ if TYPE_CHECKING:
 
 
 class EditMode:
+    """
+    Descriptor that handles the edit mode of PieWidget.
+
+    When red from, it returns a bool telling whether the Pie is in edit mode.
+    When mode is changed, changes the Pie's components to reflect that.
+    Whe edit mode is turned off, saves the current values to settings.
+    """
+
     def __init__(self) -> None:
         self._edit_mode = False
 
-    def __get__(self, *_):
+    def __get__(self, *_) -> bool:
+        """Return whether the Pie is in edit mode"""
         return self._edit_mode
 
     def __set__(self, obj: 'PieWidget', mode_to_set: bool):
+        """Update the mode and change Pie's content accordingly."""
         if not mode_to_set and self._edit_mode:
             self._write_settings(obj)
 
@@ -23,11 +33,12 @@ class EditMode:
             obj.accept_button.hide()
 
     def _write_settings(self, obj: 'PieWidget'):
-        if not obj.labels or obj._related_config is None:
+        """If values were not hardcoded, but from config, write them back."""
+        if not obj.labels or obj.config_to_write_back is None:
             return
 
         values = [widget.label.value for widget in obj.widget_holder]
         if isinstance(values[0], Enum):
-            obj._related_config.write(Config.format_enums(values))
+            obj.config_to_write_back.write(Config.format_enums(values))
         else:
-            obj._related_config.write('\t'.join(values))
+            obj.config_to_write_back.write('\t'.join(values))

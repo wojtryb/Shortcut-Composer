@@ -49,14 +49,14 @@ class PieWidget(AnimatedWidget, BaseWidget):
         self,
         style: PieStyle,
         labels: List[Label],
-        related_config: Optional[Config],
+        config_to_write_back: Optional[Config] = None,
         parent=None
     ):
         AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())
         self.setGeometry(0, 0, style.widget_radius*2, style.widget_radius*2)
 
         self._style = style
-        self._related_config = related_config
+        self.config_to_write_back = config_to_write_back
         self._circle_points = CirclePoints(
             center=self.center,
             radius=self._style.pie_radius)

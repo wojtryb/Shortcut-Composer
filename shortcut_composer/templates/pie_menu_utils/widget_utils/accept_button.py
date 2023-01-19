@@ -27,7 +27,6 @@ class AcceptButton(QPushButton, BaseWidget):
                 border-radius: {self.radius}px;
                 border-style: outset;
                 background: {self._color_to_str(self._style.background_color)};
-                padding: 5px;
                 qproperty-iconSize:{round(self.radius*1.5)}px;
             ]
             QPushButton:hover [
