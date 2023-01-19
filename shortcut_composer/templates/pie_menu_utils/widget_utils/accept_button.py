@@ -1,12 +1,13 @@
 from PyQt5.QtWidgets import QWidget, QPushButton
 from PyQt5.QtCore import QPoint
 from ..pie_style import PieStyle
+from api_krita.pyqt import MovableWidget
 from api_krita import Krita
 
 
-class AcceptButton(QPushButton):
+class AcceptButton(QPushButton, MovableWidget):
     def __init__(self, style: PieStyle, parent: QWidget):
-        super().__init__(Krita.get_icon("dialog-ok"), "", parent)
+        QPushButton.__init__(self, Krita.get_icon("dialog-ok"), "", parent)
 
         self._style = style
         self.hide()
