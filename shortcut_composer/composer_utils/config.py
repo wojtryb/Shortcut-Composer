@@ -1,10 +1,12 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Union, Any
+from typing import Union, Any, Type, TypeVar, List
 from enum import Enum
 
 from api_krita import Krita
+
+T = TypeVar('T', bound=Type[Enum])
 
 
 class Config(Enum):
@@ -40,9 +42,14 @@ class Config(Enum):
     PIE_ICON_GLOBAL_SCALE = "Pie icon global scale"
     PIE_DEADZONE_GLOBAL_SCALE = "Pie deadzone global scale"
     PIE_ANIMATION_TIME = "pie animation time"
+
     TAG_RED = "Tag (red)"
     TAG_GREEN = "Tag (green)"
     TAG_BLUE = "Tag (blue)"
+
+    MISC_TOOLS = "Misc tools"
+    SELECTION_TOOLS = "Selection tools"
+    BLENDING_MODES = "Blending modes"
 
     @property
     def default(self) -> Union[float, int]:
@@ -64,6 +71,11 @@ class Config(Enum):
             name=self.value,
             value=value
         )
+
+    def read_as_enums(self, enum: T) -> List[T]:
+        value_string: str = self.read()
+        values_list = value_string.split(";")
+        return [enum[value] for value in values_list]
 
     @staticmethod
     def reset_defaults() -> None:
@@ -87,8 +99,15 @@ _defaults = {
     Config.PIE_ICON_GLOBAL_SCALE: 1.0,
     Config.PIE_DEADZONE_GLOBAL_SCALE: 1.0,
     Config.PIE_ANIMATION_TIME: 0.2,
+
     Config.TAG_RED: "★ My Favorites",
     Config.TAG_GREEN: "RGBA",
     Config.TAG_BLUE: "Erasers",
+
+    Config.MISC_TOOLS: "CROP;REFERENCE;GRADIENT;MULTI_BRUSH;ASSISTANTS",
+    Config.SELECTION_TOOLS: "FREEHAND_SELECTION;RECTANGULAR_SELECTION;"
+                            "CONTIGUOUS_SELECTION",
+    Config.BLENDING_MODES: "NORMAL;OVERLAY;COLOR;MULTIPLY;ADD;SCREEN;"
+                           "DARKEN;LIGHTEN",
 }
 """Maps default values to config fields."""
