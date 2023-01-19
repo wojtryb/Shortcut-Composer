@@ -76,12 +76,12 @@ class PieValues(QWidget):
         texts = []
         for row in range(self.current_list.count()):
             texts.append(self.current_list.item(row).text())
-        self.config.write(";".join(texts))
+        self.config.write("\t".join(texts))
 
     def refresh(self):
         self.current_list.clear()
         currently_set: str = self.config.read()
-        self.current_list.addItems(currently_set.split(";"))
+        self.current_list.addItems(currently_set.split("\t"))
 
         self.available_list.clear()
         allowed_items = sorted(self.allowed_values - set(currently_set))

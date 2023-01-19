@@ -98,12 +98,12 @@ class Config(Enum):
 
     def read_as_enums(self, enum: Type[T]) -> List[T]:
         value_string: str = self.read()
-        values_list = value_string.split(";")
+        values_list = value_string.split("\t")
         return [enum[value] for value in values_list]
 
     @staticmethod
     def format_enums(enums: List[Enum]) -> str:
-        return ";".join([enum.name for enum in enums])
+        return "\t".join([enum.name for enum in enums])
 
     @staticmethod
     def read_presets(tag: 'Config', presets: 'Config') -> List[str]:
@@ -111,7 +111,7 @@ class Config(Enum):
             tag_presets = database.get_preset_names_from_tag(tag.read())
 
         preset_string: str = presets.read()
-        preset_order = preset_string.split(";")
+        preset_order = preset_string.split("\t")
         preset_order = [p for p in preset_order if p in tag_presets]
 
         missing = [p for p in tag_presets if p not in preset_order]

@@ -41,7 +41,7 @@ class EditMode:
         if isinstance(values[0], Enum):
             obj._related_config.write(Config.format_enums(values))
         else:
-            obj._related_config.write(';'.join(values))
+            obj._related_config.write('\t'.join(values))
 
 
 class PieWidget(AnimatedWidget):
