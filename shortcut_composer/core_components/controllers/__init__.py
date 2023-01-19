@@ -19,7 +19,7 @@ Available controllers:
     - `CanvasRotationController`
     - `CanvasZoomController`
     - `ToggleController`
-    - `LayerCreateWithBlendingController`
+    - `CreateLayerWithBlendingController`
 """
 
 from .document_controllers import (
@@ -41,7 +41,7 @@ from .node_controllers import (
     LayerBlendingModeController,
     LayerVisibilityController,
     LayerOpacityController,
-    LayerCreateWithBlendingController,
+    CreateLayerWithBlendingController,
 )
 from .core_controllers import (
     ToggleController,
@@ -65,5 +65,5 @@ __all__ = [
     "ToolController",
     "UndoController",
     "FlowController",
-    "LayerCreateWithBlendingController",
+    "CreateLayerWithBlendingController",
 ]

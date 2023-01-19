@@ -217,7 +217,7 @@ def create_actions() -> List[ComplexAction]: return [
     # Use pie menu to create painting layer with one of the layer blending modes.
     templates.PieMenu(
         name="Create painting layer with blending mode",
-        controller=controllers.LayerCreateWithBlendingController(),
+        controller=controllers.CreateLayerWithBlendingController(),
         values=[
             BlendingMode.NORMAL,
             BlendingMode.ERASE,
