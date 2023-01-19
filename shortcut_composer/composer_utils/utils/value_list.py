@@ -12,6 +12,12 @@ from PyQt5.QtWidgets import (
 
 
 class ValueList(QListWidget):
+    """
+    List widget with multiselection and convenience methods.
+
+    When movable, elements of list can be reordered with drag and drop.
+    """
+
     def __init__(self, movable: bool, parent: Optional[QWidget] = None):
         super().__init__(parent)
         self.horizontalScrollBar().setStyleSheet("QScrollBar {height:0px;}")
@@ -21,38 +27,41 @@ class ValueList(QListWidget):
             self.setDragDropMode(QAbstractItemView.InternalMove)
 
     @property
-    def current_row(self):
+    def current_row(self) -> int:
+        """Return selected row id, or the last id if none is selected."""
         if not self.selectedIndexes():
             return self.count()
         return self.currentRow()
 
+    @property
+    def selected(self) -> List[str]:
+        """Return a list of all selected string values."""
+        selected = self.selectedIndexes()
+        indices = [item.row() for item in selected]
+        items = [self.item(index) for index in indices]
+        return [item.text() for item in items]
+
     def insert(self, position: int, value: str):
+        """Add new string `value` after the item at given `position`."""
         self.insertItem(position+1, value)
         self.clearSelection()
         self.setCurrentRow(position+1)
 
     def get_all(self):
+        """Get list of all the strings in the list."""
         items: List[str] = []
         for i in range(self.count()):
             items.append(self.item(i).text())
         return items
 
-    @property
-    def selected(self):
-        selected = self.selectedIndexes()
-        return [self.item(item.row()) for item in selected]
-
-    def remove(self, name: str):
-        for item in self.findItems(name, Qt.MatchExactly):
-            self.takeItem(self.row(item))
+    def remove(self, value: str):
+        """Remove strings by passed value and select the previous one."""
+        for item in self.findItems(value, Qt.MatchExactly):
+            index = self.row(item)
+            self.takeItem(index)
+            self.setCurrentRow(index-1)
 
     def remove_selected(self):
-        selected = self.selectedIndexes()
-        indices = [item.row() for item in selected]
-        for index in sorted(indices, reverse=True):
-            self.takeItem(index)
-
-        if selected:
-            first_deleted_row = min([item.row() for item in selected])
-            self.clearSelection()
-            self.setCurrentRow(first_deleted_row-1)
+        """Remove all the selected values."""
+        for item in self.selected:
+            self.remove(item)
