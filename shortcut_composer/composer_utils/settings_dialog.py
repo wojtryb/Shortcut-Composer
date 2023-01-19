@@ -12,11 +12,11 @@ from PyQt5.QtGui import QCursor
 from api_krita import Krita
 from .config import Config
 from .layouts import ButtonsLayout
-from .tabs import GeneralSettingsTab, PieValuesTab
+from .tabs import GeneralSettingsTab, ActionValuesTab
 
 
 class SettingsDialog(QDialog):
-    """Dialog which allows to change global settings of the plugin."""
+    """Dialog which allows to configure plugin elements."""
 
     def __init__(self) -> None:
         super().__init__()
@@ -26,7 +26,7 @@ class SettingsDialog(QDialog):
 
         self._tab_dict = {
             "General": GeneralSettingsTab(),
-            "Pie values": PieValuesTab(),
+            "Action values": ActionValuesTab(),
         }
         tab_holder = QTabWidget()
         for name, tab in self._tab_dict.items():

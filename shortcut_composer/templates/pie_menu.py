@@ -26,6 +26,8 @@ class PieMenu(ComplexAction, Generic[T]):
     - Widget is displayed under the cursor between key press and release
     - Moving mouse in a direction of a value activates in on key release
     - When the mouse was not moved past deadzone, value is not changed
+    - Dragging values activates edit mode in which pie does not hide
+    - Applying the changes in edit mode, saves its values to settings
 
     ### Arguments:
 
@@ -35,12 +37,12 @@ class PieMenu(ComplexAction, Generic[T]):
     - `values`        -- list of values compatibile with controller to cycle
     - `instructions`  -- (optional) list of additional instructions to
                          perform on key press and release
-    - `short_vs_long_press_time` -- (optional) time [s] that specifies
-                                    if key press is short or long
     - `pie_radius_scale`  -- (optional) widget size multiplier
     - `icon_radius_scale` -- (optional) icons size multiplier
     - `background_color`  -- (optional) rgba color of background
     - `active_color`      -- (optional) rgba color of active pie
+    - `short_vs_long_press_time` -- (optional) time [s] that specifies
+                                    if key press is short or long
 
     ### Action implementation example:
 
@@ -68,8 +70,6 @@ class PieMenu(ComplexAction, Generic[T]):
     - Creating the PieWidget - and PieManager which displays it
     - Starting and stopping the PieManager on key press and release
     - Creating Labels - paintable representations of handled values
-    - Storing created labels in LabelHolder which allows to fetch them
-      by the angle on a pie
     - Setting a value on key release when the deadzone was reached
     """
 

@@ -14,7 +14,7 @@ from ..label import Label
 
 @dataclass
 class PiePainter:
-    """Uses provided painter and parts of widget data to paint it."""
+    """Uses provided painter and parts of widget information to paint it."""
 
     painter: Painter
     labels: List[Label]
@@ -52,7 +52,9 @@ class PiePainter:
         )
 
     def _paint_base_wheel(self) -> None:
-        """Paint a base circle and low opacity background to trick Windows."""
+        """Paint a base circle."""
+        # NOTE: Windows10 does not treat the transparent center as part
+        # of the widget, so a low opacity circle allows to trick it.
         self.painter.paint_wheel(
             center=self._center,
             outer_radius=self.style.no_border_radius,
@@ -75,7 +77,7 @@ class PiePainter:
         )
 
     def _paint_active_pie(self) -> None:
-        """Paint a pie representing active label if there is one."""
+        """Paint a pie behind a label which is active or during animation."""
         for label in self.labels:
             if not label.activation_progress.value:
                 continue
@@ -94,7 +96,13 @@ class PiePainter:
             )
 
     def _pick_pie_color(self, label: Label) -> QColor:
-        """Pick color of pie based on widget mode and animation progress."""
+        """
+        Pick color of pie based on widget mode and animation progress.
+
+        In edit mode color is different to create visual distinction.
+        Two similar colors are merged with animated opacity to
+        distinguish two consequtive pies from each other.
+        """
         if not self.edit_mode:
             return self._overlay_colors(
                 self.style.active_color_dark,
@@ -107,6 +115,7 @@ class PiePainter:
 
     @staticmethod
     def _overlay_colors(base: QColor, over: QColor, opacity: float) -> QColor:
+        """Merge two colors by overlaying one on another with given opacity."""
         opacity_negation = 1-opacity
         return QColor(
             round(base.red()*opacity_negation + over.red()*opacity),

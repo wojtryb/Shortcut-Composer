@@ -25,6 +25,7 @@ class Label:
                  counted clockwise with 0 being the top of widget
     - `display_value` -- `value` representation to display. Can be
                          either a colored text or an image
+    - `activation_progress` -- state of animation in range <0-1>
     """
 
     value: Any
@@ -36,6 +37,7 @@ class Label:
         self.activation_progress = AnimationProgress(speed_scale=1, steep=1)
 
     def swap_locations(self, other: 'Label') -> None:
+        """Change position data with information Label."""
         self.angle, other.angle = other.angle, self.angle
         self.center, other.center = other.center, self.center
 
@@ -49,7 +51,9 @@ class AnimationProgress:
 
     Animation state can be altered with `up()` and `down()` methods.
     The change is the fastest when the animation starts, and then slows
-    down near the end (controlled by `steep` argument)
+    down near the end (controlled by `steep` argument).
+
+    There is a `reset()` method to cancel the animation immediatelly.
     """
 
     def __init__(self, speed_scale: float = 1.0, steep: float = 1.0) -> None:
@@ -69,9 +73,9 @@ class AnimationProgress:
 
     @property
     def value(self) -> float:
-        """Get current state of animation. Is in range <0-1>."""
+        """Get current state of animation. It ss in range <0-1>."""
         return self._value
 
-    def set(self, value: float) -> None:
-        """Arbitralily set a value"""
-        self._value = value
+    def reset(self) -> None:
+        """Arbitralily set a value to 0"""
+        self._value = 0

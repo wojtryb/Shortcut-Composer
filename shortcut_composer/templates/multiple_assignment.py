@@ -104,4 +104,4 @@ class MultipleAssignment(ComplexAction, Generic[T]):
 
     def _read_default_value(self, value: Optional[T]) -> T:
         """Read value from controller if it was not given."""
-        return value if value else self._controller.default_value
+        return value if value is not None else self._controller.default_value

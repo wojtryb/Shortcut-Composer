@@ -26,18 +26,25 @@ class Config(Enum):
     - `TAG_RED` = "★ My Favorites"
     - `TAG_GREEN` = "RGBA"
     - `TAG_BLUE` = "Erasers"
+    - `TAG_RED_VALUES` = ...
+    - `TAG_GREEN_VALUES` = ...
+    - `TAG_BLUE_VALUES` = ...
     - `BLENDING_MODES_VALUES` = ...
     - `MISC_TOOLS_VALUES` = ...
     - `SELECTION_TOOLS_VALUES` = ...
     - `TRANSFORM_MODES_VALUES` = ...
 
-
     Each field can:
     - return its default value
-    - read current value from krita config file
+    - read current value from krita config file in correct type
     - write given value to krita config file
 
     Class holds a staticmethod which resets all config files.
+
+    VALUES configs are string representations of lists. They hold values
+    to use in given action with elements separated with tabulators.
+    These are needed to be further parsed using TagConfigValues or
+    EnumConfigValues.
     """
 
     SHORT_VS_LONG_PRESS_TIME = "Short vs long press time"

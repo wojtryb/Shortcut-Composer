@@ -7,12 +7,10 @@ from ..label_widget import LabelWidget
 
 class WidgetHolder:
     """
-    Holds LabelWidgets and allows fetching them using their angle.
+    Holds LabelWidgets and in relation to their angles on PieWidget.
 
-    Allows one of them to be active, but does not handle this attribute
-    by itself.
-
-    Allows iterating over LabelWidgets (default) and over angles (angles())
+    Holds which of them is active (One of them None), but does not
+    handle this attribute by itself - this is done by PieManager.
     """
 
     def __init__(self):
@@ -40,14 +38,14 @@ class WidgetHolder:
         return self._widgets[closest]
 
     def angle(self, widget: LabelWidget) -> int:
-        """Return an angle of passed LabelWidget."""
+        """Return at which angle angle is the given LabelWidget."""
         for angle, held_widget in self._widgets.items():
             if widget == held_widget:
                 return angle
         raise ValueError(f"{widget} not in holder.")
 
     def swap(self, _a: LabelWidget, _b: LabelWidget) -> None:
-        """Swap data and actions on which two LabelWidgets are held."""
+        """Swap two LabelWidgets that are already in the holder."""
         _a.label.swap_locations(_b.label)
         key_a, key_b = self.angle(_a), self.angle(_b)
         self._widgets[key_a], self._widgets[key_b] = _b, _a
