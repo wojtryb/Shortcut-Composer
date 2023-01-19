@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Set
+from typing import Set, Optional
 
 from PyQt5.QtWidgets import (
     QAbstractItemView,
@@ -146,9 +146,7 @@ class PieValues(QWidget):
         self.allowed_values = sorted(allowed_values)
         self.config = config
 
-        self.list_widget = QListWidget(self)
-        self.list_widget.setDragDropMode(QAbstractItemView.InternalMove)
-        self.list_widget.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.list_widget = ValueList(self)
 
         self.combo_box = QComboBox()
         self.combo_box.addItems(self.allowed_values)
@@ -159,7 +157,7 @@ class PieValues(QWidget):
 
         remove_button = QPushButton(Krita.get_icon("deletelayer"), "")
         remove_button.setFixedWidth(40)
-        remove_button.clicked.connect(self.remove)
+        remove_button.clicked.connect(self.list_widget.remove_selected)
 
         control_layout = QHBoxLayout()
         control_layout.addWidget(self.combo_box)
@@ -172,32 +170,10 @@ class PieValues(QWidget):
         self.setLayout(layout)
 
     def add(self):
-        if not self.list_widget.selectedIndexes():
-            current_row = self.list_widget.count()
-        else:
-            current_row = self.list_widget.currentRow()
-        value = self.combo_box.currentText()
-        self.list_widget.insertItem(current_row+1, value)
-        self.list_widget.clearSelection()
-        self.list_widget.setCurrentRow(current_row+1)
-        self._adjust_height()
-
-    def _adjust_height(self):
-        heigth = self.list_widget.count()+1
-        heigth *= self.list_widget.sizeHintForRow(1)
-        self.list_widget.setMaximumHeight(heigth)
-
-    def remove(self):
-        selected = self.list_widget.selectedIndexes()
-        indices = [item.row() for item in selected]
-        for index in sorted(indices, reverse=True):
-            self.list_widget.takeItem(index)
-
-        if selected:
-            first_deleted_row = min([item.row() for item in selected])
-            self.list_widget.clearSelection()
-            self.list_widget.setCurrentRow(first_deleted_row-1)
-        self._adjust_height()
+        self.list_widget.insert(
+            position=self.list_widget.current_row,
+            value=self.combo_box.currentText()
+        )
 
     def apply(self):
         texts = []
@@ -209,4 +185,39 @@ class PieValues(QWidget):
         self.list_widget.clear()
         currently_set: str = self.config.read()
         self.list_widget.addItems(currently_set.split(";"))
-        self._adjust_height()
+        self.list_widget.adjust_height()
+
+
+class ValueList(QListWidget):
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
+        super().__init__(parent)
+        self.setDragDropMode(QAbstractItemView.InternalMove)
+        self.setSelectionMode(QAbstractItemView.ExtendedSelection)
+
+    @property
+    def current_row(self):
+        if not self.selectedIndexes():
+            return self.count()
+        return self.currentRow()
+
+    def insert(self, position: int, value: str):
+        self.insertItem(position+1, value)
+        self.clearSelection()
+        self.setCurrentRow(position+1)
+        self.adjust_height()
+
+    def remove_selected(self):
+        selected = self.selectedIndexes()
+        indices = [item.row() for item in selected]
+        for index in sorted(indices, reverse=True):
+            self.takeItem(index)
+
+        if selected:
+            first_deleted_row = min([item.row() for item in selected])
+            self.clearSelection()
+            self.setCurrentRow(first_deleted_row-1)
+        self.adjust_height()
+
+    def adjust_height(self):
+        heigth = (self.count()+1) * self.sizeHintForRow(1)
+        self.setMaximumHeight(heigth)
