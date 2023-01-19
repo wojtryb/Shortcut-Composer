@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import List
+from copy import copy
 
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QColor, QPaintEvent
@@ -126,17 +127,19 @@ class PieWidget(AnimatedWidget):
 
     def _paint_active_pie(self, painter: Painter) -> None:
         """Paint a pie representing active label if there is one."""
-        if not self.labels.active:
-            return
-
-        painter.paint_pie(
-            center=self.center,
-            outer_radius=self._style.no_border_radius,
-            angle=self.labels.active.angle,
-            span=360//len(self._label_painters),
-            color=self._style.active_color,
-            thickness=self._style.area_thickness,
-        )
+        for label in self.labels:
+            if label.bg_opacity <= 0:
+                continue
+            color = copy(self._style.active_color)
+            color.setAlphaF(label.bg_opacity)
+            painter.paint_pie(
+                center=self.center,
+                outer_radius=self._style.no_border_radius,
+                angle=label.angle,
+                span=360//len(self._label_painters),
+                color=color,
+                thickness=self._style.area_thickness,
+            )
 
     def _create_label_painters(self) -> List[LabelPainter]:
         """Wrap all labels with LabelPainter which can paint it."""
