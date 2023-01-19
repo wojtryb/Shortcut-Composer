@@ -12,11 +12,10 @@ from api_krita import Krita
 from api_krita.pyqt import Painter, AnimatedWidget
 from composer_utils import Config
 from .pie_style import PieStyle
-from .widget_holder import WidgetHolder
 from .label import Label
-from .pie_painter import PiePainter
-from .label_widgets import LabelWidget, create_label_widget
-from .circle_points import CirclePoints
+from .label_widget import LabelWidget
+from .widget_utils import WidgetHolder, PiePainter, CirclePoints
+from .label_widget_utils import create_label_widget
 
 
 class EditMode:
@@ -73,8 +72,8 @@ class PieWidget(AnimatedWidget):
         super().__init__(parent, Config.PIE_ANIMATION_TIME.read())
 
         self._style = style
-        self.labels = labels
         self._related_config = related_config
+        self.labels = labels
         self.children_widgets = self._create_children_holder()
         self.widget_holder = self._put_children_in_holder()
         self._edit_mode = False

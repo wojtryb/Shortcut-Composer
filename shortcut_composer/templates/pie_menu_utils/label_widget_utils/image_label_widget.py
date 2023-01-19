@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import QWidget
 from api_krita.pyqt import Painter, PixmapTransform
 from ..pie_style import PieStyle
 from ..label import Label
-from .label_widget import LabelWidget
+from ..label_widget import LabelWidget
 
 
 class ImageLabelWidget(LabelWidget):

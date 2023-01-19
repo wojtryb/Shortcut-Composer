@@ -3,16 +3,14 @@
 
 """Implementation of PieMenu."""
 
-from .circle_points import CirclePoints
-from .widget_holder import WidgetHolder
+from .label_widget import LabelWidget
 from .pie_manager import PieManager
 from .pie_widget import PieWidget
 from .pie_style import PieStyle
 from .label import Label
 
 __all__ = [
-    "CirclePoints",
-    "WidgetHolder",
+    "LabelWidget",
     "PieManager",
     "PieWidget",
     "PieStyle",
