@@ -13,6 +13,18 @@ from api_krita.pyqt import Painter, Text, PixmapTransform
 from .pie_style import PieStyle
 
 
+class ClippedFloatDescriptor:
+    def __set_name__(self, owner, name: str):
+        self._name = "_" + name
+        setattr(owner, self._name, 0)
+
+    def __get__(self, obj, *_):
+        return getattr(obj, self._name)
+
+    def __set__(self, obj, value: float):
+        setattr(obj, self._name, sorted((0, value, 1))[1])
+
+
 @dataclass
 class Label:
     """
@@ -36,7 +48,7 @@ class Label:
     center: QPoint = QPoint(0, 0)
     angle: int = 0
     display_value: Union[QPixmap, QIcon, Text, None] = None
-    bg_opacity: float = 0
+    activation_progress = ClippedFloatDescriptor()
 
     def get_painter(self, widget: QWidget, style: PieStyle) -> 'LabelPainter':
         """Return LabelPainter which can display this label."""

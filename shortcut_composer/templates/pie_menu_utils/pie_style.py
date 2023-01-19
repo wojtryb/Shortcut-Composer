@@ -37,6 +37,11 @@ class PieStyle:
         self.icon_radius_scale = icon_radius_scale
         self.background_color = self._pick_background_color(background_color)
         self.active_color = active_color
+        self.active_dark_color = QColor(
+            round(active_color.red()*0.8),
+            round(active_color.green()*0.8),
+            round(active_color.blue()*0.8)
+        )
 
         base_size = Krita.screen_size/2560
 
