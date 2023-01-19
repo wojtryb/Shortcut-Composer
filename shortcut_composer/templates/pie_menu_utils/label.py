@@ -30,6 +30,9 @@ class AnimationProgress:
     def read(self):
         return self._value
 
+    def reset(self):
+        self._value = 0
+
     def __bool__(self):
         return bool(self._value)
 

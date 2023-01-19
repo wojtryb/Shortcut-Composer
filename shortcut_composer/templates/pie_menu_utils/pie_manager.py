@@ -38,6 +38,8 @@ class PieManager:
     def stop(self):
         """Hide the widget and stop the mouse tracking loop."""
         self._timer.stop()
+        for label in self._widget.labels:
+            label.activation_progress.reset()
         self._widget.hide()
 
     def _track_angle(self):
