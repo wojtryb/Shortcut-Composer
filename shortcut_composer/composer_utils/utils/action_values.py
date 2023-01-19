@@ -80,9 +80,10 @@ class ActionValues(QWidget):
 
     def refresh(self):
         self.current_list.clear()
-        currently_set: str = self.config.read()
-        self.current_list.addItems(currently_set.split("\t"))
+        current: str = self.config.read()
+        current_list = current.split("\t")
+        self.current_list.addItems(current_list)
 
         self.available_list.clear()
-        allowed_items = sorted(self.allowed_values - set(currently_set))
+        allowed_items = sorted(self.allowed_values - set(current_list))
         self.available_list.addItems(allowed_items)
