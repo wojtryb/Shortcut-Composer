@@ -1,12 +1,14 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from typing import List
+
 from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QColor
 
 from api_krita.pyqt import Painter
 from .pie_style import PieStyle
-from .label_holder import LabelHolder
+from .label import Label
 
 
 class PiePainter:
@@ -14,7 +16,7 @@ class PiePainter:
     def __init__(
         self,
         painter: Painter,
-        labels: LabelHolder,
+        labels: List[Label],
         style: PieStyle,
     ):
         self._painter = painter

@@ -2,11 +2,10 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Dict, Iterator, Optional
+from .label_widgets import LabelWidget
 
-from .label import Label
 
-
-class LabelHolder:
+class WidgetHolder:
     """
     Holds Labels and allows fetching them using their angle.
 
@@ -17,18 +16,18 @@ class LabelHolder:
     """
 
     def __init__(self):
-        self._labels: Dict[int, Label] = {}
-        self.active: Optional[Label] = None
+        self._widgets: Dict[int, LabelWidget] = {}
+        self.active: Optional[LabelWidget] = None
 
-    def add(self, label: Label) -> None:
+    def add(self, widget: LabelWidget) -> None:
         """Add a new label to the holder."""
-        self._labels[label.angle] = label
+        self._widgets[widget.label.angle] = widget
 
     def angles(self) -> Iterator[int]:
         """Iterate over all angles of held Labels."""
-        return iter(self._labels.keys())
+        return iter(self._widgets.keys())
 
-    def from_angle(self, angle: int) -> Label:
+    def from_angle(self, angle: int) -> LabelWidget:
         """Return Label which is the closest to given `angle`."""
 
         def angle_difference(label_angle: int):
@@ -38,21 +37,22 @@ class LabelHolder:
             return abs((raw_difference + 180) % 360 - 180)
 
         closest = min(self.angles(), key=angle_difference)
-        return self._labels[closest]
+        return self._widgets[closest]
 
-    def at(self, label: Label):
-        return [k for k, v in self._labels.items() if v == label][0]
+    def at(self, widget: LabelWidget):
+        return [k for k, v in self._widgets.items() if v == widget][0]
 
-    def swap(self, _a: Label, _b: Label):
-        _a.angle, _b.angle = _b.angle, _a.angle
-        _a.center, _b.center = _b.center, _a.center
+    def swap(self, _a: LabelWidget, _b: LabelWidget):
+        _a.label.swap_locations(_b.label)
         key_a, key_b = self.at(_a), self.at(_b)
-        self._labels[key_a], self._labels[key_b] = _b, _a
+        self._widgets[key_a], self._widgets[key_b] = _b, _a
+        _a.move_to_label()
+        _b.move_to_label()
 
-    def __iter__(self) -> Iterator[Label]:
+    def __iter__(self) -> Iterator[LabelWidget]:
         """Iterate over all held labels."""
-        return iter(self._labels.values())
+        return iter(self._widgets.values())
 
     def __len__(self) -> int:
         """Return amount of held labels."""
-        return len(self._labels)
+        return len(self._widgets)

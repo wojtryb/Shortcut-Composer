@@ -34,3 +34,7 @@ class Label:
 
     def __post_init__(self):
         self.activation_progress = AnimationProgress(speed_scale=1, steep=1)
+
+    def swap_locations(self, other: 'Label'):
+        self.angle, other.angle = other.angle, self.angle
+        self.center, other.center = other.center, self.center

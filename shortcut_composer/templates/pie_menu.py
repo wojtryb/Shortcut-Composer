@@ -4,14 +4,11 @@
 from typing import List, TypeVar, Generic, Union, Optional
 
 from PyQt5.QtGui import QColor, QPixmap, QIcon
-from PyQt5.QtCore import QPoint
 
 from api_krita.pyqt import Text
 from core_components import Controller, Instruction
 from input_adapter import ComplexAction
 from .pie_menu_utils import (
-    CirclePoints,
-    LabelHolder,
     PieManager,
     PieWidget,
     PieStyle,
@@ -102,7 +99,8 @@ class PieMenu(ComplexAction, Generic[T]):
         self._labels = self._create_labels(values)
         self._style.adapt_to_item_amount(len(self._labels))
 
-        self._pie_manager = PieManager(PieWidget(self._style, self._labels))
+        self._pie_widget = PieWidget(self._style, self._labels)
+        self._pie_manager = PieManager(self._pie_widget)
 
     def on_key_press(self) -> None:
         """Show widget under mouse and start manager which repaints it."""
@@ -114,29 +112,16 @@ class PieMenu(ComplexAction, Generic[T]):
         """Stop the widget. Set selected value if deadzone was reached."""
         super().on_every_key_release()
         self._pie_manager.stop()
-        if label := self._labels.active:
-            self._controller.set_value(label.value)
+        if widget := self._pie_widget.widget_holder.active:
+            self._controller.set_value(widget.label.value)
 
-    def _create_labels(self, values: List[T]) -> LabelHolder:
+    def _create_labels(self, values: List[T]) -> List[Label]:
         """Wrap values into paintable label objects with position info."""
         label_list = []
         for value in values:
             if icon := self._get_icon_if_possible(value):
                 label_list.append(Label(value=value, display_value=icon))
-
-        center = QPoint(self._style.widget_radius, self._style.widget_radius)
-        circle_points = CirclePoints(
-            center=center,
-            radius=self._style.pie_radius)
-        angle_iterator = circle_points.iterate_over_circle(len(label_list))
-
-        label_holder = LabelHolder()
-        for label, (angle, point) in zip(label_list, angle_iterator):
-            label.angle = angle
-            label.center = point
-            label_holder.add(label)
-
-        return label_holder
+        return label_list
 
     def _get_icon_if_possible(self, value: T) \
             -> Union[Text, QPixmap, QIcon, None]:
