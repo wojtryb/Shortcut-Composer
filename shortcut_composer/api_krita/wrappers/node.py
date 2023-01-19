@@ -37,7 +37,7 @@ class Node():
 
     def add_child_node(self, child: 'Node', above: 'Node') -> bool:
         """
-        Adds the given node in the list of children.
+        Add the given node in the list of children.
         
         Parameters:
             child - the node to be added

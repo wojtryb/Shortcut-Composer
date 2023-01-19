@@ -40,6 +40,7 @@ class Document:
     def create_node(self, name: str, node_type: NodeType) -> Node:
         """
         Create a Node.
+        
         IMPORTANT: Created node must be then added to node tree to be usable from Krita.
         For example with add_child_node() method of Node Class.
 
