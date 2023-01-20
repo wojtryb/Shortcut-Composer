@@ -33,6 +33,7 @@ class Config(Enum):
     - `MISC_TOOLS_VALUES` = ...
     - `SELECTION_TOOLS_VALUES` = ...
     - `TRANSFORM_MODES_VALUES` = ...
+    - `CREATE_BLENDING_LAYER_VALUES` = ...
 
     Each field can:
     - return its default value
@@ -68,6 +69,7 @@ class Config(Enum):
     MISC_TOOLS_VALUES = "Misc tools values"
     SELECTION_TOOLS_VALUES = "Selection tools values"
     TRANSFORM_MODES_VALUES = "Transform modes values"
+    CREATE_BLENDING_LAYER_VALUES = "Create blending layer values"
 
     @property
     def default(self) -> Union[float, int]:
@@ -139,6 +141,17 @@ _defaults = {
     ]),
     Config.BLENDING_MODES_VALUES: Config.format_enums([
         BlendingMode.NORMAL,
+        BlendingMode.OVERLAY,
+        BlendingMode.COLOR,
+        BlendingMode.MULTIPLY,
+        BlendingMode.ADD,
+        BlendingMode.SCREEN,
+        BlendingMode.DARKEN,
+        BlendingMode.LIGHTEN,
+    ]),
+    Config.CREATE_BLENDING_LAYER_VALUES: Config.format_enums([
+        BlendingMode.NORMAL,
+        BlendingMode.ERASE,
         BlendingMode.OVERLAY,
         BlendingMode.COLOR,
         BlendingMode.MULTIPLY,

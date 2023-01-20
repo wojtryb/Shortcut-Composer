@@ -5,6 +5,7 @@
 - Edit mode for PieMenus - click or drag the value icon to enter it. While in edit mode, the values can be dragged across the PieMenu to change their order.
 - Action values tab in Configure Shortcut Composer for adding and removing values in PieMenus and MultipleAssignment actions.
 - PieValues backtrounds are now animated.
+- New PieMenu to create a layer with chosen blending mode.
 
 ### Fixed
 - Allow scrolling through masks while using layey mouse trackers  

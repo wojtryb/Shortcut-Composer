@@ -9,6 +9,7 @@ from ..enums import BlendingMode
 class KritaNode(Protocol):
     """Krita `Node` object API."""
 
+    def addChildNode(self, child: 'KritaNode', above: 'KritaNode') -> bool: ...
     def name(self) -> str: ...
     def setName(self, name: str) -> None: ...
     def visible(self) -> bool: ...
@@ -33,6 +34,18 @@ class Node():
     """Wraps krita `Node` for typing, documentation and PEP8 compatibility."""
 
     node: KritaNode
+
+    def add_child_node(self, child: 'Node', above: 'Node') -> bool:
+        """
+        Add the given node in the list of children.
+        
+        Parameters:
+            child - the node to be added
+            above - the node above which this node will be placed
+        
+        Returns false if adding the node failed.
+        """
+        return self.node.addChildNode(child.node, above.node)
 
     @property
     def name(self) -> str:

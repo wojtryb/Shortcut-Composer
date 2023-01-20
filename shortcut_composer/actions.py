@@ -196,6 +196,14 @@ def create_actions() -> List[ComplexAction]: return [
         values=EnumConfigValues(Config.BLENDING_MODES_VALUES, BlendingMode),
     ),
 
+    # Use pie menu to create painting layer with selected blending mode.
+    templates.PieMenu(
+        name="Create painting layer with blending mode",
+        controller=controllers.CreateLayerWithBlendingController(),
+        values=EnumConfigValues(
+            Config.CREATE_BLENDING_LAYER_VALUES, BlendingMode),
+    ),
+
     # Pick one of the transform tool modes.
     templates.PieMenu(
         name="Pick transform tool modes",

@@ -97,6 +97,10 @@
         <activationFlags>1</activationFlags>
         </Action>
 
+        <Action name="Create painting layer with blending mode">
+        <activationFlags>1</activationFlags>
+        </Action>
+
     </Actions>
     <Actions category="Scripts">
         <text>Shortcut Composer: Utilities</text>
