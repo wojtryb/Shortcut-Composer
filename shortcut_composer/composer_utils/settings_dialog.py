@@ -63,6 +63,7 @@ class SettingsDialog(QDialog):
         """Reset all config values to defaults in krita and elements."""
         Config.reset_defaults()
         self.refresh()
+        Krita.trigger_action("Reload Shortcut Composer")
 
     def refresh(self):
         """Ask all tabs to refresh themselves. """
