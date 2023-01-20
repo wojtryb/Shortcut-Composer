@@ -66,8 +66,8 @@ class ActionValues(QWidget):
             self.available_list.remove(value=value,)
 
     def remove(self):
-        self.current_list.remove_selected()
         selected = self.current_list.selected
+        self.current_list.remove_selected()
         new_available = set(self.available_list.get_all()) | set(selected)
         self.available_list.clear()
         self.available_list.addItems(sorted(new_available))
