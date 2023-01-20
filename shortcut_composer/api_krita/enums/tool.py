@@ -131,7 +131,7 @@ _ICON_NAME_MAP = {
     Tool.POLYLINE: "polyline",
     Tool.SHAPE_SELECT: "select",
     Tool.ASSISTANTS: "krita_tool_assistant",
-    Tool.COLOR_SAMPLER: "krita_tool_color_picker",
+    Tool.COLOR_SAMPLER: "krita_tool_color_sampler",
     Tool.POLYGON: "krita_tool_polygon",
     Tool.MEASUREMENT: "krita_tool_measure",
     Tool.TEXT: "draw-text",
