@@ -85,7 +85,10 @@ class MultipleAssignment(ComplexAction, Generic[T]):
         super().on_key_press()
         if self._controller.get_value() != self._last_value:
             self._reset_iterator()
-        self._set_value(next(self._iterator))
+
+        # NOTE: When there are no values to cycle, iterator is invalid
+        if self._values_to_cycle:
+            self._set_value(next(self._iterator))
 
     def on_long_key_release(self) -> None:
         """Long releases set default value."""

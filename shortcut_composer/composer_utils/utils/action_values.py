@@ -82,6 +82,8 @@ class ActionValues(QWidget):
         self.current_list.clear()
         current: str = self.config.read()
         current_list = current.split("\t")
+        if current_list == ['']:
+            current_list = []
         self.current_list.addItems(current_list)
 
         self.available_list.clear()

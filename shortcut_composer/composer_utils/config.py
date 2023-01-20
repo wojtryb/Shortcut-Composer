@@ -72,7 +72,7 @@ class Config(Enum):
     CREATE_BLENDING_LAYER_VALUES = "Create blending layer values"
 
     @property
-    def default(self) -> Union[float, int]:
+    def default(self) -> Union[float, int, str]:
         """Return default value of the field."""
         return _defaults[self]
 

@@ -59,5 +59,7 @@ class EnumConfigValues(list):
     def __init__(self, values: Config, enum_type: Type[T]) -> None:
         self.config_to_write = values
         value_string: str = values.read()
+        if value_string == '':
+            return
         values_list = value_string.split("\t")
         self.extend([enum_type[value] for value in values_list])
