@@ -91,14 +91,14 @@ class PieMenu(ComplexAction, Generic[T]):
             instructions=instructions)
         self._controller = controller
 
+        self._labels = self._create_labels(values)
         self._style = PieStyle(
             pie_radius_scale=pie_radius_scale,
             icon_radius_scale=icon_radius_scale,
+            icons_amount=len(self._labels),
             background_color=background_color,
             active_color=active_color,
         )
-        self._labels = self._create_labels(values)
-        self._style.adapt_to_item_amount(len(self._labels))
 
         related_config = self._get_config_to_write_back(values)
         self._pie_widget = PieWidget(self._style, self._labels, related_config)

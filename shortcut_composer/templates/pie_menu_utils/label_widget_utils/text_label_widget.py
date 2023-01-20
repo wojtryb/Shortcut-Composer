@@ -53,9 +53,9 @@ class TextLabelWidget(LabelWidget):
 
         label = QLabel(self)
         label.setText(to_display.value)
-        label.setFont(self._font)
         label.setAlignment(Qt.AlignCenter)
         label.setGeometry(0, 0, round(heigth*2), round(heigth))
+        label.setFont(self._font)
         label.move(self.center.x()-heigth,
                    self.center.y()-heigth//2)
         label.setStyleSheet(f'''
@@ -70,7 +70,7 @@ class TextLabelWidget(LabelWidget):
     def _font(self) -> QFont:
         """Return font to use in pyqt label."""
         font = QFontDatabase.systemFont(QFontDatabase.TitleFont)
-        font.setPointSize(self._style.font_size)
+        font.setPointSize(round(self._style.font_multiplier*self.width()))
         font.setBold(True)
         return font
 

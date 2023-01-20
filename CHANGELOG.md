@@ -12,6 +12,7 @@
 - Make sure that presets in PieMenu are displayed only once.
 - Allow using "Enclose and fill" tool
 - Fix icon of "Colorize Mask" and "Color Sampler" tools
+- Fix scaling issues of Text labels in PieMenu
 
 ## [1.0.1] - 2023-01-09
 Fixes following issues:

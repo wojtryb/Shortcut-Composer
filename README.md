@@ -25,6 +25,7 @@ The plugin adds new shortcuts of the following types:
 - Allow using "Enclose and fill" tool
 - Fix icon of "Colorize Mask" tool
 - Fix icon of "Colorize Mask" and "Color Sampler" tools
+- Fix scaling issues of Text labels in PieMenu
 
 ## Requirements
 Shortcut Composer **v1.1.0** Requires krita **5.1.0** or later.
