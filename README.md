@@ -73,6 +73,18 @@ Dragging a value enters `Edit mode` in which the keyboard button no longer needs
   - screen,
   - darken,
   - lighten
+
+- ### Create painting layer with blending mode
+  Pie menu for creating a new layer with picked **blending mode**. Consists of most commonly used ones:
+  - normal
+  - erase
+  - overlay,
+  - color,
+  - multiply,
+  - add,
+  - screen,
+  - darken,
+  - lighten
   
 ### (`Cursor trackers`):
 Cursor tracker is an action for switching values using cursor movement, while the keyboard key is pressed. It changes a single krita property according to the cursor movement along horizontal or vertical axis. **The action does not recognise mouse clicks, and only requires hovering**
