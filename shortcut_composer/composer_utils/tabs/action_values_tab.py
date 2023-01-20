@@ -24,6 +24,10 @@ class ActionValuesTab(QWidget):
                 allowed_values=set(BlendingMode._member_names_),
                 config=Config.BLENDING_MODES_VALUES
             ),
+            "Create layer with blending": ActionValues(
+                allowed_values=set(BlendingMode._member_names_),
+                config=Config.CREATE_BLENDING_LAYER_VALUES
+            ),
             "Selection tools": ActionValues(
                 allowed_values=set(Tool._member_names_),
                 config=Config.SELECTION_TOOLS_VALUES
