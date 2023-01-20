@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from api_krita import Krita
-from api_krita.enums import BlendingMode
+from api_krita.enums import BlendingMode, NodeType
 from api_krita.pyqt import Text, Colorizer
 from ..controller_base import Controller
 
@@ -83,3 +83,25 @@ class LayerVisibilityController(NodeBasedController):
         if self.active_node.visible != visibility:
             self.active_node.visible = visibility
             self.active_document.refresh()
+
+
+class CreateLayerWithBlendingController(NodeBasedController):
+    """Creates Paint Layer with set Blending Mode."""
+
+    default_value = BlendingMode.NORMAL
+
+    def get_value(self) -> BlendingMode:
+        """Get current layer blending mode."""
+        raise NotImplementedError("Can't use this controller to get value")
+
+    def set_value(self, blending_mode: BlendingMode) -> None:
+        """Create new paint layer and set blending mode."""
+        layer = self.active_document.create_node(
+            name=str(blending_mode.value).capitalize() + " Paint Layer",
+            node_type=NodeType.PAINT_LAYER)
+        layer.blending_mode = blending_mode
+        parent = self.active_node.get_parent_node()
+        parent.add_child_node(layer, self.active_node)
+
+    def get_label(self, value: BlendingMode) -> Text:
+        return Text("+" + value.name[:3], Colorizer.blending_mode(value))

@@ -14,16 +14,17 @@ from typing import List
 
 from PyQt5.QtGui import QColor
 
-from api_krita.enums import BlendingMode, Tool, Toggle
+from api_krita.enums import BlendingMode, Tool, Toggle, TransformMode
 from core_components import instructions, controllers
 from composer_utils import Config
 from input_adapter import ComplexAction
 from data_components import (
     CurrentLayerStack,
     PickStrategy,
+    EnumConfigValues,
+    TagConfigValues,
     Slider,
     Range,
-    Tag,
 )
 infinity = float("inf")
 
@@ -94,11 +95,7 @@ def create_actions() -> List[ComplexAction]: return [
         name="Cycle selection tools",
         controller=controllers.ToolController(),
         default_value=Tool.FREEHAND_BRUSH,
-        values=[
-            Tool.FREEHAND_SELECTION,
-            Tool.RECTANGULAR_SELECTION,
-            Tool.CONTIGUOUS_SELECTION,
-        ],
+        values=EnumConfigValues(Config.SELECTION_TOOLS_VALUES, Tool),
     ),
 
     # Control undo and redo actions by sliding the cursor horizontally
@@ -186,13 +183,7 @@ def create_actions() -> List[ComplexAction]: return [
     templates.PieMenu(
         name="Pick misc tools",
         controller=controllers.ToolController(),
-        values=[
-            Tool.CROP,
-            Tool.REFERENCE,
-            Tool.GRADIENT,
-            Tool.MULTI_BRUSH,
-            Tool.ASSISTANTS,
-        ],
+        values=EnumConfigValues(Config.MISC_TOOLS_VALUES, Tool),
         pie_radius_scale=0.9
     ),
 
@@ -202,30 +193,22 @@ def create_actions() -> List[ComplexAction]: return [
         name="Pick painting blending modes",
         controller=controllers.BlendingModeController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        values=[
-            BlendingMode.NORMAL,
-            BlendingMode.OVERLAY,
-            BlendingMode.COLOR,
-            BlendingMode.MULTIPLY,
-            BlendingMode.ADD,
-            BlendingMode.SCREEN,
-            BlendingMode.DARKEN,
-            BlendingMode.LIGHTEN,
-        ],
+        values=EnumConfigValues(Config.BLENDING_MODES_VALUES, BlendingMode),
+    ),
+
+    # Use pie menu to create painting layer with selected blending mode.
+    templates.PieMenu(
+        name="Create painting layer with blending mode",
+        controller=controllers.CreateLayerWithBlendingController(),
+        values=EnumConfigValues(
+            Config.CREATE_BLENDING_LAYER_VALUES, BlendingMode),
     ),
 
     # Pick one of the transform tool modes.
     templates.PieMenu(
         name="Pick transform tool modes",
-        controller=controllers.ToolController(),
-        values=[
-            Tool.TRANSFORM_FREE,
-            Tool.TRANSFORM_PERSPECTIVE,
-            Tool.TRANSFORM_WARP,
-            Tool.TRANSFORM_CAGE,
-            Tool.TRANSFORM_LIQUIFY,
-            Tool.TRANSFORM_MESH,
-        ],
+        controller=controllers.TransformModeController(),
+        values=EnumConfigValues(Config.TRANSFORM_MODES_VALUES, TransformMode),
     ),
 
     # Use pie menu to pick one of presets from tag specified in settings.
@@ -234,7 +217,7 @@ def create_actions() -> List[ComplexAction]: return [
         name="Pick brush presets (red)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        values=Tag(Config.TAG_RED.read()),
+        values=TagConfigValues(Config.TAG_RED, Config.TAG_RED_VALUES),
         background_color=QColor(95, 65, 65, 190),
         active_color=QColor(200, 70, 70),
     ),
@@ -245,7 +228,7 @@ def create_actions() -> List[ComplexAction]: return [
         name="Pick brush presets (green)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        values=Tag(Config.TAG_GREEN.read()),
+        values=TagConfigValues(Config.TAG_GREEN, Config.TAG_GREEN_VALUES),
         background_color=QColor(65, 95, 65, 190),
         active_color=QColor(70, 200, 70),
     ),
@@ -256,7 +239,7 @@ def create_actions() -> List[ComplexAction]: return [
         name="Pick brush presets (blue)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        values=Tag(Config.TAG_BLUE.read()),
+        values=TagConfigValues(Config.TAG_BLUE, Config.TAG_BLUE_VALUES),
         background_color=QColor(70, 70, 105, 190),
         active_color=QColor(110, 160, 235),
     ),

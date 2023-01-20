@@ -29,7 +29,8 @@ class ShortcutComposer(Extension):
         - Add a callback to reload plugin when krita theme changes
         - Create complex action manager which holds and binds them to krita
         """
-        self._transform_modes = TransformModeActions(window)
+        self._transform_modes = TransformModeActions()
+        self._transform_modes.create_actions(window)
 
         self._pie_settings_dialog = SettingsDialog()
         self._reload_action = self._create_reload_action(window)

@@ -21,12 +21,6 @@ class Tool(Enum):
     - `GRADIENT`
     - `LINE`
     - `TRANSFORM`
-    - `TRANSFORM_FREE`
-    - `TRANSFORM_PERSPECTIVE`
-    - `TRANSFORM_WARP`
-    - `TRANSFORM_CAGE`
-    - `TRANSFORM_LIQUIFY`
-    - `TRANSFORM_MESH`
     - `MOVE`
     - `RECTANGULAR_SELECTION`
     - `CONTIGUOUS_SELECTION`
@@ -64,12 +58,6 @@ class Tool(Enum):
     GRADIENT = "KritaFill/KisToolGradient"
     LINE = "KritaShape/KisToolLine"
     TRANSFORM = "KisToolTransform"
-    TRANSFORM_FREE = "Transform tool: free"
-    TRANSFORM_PERSPECTIVE = "Transform tool: perspective"
-    TRANSFORM_WARP = "Transform tool: warp"
-    TRANSFORM_CAGE = "Transform tool: cage"
-    TRANSFORM_LIQUIFY = "Transform tool: liquify"
-    TRANSFORM_MESH = "Transform tool: mesh"
     MOVE = "KritaTransform/KisToolMove"
     RECTANGULAR_SELECTION = "KisToolSelectRectangular"
     CONTIGUOUS_SELECTION = "KisToolSelectContiguous"
@@ -86,6 +74,7 @@ class Tool(Enum):
     TEXT = "SvgTextTool"
     ELLIPSE = "KritaShape/KisToolEllipse"
     FILL = "KritaFill/KisToolFill"
+    ENCLOSE_AND_FILL = "KisToolEncloseAndFill"
     BEZIER_SELECTION = "KisToolSelectPath"
     DYNAMIC_BRUSH = "KritaShape/KisToolDyna"
     RECTANGLE = "KritaShape/KisToolRectangle"
@@ -115,27 +104,6 @@ class Tool(Enum):
         icon_name = _ICON_NAME_MAP.get(self, "edit-delete")
         return Api.instance().icon(icon_name)
 
-    def __eq__(self, other) -> bool:
-        """All subtools of transform tool are technically the same tool."""
-        if self in _TRANSFORMS and other in _TRANSFORMS:
-            return True
-        return Enum.__eq__(self, other)
-
-    def __hash__(self) -> int:
-        """Identify tool by its krita name."""
-        return hash(self.value)
-
-
-_TRANSFORMS = {
-    Tool.TRANSFORM,
-    Tool.TRANSFORM_FREE,
-    Tool.TRANSFORM_PERSPECTIVE,
-    Tool.TRANSFORM_WARP,
-    Tool.TRANSFORM_CAGE,
-    Tool.TRANSFORM_LIQUIFY,
-    Tool.TRANSFORM_MESH,
-}
-"""Set of all subtools that are in fact the transform tool."""
 
 _PAINTABLE = {
     Tool.FREEHAND_BRUSH,
@@ -153,12 +121,6 @@ _ICON_NAME_MAP = {
     Tool.FREEHAND_SELECTION: "tool_outline_selection",
     Tool.GRADIENT: "krita_tool_gradient",
     Tool.LINE: "krita_tool_line",
-    Tool.TRANSFORM_FREE: "krita_tool_transform",
-    Tool.TRANSFORM_PERSPECTIVE: "transform_icons_perspective",
-    Tool.TRANSFORM_WARP: "transform_icons_warp",
-    Tool.TRANSFORM_CAGE: "transform_icons_cage",
-    Tool.TRANSFORM_LIQUIFY: "transform_icons_liquify_main",
-    Tool.TRANSFORM_MESH: "transform_icons_mesh",
     Tool.MOVE: "krita_tool_move",
     Tool.RECTANGULAR_SELECTION: "tool_rect_selection",
     Tool.CONTIGUOUS_SELECTION: "tool_contiguous_selection",
@@ -169,12 +131,13 @@ _ICON_NAME_MAP = {
     Tool.POLYLINE: "polyline",
     Tool.SHAPE_SELECT: "select",
     Tool.ASSISTANTS: "krita_tool_assistant",
-    Tool.COLOR_SAMPLER: "krita_tool_color_picker",
+    Tool.COLOR_SAMPLER: "krita_tool_color_sampler",
     Tool.POLYGON: "krita_tool_polygon",
     Tool.MEASUREMENT: "krita_tool_measure",
     Tool.TEXT: "draw-text",
     Tool.ELLIPSE: "krita_tool_ellipse",
     Tool.FILL: "krita_tool_color_fill",
+    Tool.ENCLOSE_AND_FILL: "krita_tool_enclose_and_fill",
     Tool.BEZIER_SELECTION: "tool_path_selection",
     Tool.DYNAMIC_BRUSH: "krita_tool_dyna",
     Tool.RECTANGLE: "krita_tool_rectangle",
@@ -183,7 +146,7 @@ _ICON_NAME_MAP = {
     Tool.EDIT_SHAPES: "shape_handling",
     Tool.ELIPTICAL_SELECTION: "tool_elliptical_selection",
     Tool.SMART_PATCH: "krita_tool_smart_patch",
-    Tool.COLORIZE_MASK: "colorizeMask",
+    Tool.COLORIZE_MASK: "krita_tool_lazybrush",
     Tool.SIMILAR_COLOR_SELECTION: "tool_similar_selection",
     Tool.ZOOM: "tool_zoom",
     Tool.MAGNETIC_SELECTION: "tool_magnetic_selection",

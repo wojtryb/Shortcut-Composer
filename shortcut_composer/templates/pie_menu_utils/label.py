@@ -1,22 +1,23 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Union, Type, Any
+from api_krita.pyqt import Text
+from typing import Union, Any
 from dataclasses import dataclass
-from abc import ABC, abstractmethod
 
-from PyQt5.QtCore import QPoint, Qt
-from PyQt5.QtGui import QFont, QPixmap, QColor, QIcon, QFontDatabase
-from PyQt5.QtWidgets import QLabel, QWidget
+from PyQt5.QtCore import QPoint
+from PyQt5.QtGui import (
+    QPixmap,
+    QIcon,
+)
 
-from api_krita.pyqt import Painter, Text, PixmapTransform
-from .pie_style import PieStyle
+from composer_utils import Config
 
 
 @dataclass
 class Label:
     """
-    Paintable representation of value in PieWidget.
+    Data representing a single value in PieWidget.
 
     - `value` -- Value to set using the controller
     - `center -- Label position in widget coordinates
@@ -24,12 +25,7 @@ class Label:
                  counted clockwise with 0 being the top of widget
     - `display_value` -- `value` representation to display. Can be
                          either a colored text or an image
-
-    `display_value` can also be accessed using `text` and `image`
-    properties, which return None when the value does not exist or is
-    not of required type.
-
-    Label can be displayed with LabelPainter, returned by get_painter().
+    - `activation_progress` -- state of animation in range <0-1>
     """
 
     value: Any
@@ -37,138 +33,49 @@ class Label:
     angle: int = 0
     display_value: Union[QPixmap, QIcon, Text, None] = None
 
-    def get_painter(self, widget: QWidget, style: PieStyle) -> 'LabelPainter':
-        """Return LabelPainter which can display this label."""
-        if self.display_value is None:
-            raise ValueError(f"Label {self} is not valid")
+    def __post_init__(self) -> None:
+        self.activation_progress = AnimationProgress(speed_scale=1, steep=1)
 
-        painter_type: Type[LabelPainter] = {
-            QPixmap: ImageLabelPainter,
-            Text: TextLabelPainter,
-            QIcon: IconPainter,
-        }[type(self.display_value)]
-
-        return painter_type(self, widget, style)
+    def swap_locations(self, other: 'Label') -> None:
+        """Change position data with information Label."""
+        self.angle, other.angle = other.angle, self.angle
+        self.center, other.center = other.center, self.center
 
 
-@dataclass
-class LabelPainter(ABC):
-    """Displays a `label` inside of `widget` using given `style`."""
+class AnimationProgress:
+    """
+    Grants interface to track progress of two-way steep animation.
 
-    label: Label
-    widget: QWidget
-    style: PieStyle
+    Holds the state of animation as float in range <0-1> which can be
+    obtained with `value` property.
 
-    @abstractmethod
-    def paint(self, painter: Painter) -> None: """Paint a label."""
+    Animation state can be altered with `up()` and `down()` methods.
+    The change is the fastest when the animation starts, and then slows
+    down near the end (controlled by `steep` argument).
 
+    There is a `reset()` method to cancel the animation immediatelly.
+    """
 
-@dataclass
-class TextLabelPainter(LabelPainter):
-    """Displays a `label` which holds text."""
+    def __init__(self, speed_scale: float = 1.0, steep: float = 1.0) -> None:
+        self._value = 0
+        self._speed = 0.004*Config.get_sleep_time()*speed_scale
+        self._steep = steep
 
-    def __post_init__(self):
-        self._pyqt_label = self._create_pyqt_label()
+    def up(self) -> None:
+        """Increase the animation progress."""
+        difference = (1+self._steep-self._value) * self._speed
+        self._value = min(self._value + difference, 1)
 
-    def paint(self, painter: Painter):
-        """Paint a background behind a label and its border."""
-        painter.paint_wheel(
-            center=self.label.center,
-            outer_radius=self.style.icon_radius,
-            color=self.style.icon_color,
-        )
-        painter.paint_wheel(
-            center=self.label.center,
-            outer_radius=self.style.icon_radius,
-            color=self.style.border_color,
-            thickness=self.style.border_thickness,
-        )
-
-    def _create_pyqt_label(self) -> QLabel:
-        """Create and show a new Qt5 label. Does not need redrawing."""
-        to_display = self.label.display_value
-
-        if not isinstance(to_display, Text):
-            raise TypeError("Label supposed to be text.")
-
-        heigth = round(self.style.icon_radius*0.8)
-
-        label = QLabel(self.widget)
-        label.setText(to_display.value)
-        label.setFont(self._font)
-        label.setAlignment(Qt.AlignCenter)
-        label.setGeometry(0, 0, round(heigth*2), round(heigth))
-        label.move(self.label.center.x()-heigth,
-                   self.label.center.y()-heigth//2)
-        label.setStyleSheet(f'''
-            background-color:rgba({self._color_to_str(self.style.icon_color)});
-            color:rgba({self._color_to_str(to_display.color)});
-        ''')
-
-        label.show()
-        return label
+    def down(self) -> None:
+        """Decrease the animation progress."""
+        difference = (self._value+self._steep) * self._speed
+        self._value = max(self._value - difference, 0)
 
     @property
-    def _font(self) -> QFont:
-        """Return font which to use in pyqt label."""
-        font = QFontDatabase.systemFont(QFontDatabase.TitleFont)
-        font.setPointSize(self.style.font_size)
-        font.setBold(True)
-        return font
+    def value(self) -> float:
+        """Get current state of animation. It ss in range <0-1>."""
+        return self._value
 
-    @staticmethod
-    def _color_to_str(color: QColor) -> str: return f'''
-        {color.red()}, {color.green()}, {color.blue()}, {color.alpha()}'''
-
-
-@dataclass
-class ImageLabelPainter(LabelPainter):
-    """Displays a `label` which holds an image."""
-
-    def __post_init__(self):
-        self.ready_image = self._prepare_image()
-
-    def paint(self, painter: Painter):
-        """Paint a background behind a label its border, and image itself."""
-        painter.paint_wheel(
-            center=self.label.center,
-            outer_radius=self.style.icon_radius,
-            color=self.style.icon_color
-        )
-        painter.paint_wheel(
-            center=self.label.center,
-            outer_radius=self.style.icon_radius-self.style.border_thickness//2,
-            color=self.style.border_color,
-            thickness=self.style.border_thickness,
-        )
-        painter.paint_pixmap(self.label.center, self.ready_image)
-
-    def _prepare_image(self) -> QPixmap:
-        """Return image after scaling and reshaping it to circle."""
-        to_display = self.label.display_value
-
-        if not isinstance(to_display, QPixmap):
-            raise TypeError("Label supposed to be QPixmap.")
-
-        rounded_image = PixmapTransform.make_pixmap_round(to_display)
-        return PixmapTransform.scale_pixmap(
-            pixmap=rounded_image,
-            size_px=round(self.style.icon_radius*1.8)
-        )
-
-
-class IconPainter(ImageLabelPainter):
-    """Displays a `label` which holds an icon."""
-
-    def _prepare_image(self) -> QPixmap:
-        """Return icon after scaling it to fix QT_SCALE_FACTOR."""
-        to_display = self.label.display_value
-
-        if not isinstance(to_display, QIcon):
-            raise TypeError("Label supposed to be QIcon.")
-
-        size = round(self.style.icon_radius*1.1)
-        return PixmapTransform.scale_pixmap(
-            pixmap=to_display.pixmap(size, size),
-            size_px=size
-        )
+    def reset(self) -> None:
+        """Arbitralily set a value to 0"""
+        self._value = 0

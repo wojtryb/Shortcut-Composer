@@ -1,19 +1,26 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List
+from typing import List, Optional
 
-from PyQt5.QtCore import Qt, QPoint
-from PyQt5.QtGui import QColor, QPaintEvent
-
-from api_krita.pyqt import AnimatedWidget, Painter
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPaintEvent, QDragMoveEvent, QDragEnterEvent
+from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
 from composer_utils import Config
 from .pie_style import PieStyle
-from .label import LabelPainter
-from .label_holder import LabelHolder
+from .label import Label
+from .label_widget import LabelWidget
+from .widget_utils import (
+    WidgetHolder,
+    CirclePoints,
+    AcceptButton,
+    PiePainter,
+    EditMode,
+)
+from .label_widget_utils import create_label_widget
 
 
-class PieWidget(AnimatedWidget):
+class PieWidget(AnimatedWidget, BaseWidget):
     """
     PyQt5 widget with icons on ring that can be selected by hovering.
 
@@ -22,25 +29,47 @@ class PieWidget(AnimatedWidget):
     - hide() - hides the widget
     - repaint() - updates widget display after its data was changed
 
-    Overrides paintEvent(QPaintEvent) which tells how the widget looks
+    Contains children widgets that are draggable. When one of the
+    children is dragged, the widget enters the edit mode. That can be
+    used by whoever controls this widget to handle it differently.
 
-    - Paints the widget: its base, and active pie and deadzone indicator
-    - Wraps Labels with LabelPainter which activated, paint them
-    - Extends widget interface to allow moving the widget on screen by
-      providing the widget center.
+    Stores the values in three forms:
+    - Labels: contain bare data
+    - LabelWidgets: widget children displaying a single Label
+    - LabelHolder: container of all LabelWidgets that operate on angles
+
+    Makes changes to LabelHolder when one of children is dragged.
+    When the widget is hidden while in the edit mode, changes made to
+    the LabelHolder are saved in the related configuration.
     """
+
+    edit_mode = EditMode()
 
     def __init__(
         self,
-        labels: LabelHolder,
         style: PieStyle,
+        labels: List[Label],
+        config_to_write_back: Optional[Config] = None,
         parent=None
     ):
-        super().__init__(parent, Config.PIE_ANIMATION_TIME.read())
-        self.labels = labels
-        self._style = style
-        self._label_painters = self._create_label_painters()
+        AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())
+        self.setGeometry(0, 0, style.widget_radius*2, style.widget_radius*2)
 
+        self._style = style
+        self.config_to_write_back = config_to_write_back
+        self._circle_points = CirclePoints(
+            center=self.center,
+            radius=self._style.pie_radius)
+
+        self.labels = labels
+        self.children_widgets = self._create_children_holder()
+        self.widget_holder = self._put_children_in_holder()
+
+        self.accept_button = AcceptButton(self._style, self)
+        self.accept_button.move_center(self.center)
+        self.accept_button.clicked.connect(self.hide)
+
+        self.setAcceptDrops(True)
         self.setWindowFlags((
             self.windowFlags() |  # type: ignore
             Qt.Popup |
@@ -50,94 +79,63 @@ class PieWidget(AnimatedWidget):
         self.setStyleSheet("background: transparent;")
         self.setCursor(Qt.CrossCursor)
 
-        size = self._style.widget_radius*2
-        self.setGeometry(0, 0, size, size)
-
-    @property
-    def center(self) -> QPoint:
-        """Return point with center widget's point in its coordinates."""
-        return QPoint(self._style.widget_radius, self._style.widget_radius)
-
-    @property
-    def center_global(self) -> QPoint:
-        """Return point with center widget's point in screen coordinates."""
-        return self.pos() + self.center  # type: ignore
-
     @property
     def deadzone(self) -> float:
         """Return the deadzone distance."""
         return self._style.deadzone_radius
 
-    def move_center(self, new_center: QPoint) -> None:
-        """Move the widget by providing a new center point."""
-        self.move(new_center-self.center)  # type: ignore
+    def hide(self):
+        """Leave the edit mode when the widget is hidden."""
+        self.edit_mode = False
+        super().hide()
 
     def paintEvent(self, event: QPaintEvent) -> None:
         """Paint the entire widget using the Painter wrapper."""
         with Painter(self, event) as painter:
-            self._paint_deadzone_indicator(painter)
-            self._paint_base_wheel(painter)
-            self._paint_active_pie(painter)
-            self._paint_base_border(painter)
+            PiePainter(painter, self.labels, self._style, self.edit_mode)
 
-            for label_painter in self._label_painters:
-                label_painter.paint(painter)
+    def dragEnterEvent(self, e: QDragEnterEvent) -> None:
+        """Start edit mode when one of the draggable children gets dragged."""
+        self.edit_mode = True
+        self.repaint()
+        e.accept()
 
-    def _paint_base_wheel(self, painter: Painter) -> None:
-        """Paint a base circle and low opacity background to trick Windows."""
-        painter.paint_wheel(
-            center=self.center,
-            outer_radius=self._style.no_border_radius,
-            color=QColor(128, 128, 128, 1),
-        )
-        painter.paint_wheel(
-            center=self.center,
-            outer_radius=self._style.no_border_radius,
-            color=self._style.background_color,
-            thickness=self._style.area_thickness,
-        )
+    def dragMoveEvent(self, e: QDragMoveEvent) -> None:
+        """Swap children during drag when mouse is moved to another zone."""
+        pos = e.pos()
+        source_widget = e.source()
 
-    def _paint_base_border(self, painter: Painter) -> None:
-        """Paint a border on the inner edge of base circle."""
-        painter.paint_wheel(
-            center=self.center,
-            outer_radius=self._style.inner_edge_radius,
-            color=self._style.border_color,
-            thickness=self._style.border_thickness,
-        )
+        if (self._circle_points.distance(pos) < self._style.deadzone_radius
+                or not isinstance(source_widget, LabelWidget)):
+            return e.accept()
 
-    def _paint_deadzone_indicator(self, painter: Painter) -> None:
-        """Paint the circle representing deadzone, when its valid."""
-        if self.deadzone == float("inf"):
-            return
+        # NOTE: This computation is too heavy to be done on each call
+        angle = self._circle_points.angle_from_point(pos)
+        widget = self.widget_holder.on_angle(angle)
+        if widget == source_widget:
+            return e.accept()
 
-        painter.paint_wheel(
-            center=self.center,
-            outer_radius=self.deadzone,
-            color=QColor(128, 255, 128, 120),
-            thickness=1,
-        )
-        painter.paint_wheel(
-            center=self.center,
-            outer_radius=self.deadzone-1,
-            color=QColor(255, 128, 128, 120),
-            thickness=1,
-        )
+        self.widget_holder.swap(widget, source_widget)
+        self.repaint()
+        e.accept()
 
-    def _paint_active_pie(self, painter: Painter) -> None:
-        """Paint a pie representing active label if there is one."""
-        if not self.labels.active:
-            return
+    def _create_children_holder(self) -> List[LabelWidget]:
+        """Create LabelWidgets that represent the labels."""
+        children: List[LabelWidget] = []
+        for label in self.labels:
+            children.append(create_label_widget(label, self._style, self))
+        return children
 
-        painter.paint_pie(
-            center=self.center,
-            outer_radius=self._style.no_border_radius,
-            angle=self.labels.active.angle,
-            span=360//len(self._label_painters),
-            color=self._style.active_color,
-            thickness=self._style.area_thickness,
-        )
+    def _put_children_in_holder(self) -> WidgetHolder:
+        """Create WidgetHolder which manages child widgets angles."""
+        children = self.children_widgets
+        angle_iterator = self._circle_points.iterate_over_circle(len(children))
+        label_holder = WidgetHolder()
 
-    def _create_label_painters(self) -> List[LabelPainter]:
-        """Wrap all labels with LabelPainter which can paint it."""
-        return [label.get_painter(self, self._style) for label in self.labels]
+        for child, (angle, point) in zip(children, angle_iterator):
+            child.label.angle = angle
+            child.label.center = point
+            child.move_to_label()
+            label_holder.add(child)
+
+        return label_holder

@@ -73,6 +73,7 @@ class Colorizer(QColor):
 
     BLENDING_MODES_DARK = defaultdict(lambda: Color.LIGHT_GRAY, {
         BlendingMode.NORMAL: Color.WHITE,
+        BlendingMode.ERASE: Color.VIOLET,
         BlendingMode.OVERLAY: Color.RED,
         BlendingMode.SCREEN: Color.GREEN,
         BlendingMode.COLOR: Color.YELLOW,
@@ -82,6 +83,7 @@ class Colorizer(QColor):
     """Mapping of blending modes to custom colors in dark theme."""
     BLENDING_MODES_LIGHT = defaultdict(lambda: Color.DARK_GRAY, {
         BlendingMode.NORMAL: Color.BLACK,
+        BlendingMode.ERASE: Color.VIOLET,
         BlendingMode.OVERLAY: Color.RED,
         BlendingMode.SCREEN: Color.ORANGE,
         BlendingMode.COLOR: Color.VIOLET,
