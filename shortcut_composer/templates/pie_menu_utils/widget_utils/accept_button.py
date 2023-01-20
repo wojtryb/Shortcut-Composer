@@ -15,7 +15,10 @@ class AcceptButton(QPushButton, BaseWidget):
 
         self._style = style
         self.hide()
-        self.radius = int(self._style.deadzone_radius)
+        if self._style.deadzone_radius != float("inf"):
+            self.radius = int(self._style.deadzone_radius)
+        else:
+            self.radius = 1
         self.setCursor(Qt.ArrowCursor)
         self.setGeometry(
             0, 0,
