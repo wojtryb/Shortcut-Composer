@@ -86,23 +86,20 @@ class LayerVisibilityController(NodeBasedController):
 
 
 class CreateLayerWithBlendingController(NodeBasedController):
-    """
-    Creates Paint Layer with set Blending Mode.
-    """
+    """Creates Paint Layer with set Blending Mode."""
 
     default_value = BlendingMode.NORMAL
 
     def get_value(self) -> BlendingMode:
         """Get current layer blending mode."""
-        raise NotImplementedError("Can't use this controller for getting value")
+        raise NotImplementedError("Can't use this controller to get value")
 
     def set_value(self, blending_mode: BlendingMode) -> None:
         """Create new paint layer and set blending mode."""
         layer = self.active_document.create_node(
-            str(blending_mode.value).capitalize() + " Paint Layer",
-            NodeType.PAINT_LAYER)
-        if layer.blending_mode != blending_mode:
-            layer.blending_mode = blending_mode
+            name=str(blending_mode.value).capitalize() + " Paint Layer",
+            node_type=NodeType.PAINT_LAYER)
+        layer.blending_mode = blending_mode
         parent = self.active_node.get_parent_node()
         parent.add_child_node(layer, self.active_node)
 

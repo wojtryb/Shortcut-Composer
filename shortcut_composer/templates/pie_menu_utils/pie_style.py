@@ -98,9 +98,9 @@ class PieStyle:
         return QColor(75, 75, 75, 190)
 
     SYSTEM_FONT_SIZE = {
-        "Linux": 0.40,
-        "Windows": 0.25,
-        "Darwin": 0.6,
+        "Linux": 0.35,
+        "Windows": 0.22,
+        "Darwin": 0.53,
         "": 0.25,
     }
     """Scale to fix different font sizes each OS.."""
