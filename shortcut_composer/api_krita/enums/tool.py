@@ -121,6 +121,7 @@ _ICON_NAME_MAP = {
     Tool.FREEHAND_SELECTION: "tool_outline_selection",
     Tool.GRADIENT: "krita_tool_gradient",
     Tool.LINE: "krita_tool_line",
+    Tool.TRANSFORM: "krita_tool_transform",
     Tool.MOVE: "krita_tool_move",
     Tool.RECTANGULAR_SELECTION: "tool_rect_selection",
     Tool.CONTIGUOUS_SELECTION: "tool_contiguous_selection",
