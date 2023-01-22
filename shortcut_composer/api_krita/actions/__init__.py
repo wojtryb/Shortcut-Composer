@@ -2,5 +2,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from .transform_actions import TransformModeActions, TransformModeFinder
+from .color_sampler_actions import ColorSamplerOptionsFinder
 
-__all__ = ["TransformModeActions", "TransformModeFinder"]
+__all__ = ["TransformModeActions", "TransformModeFinder", "ColorSamplerOptionsFinder"]

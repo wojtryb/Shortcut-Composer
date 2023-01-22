@@ -244,6 +244,12 @@ def create_actions() -> List[ComplexAction]: return [
         active_color=QColor(110, 160, 235),
     ),
 
+    templates.PieMenu(
+        name="Pick Color Sampler Blend",
+        controller=controllers.ColorSamplerBlendController(),
+        values=[100, 95, 90, 80, 70, 60, 50, 40, 30, 20, 10, 5],
+    ),
+
     # .......................................
     # Insert your actions implementation here
     # .......................................

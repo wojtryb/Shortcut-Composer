@@ -18,20 +18,20 @@ class NodeBasedController(Controller):
 
 class LayerOpacityController(NodeBasedController):
     """
-    Gives access to active layers' `blending mode`.
+    Gives access to active layers' `opacity` in %.
 
-    - Operates on `BlendingMode`
-    - Defaults to `BlendingMode.NORMAL`
+    - Operates on `integer` in range `0 to 100`
+    - Defaults to `100`
     """
 
     default_value: int = 100
 
     def get_value(self) -> int:
-        """Get currently active blending mode."""
+        """Get current layer opacity."""
         return self.active_node.opacity
 
     def set_value(self, opacity: int) -> None:
-        """Set a passed blending mode."""
+        """Set passed layer opacity."""
         if self.active_node.opacity != opacity:
             self.active_node.opacity = opacity
             self.active_document.refresh()
@@ -42,20 +42,20 @@ class LayerOpacityController(NodeBasedController):
 
 class LayerBlendingModeController(NodeBasedController):
     """
-    Gives access to active layers' `opacity` in %.
+    Gives access to active layers' `blending mode`.
 
-    - Operates on `integer` in range `0 to 100`
-    - Defaults to `100`
+    - Operates on `BlendingMode`
+    - Defaults to `BlendingMode.NORMAL`
     """
 
     default_value = BlendingMode.NORMAL
 
     def get_value(self) -> BlendingMode:
-        """Get current brush opacity."""
+        """Get currently active blending mode."""
         return self.active_node.blending_mode
 
     def set_value(self, blending_mode: BlendingMode) -> None:
-        """Set passed brush opacity."""
+        """Set a passed blending mode."""
         if self.active_node.blending_mode != blending_mode:
             self.active_node.blending_mode = blending_mode
             self.active_document.refresh()
@@ -66,7 +66,7 @@ class LayerBlendingModeController(NodeBasedController):
 
 class LayerVisibilityController(NodeBasedController):
     """
-    Gives access to active layers' `visibility`.
+    Gives access to active layers's `visibility`.
 
     - Operates on `bool`
     - Defaults to `True`
@@ -75,11 +75,11 @@ class LayerVisibilityController(NodeBasedController):
     default_value: bool = True
 
     def get_value(self) -> bool:
-        """Get current brush opacity."""
+        """Get active layers's `visibility`."""
         return self.active_node.visible
 
     def set_value(self, visibility: bool) -> None:
-        """Set passed brush opacity."""
+        """Set active layers's `visibility`."""
         if self.active_node.visible != visibility:
             self.active_node.visible = visibility
             self.active_document.refresh()

@@ -101,6 +101,10 @@
         <activationFlags>1</activationFlags>
         </Action>
 
+        <Action name="Pick Color Sampler Blend">
+        <activationFlags>1</activationFlags>
+        </Action>
+
     </Actions>
     <Actions category="Scripts">
         <text>Shortcut Composer: Utilities</text>
