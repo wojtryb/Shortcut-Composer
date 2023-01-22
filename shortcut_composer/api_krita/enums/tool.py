@@ -121,6 +121,16 @@ _ICON_NAME_MAP = {
     Tool.FREEHAND_SELECTION: "tool_outline_selection",
     Tool.GRADIENT: "krita_tool_gradient",
     Tool.LINE: "krita_tool_line",
+<<<<<<< Updated upstream
+=======
+    Tool.TRANSFORM: "krita_tool_transform",
+    Tool.TRANSFORM_FREE: "krita_tool_transform",
+    Tool.TRANSFORM_PERSPECTIVE: "transform_icons_perspective",
+    Tool.TRANSFORM_WARP: "transform_icons_warp",
+    Tool.TRANSFORM_CAGE: "transform_icons_cage",
+    Tool.TRANSFORM_LIQUIFY: "transform_icons_liquify_main",
+    Tool.TRANSFORM_MESH: "transform_icons_mesh",
+>>>>>>> Stashed changes
     Tool.MOVE: "krita_tool_move",
     Tool.RECTANGULAR_SELECTION: "tool_rect_selection",
     Tool.CONTIGUOUS_SELECTION: "tool_contiguous_selection",
