@@ -76,8 +76,11 @@ class PieStyle:
         icon_radius: int = round(
             50 * self._base_size
             * self.icon_radius_scale
-            * Config.PIE_ICON_GLOBAL_SCALE.read()
-        )
+            * Config.PIE_ICON_GLOBAL_SCALE.read())
+            
+        if not self._icons_amount:
+            return icon_radius
+
         max_icon_size = round(self.pie_radius * math.pi / self._icons_amount)
         return min(icon_radius, max_icon_size)
 
