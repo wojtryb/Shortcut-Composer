@@ -78,7 +78,8 @@ class PieStyle:
             * self.icon_radius_scale
             * Config.PIE_ICON_GLOBAL_SCALE.read()
         )
-        max_icon_size = round(self.pie_radius * math.pi / self._icons_amount)
+        max_icon_size = round(self.pie_radius * math.pi /
+            (self._icons_amount if self._icons_amount > 0 else 1))
         return min(icon_radius, max_icon_size)
 
     def _pick_deadzone_radius(self) -> float:
