@@ -24,11 +24,12 @@ class TransformModeActions:
     Tools are available as krita actions, but not added to the toolbar.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, window) -> None:
         self._finder = TransformModeFinder()
         self._actions: Dict[TransformMode, QWidgetAction] = {}
+        self._create_actions(window)
 
-    def create_actions(self, window) -> None:
+    def _create_actions(self, window) -> None:
         """Create krita actions which activate new tools."""
         _ACTION_MAP = {
             TransformMode.FREE: self.set_free,
