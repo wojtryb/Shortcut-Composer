@@ -4,4 +4,7 @@
 from .transform_actions import TransformModeActions, TransformModeFinder
 from .color_sampler_actions import ColorSamplerOptionsFinder
 
-__all__ = ["TransformModeActions", "TransformModeFinder", "ColorSamplerOptionsFinder"]
+__all__ = ["TransformModeActions",
+           "TransformModeFinder",
+           "ColorSamplerOptionsFinder"
+           ]

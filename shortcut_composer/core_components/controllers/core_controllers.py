@@ -75,15 +75,15 @@ class ColorSamplerBlendController(Controller):
 
     def __init__(self) -> None:
         self.blend_spinbox_finder = ColorSamplerOptionsFinder()
-    
+
     def get_value(self) -> int:
         """Get current blend percentage."""
         return self.blend_spinbox_finder.get_blend()
-    
+
     def set_value(self, blend: int) -> None:
         """Set a passed blend percentage."""
         self.blend_spinbox_finder.set_blend(blend)
-    
+
     def get_label(self, value: int) -> Text:
         return Text(f"{value}%", Colorizer.percentage(value))
 

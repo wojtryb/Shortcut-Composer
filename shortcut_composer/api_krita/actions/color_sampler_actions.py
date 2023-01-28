@@ -60,7 +60,7 @@ class ColorSamplerOptionsFinder:
         """Fetch widget with Color Sampler tool options."""
         for qobj in Krita.get_active_qwindow().findChildren(QWidget):
             if qobj.objectName() == (
-                Tool.COLOR_SAMPLER.value + " option widget"):
+                    Tool.COLOR_SAMPLER.value + " option widget"):
                 return qobj  # type: ignore
         raise RuntimeError("Color Sampler options not found.")
 
@@ -71,5 +71,4 @@ class ColorSamplerOptionsFinder:
             raise RuntimeError("Could not ifnd the Blend SpinBox.")
         for qobj in blend_spinbox_list:
             if qobj.objectName() == "blend":
-                return qobj # type: ignore
-
+                return qobj  # type: ignore
