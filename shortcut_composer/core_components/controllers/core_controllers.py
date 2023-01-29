@@ -8,7 +8,8 @@ from PyQt5.QtGui import QIcon
 
 from api_krita import Krita
 from api_krita.enums import Tool, Toggle, TransformMode
-from api_krita.actions import TransformModeFinder
+from api_krita.pyqt import Text, Colorizer
+from api_krita.actions import TransformModeFinder, ColorSamplerOptionsFinder
 from ..controller_base import Controller
 
 
@@ -63,6 +64,28 @@ class TransformModeController(Controller):
 
     def get_label(self, value: Tool) -> QIcon:
         return value.icon
+
+
+class ColorSamplerBlendController(Controller):
+    """
+    Gives access to Blend option in Color Sampler tool.
+    """
+
+    default_value: int = 100
+
+    def __init__(self) -> None:
+        self.blend_spinbox_finder = ColorSamplerOptionsFinder()
+
+    def get_value(self) -> int:
+        """Get current blend percentage."""
+        return self.blend_spinbox_finder.get_blend()
+
+    def set_value(self, blend: int) -> None:
+        """Set a passed blend percentage."""
+        self.blend_spinbox_finder.set_blend(blend)
+
+    def get_label(self, value: int) -> Text:
+        return Text(f"{value}%", Colorizer.percentage(value))
 
 
 @dataclass
