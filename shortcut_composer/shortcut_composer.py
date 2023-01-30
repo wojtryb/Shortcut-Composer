@@ -29,6 +29,14 @@ class GarbageProtector:
     action_manager: ActionManager
     reload_action: QWidgetAction
 
+    def is_alive(self):
+        """Return False if the action was deleted by C++"""
+        try:
+            self.settings_action.isEnabled()
+        except RuntimeError:
+            return False
+        return True
+
 
 class ShortcutComposer(Extension):
     """Krita extension that adds complex actions invoked with keyboard."""
@@ -74,8 +82,10 @@ class ShortcutComposer(Extension):
 
     def _reload_composer(self) -> None:
         """Reload all core actions for every window."""
-        # TODO: find a way to remove protector when its window is closed
-        # to prevent C++ warning.
+        for protector in reversed(self._protectors):
+            if not protector.is_alive():
+                self._protectors.remove(protector)
+
         for protector in self._protectors:
             for action in create_actions():
                 protector.action_manager.bind_action(action)
