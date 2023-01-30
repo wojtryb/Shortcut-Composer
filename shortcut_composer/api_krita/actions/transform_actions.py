@@ -79,27 +79,30 @@ class TransformModeFinder:
     - Button used to apply the changes of transform tool
 
     As the widget do not exist during plugin intialization phase,
-    fetching the elements needs to happen at runtime.
+    fetching the elements needs to happen at runtime. If wrappers get
+    deleted by C++, the fetching may need to be done again.
     """
 
     def __init__(self) -> None:
         self._mode_buttons: Dict[TransformMode, QToolButton] = {}
-        self._initialized = False
-
         self._transform_options: QWidget
         self._apply_button: QPushButton
 
     def ensure_initialized(self, mode: TransformMode) -> None:
         """Fetch widget, apply and mode buttons if not done already."""
-        if not self._initialized:
+        try:
+            self._transform_options.size()
+            self._apply_button.size()
+        except (RuntimeError, AttributeError):
             last_tool = Krita.active_tool
             Krita.active_tool = Tool.TRANSFORM
             self._transform_options = self._fetch_transform_options()
             self._apply_button = self._fetch_apply_button()
-            self._initialized = True
             Krita.active_tool = last_tool
 
-        if mode not in self._mode_buttons:
+        try:
+            self._mode_buttons[mode].size()
+        except (RuntimeError, KeyError):
             self._mode_buttons[mode] = self._fetch_mode_button(mode)
 
     def activate_mode(self, mode: TransformMode, apply: bool) -> None:
