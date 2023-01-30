@@ -67,8 +67,7 @@ class ColorSamplerOptionsFinder:
     def _fetch_blend_spinbox(self) -> QSpinBox:
         """Fetch Color Sampler tool Blend property SpinBox widget."""
         blend_spinbox_list = self._color_sampler_options.findChildren(QSpinBox)
-        if not blend_spinbox_list:
-            raise RuntimeError("Could not ifnd the Blend SpinBox.")
         for qobj in blend_spinbox_list:
             if qobj.objectName() == "blend":
                 return qobj  # type: ignore
+        raise RuntimeError("Could not ifnd the Blend SpinBox.")
