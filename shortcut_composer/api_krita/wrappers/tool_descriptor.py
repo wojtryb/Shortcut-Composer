@@ -42,15 +42,23 @@ class ToolDescriptor:
         def __init__(self) -> None:
             """Remember the reference to toolbox krita object."""
             self.instance = Api.instance()
-            self.toolbox = self._init_toolbox()
+            self.toolbox: QWidget
 
         def find_active_tool_name(self) -> str:
             """Find and return name of currently active tool."""
+            self._ensure_toolbox()
             for qobj in self.toolbox.findChildren(QToolButton):
                 if qobj.metaObject().className() == "KoToolBoxButton":
                     if qobj.isChecked():
                         return qobj.objectName()
             raise RuntimeError("No active tool found.")
+
+        def _ensure_toolbox(self):
+            """Fetch toolbox if it was not fetched or got deleted."""
+            try:
+                self.toolbox.size()
+            except (RuntimeError, AttributeError):
+                self.toolbox = self._init_toolbox()
 
         def _init_toolbox(self) -> QWidget:
             """Find and return reference to unwrapped toolbox object."""

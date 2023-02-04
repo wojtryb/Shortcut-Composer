@@ -78,11 +78,16 @@ class Config(Enum):
 
     def read(self) -> Any:
         """Read current value from krita config file."""
-        return type(self.default)(Krita.read_setting(
+        setting = Krita.read_setting(
             group="ShortcutComposer",
             name=self.value,
             default=str(self.default),
-        ))
+        )
+        try:
+            return type(self.default)(setting)
+        except ValueError:
+            print(f"Can't parse {setting} to {type(self.default)}")
+            return self.default
 
     def write(self, value: Any) -> None:
         """Write given value to krita config file."""

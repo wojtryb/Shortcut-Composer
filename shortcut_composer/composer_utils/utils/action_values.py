@@ -21,7 +21,7 @@ class ActionValues(QWidget):
     def __init__(self, allowed_values: Set[str], config: Config) -> None:
         super().__init__()
         layout = QHBoxLayout()
-        self.allowed_values = set(allowed_values)
+        self.allowed_values = allowed_values
         self.config = config
 
         self.available_list = ValueList(movable=False, parent=self)
@@ -84,7 +84,9 @@ class ActionValues(QWidget):
         current_list = current.split("\t")
         if current_list == ['']:
             current_list = []
-        self.current_list.addItems(current_list)
+        for item in current_list:
+            if item in self.allowed_values:
+                self.current_list.addItem(item)
 
         self.available_list.clear()
         allowed_items = sorted(self.allowed_values - set(current_list))

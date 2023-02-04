@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.1.1] - 2023-02-04
+### Fixed
+- Fix a crash when any PieMenu is empty.
+- Support multiple krita windows.
+- Fix transform modes ocasionally stopping to work.
+- Handle invalid configuration.
+- Add missing icon for transform tool.
+
 ## [1.1.0] - 2023-01-20
 ### Added
 - Edit mode for PieMenus - click or drag the value icon to enter it. While in edit mode, the values can be dragged across the PieMenu to change their order.
