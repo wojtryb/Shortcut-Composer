@@ -62,4 +62,7 @@ class EnumConfigValues(list):
         if value_string == '':
             return
         values_list = value_string.split("\t")
-        self.extend([enum_type[value] for value in values_list])
+        try:
+            self.extend([enum_type[value] for value in values_list])
+        except KeyError:
+            print(f"{values_list} not in {enum_type}")
