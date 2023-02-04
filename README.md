@@ -12,23 +12,16 @@ The plugin adds new shortcuts of the following types:
 
 [![PIE MENUS - introducing Shortcut Composer](http://img.youtube.com/vi/hrjBycVYFZM/0.jpg)](https://www.youtube.com/watch?v=hrjBycVYFZM "PIE MENUS - introducing Shortcut Composer")
 
-## What's new in v1.1.0
-### Added
-- Edit mode for PieMenus - click or drag the value icon to enter it. While in edit mode, the values can be dragged across the PieMenu to change their order.
-- Action values tab in Configure Shortcut Composer for adding and removing values in PieMenus and MultipleAssignment actions.
-- PieValues backtrounds are now animated.
-- New PieMenu to create a layer with chosen blending mode.
-
+## What's new in v1.1.1
 ### Fixed
-- Allow scrolling through masks while using layey mouse trackers  
-- Make sure that presets in PieMenu are displayed only once.
-- Allow using "Enclose and fill" tool
-- Fix icon of "Colorize Mask" tool
-- Fix icon of "Colorize Mask" and "Color Sampler" tools
-- Fix scaling issues of Text labels in PieMenu
+- Fix a crash when any PieMenu is empty.
+- Support multiple krita windows.
+- Fix transform modes ocasionally stopping to work.
+- Handle invalid configuration.
+- Add missing icon for transform tool.
 
 ## Requirements
-Shortcut Composer **v1.1.0** Requires krita **5.1.0** or later.
+Shortcut Composer **v1.1.1** Requires krita **5.1.0** or later.
 
 OS support state:
 - [x] Windows 10/11
