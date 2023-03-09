@@ -45,6 +45,7 @@ class Database:
 
     def get_preset_names_from_tag(self, tag_name: str) -> List[str]:
         """Return list of all preset names that belong to given tag."""
+        tag_name = tag_name.replace("\"", "\"\"")
         sql_query = f'''
             SELECT DISTINCT r.name AS preset
             FROM tags t
@@ -53,7 +54,7 @@ class Database:
                 JOIN resources r
                     ON r.id = rt.resource_id
             WHERE
-                t.name='{tag_name}'
+                t.name="{tag_name}"
                 AND rt.active = 1
         '''
         return self._single_column_query(sql_query, "preset")
