@@ -11,11 +11,13 @@ from ..enums import BlendingMode
 
 class _KritaPreset(Protocol):
     """Krita `Resource` object API."""
+
     def name(self) -> str: ...
 
 
 class KritaView(Protocol):
     """Krita `View` object API."""
+
     def currentBrushPreset(self) -> _KritaPreset: ...
     def currentBlendingMode(self) -> str: ...
     def paintingOpacity(self) -> float: ...
@@ -47,7 +49,8 @@ class View:
     @brush_preset.setter
     def brush_preset(self, preset_name: str) -> None:
         """Set brush preset inside this `View` using its name."""
-        self.view.setCurrentBrushPreset(self.preset_map[preset_name])
+        if preset_name in self.preset_map:
+            self.view.setCurrentBrushPreset(self.preset_map[preset_name])
 
     @property
     def blending_mode(self) -> BlendingMode:
