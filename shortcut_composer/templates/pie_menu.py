@@ -9,9 +9,9 @@ from api_krita.pyqt import Text
 from core_components import Controller, Instruction
 from input_adapter import ComplexAction
 from .pie_menu_utils import (
+    create_pie_config,
     PieManager,
     PieWidget,
-    PieConfig,
     PieStyle,
     Label,
 )
@@ -91,15 +91,14 @@ class PieMenu(ComplexAction, Generic[T]):
             instructions=instructions)
         self._controller = controller
 
-        self._config = PieConfig(name, values)
-        self._labels = self._create_labels(self._config.values.read())
+        self._config = create_pie_config(name, values)
+        self._labels = self._create_labels(self._config.values)
         self._style = PieStyle(
             pie_radius_scale=pie_radius_scale,
             icon_radius_scale=icon_radius_scale,
             icons_amount=len(self._labels),
             background_color=background_color,
-            active_color=active_color,
-        )
+            active_color=active_color)
 
         self._pie_widget = PieWidget(self._style, self._labels, self._config)
         self._pie_manager = PieManager(self._pie_widget)

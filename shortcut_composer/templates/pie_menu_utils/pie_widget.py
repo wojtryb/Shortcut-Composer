@@ -2,46 +2,25 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import List, TypeVar
-from enum import Enum
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPaintEvent, QDragMoveEvent, QDragEnterEvent
 from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
-from composer_utils import Config, EnumListConfig, BuiltinListConfig, BuiltinConfig
-from data_components import Tag
+from composer_utils import Config
 from .pie_style import PieStyle
 from .label import Label
 from .label_widget import LabelWidget
+from .label_widget_utils import create_label_widget
+from .pie_config import PieConfig
 from .widget_utils import (
     WidgetHolder,
     CirclePoints,
     AcceptButton,
     PiePainter,
-    EditMode,
-)
-from .label_widget_utils import create_label_widget
+    EditMode)
 
 
 T = TypeVar('T')
-
-
-class PieConfig:
-    def __init__(self, name: str, values: list) -> None:
-        self.name = name
-        if isinstance(values, Tag):
-            self.tag_name = BuiltinConfig(name=name, default=values.tag_name)
-            values = Tag(self.tag_name.read())
-        else:
-            self.tag_name = BuiltinConfig(name=name, default="")
-        self.values = self._create_values(values)
-
-    def _create_values(self, values: list):
-        values_name = f"{self.name} values"
-        if not values:
-            return BuiltinListConfig(values_name, [None])
-        if isinstance(values[0], Enum):
-            return EnumListConfig(values_name, values)
-        return BuiltinListConfig(values_name, values)
 
 
 class PieWidget(AnimatedWidget, BaseWidget):
@@ -73,14 +52,14 @@ class PieWidget(AnimatedWidget, BaseWidget):
         self,
         style: PieStyle,
         labels: List[Label],
-        config_to_write_back: PieConfig,
+        config: PieConfig,
         parent=None
     ):
         AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())
         self.setGeometry(0, 0, style.widget_radius*2, style.widget_radius*2)
 
         self._style = style
-        self.config_to_write_back = config_to_write_back
+        self.config = config
         self._circle_points = CirclePoints(
             center=self.center,
             radius=self._style.pie_radius)

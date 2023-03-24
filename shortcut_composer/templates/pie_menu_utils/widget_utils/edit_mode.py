@@ -32,8 +32,8 @@ class EditMode:
 
     def _write_settings(self, obj: 'PieWidget') -> None:
         """If values were not hardcoded, but from config, write them back."""
-        if not obj.labels or obj.config_to_write_back is None:
+        if not obj.labels or obj.config is None:
             return
 
         values = [widget.label.value for widget in obj.widget_holder]
-        obj.config_to_write_back.values.write(values)
+        obj.config.order.write(values)
