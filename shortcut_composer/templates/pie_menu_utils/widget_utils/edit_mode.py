@@ -24,13 +24,17 @@ class EditMode:
         if not mode_to_set and self._edit_mode:
             self._write_settings(obj)
 
-        self._edit_mode = mode_to_set
+        if not self._edit_mode ^ mode_to_set:
+            return
+
         if mode_to_set:
             obj.accept_button.show()
             obj.pie_settings.show()
         else:
             obj.accept_button.hide()
             obj.pie_settings.hide()
+
+        self._edit_mode = mode_to_set
 
     def _write_settings(self, obj: 'PieWidget') -> None:
         """If values were not hardcoded, but from config, write them back."""
