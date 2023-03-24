@@ -97,13 +97,21 @@ class PieMenu(ComplexAction, Generic[T]):
             values,
             pie_radius_scale,
             icon_radius_scale)
+
+        # TODO: colors should be in self._local_config
+        self._background_color = background_color
+        self._active_color = active_color
+
+        self.reset()
+
+    def reset(self):
         self._values = self._local_config.values
         self._labels = self._create_labels(self._values)
         self._style = PieStyle(
             pie_radius_scale=self._local_config.pie_radius_scale.read(),
             icon_radius_scale=self._local_config.icon_radius_scale.read(),
-            background_color=background_color,
-            active_color=active_color)
+            background_color=self._background_color,
+            active_color=self._active_color)
 
         unscaled_style = copy(self._style)
         self._style.set_items(self._labels)

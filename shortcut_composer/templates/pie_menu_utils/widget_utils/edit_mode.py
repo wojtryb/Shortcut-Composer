@@ -43,6 +43,7 @@ class EditMode:
         self._obj.pie_settings.hide()
         self._obj.accept_button.hide()
         self._obj.settings_button.show()
+        self._obj.reset()
 
     def swap_mode(self):
         self.set(not self._edit_mode)

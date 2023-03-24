@@ -3,7 +3,6 @@ from typing import List
 from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtGui import QCursor
 
-from api_krita import Krita
 from api_krita.pyqt import AnimatedWidget, BaseWidget
 from composer_utils.config import Config
 
@@ -36,7 +35,3 @@ class PieSettings(AnimatedWidget, BaseWidget):
         offset = self.width()//2 + self._style.widget_radius * 1.05
         point = QPoint(round(offset), 0)
         self.move_center(QCursor().pos() + point)  # type: ignore
-
-    def hide(self) -> None:
-        Krita.trigger_action("Reload Shortcut Composer")
-        super().hide()
