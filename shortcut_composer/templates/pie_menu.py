@@ -18,7 +18,7 @@ from .pie_menu_utils import (
     PieWidget,
     PieStyle,
     Label)
-from .pie_menu_utils.widget_utils import EditMode, RoundButton
+from .pie_menu_utils.widget_utils import EditMode, RoundButton, NotifyingList
 
 T = TypeVar('T')
 
@@ -120,6 +120,7 @@ class PieMenu(ComplexAction, Generic[T]):
         self.pie_settings = create_pie_settings_window(
             style=unscaled_style,
             values=self._create_all_labels(self._values),
+            used_values=self._labels,
             pie_config=self._local_config)
         self.pie_widget = PieWidget(
             style=self._style,
@@ -173,9 +174,9 @@ class PieMenu(ComplexAction, Generic[T]):
         if label := self.pie_widget.active:
             self._controller.set_value(label.value)
 
-    def _create_labels(self, values: List[T]) -> List[Label]:
+    def _create_labels(self, values: List[T]) -> NotifyingList[Label]:
         """Wrap values into paintable label objects with position info."""
-        label_list = []
+        label_list = NotifyingList()
         for value in values:
             try:
                 label = self._controller.get_label(value)
@@ -184,7 +185,7 @@ class PieMenu(ComplexAction, Generic[T]):
             label_list.append(Label(value=value, display_value=label))
         return label_list
 
-    def _create_all_labels(self, values: List[T]) -> List[Label]:
+    def _create_all_labels(self, values: List[T]) -> NotifyingList[Label]:
         """Create labels of all unused values."""
         return self._create_labels(self._get_all_values(values))
 

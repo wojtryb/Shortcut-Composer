@@ -7,6 +7,7 @@ from composer_utils.config import (
     ConfigComboBox,
     ConfigSpinBox)
 from ..label import Label
+from ..widget_utils import NotifyingList
 from ..pie_style import PieStyle
 from ..pie_config import PresetPieConfig
 from .pie_settings import PieSettings
@@ -16,6 +17,7 @@ class PresetPieSettings(PieSettings):
     def __init__(
         self,
         values: List[Label],
+        used_values: NotifyingList[Label],
         style: PieStyle,
         pie_config: PresetPieConfig,
         parent=None

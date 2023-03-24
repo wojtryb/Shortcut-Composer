@@ -17,6 +17,7 @@ from .label import Label
 from .label_widget import LabelWidget
 from .pie_config import PieConfig
 from .widget_utils import (
+    NotifyingList,
     CirclePoints,
     LabelHolder,
     PiePainter)
@@ -50,7 +51,7 @@ class PieWidget(AnimatedWidget, BaseWidget):
     def __init__(
         self,
         style: PieStyle,
-        labels: List[Label],
+        labels: NotifyingList,
         config: PieConfig,
         parent=None
     ):

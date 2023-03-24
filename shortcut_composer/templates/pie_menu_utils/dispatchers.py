@@ -7,6 +7,7 @@ from .settings_gui import PieSettings, PresetPieSettings, EnumPieSettings
 from .label import Label
 from .pie_style import PieStyle
 from .pie_config import PieConfig, EnumPieConfig, PresetPieConfig
+from .widget_utils import NotifyingList
 
 
 def create_local_config(
@@ -20,14 +21,16 @@ def create_local_config(
         return PresetPieConfig(*args)
     return EnumPieConfig(*args)
 
+
 def create_pie_settings_window(
     values: List[Label],
+    used_values: NotifyingList[Label],
     style: PieStyle,
     pie_config: PieConfig,
     parent=None
 ) -> PieSettings:
     if isinstance(pie_config, PresetPieConfig):
-        return PresetPieSettings(values, style, pie_config, parent)
+        return PresetPieSettings(values, used_values, style, pie_config, parent)
     elif isinstance(pie_config, EnumPieConfig):
-        return EnumPieSettings(values, style, pie_config, parent)
+        return EnumPieSettings(values, used_values, style, pie_config, parent)
     raise ValueError(f"Unknown pie config {pie_config}")

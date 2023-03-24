@@ -11,12 +11,13 @@ from ..label_widget import LabelWidget
 from ..label_widget_utils import create_label_widget
 from .widget_holder import WidgetHolder
 from .circle_points import CirclePoints
+from .notifying_list import NotifyingList
 
 
 class LabelHolder:
     def __init__(
         self,
-        labels: List[Label],
+        labels: NotifyingList,
         style: PieStyle,
         circle_points: CirclePoints,
         allow_remove: bool,
@@ -75,3 +76,5 @@ class LabelHolder:
             child.label.center = point
             child.move_to_label()
             self.widget_holder.add(child)
+        
+        self._labels.notify_about_change()
