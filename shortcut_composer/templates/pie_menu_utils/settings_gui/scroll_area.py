@@ -1,5 +1,6 @@
 from typing import List
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QWidget,
     QScrollArea,
@@ -20,7 +21,8 @@ class ScrollArea(QScrollArea):
         parent=None
     ) -> None:
         super().__init__(parent)
-        self.setFixedWidth(round(style.icon_radius*(2*columns + 1)))
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self.setWidgetResizable(True)
 
         self._style = style
