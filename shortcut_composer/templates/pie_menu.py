@@ -10,6 +10,7 @@ from core_components import Controller, Instruction
 from input_adapter import ComplexAction
 from .pie_menu_utils import (
     create_pie_config,
+    ScrollArea,
     PieManager,
     PieWidget,
     PieStyle,
@@ -105,7 +106,8 @@ class PieMenu(ComplexAction, Generic[T]):
             active_color=active_color)
 
         self._pie_widget = PieWidget(self._style, self._labels, self._config)
-        self._pie_manager = PieManager(self._pie_widget)
+        self._pie_settings = ScrollArea(4)
+        self._pie_manager = PieManager(self._pie_widget, self._pie_settings)
 
     def on_key_press(self) -> None:
         """Show widget under mouse and start manager which repaints it."""

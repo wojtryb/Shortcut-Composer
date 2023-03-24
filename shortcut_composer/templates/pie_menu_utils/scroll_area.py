@@ -1,17 +1,16 @@
 from typing import List
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtWidgets import (
-    QApplication,
     QWidget,
     QScrollArea,
     QLabel,
     QGridLayout,
     QHBoxLayout,
 )
-import sys
+from api_krita.pyqt import BaseWidget
 
 
-class CustomLayout(QGridLayout):
+class ScrollAreaLayout(QGridLayout):
     def __init__(self, cols: int):
         super().__init__()
         self.widgets: List[QWidget] = []
@@ -48,11 +47,18 @@ class CustomLayout(QGridLayout):
             self.addWidget(widget, *self._get_position(i), 2, 2)
 
 
-class Window(QWidget):
-    def __init__(self, cols: int):
-        super().__init__()
+class ScrollArea(BaseWidget):
+    def __init__(self, cols: int, parent=None):
+        super().__init__(parent)
+
+        self.hide()
+
+        self.setAcceptDrops(True)
+        self.setWindowFlags((self.windowFlags() | Qt.Popup | Qt.NoFocus))  # type: ignore
+        self.setCursor(Qt.CrossCursor)
+
         self.setGeometry(0, 0, 400, 300)
-        self._layout = CustomLayout(cols)
+        self._layout = ScrollAreaLayout(cols)
         self.icon_size = 64
 
         scroll_internal = QWidget()
@@ -92,8 +98,3 @@ class Window(QWidget):
         label.setFixedSize(QSize(self.icon_size, self.icon_size))
         label.setStyleSheet("background-color : green")
         self._layout.append(label)
-
-
-App = QApplication(sys.argv)
-window = Window(5)
-sys.exit(App.exec())
