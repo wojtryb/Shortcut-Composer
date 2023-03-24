@@ -13,18 +13,18 @@ from PyQt5.QtWidgets import (
     QWidget,
     QLabel)
 
-from ..config import FieldBase
+from ..config import Field
 
 
 class ConfigBasedWidget:
     def __init__(
         self,
-        config_field: FieldBase,
+        config_field: Field,
         parent: Optional[QWidget] = None,
         pretty_name: Optional[str] = None,
     ) -> None:
         self._parent = parent
-        self.config_field: Final[FieldBase] = config_field
+        self.config_field: Final[Field] = config_field
         self.pretty_name = self._init_pretty_name(pretty_name)
         self.widget: QWidget
 
@@ -49,7 +49,7 @@ class ConfigBasedWidget:
 class ConfigSpinBox(ConfigBasedWidget):
     def __init__(
         self,
-        config_field: Union[FieldBase[int], FieldBase[float]],
+        config_field: Union[Field[int], Field[float]],
         parent: Optional[QWidget] = None,
         pretty_name: Optional[str] = None,
         step: float = 1,
@@ -69,7 +69,7 @@ class ConfigSpinBox(ConfigBasedWidget):
         self._spin_box.setValue(value)
 
     def _init_spin_box(self):
-        spin_box = (QSpinBox() if self.config_field.type is int
+        spin_box = (QSpinBox() if type(self.config_field.default) is int
                     else QDoubleSpinBox())
         spin_box.setMinimumWidth(90)
         spin_box.setObjectName(self.config_field.name)
@@ -82,7 +82,7 @@ class ConfigSpinBox(ConfigBasedWidget):
 class ConfigComboBox(ConfigBasedWidget):
     def __init__(
         self,
-        config_field: FieldBase[str],
+        config_field: Field[str],
         parent: Optional[QWidget] = None,
         pretty_name: Optional[str] = None,
         allowed_values: List[Any] = [],

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import List, Generic, TypeVar
-from composer_utils.config import FieldBase, field
+from composer_utils.config import Field, field
 from data_components import Tag
 
 T = TypeVar("T")
@@ -10,7 +10,7 @@ T = TypeVar("T")
 
 class PieConfig(Generic[T]):
     values: List[T]
-    order: FieldBase
+    order: Field
     allow_remove: bool
 
     def __init__(

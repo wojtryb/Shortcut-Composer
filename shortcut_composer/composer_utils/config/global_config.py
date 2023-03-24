@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from .fields import FieldBase, field
+from .fields import Field, field
 
 
 class Config:
@@ -34,8 +34,11 @@ class Config:
     def reset_defaults(cls) -> None:
         """Reset all config files."""
         for config_field in cls.__dict__.values():
-            if isinstance(config_field, FieldBase):
+            try:
+                config_field: Field
                 config_field.reset_default()
+            except AttributeError:
+                pass
 
     @classmethod
     def get_sleep_time(cls) -> int:

@@ -1,5 +1,5 @@
 from .global_config import Config
-from .fields import FieldBase, field
+from .fields import Field, field
 from .config_ui import (
     ConfigBasedWidget,
     ConfigFormWidget,
@@ -8,7 +8,7 @@ from .config_ui import (
 
 __all__ = [
     "Config",
-    "FieldBase",
+    "Field",
     "field",
     "ConfigBasedWidget",
     "ConfigFormWidget",
