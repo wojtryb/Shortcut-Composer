@@ -105,7 +105,7 @@ class PieMenu(ComplexAction, Generic[T]):
 
         self._labels: NotifyingList[Label] = NotifyingList()
         self._reset_labels(self._labels, self._local_config.values)
-        self._all_labels: List[Label] = []
+        self._all_labels: NotifyingList[Label] = NotifyingList()
         self._reset_labels(self._all_labels, self._get_all_values(values))
 
         self._edit_mode = EditMode(self)
@@ -173,10 +173,13 @@ class PieMenu(ComplexAction, Generic[T]):
         if label := self.pie_widget.active:
             self._controller.set_value(label.value)
 
-    def _reset_labels(self, label_list: List[Label[T]], values: List[T]):
+    def _reset_labels(
+        self,
+        label_list: NotifyingList[Label[T]],
+        values: List[T]
+    ) -> None:
         """Wrap values into paintable label objects with position info."""
-        current = [label.value for label in label_list]
-        if current == values:
+        if [label.value for label in label_list] == values:
             return
 
         label_list.clear()
@@ -186,6 +189,7 @@ class PieMenu(ComplexAction, Generic[T]):
             except KeyError:
                 continue
             label_list.append(Label(value=value, display_value=label))
+        label_list.notify_about_change()
 
     def _get_all_values(self, values: List[T]) -> List[T]:
         if not values:

@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import List
+from functools import partial
 
 from api_krita.pyqt import BaseWidget
 from ..pie_style import PieStyle
@@ -22,13 +23,14 @@ class LabelHolder:
         owner: BaseWidget,
     ) -> None:
         self._labels = labels
+        self._labels.register_callback(partial(self._reset, False))
         self._style = style
-        self._style.register_callback(self._reset)
+        self._style.register_callback(partial(self._reset, False))
         self._allow_remove = allow_remove
         self._owner = owner
 
         self.widget_holder: WidgetHolder = WidgetHolder()
-        self._reset()
+        self._reset(False)
 
     def append(self, label: Label):
         self._labels.append(label)
@@ -56,7 +58,7 @@ class LabelHolder:
     def __bool__(self):
         return bool(self._labels)
 
-    def _reset(self) -> None:
+    def _reset(self, notify: bool = True) -> None:
         for child in self.widget_holder:
             child.setParent(None)  # type: ignore
         self.widget_holder.clear()
@@ -78,4 +80,5 @@ class LabelHolder:
             child.move_to_label()
             self.widget_holder.add(child)
 
-        self._labels.notify_about_change()
+        if notify:
+            self._labels.notify_about_change()
