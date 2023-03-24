@@ -7,7 +7,6 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QDoubleSpinBox,
     QFormLayout,
-    QHBoxLayout,
     QSplitter,
     QComboBox,
     QSpinBox,
@@ -72,6 +71,7 @@ class ConfigSpinBox(ConfigBasedWidget):
     def _init_spin_box(self):
         spin_box = (QSpinBox() if self.config_field.type is int
                     else QDoubleSpinBox())
+        spin_box.setMinimumWidth(90)
         spin_box.setObjectName(self.config_field.name)
         spin_box.setMinimum(0)
         spin_box.setSingleStep(self._step)  # type: ignore
@@ -116,11 +116,11 @@ class ConfigFormWidget(QWidget):
     def __init__(self, elements: List[Union[ConfigBasedWidget, str]]) -> None:
         super().__init__()
         self._layout = QFormLayout()
-        stretched = QHBoxLayout()
-        stretched.addStretch()
-        stretched.addLayout(self._layout)
-        stretched.addStretch()
-        self.setLayout(stretched)
+        self._layout.RowWrapPolicy(QFormLayout.DontWrapRows)
+        self._layout.setFieldGrowthPolicy(QFormLayout.FieldsStayAtSizeHint)
+        self._layout.setFormAlignment(Qt.AlignHCenter | Qt.AlignTop)
+        self._layout.setLabelAlignment(Qt.AlignRight)
+        self.setLayout(self._layout)
 
         self._widgets: List[ConfigBasedWidget] = []
         for element in elements:
