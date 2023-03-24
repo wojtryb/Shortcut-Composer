@@ -5,7 +5,7 @@ from typing import TypeVar, Generic, Optional, Callable, final, List
 from abc import ABC, abstractmethod
 from enum import Enum
 
-from api_krita import Krita
+from .api_krita import Krita
 from .parsers import Parser, BoolParser, EnumParser, BasicParser
 from .field import Field
 
@@ -56,7 +56,7 @@ class FieldBase(ABC, Field, Generic[T]):
             float: BasicParser(float),
             str: BasicParser(str),
             bool: BoolParser()
-        }[self._type]
+        }[self._type]  # type: ignore
 
     @final
     def write(self, value: T):
