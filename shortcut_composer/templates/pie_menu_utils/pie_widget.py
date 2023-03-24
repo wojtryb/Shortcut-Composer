@@ -86,8 +86,8 @@ class PieWidget(AnimatedWidget, BaseWidget):
         self._reset()
 
     def _reset(self):
-        radius = self._style.widget_radius*2
-        self.setGeometry(0, 0, radius, radius)
+        widget_diameter = self._style.widget_radius*2
+        self.setGeometry(0, 0, widget_diameter, widget_diameter)
         self._circle_points = CirclePoints(
             center=self.center,
             radius=self._style.pie_radius)

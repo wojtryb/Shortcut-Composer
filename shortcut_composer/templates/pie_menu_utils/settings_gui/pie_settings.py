@@ -31,6 +31,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
         self._style = style
         self._style.register_callback(self._reset)
         self._pie_config = pie_config
+        self._reset()
 
     def move_to_pie_side(self):
         offset = self.width()//2 + self._style.widget_radius * 1.05

@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import TypeVar, Generic, Optional, List, Type
+from typing import TypeVar, Generic, Optional, List, Type, Callable
 from abc import ABC, abstractmethod
 from enum import Enum
 
@@ -14,6 +14,7 @@ class FieldBase(Generic[T], ABC):
     def __init__(self, name: str, default: T) -> None:
         self.name = name
         self.default = default
+        self._on_change_callbacks: List[Callable[[], None]] = []
 
     def _read_raw(self) -> Optional[str]:
         red_value = Krita.read_setting(
@@ -25,9 +26,18 @@ class FieldBase(Generic[T], ABC):
     def reset_default(self) -> None:
         self.write(self.default)
 
+    def register_callback(self, callback: Callable[[], None]):
+        self._on_change_callbacks.append(callback)
+
     def _is_write_redundant(self, value: T):
+        if self.read() == value:
+            return True
         current_value = self._read_raw()
         return current_value is None and value == self.default
+
+    def _notify_subscribers(self):
+        for callback in self._on_change_callbacks:
+            callback()
 
     @abstractmethod
     def read(self) -> T: ...
@@ -59,6 +69,7 @@ class ImmutableField(FieldBase, Generic[T]):
             group="ShortcutComposer",
             name=self.name,
             value=value)
+        self._notify_subscribers()
 
     @property
     def type(self):
@@ -84,6 +95,7 @@ class EnumsListField(FieldBase):
             group="ShortcutComposer",
             name=self.name,
             value=to_write)
+        self._notify_subscribers()
 
     @property
     def type(self):
@@ -109,6 +121,7 @@ class ImmutablesListField(FieldBase, Generic[T]):
             group="ShortcutComposer",
             name=self.name,
             value="\t".join(map(str, value)))
+        self._notify_subscribers()
 
     @property
     def type(self):

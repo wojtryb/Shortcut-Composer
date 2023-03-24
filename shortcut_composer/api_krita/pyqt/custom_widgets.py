@@ -24,6 +24,10 @@ class BaseWidget(QWidget):
         """Move the widget by providing a new center point."""
         self.move(new_center-self.center)  # type: ignore
 
+    def setGeometry(self, ax: int, ay: int, aw: int, ah: int):
+        center = self.center_global
+        super().setGeometry(ax, ay, aw, ah)
+        self.move_center(center)
 
 class AnimatedWidget(QWidget):
     """Adds the fade-in animation when the widget is shown (60 FPS)."""

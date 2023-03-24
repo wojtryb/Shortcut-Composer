@@ -42,7 +42,7 @@ class RoundButton(QPushButton, BaseWidget):
     def _reset(self):
         radius = self._radius_callback()
         self.setGeometry(0, 0, radius*2, radius*2)
-        
+
         self.setStyleSheet(f"""
             QPushButton [
                 border: {self._style.border_thickness}px
@@ -56,7 +56,6 @@ class RoundButton(QPushButton, BaseWidget):
                 background: {self._color_to_str(self._style.active_color)};
             ]
         """.replace('[', '{').replace(']', '}'))
-
 
     @staticmethod
     def _color_to_str(color: QColor) -> str: return f'''rgba(

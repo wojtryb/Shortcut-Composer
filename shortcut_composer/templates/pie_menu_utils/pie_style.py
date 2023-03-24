@@ -39,33 +39,21 @@ class PieStyle:
         self._background_color = background_color
         self.active_color = active_color
 
-        self._prev_pie = pie_radius_scale.read()
-        self._prev_icon = icon_radius_scale.read()
-
+        self._pie_radius_scale.register_callback(self._notice_change)
+        self._icon_radius_scale.register_callback(self._notice_change)
         self._on_change_callbacks: List[Callable[[], None]] = []
-
-    @property
-    def pie_radius_scale(self):
-        radius = self._pie_radius_scale.read()
-        old = self._prev_pie
-        self._prev_pie = radius
-        if radius != old:
-            self._notice_change()
-        return radius
-
-    # FIXME notification needs to be done immediatelly after change
-    @property
-    def icon_radius_scale(self):
-        radius = self._icon_radius_scale.read()
-        old = self._prev_icon
-        self._prev_icon = radius
-        if radius != old:
-            self._notice_change()
-        return radius
 
     def _notice_change(self):
         for callback in self._on_change_callbacks:
             callback()
+
+    @property
+    def pie_radius_scale(self):
+        return self._pie_radius_scale.read()
+
+    @property
+    def icon_radius_scale(self):
+        return self._icon_radius_scale.read()
 
     def register_callback(self, callback: Callable[[], None]):
         self._on_change_callbacks.append(callback)
