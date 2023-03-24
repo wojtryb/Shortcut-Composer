@@ -80,7 +80,7 @@ class PieMenu(ComplexAction, Generic[T]):
     def __init__(
         self, *,
         name: str,
-        controller: Controller,
+        controller: Controller[T],
         values: List[T],
         instructions: List[Instruction] = [],
         pie_radius_scale: float = 1.0,

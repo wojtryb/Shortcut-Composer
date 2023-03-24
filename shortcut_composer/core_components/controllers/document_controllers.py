@@ -7,7 +7,7 @@ from api_krita.pyqt import Text
 from ..controller_base import Controller
 
 
-class DocumentBasedController(Controller):
+class DocumentBasedController:
     """Family of controllers which operate on values from active document."""
 
     def refresh(self):
@@ -15,7 +15,7 @@ class DocumentBasedController(Controller):
         self.document = Krita.get_active_document()
 
 
-class ActiveLayerController(DocumentBasedController):
+class ActiveLayerController(DocumentBasedController, Controller[Node]):
     """
     Gives access to nodes (layers, groups, masks...) from layer stack.
 
@@ -33,7 +33,7 @@ class ActiveLayerController(DocumentBasedController):
         self.document.active_node = value
 
 
-class TimeController(DocumentBasedController):
+class TimeController(DocumentBasedController, Controller[int]):
     """
     Gives access to animation timeline.
 

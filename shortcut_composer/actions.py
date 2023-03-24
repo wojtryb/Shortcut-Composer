@@ -27,7 +27,8 @@ from data_components import (
 infinity = float("inf")
 
 
-def create_actions() -> List[ComplexAction]: return [
+# def create_actions() -> List[ComplexAction]: return [
+def create_actions(): return [
 
     # Switch between FREEHAND BRUSH and the MOVE tool
     templates.TemporaryKey(

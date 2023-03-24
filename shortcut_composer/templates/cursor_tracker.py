@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Optional
+from typing import List, Optional, Generic, TypeVar
 
 from core_components import Instruction
 from data_components import Slider
@@ -12,8 +12,10 @@ from .mouse_tracker_utils import (
     SliderHandler,
 )
 
+T = TypeVar("T")
 
-class CursorTracker(ComplexAction):
+
+class CursorTracker(ComplexAction, Generic[T]):
     """
     Switch values with horizontal or vertical mouse movement.
 
@@ -61,8 +63,8 @@ class CursorTracker(ComplexAction):
     def __new__(
         cls,
         name: str,
-        horizontal_slider: Optional[Slider] = None,
-        vertical_slider: Optional[Slider] = None,
+        horizontal_slider: Optional[Slider[T]] = None,
+        vertical_slider: Optional[Slider[T]] = None,
         instructions: List[Instruction] = [],
     ) -> ComplexAction:
         """
@@ -108,7 +110,7 @@ class CursorTracker(ComplexAction):
     def __init__(
         self,
         name: str,
-        horizontal_slider: Optional[Slider] = None,
-        vertical_slider: Optional[Slider] = None,
+        horizontal_slider: Optional[Slider[T]] = None,
+        vertical_slider: Optional[Slider[T]] = None,
         instructions: List[Instruction] = [],
     ) -> None: ...

@@ -61,7 +61,7 @@ class MultipleAssignment(ComplexAction, Generic[T]):
     def __init__(
         self, *,
         name: str,
-        controller: Controller,
+        controller: Controller[T],
         values: List[T],
         default_value: Optional[T] = None,
         instructions: List[Instruction] = [],

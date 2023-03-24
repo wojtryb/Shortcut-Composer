@@ -12,7 +12,7 @@ from api_krita.actions import TransformModeFinder
 from ..controller_base import Controller
 
 
-class ToolController(Controller):
+class ToolController(Controller[Tool]):
     """
     Gives access to tools from toolbox.
 
@@ -36,7 +36,7 @@ class ToolController(Controller):
         return value.icon
 
 
-class TransformModeController(Controller):
+class TransformModeController(Controller[TransformMode]):
     """
     Gives access to tools from toolbox.
 
@@ -66,7 +66,7 @@ class TransformModeController(Controller):
 
 
 @dataclass
-class ToggleController(Controller):
+class ToggleController(Controller[bool]):
     """
     Gives access to picked krita toggle action.
 
@@ -86,7 +86,7 @@ class ToggleController(Controller):
 
 
 @dataclass
-class UndoController(Controller):
+class UndoController(Controller[float]):
     """
     Gives access to `undo` and `redo` actions.
 

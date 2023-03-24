@@ -6,7 +6,7 @@ from api_krita.pyqt import Text
 from ..controller_base import Controller
 
 
-class CanvasBasedController(Controller):
+class CanvasBasedController:
     """Family of controllers which operate on values from active document."""
 
     def refresh(self):
@@ -14,7 +14,7 @@ class CanvasBasedController(Controller):
         self.canvas = Krita.get_active_canvas()
 
 
-class CanvasZoomController(CanvasBasedController):
+class CanvasZoomController(CanvasBasedController, Controller[float]):
     """
     Gives access to `zoom`.
 
@@ -34,7 +34,7 @@ class CanvasZoomController(CanvasBasedController):
         return Text(f"{round(value/100, 2)}")
 
 
-class CanvasRotationController(CanvasBasedController):
+class CanvasRotationController(CanvasBasedController, Controller[float]):
     """
     Gives access to `canvas rotation` in degrees.
 

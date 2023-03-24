@@ -2,14 +2,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from PyQt5.QtGui import QPixmap, QImage
-
 from api_krita import Krita
 from api_krita.enums import BlendingMode
 from api_krita.pyqt import Text, Colorizer
 from ..controller_base import Controller
 
 
-class ViewBasedController(Controller):
+class ViewBasedController:
     """Family of controllers which operate on values from active view."""
 
     def refresh(self):
@@ -17,7 +16,7 @@ class ViewBasedController(Controller):
         self.view = Krita.get_active_view()
 
 
-class PresetController(ViewBasedController):
+class PresetController(ViewBasedController, Controller[str]):
     """
     Gives access to `presets`.
 
@@ -40,7 +39,7 @@ class PresetController(ViewBasedController):
         return QPixmap.fromImage(image)
 
 
-class BrushSizeController(ViewBasedController):
+class BrushSizeController(ViewBasedController, Controller[int]):
     """
     Gives access to `brush size`.
 
@@ -60,7 +59,7 @@ class BrushSizeController(ViewBasedController):
         return Text(f"{round(value)}px")
 
 
-class BlendingModeController(ViewBasedController):
+class BlendingModeController(ViewBasedController, Controller[BlendingMode]):
     """
     Gives access to `brush blending mode`.
 
@@ -82,7 +81,7 @@ class BlendingModeController(ViewBasedController):
         return Text(value.name[:3], Colorizer.blending_mode(value))
 
 
-class OpacityController(ViewBasedController):
+class OpacityController(ViewBasedController, Controller[int]):
     """
     Gives access to `brush opacity` in %.
 
@@ -104,7 +103,7 @@ class OpacityController(ViewBasedController):
         return Text(f"{value}%", Colorizer.percentage(value))
 
 
-class FlowController(ViewBasedController):
+class FlowController(ViewBasedController, Controller[int]):
     """
     Gives access to `brush flow` in %.
 

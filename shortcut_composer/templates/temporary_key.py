@@ -59,7 +59,7 @@ class TemporaryKey(ComplexAction, Generic[T]):
     def __init__(
         self, *,
         name: str,
-        controller: Controller,
+        controller: Controller[T],
         high_value: T,
         low_value: Optional[T] = None,
         instructions: List[Instruction] = [],
@@ -106,6 +106,6 @@ class TemporaryKey(ComplexAction, Generic[T]):
         super().on_long_key_release()
         self._set_low()
 
-    def _read_default_value(self, value: Optional[T]):
+    def _read_default_value(self, value: Optional[T]) -> T:
         """Read value from controller if it was not given."""
-        return value if value else self._controller.default_value
+        return value if value is not None else self._controller.default_value  # type: ignore

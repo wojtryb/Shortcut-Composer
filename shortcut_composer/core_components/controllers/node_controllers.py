@@ -1,13 +1,14 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from typing import TypeVar
 from api_krita import Krita
 from api_krita.enums import BlendingMode, NodeType
 from api_krita.pyqt import Text, Colorizer
 from ..controller_base import Controller
 
 
-class NodeBasedController(Controller):
+class NodeBasedController:
     """Family of controllers which operate on values from active node."""
 
     def refresh(self):
@@ -16,12 +17,12 @@ class NodeBasedController(Controller):
         self.active_node = self.active_document.active_node
 
 
-class LayerOpacityController(NodeBasedController):
+class LayerOpacityController(NodeBasedController, Controller[int]):
     """
-    Gives access to active layers' `blending mode`.
+    Gives access to active layers' `opacity` in %.
 
-    - Operates on `BlendingMode`
-    - Defaults to `BlendingMode.NORMAL`
+    - Operates on `integer` in range `0 to 100`
+    - Defaults to `100`
     """
 
     default_value: int = 100
@@ -40,12 +41,12 @@ class LayerOpacityController(NodeBasedController):
         return Text(f"{value}%", Colorizer.percentage(value))
 
 
-class LayerBlendingModeController(NodeBasedController):
+class LayerBlendingModeController(NodeBasedController, Controller[BlendingMode]):
     """
-    Gives access to active layers' `opacity` in %.
+    Gives access to active layers' `blending mode`.
 
-    - Operates on `integer` in range `0 to 100`
-    - Defaults to `100`
+    - Operates on `BlendingMode`
+    - Defaults to `BlendingMode.NORMAL`
     """
 
     default_value = BlendingMode.NORMAL
@@ -64,7 +65,7 @@ class LayerBlendingModeController(NodeBasedController):
         return Text(value.name[:3], Colorizer.blending_mode(value))
 
 
-class LayerVisibilityController(NodeBasedController):
+class LayerVisibilityController(NodeBasedController, Controller[bool]):
     """
     Gives access to active layers' `visibility`.
 
@@ -85,7 +86,7 @@ class LayerVisibilityController(NodeBasedController):
             self.active_document.refresh()
 
 
-class CreateLayerWithBlendingController(NodeBasedController):
+class CreateLayerWithBlendingController(NodeBasedController, Controller[BlendingMode]):
     """Creates Paint Layer with set Blending Mode."""
 
     default_value = BlendingMode.NORMAL
