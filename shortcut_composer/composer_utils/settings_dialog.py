@@ -3,17 +3,13 @@
 
 from typing import List
 
-from PyQt5.QtWidgets import (
-    QVBoxLayout,
-    QTabWidget,
-    QDialog,
-)
+from PyQt5.QtWidgets import QVBoxLayout, QDialog
 from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QCursor
 
 from api_krita import Krita
 from api_krita.wrappers import Database
-from .config import Config, ConfigFormWidget, ConfigComboBox, ConfigSpinBox
+from .config import Config, ConfigFormWidget, ConfigSpinBox
 from .layouts import ButtonsLayout
 
 
@@ -29,11 +25,7 @@ class SettingsDialog(QDialog):
         self._tags: List[str] = []
         self._refresh_tags()
 
-        general_tab = ConfigFormWidget([
-            "Preset pie-menus mapping",
-            ConfigComboBox(Config.TAG_RED, self, self._tags),
-            ConfigComboBox(Config.TAG_GREEN, self, self._tags),
-            ConfigComboBox(Config.TAG_BLUE, self, self._tags),
+        self._general_tab = ConfigFormWidget([
             "Common settings",
             ConfigSpinBox(Config.SHORT_VS_LONG_PRESS_TIME, self, 0.05, 4),
             ConfigSpinBox(Config.FPS_LIMIT, self, 5, 500),
@@ -47,13 +39,8 @@ class SettingsDialog(QDialog):
             ConfigSpinBox(Config.PIE_ANIMATION_TIME, self, 0.01, 1),
         ])
 
-        self._tab_dict = {"General": general_tab}
-        tab_holder = QTabWidget()
-        for name, tab in self._tab_dict.items():
-            tab_holder.addTab(tab, name)
-
         full_layout = QVBoxLayout(self)
-        full_layout.addWidget(tab_holder)
+        full_layout.addWidget(self._general_tab)
         full_layout.addLayout(ButtonsLayout(
             ok_callback=self.ok,
             apply_callback=self.apply,
@@ -92,7 +79,5 @@ class SettingsDialog(QDialog):
         self._tags.extend(tags)
 
     def refresh(self):
-        """Ask all tabs to refresh themselves. """
         self._refresh_tags()
-        for tab in self._tab_dict.values():
-            tab.refresh()
+        self._general_tab.refresh()

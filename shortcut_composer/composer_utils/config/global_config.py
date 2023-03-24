@@ -37,10 +37,6 @@ class Config:
         "Pie deadzone global scale", 1.0)
     PIE_ANIMATION_TIME = ImmutableField("Pie animation time", 0.2)
 
-    TAG_RED = ImmutableField("Pick brush presets (red)", "★ My Favorites")
-    TAG_GREEN = ImmutableField("Pick brush presets (green)", "RGBA")
-    TAG_BLUE = ImmutableField("Pick brush presets (blue)", "Erasers")
-
     @classmethod
     def reset_defaults(cls) -> None:
         """Reset all config files."""
