@@ -6,6 +6,7 @@
 from .circle_points import CirclePoints
 from .widget_holder import WidgetHolder
 from .accept_button import AcceptButton
+from .label_holder import LabelHolder
 from .pie_painter import PiePainter
 from .edit_mode import EditMode
 
@@ -13,6 +14,7 @@ __all__ = [
     "CirclePoints",
     "WidgetHolder",
     "AcceptButton",
+    "LabelHolder",
     "PiePainter",
     "EditMode",
 ]
