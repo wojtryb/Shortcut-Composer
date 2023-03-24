@@ -34,7 +34,7 @@ class LabelHolder:
         self._reset()
 
     def remove(self, label: Label):
-        if label in self._labels:
+        if label in self._labels and len(self._labels) > 1:
             self._labels.remove(label)
             self._reset()
 

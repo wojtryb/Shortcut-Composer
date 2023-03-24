@@ -113,7 +113,7 @@ class PieWidget(AnimatedWidget, BaseWidget):
         if distance < self._style.deadzone_radius:
             return
 
-        if source_widget.label not in self.label_holder:
+        if source_widget.label not in self.label_holder or not self._labels:
             return self.label_holder.append(source_widget.label)
 
         _a = self.label_holder.widget_holder.on_label(source_widget.label)
