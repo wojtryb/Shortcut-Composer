@@ -1,5 +1,3 @@
-from enum import Enum
-from composer_utils import Config
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from ..pie_widget import PieWidget
@@ -38,7 +36,5 @@ class EditMode:
             return
 
         values = [widget.label.value for widget in obj.widget_holder]
-        if isinstance(values[0], Enum):
-            obj.config_to_write_back.write(Config.format_enums(values))
-        else:
-            obj.config_to_write_back.write('\t'.join(values))
+        print("writing")
+        obj.config_to_write_back.write(values)

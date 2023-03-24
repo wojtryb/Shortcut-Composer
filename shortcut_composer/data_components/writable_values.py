@@ -1,9 +1,11 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from typing import List
+
 from api_krita.wrappers import Database
 from composer_utils import Config
-from typing import Type, TypeVar
+from typing import TypeVar
 from enum import Enum
 
 T = TypeVar('T', bound=Enum)
@@ -36,8 +38,7 @@ class TagConfigValues(list):
         with Database() as database:
             tag_presets = database.get_preset_names_from_tag(tag.read())
 
-        preset_string: str = tag_values.read()
-        preset_order = preset_string.split("\t")
+        preset_order: List[str] = tag_values.read()
         preset_order = [p for p in preset_order if p in tag_presets]
 
         missing = [p for p in tag_presets if p not in preset_order]
@@ -56,13 +57,6 @@ class EnumConfigValues(list):
     ```
     """
 
-    def __init__(self, values: Config, enum_type: Type[T]) -> None:
+    def __init__(self, values: Config) -> None:
         self.config_to_write = values
-        value_string: str = values.read()
-        if value_string == '':
-            return
-        values_list = value_string.split("\t")
-        try:
-            self.extend([enum_type[value] for value in values_list])
-        except KeyError:
-            print(f"{values_list} not in {enum_type}")
+        self.extend(values.read())

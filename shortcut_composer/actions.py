@@ -14,15 +14,15 @@ from typing import List
 
 from PyQt5.QtGui import QColor
 
-from api_krita.enums import BlendingMode, Tool, Toggle, TransformMode
+from api_krita.enums import Tool, Toggle
 from core_components import instructions, controllers
 from composer_utils import Config
 from input_adapter import ComplexAction
 from data_components import (
     CurrentLayerStack,
-    PickStrategy,
     EnumConfigValues,
     TagConfigValues,
+    PickStrategy,
     Slider,
     Range,
 )
@@ -95,7 +95,7 @@ def create_actions() -> List[ComplexAction]: return [
         name="Cycle selection tools",
         controller=controllers.ToolController(),
         default_value=Tool.FREEHAND_BRUSH,
-        values=EnumConfigValues(Config.SELECTION_TOOLS_VALUES, Tool),
+        values=EnumConfigValues(Config.SELECTION_TOOLS_VALUES),
     ),
 
     # Control undo and redo actions by sliding the cursor horizontally
@@ -183,7 +183,7 @@ def create_actions() -> List[ComplexAction]: return [
     templates.PieMenu(
         name="Pick misc tools",
         controller=controllers.ToolController(),
-        values=EnumConfigValues(Config.MISC_TOOLS_VALUES, Tool),
+        values=EnumConfigValues(Config.MISC_TOOLS_VALUES),
         pie_radius_scale=0.9
     ),
 
@@ -193,22 +193,21 @@ def create_actions() -> List[ComplexAction]: return [
         name="Pick painting blending modes",
         controller=controllers.BlendingModeController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        values=EnumConfigValues(Config.BLENDING_MODES_VALUES, BlendingMode),
+        values=EnumConfigValues(Config.BLENDING_MODES_VALUES),
     ),
 
     # Use pie menu to create painting layer with selected blending mode.
     templates.PieMenu(
         name="Create painting layer with blending mode",
         controller=controllers.CreateLayerWithBlendingController(),
-        values=EnumConfigValues(
-            Config.CREATE_BLENDING_LAYER_VALUES, BlendingMode),
+        values=EnumConfigValues(Config.CREATE_BLENDING_LAYER_VALUES),
     ),
 
     # Pick one of the transform tool modes.
     templates.PieMenu(
         name="Pick transform tool modes",
         controller=controllers.TransformModeController(),
-        values=EnumConfigValues(Config.TRANSFORM_MODES_VALUES, TransformMode),
+        values=EnumConfigValues(Config.TRANSFORM_MODES_VALUES),
     ),
 
     # Use pie menu to pick one of presets from tag specified in settings.

@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Union, Any, TypeVar, List
+from typing import Union, Any, TypeVar
 from enum import Enum
 
 from api_krita import Krita
@@ -72,7 +72,7 @@ class Config(Enum):
     CREATE_BLENDING_LAYER_VALUES = "Create blending layer values"
 
     @property
-    def default(self) -> Union[float, int, str]:
+    def default(self) -> Union[float, int, str, list]:
         """Return default value of the field."""
         return _defaults[self]
 
@@ -91,10 +91,24 @@ class Config(Enum):
 
     def write(self, value: Any) -> None:
         """Write given value to krita config file."""
+        default = self.default
+        if isinstance(default, list):
+            element = default[0]
+            if isinstance(element, Enum):
+                print(self)
+                print(value)
+                to_write = "\t".join([enum.value for enum in value])
+            elif isinstance(element, str):
+                to_write = "\t".join(value)
+            else:
+                raise RuntimeError(f"Can't parse {value} in {self}.")
+        else:
+            to_write = value
+
         Krita.write_setting(
             group="ShortcutComposer",
             name=self.value,
-            value=value
+            value=to_write
         )
 
     @staticmethod
@@ -108,10 +122,6 @@ class Config(Enum):
         """Read sleep time from FPS_LIMIT config field."""
         fps_limit = Config.FPS_LIMIT.read()
         return round(1000/fps_limit) if fps_limit else 1
-
-    @staticmethod
-    def format_enums(enums: List[Enum]) -> str:
-        return "\t".join([enum.name for enum in enums])
 
 
 _defaults = {
@@ -132,19 +142,19 @@ _defaults = {
     Config.TAG_GREEN_VALUES: "",
     Config.TAG_BLUE_VALUES: "",
 
-    Config.SELECTION_TOOLS_VALUES: Config.format_enums([
+    Config.SELECTION_TOOLS_VALUES: [
         Tool.FREEHAND_SELECTION,
         Tool.RECTANGULAR_SELECTION,
         Tool.CONTIGUOUS_SELECTION,
-    ]),
-    Config.MISC_TOOLS_VALUES: Config.format_enums([
+    ],
+    Config.MISC_TOOLS_VALUES: [
         Tool.CROP,
         Tool.REFERENCE,
         Tool.GRADIENT,
         Tool.MULTI_BRUSH,
         Tool.ASSISTANTS,
-    ]),
-    Config.BLENDING_MODES_VALUES: Config.format_enums([
+    ],
+    Config.BLENDING_MODES_VALUES: [
         BlendingMode.NORMAL,
         BlendingMode.OVERLAY,
         BlendingMode.COLOR,
@@ -153,8 +163,8 @@ _defaults = {
         BlendingMode.SCREEN,
         BlendingMode.DARKEN,
         BlendingMode.LIGHTEN,
-    ]),
-    Config.CREATE_BLENDING_LAYER_VALUES: Config.format_enums([
+    ],
+    Config.CREATE_BLENDING_LAYER_VALUES: [
         BlendingMode.NORMAL,
         BlendingMode.ERASE,
         BlendingMode.OVERLAY,
@@ -164,14 +174,14 @@ _defaults = {
         BlendingMode.SCREEN,
         BlendingMode.DARKEN,
         BlendingMode.LIGHTEN,
-    ]),
-    Config.TRANSFORM_MODES_VALUES: Config.format_enums([
+    ],
+    Config.TRANSFORM_MODES_VALUES: [
         TransformMode.FREE,
         TransformMode.PERSPECTIVE,
         TransformMode.WARP,
         TransformMode.CAGE,
         TransformMode.LIQUIFY,
         TransformMode.MESH,
-    ])
+    ],
 }
 """Maps default values to config fields."""

@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Set
+from typing import Set, List
+from enum import Enum
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
@@ -76,18 +77,14 @@ class ActionValues(QWidget):
         texts = []
         for row in range(self.current_list.count()):
             texts.append(self.current_list.item(row).text())
-        self.config.write("\t".join(texts))
+        self.config.write(texts)
 
     def refresh(self):
         self.current_list.clear()
-        current: str = self.config.read()
-        current_list = current.split("\t")
-        if current_list == ['']:
-            current_list = []
-        for item in current_list:
-            if item in self.allowed_values:
-                self.current_list.addItem(item)
+        current_list: List[Enum] = self.config.read()
+        text_list = [item.value for item in current_list]
+        self.current_list.addItems(text_list)
 
         self.available_list.clear()
-        allowed_items = sorted(self.allowed_values - set(current_list))
+        allowed_items = sorted(self.allowed_values - set(text_list))
         self.available_list.addItems(allowed_items)
