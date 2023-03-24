@@ -105,8 +105,12 @@ class PieMenu(ComplexAction, Generic[T]):
             background_color=background_color,
             active_color=active_color)
 
-        self._pie_widget = PieWidget(self._style, self._labels, self._config)
         self._pie_settings = ScrollArea(4)
+        self._pie_widget = PieWidget(
+            self._style,
+            self._labels,
+            self._config,
+            self._pie_settings)
         self._pie_manager = PieManager(self._pie_widget, self._pie_settings)
 
     def on_key_press(self) -> None:

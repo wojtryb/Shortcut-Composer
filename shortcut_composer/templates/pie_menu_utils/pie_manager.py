@@ -35,9 +35,9 @@ class PieManager:
     def start(self) -> None:
         """Show widget under the mouse and start the mouse tracking loop."""
         self._pie.move_center(QCursor().pos())
-        self._pie_settings.move_center(QCursor().pos()+ QPoint(self._pie_settings.width(), 0))
+        self._pie_settings.move_center(
+            QCursor().pos() + QPoint(self._pie_settings.width(), 0))
         self._pie.show()
-        self._pie_settings.show()
         self._circle = CirclePoints(self._pie.center_global, 0)
         self._timer.start()
 
@@ -47,7 +47,6 @@ class PieManager:
         for label in self._pie.labels:
             label.activation_progress.reset()
         self._pie.hide()
-        self._pie_settings.hide()
 
     def _handle_cursor(self) -> None:
         """Calculate zone of the cursor and mark which child is active."""

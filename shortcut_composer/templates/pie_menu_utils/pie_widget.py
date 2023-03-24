@@ -8,6 +8,7 @@ from PyQt5.QtGui import QPaintEvent, QDragMoveEvent, QDragEnterEvent
 from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
 from composer_utils import Config
 from .pie_style import PieStyle
+from .scroll_area import ScrollArea
 from .label import Label
 from .label_widget import LabelWidget
 from .label_widget_utils import create_label_widget
@@ -53,6 +54,7 @@ class PieWidget(AnimatedWidget, BaseWidget):
         style: PieStyle,
         labels: List[Label],
         config: PieConfig,
+        pie_settings: ScrollArea,
         parent=None
     ):
         AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())
@@ -60,6 +62,7 @@ class PieWidget(AnimatedWidget, BaseWidget):
 
         self._style = style
         self.config = config
+        self.pie_settings = pie_settings
         self._circle_points = CirclePoints(
             center=self.center,
             radius=self._style.pie_radius)

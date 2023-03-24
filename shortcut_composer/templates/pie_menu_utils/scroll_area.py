@@ -7,7 +7,8 @@ from PyQt5.QtWidgets import (
     QGridLayout,
     QHBoxLayout,
 )
-from api_krita.pyqt import BaseWidget
+from api_krita.pyqt import AnimatedWidget, BaseWidget
+from composer_utils import Config
 
 
 class ScrollAreaLayout(QGridLayout):
@@ -47,12 +48,15 @@ class ScrollAreaLayout(QGridLayout):
             self.addWidget(widget, *self._get_position(i), 2, 2)
 
 
-class ScrollArea(BaseWidget):
+class ScrollArea(AnimatedWidget, BaseWidget):
     def __init__(self, cols: int, parent=None):
-        super().__init__(parent)
+        AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())
 
         self.setAcceptDrops(True)
-        self.setWindowFlags((self.windowFlags() | Qt.Tool))  # type: ignore
+        self.setWindowFlags((
+            self.windowFlags() |  # type: ignore
+            Qt.Tool |
+            Qt.FramelessWindowHint))
         self.setCursor(Qt.CrossCursor)
 
         self.setGeometry(0, 0, 400, 300)
