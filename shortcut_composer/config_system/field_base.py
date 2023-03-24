@@ -20,7 +20,14 @@ class FieldBase(ABC, Field, Generic[T]):
         obj.__init__(*args, **kwargs)
         return obj
 
-    def __init__(self, name: str, default: T, type: Optional[type] = None):
+    def __init__(
+        self,
+        config_group: str,
+        name: str,
+        default: T,
+        type: Optional[type] = None
+    ):
+        self.config_group = config_group
         self.name = name
         self.default = default
         self._type = self._get_type(type)
@@ -57,7 +64,7 @@ class FieldBase(ABC, Field, Generic[T]):
             return
 
         Krita.write_setting(
-            group="ShortcutComposer",
+            group=self.config_group,
             name=self.name,
             value=self._to_string(value))
         for callback in self._on_change_callbacks:
