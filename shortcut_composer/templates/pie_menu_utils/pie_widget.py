@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, TypeVar, Optional
+from typing import TypeVar, Optional
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import (
@@ -69,6 +69,7 @@ class PieWidget(AnimatedWidget, BaseWidget):
         self.setCursor(Qt.CrossCursor)
 
         self._style = style
+        self._style.register_callback(self._reset)
         self._labels = labels
         self.config = config
 
@@ -76,24 +77,20 @@ class PieWidget(AnimatedWidget, BaseWidget):
         self.is_edit_mode = False
         self._last_widget = None
 
-        self._circle_points = CirclePoints(
-            center=self.center,
-            radius=self._style.pie_radius)
         self.label_holder = LabelHolder(
             self._labels,
             self._style,
-            self._circle_points,
             self.config.allow_remove,
             self)
+        self._circle_points: CirclePoints
+        self._reset()
 
-    def reset(self, style: PieStyle):
-        self._style = style
-        self.setGeometry(0, 0, style.widget_radius*2, style.widget_radius*2)
+    def _reset(self):
+        radius = self._style.widget_radius*2
+        self.setGeometry(0, 0, radius, radius)
         self._circle_points = CirclePoints(
             center=self.center,
             radius=self._style.pie_radius)
-        self.label_holder.circle_points = self._circle_points
-        self.label_holder.reset(self._style)
 
     @property
     def deadzone(self) -> float:

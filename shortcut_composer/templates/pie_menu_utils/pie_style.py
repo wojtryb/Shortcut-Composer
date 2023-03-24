@@ -47,17 +47,20 @@ class PieStyle:
     @property
     def pie_radius_scale(self):
         radius = self._pie_radius_scale.read()
-        if radius != self._prev_pie:
-            self._notice_change()
+        old = self._prev_pie
         self._prev_pie = radius
+        if radius != old:
+            self._notice_change()
         return radius
 
+    # FIXME notification needs to be done immediatelly after change
     @property
     def icon_radius_scale(self):
         radius = self._icon_radius_scale.read()
-        if radius != self._prev_icon:
-            self._notice_change()
+        old = self._prev_icon
         self._prev_icon = radius
+        if radius != old:
+            self._notice_change()
         return radius
 
     def _notice_change(self):

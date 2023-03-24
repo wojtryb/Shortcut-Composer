@@ -29,6 +29,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
 
         self._values = values
         self._style = style
+        self._style.register_callback(self._reset)
         self._pie_config = pie_config
 
     def move_to_pie_side(self):
@@ -36,6 +37,5 @@ class PieSettings(AnimatedWidget, BaseWidget):
         point = QPoint(round(offset), 0)
         self.move_center(QCursor().pos() + point)  # type: ignore
 
-    def reset(self, style: PieStyle):
-        self._style = style
+    def _reset(self):
         self.setMinimumHeight(self._style.widget_radius*2)

@@ -104,6 +104,7 @@ class PieMenu(ComplexAction, Generic[T]):
         self._active_color = active_color
 
         self._labels: NotifyingList[Label] = NotifyingList()
+        self._reset_labels(self._labels, self._local_config.values)
         self._all_labels: NotifyingList[Label] = NotifyingList()
         self._reset_labels(self._all_labels, self._get_all_values(values))
 
@@ -145,12 +146,8 @@ class PieMenu(ComplexAction, Generic[T]):
         self.accept_button.clicked.connect(lambda: self._edit_mode.set(False))
         self.accept_button.hide()
 
-    def reset(self):
-        values = self._local_config.values
-        self._reset_labels(self._labels, values)
-
-        self.pie_widget.reset(self._style)
-        self.pie_settings.reset(self._unscaled_style)
+    def _reset(self):
+        self._reset_labels(self._labels, self._local_config.values)
 
         default_radius = self._style.setting_button_radius
         radius = self._style.deadzone_radius
@@ -173,7 +170,7 @@ class PieMenu(ComplexAction, Generic[T]):
     def on_key_press(self) -> None:
         """Show widget under mouse and start manager which repaints it."""
         self._controller.refresh()
-        self.reset()
+        self._reset()
         self.pie_manager.start()
         super().on_key_press()
 

@@ -1,10 +1,9 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Optional
+from typing import List
 
-from PyQt5.QtWidgets import QWidget
-
+from api_krita.pyqt import BaseWidget
 from ..pie_style import PieStyle
 from ..label import Label
 from ..label_widget import LabelWidget
@@ -19,29 +18,28 @@ class LabelHolder:
         self,
         labels: NotifyingList[Label],
         style: PieStyle,
-        circle_points: CirclePoints,
         allow_remove: bool,
-        owner: QWidget,
+        owner: BaseWidget,
     ) -> None:
         self._labels = labels
         self._style = style
-        self.circle_points = circle_points
+        self._style.register_callback(self._reset)
         self._allow_remove = allow_remove
         self._owner = owner
 
         self.widget_holder: WidgetHolder = WidgetHolder()
-        self.reset()
+        self._reset()
 
     def append(self, label: Label):
         self._labels.append(label)
-        self.reset()
+        self._reset()
 
     def remove(self, label: Label):
         if (label in self._labels
                 and len(self._labels) > 1
                 and self._allow_remove):
             self._labels.remove(label)
-            self.reset()
+            self._reset()
 
     def swap(self, _a: Label, _b: Label):
         _a.swap_locations(_b)
@@ -50,7 +48,7 @@ class LabelHolder:
         self._labels[idx_b] = _a
         self._labels[idx_a] = _b
 
-        self.reset()
+        self._reset()
 
     def __iter__(self):
         return iter(self._labels)
@@ -58,10 +56,7 @@ class LabelHolder:
     def __bool__(self):
         return bool(self._labels)
 
-    def reset(self, style: Optional[PieStyle] = None) -> None:
-        if style is not None:
-            self._style = style
-
+    def _reset(self) -> None:
         for child in self.widget_holder:
             child.setParent(None)  # type: ignore
         self.widget_holder.clear()
@@ -71,7 +66,10 @@ class LabelHolder:
             children_widgets.append(
                 create_label_widget(label, self._style, self._owner))
 
-        angles = self.circle_points.iterate_over_circle(len(self._labels))
+        circle_points = CirclePoints(
+            center=self._owner.center,
+            radius=self._style.pie_radius)
+        angles = circle_points.iterate_over_circle(len(self._labels))
         for child, (angle, point) in zip(children_widgets, angles):
             child.setParent(self._owner)
             child.show()
