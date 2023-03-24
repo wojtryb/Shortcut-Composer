@@ -5,7 +5,6 @@ from typing import List, Generic, TypeVar
 from config_system import Field, FieldGroup
 from data_components import Tag
 
-field = FieldGroup("ShortcutComposer")
 T = TypeVar("T")
 
 
@@ -23,20 +22,18 @@ class PieConfig(Generic[T]):
     ) -> None:
         self.name = name
         self._default_values = values
-        self.pie_radius_scale = field(
-            f"{self.name} pie scale",
-            pie_radius_scale)
-        self.icon_radius_scale = field(
-            f"{self.name} icon scale",
-            icon_radius_scale)
+
+        self._fields = FieldGroup(f"ShortcutComposer: {name}")
+        self.pie_radius_scale = self._fields("Pie scale", pie_radius_scale)
+        self.icon_radius_scale = self._fields("Icon scale", icon_radius_scale)
 
 
 class PresetPieConfig(PieConfig):
     def __init__(self, *args):
         super().__init__(*args)
         self._default_values: Tag
-        self.tag_name = field(self.name, self._default_values.tag_name)
-        self.order = field(f"{self.name} values", [""])
+        self.tag_name = self._fields("Tag", self._default_values.tag_name)
+        self.order = self._fields("Values", [""])
         self.allow_remove = False
 
     @property
@@ -52,7 +49,7 @@ class PresetPieConfig(PieConfig):
 class EnumPieConfig(PieConfig):
     def __init__(self, *args):
         super().__init__(*args)
-        self.order = field(f"{self.name} values", self._default_values)
+        self.order = self._fields("Values", self._default_values)
         self.allow_remove = True
 
     @property
