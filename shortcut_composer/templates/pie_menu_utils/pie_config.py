@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from typing import List, Generic, TypeVar
 from composer_utils.config import (
     EnumsListField,
     ImmutablesListField,
@@ -8,9 +9,11 @@ from composer_utils.config import (
     FieldBase)
 from data_components import Tag
 
+T = TypeVar("T")
 
-class PieConfig:
-    values: list
+
+class PieConfig(Generic[T]):
+    values: List[T]
     order: FieldBase
     allow_remove: bool
 

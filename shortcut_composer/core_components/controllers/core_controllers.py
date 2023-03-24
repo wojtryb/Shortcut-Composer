@@ -99,6 +99,7 @@ class UndoController(Controller[float]):
     """
 
     state = 0
+    default_value = 0
 
     def get_value(self) -> int:
         """Return remembered position on undo stack"""

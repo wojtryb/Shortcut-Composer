@@ -1,5 +1,5 @@
 
-from typing import List
+from typing import List, TypeVar
 
 from data_components import Tag
 from .pie_config import PieConfig, PresetPieConfig, EnumPieConfig
@@ -9,13 +9,15 @@ from .pie_style import PieStyle
 from .pie_config import PieConfig, EnumPieConfig, PresetPieConfig
 from .widget_utils import NotifyingList
 
+T = TypeVar("T")
+
 
 def create_local_config(
     name: str,
-    values: list,
+    values: List[T],
     pie_radius_scale: float,
     icon_radius_scale: float,
-) -> PieConfig:
+) -> PieConfig[T]:
     args = [name, values, pie_radius_scale, icon_radius_scale]
     if isinstance(values, Tag):
         return PresetPieConfig(*args)

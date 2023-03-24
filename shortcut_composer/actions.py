@@ -16,7 +16,6 @@ from PyQt5.QtGui import QColor
 
 from api_krita.enums import Tool, Toggle, BlendingMode, TransformMode
 from core_components import instructions, controllers
-from input_adapter import ComplexAction
 from data_components import (
     CurrentLayerStack,
     PickStrategy,
@@ -27,7 +26,6 @@ from data_components import (
 infinity = float("inf")
 
 
-# def create_actions() -> List[ComplexAction]: return [
 def create_actions(): return [
 
     # Switch between FREEHAND BRUSH and the MOVE tool

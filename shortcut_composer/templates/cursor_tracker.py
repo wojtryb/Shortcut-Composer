@@ -13,9 +13,10 @@ from .mouse_tracker_utils import (
 )
 
 T = TypeVar("T")
+U = TypeVar("U")
 
 
-class CursorTracker(ComplexAction, Generic[T]):
+class CursorTracker(ComplexAction, Generic[T, U]):
     """
     Switch values with horizontal or vertical mouse movement.
 
@@ -64,7 +65,7 @@ class CursorTracker(ComplexAction, Generic[T]):
         cls,
         name: str,
         horizontal_slider: Optional[Slider[T]] = None,
-        vertical_slider: Optional[Slider[T]] = None,
+        vertical_slider: Optional[Slider[U]] = None,
         instructions: List[Instruction] = [],
     ) -> ComplexAction:
         """
@@ -111,6 +112,6 @@ class CursorTracker(ComplexAction, Generic[T]):
         self,
         name: str,
         horizontal_slider: Optional[Slider[T]] = None,
-        vertical_slider: Optional[Slider[T]] = None,
+        vertical_slider: Optional[Slider[U]] = None,
         instructions: List[Instruction] = [],
     ) -> None: ...
