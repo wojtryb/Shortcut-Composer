@@ -160,6 +160,7 @@ class PieMenu(ComplexAction, Generic[T]):
     def on_key_press(self) -> None:
         """Show widget under mouse and start manager which repaints it."""
         self._controller.refresh()
+        self.reset()
         self.pie_manager.start()
         super().on_key_press()
 
