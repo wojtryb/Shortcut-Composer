@@ -52,8 +52,8 @@ class EditMode:
         """If values were not hardcoded, but from config, write them back."""
         widget = self._obj.pie_widget
 
-        if not widget.child_aggregator or widget.config is None:
+        if not widget.aggregator or widget.config is None:
             return
 
-        values = [widget.label.value for widget in widget.child_aggregator.widget_holder]
+        values = [label.value for label in widget.aggregator]
         widget.config.order.write(values)

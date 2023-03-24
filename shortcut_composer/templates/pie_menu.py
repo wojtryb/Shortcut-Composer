@@ -150,8 +150,8 @@ class PieMenu(ComplexAction, Generic[T]):
             return
 
         self.pie_manager.stop()
-        if widget := self.pie_widget.child_aggregator.widget_holder.active:
-            self._controller.set_value(widget.label.value)
+        if label := self.pie_widget.active:
+            self._controller.set_value(label.value)
 
     def _create_labels(self, values: List[T]) -> List[Label]:
         """Wrap values into paintable label objects with position info."""

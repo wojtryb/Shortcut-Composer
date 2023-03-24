@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Dict, Iterator, Optional
+# from typing import Dict, Iterator, Optional
+from typing import Dict, Iterator
 from ..label_widget import LabelWidget
 from ..label import Label
 
@@ -16,7 +17,6 @@ class WidgetHolder:
 
     def __init__(self):
         self._widgets: Dict[int, LabelWidget] = {}
-        self.active: Optional[LabelWidget] = None
 
     def add(self, widget: LabelWidget) -> None:
         """Add a new LabelWidget to the holder."""
@@ -51,17 +51,8 @@ class WidgetHolder:
                 return angle
         raise ValueError(f"{widget} not in holder.")
 
-    def swap(self, _a: LabelWidget, _b: LabelWidget) -> None:
-        """Swap two LabelWidgets that are already in the holder."""
-        _a.label.swap_locations(_b.label)
-        key_a, key_b = self.angle(_a), self.angle(_b)
-        self._widgets[key_a], self._widgets[key_b] = _b, _a
-        _a.move_to_label()
-        _b.move_to_label()
-
     def clear(self):
         self._widgets = {}
-        self.active = None
 
     def __iter__(self) -> Iterator[LabelWidget]:
         """Iterate over all held LabelWidgets."""
