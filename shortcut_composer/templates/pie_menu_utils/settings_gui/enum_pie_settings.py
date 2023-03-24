@@ -1,4 +1,5 @@
 from typing import List
+from copy import copy
 
 from PyQt5.QtWidgets import QVBoxLayout, QTabWidget
 
@@ -25,13 +26,17 @@ class EnumPieSettings(PieSettings):
             parent)
 
         tab_holder = QTabWidget()
+
+        new_style = copy(self._style)
+        new_style.icon_radius_scale = 1.0
+        
+        self._action_values = ScrollArea(values, new_style, 3)
+        tab_holder.addTab(self._action_values, "Action values")
         self._local_settings = ConfigFormWidget([
             ConfigSpinBox(pie_config.pie_radius_scale, self, 0.05, 4),
             ConfigSpinBox(pie_config.icon_radius_scale, self, 0.05, 4),
         ])
         tab_holder.addTab(self._local_settings, "Local settings")
-        self._action_values = ScrollArea(values, self._style, 3)
-        tab_holder.addTab(self._action_values, "Action values")
 
         layout = QVBoxLayout(self)
         layout.addWidget(tab_holder)

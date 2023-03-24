@@ -20,6 +20,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
         parent=None
     ) -> None:
         AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())
+        self.setMinimumHeight(style.widget_radius*2)
         self.setAcceptDrops(True)
         self.setWindowFlags((
             self.windowFlags() |  # type: ignore

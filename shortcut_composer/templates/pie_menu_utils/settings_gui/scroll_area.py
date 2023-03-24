@@ -20,7 +20,6 @@ class ScrollArea(QScrollArea):
         parent=None
     ) -> None:
         super().__init__(parent)
-        self.setFixedHeight(style.widget_radius*2)
         self.setFixedWidth(round(style.icon_radius*(2*columns + 1)))
         self.setWidgetResizable(True)
 

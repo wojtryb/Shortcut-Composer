@@ -35,7 +35,10 @@ class PieManager:
         self._pie_widget.move_center(QCursor().pos())
         self._pie_widget.show()
 
+        self._pie_settings.show()
         self._pie_settings.move_to_pie_side()
+        self._pie_settings.hide()
+
         self._circle = CirclePoints(self._pie_widget.center_global, 0)
         self._timer.start()
 
