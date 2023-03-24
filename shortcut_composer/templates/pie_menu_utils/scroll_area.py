@@ -51,10 +51,8 @@ class ScrollArea(BaseWidget):
     def __init__(self, cols: int, parent=None):
         super().__init__(parent)
 
-        self.hide()
-
         self.setAcceptDrops(True)
-        self.setWindowFlags((self.windowFlags() | Qt.Popup | Qt.NoFocus))  # type: ignore
+        self.setWindowFlags((self.windowFlags() | Qt.Tool))  # type: ignore
         self.setCursor(Qt.CrossCursor)
 
         self.setGeometry(0, 0, 400, 300)
@@ -91,7 +89,7 @@ class ScrollArea(BaseWidget):
         main_layout.addStretch()
         self.setLayout(main_layout)
 
-        self.show()
+        self.hide()
 
     def add_label(self, name: str):
         label = QLabel(str(name))

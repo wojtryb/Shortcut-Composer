@@ -75,7 +75,7 @@ class PieWidget(AnimatedWidget, BaseWidget):
         self.setAcceptDrops(True)
         self.setWindowFlags((
             self.windowFlags() |  # type: ignore
-            Qt.Popup |
+            Qt.Tool |
             Qt.FramelessWindowHint |
             Qt.NoDropShadowWindowHint))
         self.setAttribute(Qt.WA_TranslucentBackground)
