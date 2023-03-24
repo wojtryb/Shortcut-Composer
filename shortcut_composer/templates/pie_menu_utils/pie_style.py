@@ -129,6 +129,12 @@ class PieStyle:
         return round(30 * self._base_size)
 
     @property
+    def accept_button_radius(self) -> int:
+        default_radius = self.setting_button_radius
+        radius = self.deadzone_radius
+        return int(radius) if radius != float("inf") else default_radius
+
+    @property
     def background_color(self) -> QColor:
         """Default background color depends on the app theme lightness."""
         if self._background_color is not None:

@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Callable
 
 from PyQt5.QtWidgets import QWidget, QPushButton
 from PyQt5.QtGui import QColor, QIcon
@@ -14,10 +14,18 @@ class RoundButton(QPushButton, BaseWidget):
     def __init__(
         self,
         icon: QIcon,
-        parent: Optional[QWidget] = None
+        radius_callback: Callable[[], int],
+        icon_scale: float,
+        style: PieStyle,
+        parent: Optional[QWidget] = None,
     ):
         QPushButton.__init__(self, icon, "", parent)
         self.setCursor(Qt.ArrowCursor)
+
+        self._radius_callback = radius_callback
+        self._icon_scale = icon_scale
+        self._style = style
+        self._style.register_callback(self._reset)
 
         if parent is None:
             self.setWindowFlags((
@@ -28,22 +36,24 @@ class RoundButton(QPushButton, BaseWidget):
             self.setAttribute(Qt.WA_TranslucentBackground)
             self.setStyleSheet("background: transparent;")
 
+        self._reset()
         self.show()
 
-    def reset(self, radius: int, icon_scale: float, style: PieStyle):
+    def _reset(self):
+        radius = self._radius_callback()
         self.setGeometry(0, 0, radius*2, radius*2)
         
         self.setStyleSheet(f"""
             QPushButton [
-                border: {style.border_thickness}px
-                    {self._color_to_str(style.border_color)};
+                border: {self._style.border_thickness}px
+                    {self._color_to_str(self._style.border_color)};
                 border-radius: {radius}px;
                 border-style: outset;
-                background: {self._color_to_str(style.background_color)};
-                qproperty-iconSize:{round(radius*icon_scale)}px;
+                background: {self._color_to_str(self._style.background_color)};
+                qproperty-iconSize:{round(radius*self._icon_scale)}px;
             ]
             QPushButton:hover [
-                background: {self._color_to_str(style.active_color)};
+                background: {self._color_to_str(self._style.active_color)};
             ]
         """.replace('[', '{').replace(']', '}'))
 

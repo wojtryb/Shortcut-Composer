@@ -105,23 +105,18 @@ class PieMenu(ComplexAction, Generic[T]):
 
         self._labels: NotifyingList[Label] = NotifyingList()
         self._reset_labels(self._labels, self._local_config.values)
-        self._all_labels: NotifyingList[Label] = NotifyingList()
+        self._all_labels: List[Label] = []
         self._reset_labels(self._all_labels, self._get_all_values(values))
 
         self._edit_mode = EditMode(self)
 
-        self._unscaled_style = PieStyle(
-            pie_radius_scale=self._local_config.pie_radius_scale,
-            icon_radius_scale=self._local_config.icon_radius_scale,
-            background_color=self._background_color,
-            active_color=self._active_color,
-            items=[None])
-        self._style = PieStyle(
-            pie_radius_scale=self._local_config.pie_radius_scale,
-            icon_radius_scale=self._local_config.icon_radius_scale,
-            background_color=self._background_color,
-            active_color=self._active_color,
-            items=self._labels)
+        style_args = {
+            "pie_radius_scale": self._local_config.pie_radius_scale,
+            "icon_radius_scale": self._local_config.icon_radius_scale,
+            "background_color": self._background_color,
+            "active_color": self._active_color}
+        self._unscaled_style = PieStyle(items=[None], **style_args)
+        self._style = PieStyle(items=self._labels, **style_args)
 
         self.pie_settings = create_pie_settings_window(
             style=self._unscaled_style,
@@ -138,34 +133,27 @@ class PieMenu(ComplexAction, Generic[T]):
 
         self.settings_button = RoundButton(
             icon=Krita.get_icon("properties"),
-            parent=self.pie_widget)
+            parent=self.pie_widget,
+            radius_callback=lambda: self._style.setting_button_radius,
+            icon_scale=1.1,
+            style=self._style)
         self.settings_button.clicked.connect(lambda: self._edit_mode.set(True))
         self.accept_button = RoundButton(
             icon=Krita.get_icon("dialog-ok"),
-            parent=self.pie_widget)
+            parent=self.pie_widget,
+            radius_callback=lambda: self._style.accept_button_radius,
+            icon_scale=1.5,
+            style=self._style)
         self.accept_button.clicked.connect(lambda: self._edit_mode.set(False))
         self.accept_button.hide()
 
     def _reset(self):
         self._reset_labels(self._labels, self._local_config.values)
 
-        default_radius = self._style.setting_button_radius
-        radius = self._style.deadzone_radius
-        radius = int(radius) if radius != float("inf") else default_radius
-
-        self.settings_button.reset(
-            radius=default_radius,
-            icon_scale=1.1,
-            style=self._style)
+        self.accept_button.move_center(self.pie_widget.center)
         self.settings_button.move(QPoint(
             self.pie_widget.width()-self.settings_button.width(),
             self.pie_widget.height()-self.settings_button.height()))
-
-        self.accept_button.reset(
-            radius=radius,
-            icon_scale=1.5,
-            style=self._style)
-        self.accept_button.move_center(self.pie_widget.center)
 
     def on_key_press(self) -> None:
         """Show widget under mouse and start manager which repaints it."""
