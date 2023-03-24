@@ -22,12 +22,23 @@ class LabelWidget(BaseWidget):
         super().__init__(parent)
         self.setGeometry(0, 0, style.icon_radius*2, style.icon_radius*2)
         self.label = label
-        self.draggable = True
+        self._draggable = True
+        self.draggable = self._draggable
 
         self._style = style
         self._enabled = True
         self._hovered = False
-        self.setCursor(Qt.ArrowCursor)
+
+    @property
+    def draggable(self):
+        return self._draggable
+
+    @draggable.setter
+    def draggable(self, value: bool):
+        self._draggable = value
+        if value:
+            return self.setCursor(Qt.ArrowCursor)
+        self.setCursor(Qt.CrossCursor)
 
     def move_to_label(self) -> None:
         """Move the widget by providing a new center point."""
@@ -36,12 +47,12 @@ class LabelWidget(BaseWidget):
     def set_enabled(self, value: bool):
         self._enabled = value
         if not value:
-            self.draggable = False
+            self._draggable = False
         self.repaint()
 
     def mousePressEvent(self, e: QMouseEvent) -> None:
         """Initiate a drag loop for this Widget, so Widgets can be swapped."""
-        if e.buttons() != Qt.LeftButton or not self.draggable:
+        if e.buttons() != Qt.LeftButton or not self._draggable:
             return
 
         drag = QDrag(self)

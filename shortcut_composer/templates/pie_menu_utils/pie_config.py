@@ -43,7 +43,6 @@ class PresetPieConfig(PieConfig):
         self.order = ImmutablesListField(f"{self.name} values", [""])
         self.allow_remove = False
 
-
     @property
     def values(self):
         saved_order = self.order.read()
