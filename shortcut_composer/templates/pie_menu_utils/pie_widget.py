@@ -68,7 +68,7 @@ class PieWidget(AnimatedWidget, BaseWidget):
             radius=self._style.pie_radius)
 
         self.labels = labels
-        self.children_widgets = self._create_children_holder()
+        self.children_widgets = self._create_children()
         self.widget_holder = self._put_children_in_holder()
 
         self.accept_button = AcceptButton(self._style, self)
@@ -125,7 +125,7 @@ class PieWidget(AnimatedWidget, BaseWidget):
         self.repaint()
         e.accept()
 
-    def _create_children_holder(self) -> List[LabelWidget]:
+    def _create_children(self) -> List[LabelWidget]:
         """Create LabelWidgets that represent the labels."""
         children: List[LabelWidget] = []
         for label in self.labels:

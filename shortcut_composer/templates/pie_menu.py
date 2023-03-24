@@ -1,11 +1,11 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, TypeVar, Generic, Union, Optional
+from typing import List, TypeVar, Generic, Optional
+from enum import Enum
 
-from PyQt5.QtGui import QColor, QPixmap, QIcon
+from PyQt5.QtGui import QColor
 
-from api_krita.pyqt import Text
 from core_components import Controller, Instruction
 from input_adapter import ComplexAction
 from .pie_menu_utils import (
@@ -91,27 +91,31 @@ class PieMenu(ComplexAction, Generic[T]):
             short_vs_long_press_time=short_vs_long_press_time,
             instructions=instructions)
         self._controller = controller
-
         self._config = create_pie_config(
             name,
             values,
             pie_radius_scale,
             icon_radius_scale)
-        self._labels = self._create_labels(self._config.values)
+        self._values = self._config.values
         self._style = PieStyle(
             pie_radius_scale=self._config.pie_radius_scale.read(),
             icon_radius_scale=self._config.icon_radius_scale.read(),
-            icons_amount=len(self._labels),
+            icons_amount=len(self._values),
             background_color=background_color,
             active_color=active_color)
 
-        self._pie_settings = ScrollArea(4)
         self._pie_widget = PieWidget(
-            self._style,
-            self._labels,
-            self._config,
-            self._pie_settings)
-        self._pie_manager = PieManager(self._pie_widget, self._pie_settings)
+            style=self._style,
+            labels=self._create_labels(self._values),
+            config=self._config,
+            pie_settings=self._pie_settings)
+        self._pie_settings = ScrollArea(
+            cols=3,
+            style=self._style,
+            unused_values=self._create_unused_labels(self._values))
+        self._pie_manager = PieManager(
+            widget=self._pie_widget,
+            pie_settings=self._pie_settings)
 
     def on_key_press(self) -> None:
         """Show widget under mouse and start manager which repaints it."""
@@ -124,6 +128,7 @@ class PieMenu(ComplexAction, Generic[T]):
         super().on_every_key_release()
         if self._pie_widget.edit_mode:
             return
+
         self._pie_manager.stop()
         if widget := self._pie_widget.widget_holder.active:
             self._controller.set_value(widget.label.value)
@@ -132,14 +137,23 @@ class PieMenu(ComplexAction, Generic[T]):
         """Wrap values into paintable label objects with position info."""
         label_list = []
         for value in values:
-            if icon := self._get_icon_if_possible(value):
-                label_list.append(Label(value=value, display_value=icon))
+            label = self._controller.get_label(value)
+            label_list.append(Label(value=value, display_value=label))
         return label_list
 
-    def _get_icon_if_possible(self, value: T) \
-            -> Union[Text, QPixmap, QIcon, None]:
-        """Return the paintable icon of the value or None if missing."""
-        try:
-            return self._controller.get_label(value)
-        except KeyError:
-            return None
+    def _create_unused_labels(self, values: List[T]) -> List[Label]:
+        """Create labels of all unused values"""
+        return self._create_labels(self._get_unused_values(values))
+
+    def _get_unused_values(self, values: List[T]) -> List[T]:
+        """Return all unused pie values."""
+        if not values:
+            return []
+
+        value_type = values[0]
+        if not isinstance(value_type, Enum):
+            return []
+
+        names = type(value_type)._member_names_
+        all_values = [type(value_type)[name] for name in names]
+        return list(filter(lambda x: x not in self._config.values, all_values))

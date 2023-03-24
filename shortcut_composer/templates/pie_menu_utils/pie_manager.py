@@ -4,7 +4,6 @@
 from typing import Optional
 
 from PyQt5.QtGui import QCursor
-from PyQt5.QtCore import QPoint
 
 from api_krita.pyqt import Timer
 from composer_utils import Config
@@ -35,8 +34,7 @@ class PieManager:
     def start(self) -> None:
         """Show widget under the mouse and start the mouse tracking loop."""
         self._pie.move_center(QCursor().pos())
-        self._pie_settings.move_center(
-            QCursor().pos() + QPoint(self._pie_settings.width(), 0))
+        self._pie_settings.move_to_pie_side()
         self._pie.show()
         self._circle = CirclePoints(self._pie.center_global, 0)
         self._timer.start()

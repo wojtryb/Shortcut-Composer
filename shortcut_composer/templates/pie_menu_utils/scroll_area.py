@@ -1,14 +1,18 @@
 from typing import List
-from PyQt5.QtCore import QSize, Qt
+from PyQt5.QtCore import QPoint, Qt
+from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import (
     QWidget,
     QScrollArea,
-    QLabel,
     QGridLayout,
     QHBoxLayout,
 )
 from api_krita.pyqt import AnimatedWidget, BaseWidget
 from composer_utils import Config
+from .label import Label
+from .label_widget import LabelWidget
+from .label_widget_utils import create_label_widget
+from .pie_style import PieStyle
 
 
 class ScrollAreaLayout(QGridLayout):
@@ -49,42 +53,39 @@ class ScrollAreaLayout(QGridLayout):
 
 
 class ScrollArea(AnimatedWidget, BaseWidget):
-    def __init__(self, cols: int, parent=None):
+    def __init__(
+        self,
+        cols: int,
+        unused_values: List[Label],
+        style: PieStyle,
+        parent=None
+    ) -> None:
         AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())
+        self.setGeometry(0, 0, style.widget_radius*2, style.widget_radius*2)
+
+        self._style = style
+        self._layout = ScrollAreaLayout(cols)
 
         self.setAcceptDrops(True)
         self.setWindowFlags((
             self.windowFlags() |  # type: ignore
             Qt.Tool |
             Qt.FramelessWindowHint))
-        self.setCursor(Qt.CrossCursor)
-
-        self.setGeometry(0, 0, 400, 300)
-        self._layout = ScrollAreaLayout(cols)
-        self.icon_size = 64
+        self.setCursor(Qt.ArrowCursor)
 
         scroll_internal = QWidget()
-        for i in range(22):
-            self.add_label(str(i))
+        self.labels = unused_values
+        self.children_list = self._create_children()
 
-        blue_label = QLabel("asd")
-        blue_label.setFixedSize(QSize(self.icon_size, self.icon_size))
-        blue_label.setStyleSheet("background-color : blue")
-        self._layout.insert(10, blue_label)
-
-        self._layout.pop(0)
-        self._layout.pop(0)
-        self._layout.pop(0)
-
-        for i in range(5):
-            self.add_label(str(i))
+        for child in self.children_list:
+            child.setFixedSize(self._style.icon_radius*2, self._style.icon_radius*2)
+            self._layout.append(child)
 
         scroll_internal.setLayout(self._layout)
 
         scroll_area = QScrollArea()
-        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         scroll_area.setWidget(scroll_internal)
-        scroll_area.setFixedWidth(scroll_internal.width() + self.icon_size//2)
+        scroll_area.setFixedWidth(scroll_internal.width() + self._style.icon_radius)
         scroll_area.setWidgetResizable(True)
 
         main_layout = QHBoxLayout(self)
@@ -95,8 +96,12 @@ class ScrollArea(AnimatedWidget, BaseWidget):
 
         self.hide()
 
-    def add_label(self, name: str):
-        label = QLabel(str(name))
-        label.setFixedSize(QSize(self.icon_size, self.icon_size))
-        label.setStyleSheet("background-color : green")
-        self._layout.append(label)
+    def _create_children(self) -> List[LabelWidget]:
+        """Create LabelWidgets that represent the labels."""
+        children: List[LabelWidget] = []
+        for label in self.labels:
+            children.append(create_label_widget(label, self._style, self))
+        return children
+
+    def move_to_pie_side(self):
+        self.move_center(QCursor().pos() + QPoint(self.width(), 0))  # type: ignore
