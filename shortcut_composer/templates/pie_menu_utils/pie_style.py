@@ -50,7 +50,8 @@ class PieStyle:
             * self.pie_radius_scale
             * Config.PIE_GLOBAL_SCALE.read())
 
-        self.widget_radius = self.pie_radius + self.max_icon_size
+        max_icon_size = max(self.base_icon_radius, self.secondary_icon_size)
+        self.widget_radius = self.pie_radius + max_icon_size
         self.deadzone_radius = self._pick_deadzone_radius()
 
         self.border_thickness = round(self.pie_radius*0.02)
@@ -78,7 +79,7 @@ class PieStyle:
             * Config.PIE_ICON_GLOBAL_SCALE.read())
 
     @property
-    def max_icon_size(self) -> int:
+    def secondary_icon_size(self) -> int:
         if not self._icons:
             return 1
         return round(self.pie_radius * math.pi / len(self._icons))
@@ -86,7 +87,7 @@ class PieStyle:
     @property
     def icon_radius(self) -> int:
         """Icons radius depend on settings, but they have to fit in the pie."""
-        return min(self.base_icon_radius, self.max_icon_size)
+        return min(self.base_icon_radius, self.secondary_icon_size)
 
     def _pick_deadzone_radius(self) -> float:
         """Deadzone can be configured, but when pie is empty, becomes inf."""

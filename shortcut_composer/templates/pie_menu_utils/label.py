@@ -40,6 +40,11 @@ class Label:
         """Change position data with information Label."""
         self.angle, other.angle = other.angle, self.angle
         self.center, other.center = other.center, self.center
+    
+    def __eq__(self, other: Any) -> bool:
+        if not isinstance(other, Label):
+            return False
+        return self.value == other.value
 
 
 class AnimationProgress:

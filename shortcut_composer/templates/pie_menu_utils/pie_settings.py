@@ -66,7 +66,7 @@ class ScrollAreaLayout(QGridLayout):
 class PieSettings(AnimatedWidget, BaseWidget):
     def __init__(
         self,
-        unused_values: List[Label],
+        values: List[Label],
         style: PieStyle,
         columns: int,
         parent=None
@@ -85,7 +85,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
         self.setCursor(Qt.ArrowCursor)
 
         scroll_internal = QWidget()
-        self.labels = unused_values
+        self.labels = values
         self.children_list = self._create_children()
 
         for child in self.children_list:

@@ -107,7 +107,7 @@ class PieMenu(ComplexAction, Generic[T]):
 
         self._pie_settings = PieSettings(
             style=self._style,
-            unused_values=self._create_unused_labels(self._values),
+            values=self._create_all_labels(self._values),
             columns=3)
         self._pie_widget = PieWidget(
             style=self._style,
@@ -142,11 +142,11 @@ class PieMenu(ComplexAction, Generic[T]):
             label_list.append(Label(value=value, display_value=label))
         return label_list
 
-    def _create_unused_labels(self, values: List[T]) -> List[Label]:
+    def _create_all_labels(self, values: List[T]) -> List[Label]:
         """Create labels of all unused values."""
-        return self._create_labels(self._get_unused_values(values))
+        return self._create_labels(self._get_all_values(values))
 
-    def _get_unused_values(self, values: List[T]) -> List[T]:
+    def _get_all_values(self, values: List[T]) -> List[T]:
         """Return all unused pie values."""
         if not values:
             return []
@@ -156,5 +156,4 @@ class PieMenu(ComplexAction, Generic[T]):
             return []
 
         names = type(value_type)._member_names_
-        all_values = [type(value_type)[name] for name in names]
-        return list(filter(lambda x: x not in self._config.values, all_values))
+        return [type(value_type)[name] for name in names]

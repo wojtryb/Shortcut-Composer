@@ -3,6 +3,7 @@
 
 from typing import Dict, Iterator, Optional
 from ..label_widget import LabelWidget
+from ..label import Label
 
 
 class WidgetHolder:
@@ -36,6 +37,12 @@ class WidgetHolder:
 
         closest = min(self.angles(), key=angle_difference)
         return self._widgets[closest]
+
+    def on_label(self, label: Label):
+        for widget in self._widgets.values():
+            if widget.label == label:
+                return widget
+        raise ValueError(f"{label} not in holder.")
 
     def angle(self, widget: LabelWidget) -> int:
         """Return at which angle angle is the given LabelWidget."""
