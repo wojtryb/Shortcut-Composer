@@ -36,7 +36,7 @@ class ImageLabelWidget(LabelWidget):
                 center=self.center,
                 outer_radius=(
                     self._style.icon_radius-self._style.border_thickness//2),
-                color=self._style.border_color,
+                color=self._border_color,
                 thickness=self._style.border_thickness)
             painter.paint_pixmap(self.center, self.ready_image)
 

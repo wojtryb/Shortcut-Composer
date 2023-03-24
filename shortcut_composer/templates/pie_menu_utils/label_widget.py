@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from PyQt5.QtCore import Qt, QMimeData
+from PyQt5.QtCore import Qt, QMimeData, QEvent
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QDrag, QPixmap, QMouseEvent
 
@@ -25,6 +25,7 @@ class LabelWidget(BaseWidget):
 
         self.label = label
         self._style = style
+        self._hovered = False
         self.setCursor(Qt.ArrowCursor)
 
     def move_to_label(self) -> None:
@@ -44,3 +45,19 @@ class LabelWidget(BaseWidget):
         drag.setPixmap(PixmapTransform.make_pixmap_round(pixmap))
 
         drag.exec_(Qt.MoveAction)
+
+    def enterEvent(self, e: QEvent) -> None:
+        self._hovered = True
+        self.repaint()
+        return super().enterEvent(e)
+
+    def leaveEvent(self, e: QEvent) -> None:
+        self._hovered = False
+        self.repaint()
+        return super().leaveEvent(e)
+
+    @property
+    def _border_color(self):
+        if self._hovered and self.draggable:
+            return self._style.active_color_dark
+        return self._style.border_color

@@ -44,7 +44,6 @@ class PieManager:
 
     def stop(self) -> None:
         """Hide the widget and stop the mouse tracking loop."""
-        self._pie_widget.hide()
         self._timer.stop()
         for label in self._pie_widget.label_holder:
             label.activation_progress.reset()
