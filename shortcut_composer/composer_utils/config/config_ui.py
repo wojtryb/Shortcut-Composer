@@ -13,18 +13,18 @@ from PyQt5.QtWidgets import (
     QWidget,
     QLabel)
 
-from ..config import ImmutableField
+from ..config import FieldBase
 
 
 class ConfigBasedWidget:
     def __init__(
         self,
-        config_field: ImmutableField,
+        config_field: FieldBase,
         parent: Optional[QWidget] = None,
         pretty_name: Optional[str] = None,
     ) -> None:
         self._parent = parent
-        self.config_field: Final[ImmutableField] = config_field
+        self.config_field: Final[FieldBase] = config_field
         self.pretty_name = self._init_pretty_name(pretty_name)
         self.widget: QWidget
 
@@ -49,7 +49,7 @@ class ConfigBasedWidget:
 class ConfigSpinBox(ConfigBasedWidget):
     def __init__(
         self,
-        config_field: Union[ImmutableField[int], ImmutableField[float]],
+        config_field: Union[FieldBase[int], FieldBase[float]],
         parent: Optional[QWidget] = None,
         pretty_name: Optional[str] = None,
         step: float = 1,
@@ -82,7 +82,7 @@ class ConfigSpinBox(ConfigBasedWidget):
 class ConfigComboBox(ConfigBasedWidget):
     def __init__(
         self,
-        config_field: ImmutableField[str],
+        config_field: FieldBase[str],
         parent: Optional[QWidget] = None,
         pretty_name: Optional[str] = None,
         allowed_values: List[Any] = [],

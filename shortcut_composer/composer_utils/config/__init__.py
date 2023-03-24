@@ -1,9 +1,5 @@
 from .global_config import Config
-from .fields import (
-    ImmutablesListField,
-    ImmutableField,
-    EnumsListField,
-    FieldBase)
+from .fields import FieldBase, field
 from .config_ui import (
     ConfigBasedWidget,
     ConfigFormWidget,
@@ -12,10 +8,8 @@ from .config_ui import (
 
 __all__ = [
     "Config",
-    "ImmutablesListField",
-    "ImmutableField",
-    "EnumsListField",
     "FieldBase",
+    "field",
     "ConfigBasedWidget",
     "ConfigFormWidget",
     "ConfigComboBox",

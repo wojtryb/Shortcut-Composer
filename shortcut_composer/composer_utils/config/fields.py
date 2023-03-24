@@ -38,7 +38,7 @@ class FieldBase(Generic[T], ABC):
 
     def _get_parser(self) -> Parser[T]:
         if issubclass(self.type, Enum):
-            return EnumParser(self.type)
+            return EnumParser(self.type)  # type: ignore
 
         return {
             int: BasicParser(int),
@@ -114,4 +114,3 @@ class ListField(FieldBase, Generic[ListT]):
 
     def _to_string(self, value: ListT) -> str:
         return "\t".join([self.parser.parse_from(item) for item in value])
-

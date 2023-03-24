@@ -9,7 +9,7 @@ from copy import copy
 from PyQt5.QtGui import QColor
 
 from api_krita import Krita
-from composer_utils.config import Config, ImmutableField
+from composer_utils.config import Config, FieldBase
 
 
 class PieStyle:
@@ -25,8 +25,8 @@ class PieStyle:
 
     def __init__(
         self,
-        pie_radius_scale: ImmutableField[float],
-        icon_radius_scale: ImmutableField[float],
+        pie_radius_scale: FieldBase[float],
+        icon_radius_scale: FieldBase[float],
         background_color: Optional[QColor],
         active_color: QColor,
         items: list,
