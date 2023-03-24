@@ -2,8 +2,8 @@ from api_krita.wrappers import Database
 
 
 class Tag(list):
-    def __init__(self, default_tag_name: str):
-        self.tag_name = default_tag_name
+    def __init__(self, tag_name: str):
+        self.tag_name = tag_name
         self.extend(self._read_brushes())
 
     def _read_brushes(self):

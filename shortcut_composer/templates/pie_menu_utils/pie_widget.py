@@ -7,7 +7,8 @@ from enum import Enum
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPaintEvent, QDragMoveEvent, QDragEnterEvent
 from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
-from composer_utils import Config, EnumListConfig, BuiltinListConfig
+from composer_utils import Config, EnumListConfig, BuiltinListConfig, BuiltinConfig
+from data_components import Tag
 from .pie_style import PieStyle
 from .label import Label
 from .label_widget import LabelWidget
@@ -27,10 +28,15 @@ T = TypeVar('T')
 class PieConfig:
     def __init__(self, name: str, values: list) -> None:
         self.name = name
+        if isinstance(values, Tag):
+            self.tag_name = BuiltinConfig(name=name, default=values.tag_name)
+            values = Tag(self.tag_name.read())
+        else:
+            self.tag_name = BuiltinConfig(name=name, default="")
         self.values = self._create_values(values)
 
     def _create_values(self, values: list):
-        values_name = f"{values} values"
+        values_name = f"{self.name} values"
         if not values:
             return BuiltinListConfig(values_name, [None])
         if isinstance(values[0], Enum):

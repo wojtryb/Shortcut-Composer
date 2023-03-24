@@ -72,7 +72,7 @@ class EnumListConfig(ConfigBase):
             value=to_write)
 
 
-class BuiltinListConfig(ConfigBase):
+class BuiltinListConfig(ConfigBase, Generic[T]):
     def __init__(self, name: str, default: List[T]) -> None:
         super().__init__(name, default)
 
@@ -82,7 +82,7 @@ class BuiltinListConfig(ConfigBase):
         if raw == "":
             return self.default
 
-        parse_type = type(self.default)
+        parse_type = type(self.default[0])
         return [parse_type(item) for item in raw.split("\t")]
 
     def write(self, value: List[T]) -> None:
