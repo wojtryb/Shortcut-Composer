@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import List, TypeVar, Generic, Optional
-from copy import copy
 from enum import Enum
 
 from PyQt5.QtCore import QPoint
@@ -110,14 +109,18 @@ class PieMenu(ComplexAction, Generic[T]):
 
         self._edit_mode = EditMode(self)
 
-        self._style = PieStyle(
-            pie_radius_scale=self._local_config.pie_radius_scale.read(),
-            icon_radius_scale=self._local_config.icon_radius_scale.read(),
+        self._unscaled_style = PieStyle(
+            pie_radius_scale=self._local_config.pie_radius_scale,
+            icon_radius_scale=self._local_config.icon_radius_scale,
             background_color=self._background_color,
-            active_color=self._active_color)
-
-        self._unscaled_style = copy(self._style)
-        self._style.set_items(self._labels)
+            active_color=self._active_color,
+            items=[None])
+        self._style = PieStyle(
+            pie_radius_scale=self._local_config.pie_radius_scale,
+            icon_radius_scale=self._local_config.icon_radius_scale,
+            background_color=self._background_color,
+            active_color=self._active_color,
+            items=self._labels)
 
         self.pie_settings = create_pie_settings_window(
             style=self._unscaled_style,
@@ -136,7 +139,6 @@ class PieMenu(ComplexAction, Generic[T]):
             icon=Krita.get_icon("properties"),
             parent=self.pie_widget)
         self.settings_button.clicked.connect(lambda: self._edit_mode.set(True))
-
         self.accept_button = RoundButton(
             icon=Krita.get_icon("dialog-ok"),
             parent=self.pie_widget)
@@ -146,15 +148,6 @@ class PieMenu(ComplexAction, Generic[T]):
     def reset(self):
         values = self._local_config.values
         self._reset_labels(self._labels, values)
-
-        self._style = PieStyle(
-            pie_radius_scale=self._local_config.pie_radius_scale.read(),
-            icon_radius_scale=self._local_config.icon_radius_scale.read(),
-            background_color=self._background_color,
-            active_color=self._active_color)
-
-        self._unscaled_style = copy(self._style)
-        self._style.set_items(self._labels)
 
         self.pie_widget.reset(self._style)
         self.pie_settings.reset(self._unscaled_style)
