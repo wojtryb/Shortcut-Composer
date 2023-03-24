@@ -33,6 +33,7 @@ class CustomLayout(QGridLayout):
     def append(self, widget: QWidget):
         self.widgets.append(widget)
         self.addWidget(widget, *self._new_position(), 2, 2)
+        self._refresh()
 
     def pop(self, index: int):
         self.widgets.pop(index)
@@ -55,13 +56,14 @@ class Window(QWidget):
         self.icon_size = 64
 
         scroll_internal = QWidget()
-        for i in range(25):
+        for i in range(22):
             self.add_label(str(i))
 
         blue_label = QLabel("asd")
         blue_label.setFixedSize(QSize(self.icon_size, self.icon_size))
         blue_label.setStyleSheet("background-color : blue")
         self._layout.insert(10, blue_label)
+
         self._layout.pop(0)
         self._layout.pop(0)
         self._layout.pop(0)
