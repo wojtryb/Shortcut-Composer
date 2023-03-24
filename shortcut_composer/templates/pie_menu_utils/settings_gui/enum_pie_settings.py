@@ -35,6 +35,8 @@ class EnumPieSettings(PieSettings):
         new_style.icon_radius_scale = 1.0
 
         self._action_values = ScrollArea(values, new_style, 3)
+        self._action_values.setMinimumHeight(round(style.base_icon_radius*6.2))
+
         tab_holder.addTab(self._action_values, "Action values")
         self._local_settings = ConfigFormWidget([
             ConfigSpinBox(

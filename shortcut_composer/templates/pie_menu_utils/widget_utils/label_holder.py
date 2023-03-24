@@ -17,7 +17,7 @@ from .notifying_list import NotifyingList
 class LabelHolder:
     def __init__(
         self,
-        labels: NotifyingList,
+        labels: NotifyingList[Label],
         style: PieStyle,
         circle_points: CirclePoints,
         allow_remove: bool,
