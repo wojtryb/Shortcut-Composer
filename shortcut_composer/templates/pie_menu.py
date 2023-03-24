@@ -150,7 +150,10 @@ class PieMenu(ComplexAction, Generic[T]):
         """Wrap values into paintable label objects with position info."""
         label_list = []
         for value in values:
-            label = self._controller.get_label(value)
+            try:
+                label = self._controller.get_label(value)
+            except KeyError:
+                continue
             label_list.append(Label(value=value, display_value=label))
         return label_list
 
