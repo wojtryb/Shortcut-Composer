@@ -104,8 +104,6 @@ class PieMenu(ComplexAction, Generic[T]):
         self._background_color = background_color
         self._active_color = active_color
 
-        self.reset()
-
     def reset(self):
         self._values = self._local_config.values
         self._labels = self._create_labels(self._values)
@@ -171,6 +169,7 @@ class PieMenu(ComplexAction, Generic[T]):
             return
 
         self.pie_manager.stop()
+        self.pie_widget.hide()
         if label := self.pie_widget.active:
             self._controller.set_value(label.value)
 
@@ -190,7 +189,6 @@ class PieMenu(ComplexAction, Generic[T]):
         return self._create_labels(self._get_all_values(values))
 
     def _get_all_values(self, values: List[T]) -> List[T]:
-        """Return all unused pie values."""
         if not values:
             return []
 
