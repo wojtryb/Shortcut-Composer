@@ -35,9 +35,9 @@ class Config:
     PIE_DEADZONE_GLOBAL_SCALE = BuiltinConfig("Pie deadzone global scale", 1.0)
     PIE_ANIMATION_TIME = BuiltinConfig("Pie animation time", 0.2)
 
-    TAG_RED = BuiltinConfig("Tag (red)", "★ My Favorites")
-    TAG_GREEN = BuiltinConfig("Tag (green)", "RGBA")
-    TAG_BLUE = BuiltinConfig("Tag (blue)", "Erasers")
+    TAG_RED = BuiltinConfig("Pick brush presets (red)", "★ My Favorites")
+    TAG_GREEN = BuiltinConfig("Pick brush presets (green)", "RGBA")
+    TAG_BLUE = BuiltinConfig("Pick brush presets (blue)", "Erasers")
 
     @classmethod
     def reset_defaults(cls) -> None:

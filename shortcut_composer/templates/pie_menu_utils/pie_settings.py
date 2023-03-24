@@ -6,22 +6,27 @@ from PyQt5.QtWidgets import (
     QWidget,
     QScrollArea,
     QGridLayout,
-    QHBoxLayout,
+    QVBoxLayout,
+    QTabWidget,
 )
+from api_krita import Krita
 from api_krita.pyqt import AnimatedWidget, BaseWidget
 from composer_utils import Config
 from .label import Label
 from .label_widget import LabelWidget
 from .label_widget_utils import create_label_widget
 from .pie_style import PieStyle
+from .pie_config import PieConfig
+from .pie_local_settings import LocalPieSettings
 
 
-class PieSettings(AnimatedWidget, BaseWidget):
+class PieSettingsWindow(AnimatedWidget, BaseWidget):
     def __init__(
         self,
         values: List[Label],
         style: PieStyle,
         columns: int,
+        pie_config: PieConfig,
         parent=None
     ) -> None:
         AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())
@@ -33,21 +38,35 @@ class PieSettings(AnimatedWidget, BaseWidget):
         self.setCursor(Qt.ArrowCursor)
 
         self._style = style
-        self.scroll_area = ScrollArea(
+        self._pie_config = pie_config
+
+        tab_holder = QTabWidget()
+
+        self._local_settings = LocalPieSettings(pie_config=self._pie_config)
+        tab_holder.addTab(self._local_settings, "Local settings")
+        self._action_values = ScrollArea(
             values,
             self._style,
             columns)
+        tab_holder.addTab(self._action_values, "Action values")
 
-        layout = QHBoxLayout(self)
-        layout.addWidget(self.scroll_area)
+        layout = QVBoxLayout(self)
+        layout.addWidget(tab_holder)
         self.setLayout(layout)
-
-        self.hide()
 
     def move_to_pie_side(self):
         offset = self.width()//2 + self._style.widget_radius * 1.05
         point = QPoint(round(offset), 0)
         self.move_center(QCursor().pos() + point)  # type: ignore
+
+    def show(self):
+        self._local_settings.refresh()
+        return super().show()
+
+    def hide(self) -> None:
+        self._local_settings.apply()
+        Krita.trigger_action("Reload Shortcut Composer")
+        return super().hide()
 
 
 class ScrollArea(QScrollArea):

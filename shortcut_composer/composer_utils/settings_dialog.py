@@ -12,7 +12,7 @@ from PyQt5.QtGui import QCursor
 from api_krita import Krita
 from .config import Config
 from .layouts import ButtonsLayout
-from .tabs import GeneralSettingsTab, ActionValuesTab
+from .tabs import GeneralSettingsTab
 
 
 class SettingsDialog(QDialog):
@@ -26,7 +26,6 @@ class SettingsDialog(QDialog):
 
         self._tab_dict = {
             "General": GeneralSettingsTab(),
-            "Action values": ActionValuesTab(),
         }
         tab_holder = QTabWidget()
         for name, tab in self._tab_dict.items():

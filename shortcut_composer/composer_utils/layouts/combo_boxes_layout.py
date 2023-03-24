@@ -11,6 +11,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt
 
 from api_krita.wrappers import Database
+from ..internal_config import BuiltinConfig
 from ..config import Config
 
 
@@ -20,7 +21,7 @@ class ComboBoxesLayout(QGridLayout):
     def __init__(self) -> None:
         super().__init__()
         self.setAlignment(Qt.AlignTop)
-        self._combo_boxes: Dict[Config, QComboBox] = {}
+        self._combo_boxes: Dict[BuiltinConfig, QComboBox] = {}
         self._row_counter = count()
 
         self._add_label("Preset pie-menus mapping")
@@ -28,10 +29,10 @@ class ComboBoxesLayout(QGridLayout):
         self._add_row(Config.TAG_GREEN)
         self._add_row(Config.TAG_BLUE)
 
-    def _add_row(self, config: Config) -> None:
+    def _add_row(self, config: BuiltinConfig) -> None:
         """Add a combobox to the layout along with its description."""
         row_id = next(self._row_counter)
-        label = QLabel(config.value)
+        label = QLabel(config.name)
         label.setFixedWidth(100)
         self.addWidget(label, row_id, 0)
         self.addWidget(self._create_combobox(config), row_id, 1)
@@ -42,10 +43,10 @@ class ComboBoxesLayout(QGridLayout):
         label.setAlignment(Qt.AlignCenter)
         self.addWidget(label, row_id, 0, 1, 2)
 
-    def _create_combobox(self, config: Config) -> QComboBox:
+    def _create_combobox(self, config: BuiltinConfig) -> QComboBox:
         """Store and return combobox that represents given config field."""
         combo_box = QComboBox()
-        combo_box.setObjectName(config.value)
+        combo_box.setObjectName(config.name)
         self._combo_boxes[config] = combo_box
         return combo_box
 

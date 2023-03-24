@@ -10,8 +10,8 @@ from PyQt5.QtGui import QColor
 from core_components import Controller, Instruction
 from input_adapter import ComplexAction
 from .pie_menu_utils import (
-    create_pie_config,
-    PieSettings,
+    create_local_config,
+    PieSettingsWindow,
     PieManager,
     PieWidget,
     PieStyle,
@@ -92,30 +92,31 @@ class PieMenu(ComplexAction, Generic[T]):
             short_vs_long_press_time=short_vs_long_press_time,
             instructions=instructions)
         self._controller = controller
-        self._config = create_pie_config(
+        self._local_config = create_local_config(
             name,
             values,
             pie_radius_scale,
             icon_radius_scale)
-        self._values = self._config.values
+        self._values = self._local_config.values
         self._labels = self._create_labels(self._values)
         self._style = PieStyle(
-            pie_radius_scale=self._config.pie_radius_scale.read(),
-            icon_radius_scale=self._config.icon_radius_scale.read(),
+            pie_radius_scale=self._local_config.pie_radius_scale.read(),
+            icon_radius_scale=self._local_config.icon_radius_scale.read(),
             background_color=background_color,
             active_color=active_color)
 
         unscaled_style = copy(self._style)
         self._style.set_items(self._labels)
 
-        self._pie_settings = PieSettings(
+        self._pie_settings = PieSettingsWindow(
             style=unscaled_style,
             values=self._create_all_labels(self._values),
+            pie_config=self._local_config,
             columns=3)
         self._pie_widget = PieWidget(
             style=self._style,
             labels=self._labels,
-            config=self._config,
+            config=self._local_config,
             pie_settings=self._pie_settings)
         self._pie_manager = PieManager(
             widget=self._pie_widget,

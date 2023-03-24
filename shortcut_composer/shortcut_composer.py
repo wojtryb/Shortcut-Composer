@@ -1,12 +1,12 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-__version__ = "1.1.1"
+__version__ = "1.2.0 prealpha"
 __author__ = "Wojciech Trybus"
 
 from typing import List
 from dataclasses import dataclass
-from PyQt5.QtWidgets import QWidgetAction, QWidget
+from PyQt5.QtWidgets import QWidgetAction
 
 from api_krita import Krita, Extension  # type: ignore
 from api_krita.actions import TransformModeActions
@@ -56,10 +56,8 @@ class ShortcutComposer(Extension):
         """Create window components. Called by krita for each new window."""
         self._protectors.append(GarbageProtector(
             transform_modes=TransformModeActions(window),
-            # settings_dialog=(settings := SettingsDialog()),
-            # settings_action=self._create_settings_action(window, settings),
-            settings_dialog=QWidget(),
-            settings_action=QWidget(),
+            settings_dialog=(settings := SettingsDialog()),
+            settings_action=self._create_settings_action(window, settings),
             action_manager=ActionManager(window),
             reload_action=self._create_reload_action(window)))
 

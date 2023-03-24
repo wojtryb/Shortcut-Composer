@@ -1,5 +1,17 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
-# SPDX-License-Identifier: GPL-3.0-or-later
+from typing import Dict
+from PyQt5.QtWidgets import (
+    QDoubleSpinBox,
+    QFormLayout,
+    QVBoxLayout,
+    QHBoxLayout,
+    QSplitter,
+    QSpinBox,
+    QLabel,
+)
+from PyQt5.QtCore import Qt
+from dataclasses import dataclass
+from typing import Dict, Union
+from PyQt5.QtWidgets import QWidget
 
 from typing import Dict, Union
 from dataclasses import dataclass
@@ -12,10 +24,41 @@ from PyQt5.QtWidgets import (
     QLabel,
 )
 
-from ..internal_config import BuiltinConfig
-from ..config import Config
+from .pie_config import PieConfig
+from composer_utils import ConfigBase
 
 SpinBox = Union[QSpinBox, QDoubleSpinBox]
+
+
+class LocalPieSettings(QWidget):
+    """Dialog which allows to change global settings of the plugin."""
+
+    def __init__(self, pie_config: PieConfig) -> None:
+        super().__init__()
+        self._pie_config = pie_config
+
+        self._layouts_dict = {
+            "SpinBoxes": SpinBoxesLayout(pie_config),
+        }
+        layout = QVBoxLayout()
+        for layout_part in self._layouts_dict.values():
+            layout.addLayout(layout_part)
+
+        stretched = QHBoxLayout()
+        stretched.addStretch()
+        stretched.addLayout(layout)
+        stretched.addStretch()
+        self.setLayout(stretched)
+
+    def apply(self) -> None:
+        """Ask all dialog zones to apply themselves."""
+        for layout in self._layouts_dict.values():
+            layout.apply()
+
+    def refresh(self) -> None:
+        """Ask all dialog zones to refresh themselves. """
+        for layout in self._layouts_dict.values():
+            layout.refresh()
 
 
 class SpinBoxesLayout(QFormLayout):
@@ -24,75 +67,35 @@ class SpinBoxesLayout(QFormLayout):
     @dataclass
     class ConfigParams:
         """Adds spinbox parametrization to the config field."""
-        config: BuiltinConfig
+        config: ConfigBase
         step: float
         max_value: float
         is_int: bool
 
-    def __init__(self) -> None:
+    def __init__(self, pie_config: PieConfig) -> None:
         super().__init__()
-        self._forms: Dict[BuiltinConfig, SpinBox] = {}
-
-        self._add_label("Common settings")
+        self._forms: Dict[ConfigBase, SpinBox] = {}
+        
+        self._add_label("Bla")
 
         self._add_row(self.ConfigParams(
-            Config.SHORT_VS_LONG_PRESS_TIME,
+            pie_config.pie_radius_scale,
+            step=0.05,
+            max_value=4,
+            is_int=False))
+        self._add_row(self.ConfigParams(
+            pie_config.icon_radius_scale,
             step=0.05,
             max_value=4,
             is_int=False))
 
-        self._add_row(self.ConfigParams(
-            Config.FPS_LIMIT,
-            step=5,
-            max_value=300,
-            is_int=True))
-
-        self._add_label("Cursor trackers")
-
-        self._add_row(self.ConfigParams(
-            Config.TRACKER_SENSITIVITY_SCALE,
-            step=0.05,
-            max_value=4,
-            is_int=False))
-
-        self._add_row(self.ConfigParams(
-            Config.TRACKER_DEADZONE,
-            step=1,
-            max_value=200,
-            is_int=True))
-
-        self._add_label("Pie menus display")
-
-        self._add_row(self.ConfigParams(
-            Config.PIE_GLOBAL_SCALE,
-            step=0.05,
-            max_value=4,
-            is_int=False))
-
-        self._add_row(self.ConfigParams(
-            Config.PIE_ICON_GLOBAL_SCALE,
-            step=0.05,
-            max_value=4,
-            is_int=False))
-
-        self._add_row(self.ConfigParams(
-            Config.PIE_DEADZONE_GLOBAL_SCALE,
-            step=0.05,
-            max_value=4,
-            is_int=False))
-
-        self._add_row(self.ConfigParams(
-            Config.PIE_ANIMATION_TIME,
-            step=0.01,
-            max_value=1,
-            is_int=False))
+        self._add_label("Ble")
 
     def _add_row(self, config_params: ConfigParams) -> None:
         """Add a spin box to the layout along with its description."""
         self.addRow(
             config_params.config.name,
-            self._create_form(config_params)
-        )
+            self._create_form(config_params))
 
     def _add_label(self, text: str):
         label = QLabel(text)
@@ -120,4 +123,3 @@ class SpinBoxesLayout(QFormLayout):
         """Write values from stored spin boxes to krita config file."""
         for config, form in self._forms.items():
             config.write(form.value())
-

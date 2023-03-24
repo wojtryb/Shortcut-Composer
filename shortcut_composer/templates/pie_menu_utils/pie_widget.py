@@ -13,7 +13,7 @@ from PyQt5.QtGui import (
 from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
 from composer_utils import Config
 from .pie_style import PieStyle
-from .pie_settings import PieSettings
+from .pie_settings import PieSettingsWindow
 from .label import Label
 from .label_widget import LabelWidget
 from .label_widget_utils import create_label_widget
@@ -59,7 +59,7 @@ class PieWidget(AnimatedWidget, BaseWidget):
         style: PieStyle,
         labels: List[Label],
         config: PieConfig,
-        pie_settings: PieSettings,
+        pie_settings: PieSettingsWindow,
         parent=None
     ):
         AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())

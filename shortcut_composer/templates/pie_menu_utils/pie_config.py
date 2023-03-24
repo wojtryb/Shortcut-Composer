@@ -9,7 +9,7 @@ from composer_utils import (
 from data_components import Tag
 
 
-def create_pie_config(
+def create_local_config(
     name: str,
     values: list,
     pie_radius_scale: float,

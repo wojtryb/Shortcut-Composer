@@ -3,18 +3,18 @@
 
 """Implementation of PieMenu main elements."""
 
-from .pie_config import create_pie_config
+from .pie_config import create_local_config
 from .label_widget import LabelWidget
-from .pie_settings import PieSettings
+from .pie_settings import PieSettingsWindow
 from .pie_manager import PieManager
 from .pie_widget import PieWidget
 from .pie_style import PieStyle
 from .label import Label
 
 __all__ = [
-    "create_pie_config",
+    "create_local_config",
     "LabelWidget",
-    "PieSettings",
+    "PieSettingsWindow",
     "PieManager",
     "PieWidget",
     "PieStyle",
