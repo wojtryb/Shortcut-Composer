@@ -5,7 +5,7 @@
 
 from .pie_config import create_pie_config
 from .label_widget import LabelWidget
-from .scroll_area import ScrollArea
+from .pie_settings import PieSettings
 from .pie_manager import PieManager
 from .pie_widget import PieWidget
 from .pie_style import PieStyle
@@ -14,7 +14,7 @@ from .label import Label
 __all__ = [
     "create_pie_config",
     "LabelWidget",
-    "ScrollArea",
+    "PieSettings",
     "PieManager",
     "PieWidget",
     "PieStyle",

@@ -8,7 +8,7 @@ from PyQt5.QtGui import QPaintEvent, QDragMoveEvent, QDragEnterEvent
 from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
 from composer_utils import Config
 from .pie_style import PieStyle
-from .scroll_area import ScrollArea
+from .pie_settings import PieSettings
 from .label import Label
 from .label_widget import LabelWidget
 from .label_widget_utils import create_label_widget
@@ -54,7 +54,7 @@ class PieWidget(AnimatedWidget, BaseWidget):
         style: PieStyle,
         labels: List[Label],
         config: PieConfig,
-        pie_settings: ScrollArea,
+        pie_settings: PieSettings,
         parent=None
     ):
         AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())
@@ -68,8 +68,10 @@ class PieWidget(AnimatedWidget, BaseWidget):
             radius=self._style.pie_radius)
 
         self.labels = labels
-        self.children_widgets = self._create_children()
-        self.widget_holder = self._put_children_in_holder()
+        self.children_widgets: List[LabelWidget] = []
+        self.widget_holder: WidgetHolder = WidgetHolder()
+        self._reset_children()
+        self._reset_holder()
 
         self.accept_button = AcceptButton(self._style, self)
         self.accept_button.move_center(self.center)
@@ -110,10 +112,29 @@ class PieWidget(AnimatedWidget, BaseWidget):
         """Swap children during drag when mouse is moved to another zone."""
         pos = e.pos()
         source_widget = e.source()
+        distance = self._circle_points.distance(pos)
 
-        if (self._circle_points.distance(pos) < self._style.deadzone_radius
-                or not isinstance(source_widget, LabelWidget)):
+        if (not isinstance(source_widget, LabelWidget)
+                or distance < self._style.deadzone_radius):
             return e.accept()
+
+        if distance > self._style.pie_radius:
+            if source_widget.label in self.labels:
+                self.labels.remove(source_widget.label)
+                # self.pie_settings._layout.append(source_widget)
+                self._restart()
+            return e.accept()
+
+        if source_widget.label not in self.labels:
+            self.labels.append(source_widget.label)
+            # self.pie_settings._layout.remove(source_widget)
+            self._restart()
+
+        if source_widget not in self.children_widgets:
+            for widget in self.children_widgets:
+                if widget.label == source_widget.label:
+                    source_widget = widget
+                    break
 
         # NOTE: This computation is too heavy to be done on each call
         angle = self._circle_points.angle_from_point(pos)
@@ -125,23 +146,29 @@ class PieWidget(AnimatedWidget, BaseWidget):
         self.repaint()
         e.accept()
 
-    def _create_children(self) -> List[LabelWidget]:
-        """Create LabelWidgets that represent the labels."""
-        children: List[LabelWidget] = []
-        for label in self.labels:
-            children.append(create_label_widget(label, self._style, self))
-        return children
+    def _restart(self):
+        for child in self.children_widgets:
+            child.setParent(None)  # type: ignore
+        self.children_widgets.clear()
+        self.widget_holder.flush()
+        self._reset_children()
+        self._reset_holder()
 
-    def _put_children_in_holder(self) -> WidgetHolder:
+    def _reset_children(self) -> None:
+        """Create LabelWidgets that represent the labels."""
+        for label in self.labels:
+            self.children_widgets.append(
+                create_label_widget(label, self._style, self))
+
+    def _reset_holder(self) -> None:
         """Create WidgetHolder which manages child widgets angles."""
         children = self.children_widgets
         angle_iterator = self._circle_points.iterate_over_circle(len(children))
-        label_holder = WidgetHolder()
 
         for child, (angle, point) in zip(children, angle_iterator):
+            child.setParent(self)
+            child.show()
             child.label.angle = angle
             child.label.center = point
             child.move_to_label()
-            label_holder.add(child)
-
-        return label_holder
+            self.widget_holder.add(child)

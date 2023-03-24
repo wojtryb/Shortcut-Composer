@@ -10,7 +10,7 @@ from core_components import Controller, Instruction
 from input_adapter import ComplexAction
 from .pie_menu_utils import (
     create_pie_config,
-    ScrollArea,
+    PieSettings,
     PieManager,
     PieWidget,
     PieStyle,
@@ -97,22 +97,23 @@ class PieMenu(ComplexAction, Generic[T]):
             pie_radius_scale,
             icon_radius_scale)
         self._values = self._config.values
+        self._labels = self._create_labels(self._values)
         self._style = PieStyle(
             pie_radius_scale=self._config.pie_radius_scale.read(),
             icon_radius_scale=self._config.icon_radius_scale.read(),
-            icons_amount=len(self._values),
+            icons=self._labels,
             background_color=background_color,
             active_color=active_color)
 
+        self._pie_settings = PieSettings(
+            style=self._style,
+            unused_values=self._create_unused_labels(self._values),
+            columns=3)
         self._pie_widget = PieWidget(
             style=self._style,
-            labels=self._create_labels(self._values),
+            labels=self._labels,
             config=self._config,
             pie_settings=self._pie_settings)
-        self._pie_settings = ScrollArea(
-            cols=3,
-            style=self._style,
-            unused_values=self._create_unused_labels(self._values))
         self._pie_manager = PieManager(
             widget=self._pie_widget,
             pie_settings=self._pie_settings)
@@ -142,7 +143,7 @@ class PieMenu(ComplexAction, Generic[T]):
         return label_list
 
     def _create_unused_labels(self, values: List[T]) -> List[Label]:
-        """Create labels of all unused values"""
+        """Create labels of all unused values."""
         return self._create_labels(self._get_unused_values(values))
 
     def _get_unused_values(self, values: List[T]) -> List[T]:

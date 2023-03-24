@@ -16,11 +16,12 @@ from .pie_style import PieStyle
 
 
 class ScrollAreaLayout(QGridLayout):
-    def __init__(self, cols: int):
+    def __init__(self, cols: int, owner: QWidget):
         super().__init__()
         self.widgets: List[QWidget] = []
         self._max_rows = cols
         self._uniques = 2*cols - 1
+        self._owner = owner
 
     def __len__(self):
         return len(self.widgets)
@@ -35,6 +36,10 @@ class ScrollAreaLayout(QGridLayout):
         return self._get_position(len(self.widgets))
 
     def append(self, widget: QWidget):
+        if widget in self.widgets:
+            return
+        widget.setParent(self._owner)
+        widget.show()
         self.widgets.append(widget)
         self.addWidget(widget, *self._new_position(), 2, 2)
         self._refresh()
@@ -42,6 +47,12 @@ class ScrollAreaLayout(QGridLayout):
     def pop(self, index: int):
         self.widgets.pop(index)
         self._refresh()
+
+    def remove(self, widget: QWidget):
+        for index, held_widget in enumerate(self.widgets):
+            if held_widget == widget:
+                self.pop(index)
+                return self._refresh()
 
     def insert(self, index: int, widget: QWidget):
         self.widgets.insert(index, widget)
@@ -52,19 +63,19 @@ class ScrollAreaLayout(QGridLayout):
             self.addWidget(widget, *self._get_position(i), 2, 2)
 
 
-class ScrollArea(AnimatedWidget, BaseWidget):
+class PieSettings(AnimatedWidget, BaseWidget):
     def __init__(
         self,
-        cols: int,
         unused_values: List[Label],
         style: PieStyle,
+        columns: int,
         parent=None
     ) -> None:
         AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())
         self.setGeometry(0, 0, style.widget_radius*2, style.widget_radius*2)
 
         self._style = style
-        self._layout = ScrollAreaLayout(cols)
+        self._layout = ScrollAreaLayout(columns, self)
 
         self.setAcceptDrops(True)
         self.setWindowFlags((
@@ -78,14 +89,16 @@ class ScrollArea(AnimatedWidget, BaseWidget):
         self.children_list = self._create_children()
 
         for child in self.children_list:
-            child.setFixedSize(self._style.icon_radius*2, self._style.icon_radius*2)
+            child.setFixedSize(self._style.icon_radius*2,
+                               self._style.icon_radius*2)
             self._layout.append(child)
 
         scroll_internal.setLayout(self._layout)
 
         scroll_area = QScrollArea()
         scroll_area.setWidget(scroll_internal)
-        scroll_area.setFixedWidth(scroll_internal.width() + self._style.icon_radius)
+        scroll_area.setFixedWidth(
+            scroll_internal.width() + self._style.icon_radius)
         scroll_area.setWidgetResizable(True)
 
         main_layout = QHBoxLayout(self)
@@ -104,4 +117,5 @@ class ScrollArea(AnimatedWidget, BaseWidget):
         return children
 
     def move_to_pie_side(self):
-        self.move_center(QCursor().pos() + QPoint(self.width(), 0))  # type: ignore
+        self.move_center(QCursor().pos() +
+                         QPoint(self.width(), 0))  # type: ignore

@@ -29,11 +29,11 @@ class PieStyle:
         self,
         pie_radius_scale: float,
         icon_radius_scale: float,
-        icons_amount: int,
+        icons: list,
         background_color: Optional[QColor],
         active_color: QColor,
     ) -> None:
-        self._icons_amount = icons_amount
+        self._icons = icons
         self._base_size = Krita.screen_size/2560
 
         self.pie_radius_scale = pie_radius_scale
@@ -50,8 +50,7 @@ class PieStyle:
             * self.pie_radius_scale
             * Config.PIE_GLOBAL_SCALE.read())
 
-        self.icon_radius = self._pick_icon_radius()
-        self.widget_radius = self.pie_radius + self.icon_radius
+        self.widget_radius = self.pie_radius + self.max_icon_size
         self.deadzone_radius = self._pick_deadzone_radius()
 
         self.border_thickness = round(self.pie_radius*0.02)
@@ -71,22 +70,27 @@ class PieStyle:
 
         self.font_multiplier = self.SYSTEM_FONT_SIZE[platform.system()]
 
-    def _pick_icon_radius(self) -> int:
-        """Icons radius depend on settings, but they have to fit in the pie."""
-        icon_radius: int = round(
+    @property
+    def base_icon_radius(self) -> int:
+        return round(
             50 * self._base_size
             * self.icon_radius_scale
             * Config.PIE_ICON_GLOBAL_SCALE.read())
-            
-        if not self._icons_amount:
-            return icon_radius
 
-        max_icon_size = round(self.pie_radius * math.pi / self._icons_amount)
-        return min(icon_radius, max_icon_size)
+    @property
+    def max_icon_size(self) -> int:
+        if not self._icons:
+            return 1
+        return round(self.pie_radius * math.pi / len(self._icons))
+
+    @property
+    def icon_radius(self) -> int:
+        """Icons radius depend on settings, but they have to fit in the pie."""
+        return min(self.base_icon_radius, self.max_icon_size)
 
     def _pick_deadzone_radius(self) -> float:
         """Deadzone can be configured, but when pie is empty, becomes inf."""
-        if not self._icons_amount:
+        if not self._icons:
             return float("inf")
         return (
             40 * self._base_size

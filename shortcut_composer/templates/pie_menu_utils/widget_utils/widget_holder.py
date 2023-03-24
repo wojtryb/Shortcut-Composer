@@ -52,6 +52,10 @@ class WidgetHolder:
         _a.move_to_label()
         _b.move_to_label()
 
+    def flush(self):
+        self._widgets = {}
+        self.active = None
+
     def __iter__(self) -> Iterator[LabelWidget]:
         """Iterate over all held LabelWidgets."""
         for angle in sorted(self.angles()):
