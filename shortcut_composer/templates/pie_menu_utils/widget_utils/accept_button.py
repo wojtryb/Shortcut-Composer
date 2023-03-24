@@ -1,3 +1,5 @@
+from typing import Optional
+
 from PyQt5.QtWidgets import QWidget, QPushButton
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import Qt
@@ -10,8 +12,16 @@ from api_krita import Krita
 class AcceptButton(QPushButton, BaseWidget):
     """Round button with a tick icon which uses provided PieStyle."""
 
-    def __init__(self, style: PieStyle, parent: QWidget) -> None:
+    def __init__(self, style: PieStyle, parent: Optional[QWidget] = None):
         QPushButton.__init__(self, Krita.get_icon("dialog-ok"), "", parent)
+        if parent is None:
+            self.setWindowFlags((
+                self.windowFlags() |  # type: ignore
+                Qt.Tool |
+                Qt.FramelessWindowHint |
+                Qt.NoDropShadowWindowHint))
+            self.setAttribute(Qt.WA_TranslucentBackground)
+            self.setStyleSheet("background: transparent;")
 
         self._style = style
         self.hide()
@@ -39,6 +49,7 @@ class AcceptButton(QPushButton, BaseWidget):
             ]
         """.replace('[', '{').replace(']', '}')
         )
+        self.show()
 
     @staticmethod
     def _color_to_str(color: QColor) -> str: return f'''rgba(

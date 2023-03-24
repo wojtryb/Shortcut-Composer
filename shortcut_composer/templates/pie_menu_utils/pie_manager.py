@@ -22,40 +22,41 @@ class PieManager:
     - Asks the widget to repaint when after changing active label.
     """
 
-    def __init__(self, widget: PieWidget, pie_settings: PieSettingsWindow) -> None:
-        self._pie = widget
+    def __init__(self, pie_widget: PieWidget, pie_settings: PieSettingsWindow):
+        self._pie_widget = pie_widget
         self._pie_settings = pie_settings
-        self._holder = self._pie.widget_holder
+        self._holder = self._pie_widget.widget_holder
         self._timer = Timer(self._handle_cursor, Config.get_sleep_time())
-        self._animator = LabelAnimator(widget)
+        self._animator = LabelAnimator(pie_widget)
 
         self._circle: CirclePoints
 
     def start(self) -> None:
         """Show widget under the mouse and start the mouse tracking loop."""
-        self._pie.move_center(QCursor().pos())
+        self._pie_widget.move_center(QCursor().pos())
+        self._pie_widget.show()
+
         self._pie_settings.move_to_pie_side()
-        self._pie.show()
-        self._circle = CirclePoints(self._pie.center_global, 0)
+        self._circle = CirclePoints(self._pie_widget.center_global, 0)
         self._timer.start()
 
     def stop(self) -> None:
         """Hide the widget and stop the mouse tracking loop."""
+        self._pie_widget.hide()
         self._timer.stop()
-        for label in self._pie.labels:
+        for label in self._pie_widget.labels:
             label.activation_progress.reset()
-        self._pie.hide()
 
     def _handle_cursor(self) -> None:
         """Calculate zone of the cursor and mark which child is active."""
         # NOTE: The widget can get hidden outside of stop() when key is
         # released during the drag&drop operation or when user clicked
         # outside the pie widget.
-        if not self._pie.isVisible():
+        if not self._pie_widget.isVisible():
             return self.stop()
 
         cursor = QCursor().pos()
-        if self._circle.distance(cursor) < self._pie.deadzone:
+        if self._circle.distance(cursor) < self._pie_widget.deadzone:
             return self._set_active_widget(None)
 
         angle = self._circle.angle_from_point(cursor)
@@ -75,9 +76,9 @@ class LabelAnimator:
     Handles the whole widget at once, to prevent unnecessary repaints.
     """
 
-    def __init__(self, widget: PieWidget) -> None:
-        self._widget = widget
-        self._children = widget.widget_holder
+    def __init__(self, pie_widget: PieWidget) -> None:
+        self._pie_widget = pie_widget
+        self._children = pie_widget.widget_holder
         self._timer = Timer(self._update, Config.get_sleep_time())
 
     def start(self) -> None:
@@ -92,7 +93,7 @@ class LabelAnimator:
             else:
                 widget.label.activation_progress.down()
 
-        self._widget.repaint()
+        self._pie_widget.repaint()
         for widget in self._children:
             if widget.label.activation_progress.value not in (0, 1):
                 return

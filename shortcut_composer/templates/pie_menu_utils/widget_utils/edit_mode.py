@@ -1,45 +1,58 @@
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
-    from ..pie_widget import PieWidget
+    from ...pie_menu import PieMenu
 
 
 class EditMode:
-    """
-    Descriptor that handles the edit mode of PieWidget.
-
-    When red from, it returns a bool telling whether the Pie is in edit mode.
-    When mode is changed, changes the Pie's components to reflect that.
-    Whe edit mode is turned off, saves the current values to settings.
-    """
-
-    def __init__(self) -> None:
+    def __init__(self, obj: 'PieMenu') -> None:
         self._edit_mode = False
+        self._obj = obj
 
-    def __get__(self, *_) -> bool:
+    def get(self) -> bool:
         """Return whether the Pie is in edit mode"""
         return self._edit_mode
 
-    def __set__(self, obj: 'PieWidget', mode_to_set: bool) -> None:
+    def set(self, mode_to_set: bool) -> None:
         """Update the mode and change Pie's content accordingly."""
         if not mode_to_set and self._edit_mode:
-            self._write_settings(obj)
+            self._write_settings()
 
         if not self._edit_mode ^ mode_to_set:
             return
 
         if mode_to_set:
-            obj.accept_button.show()
-            obj.pie_settings.show()
+            self.set_edit_mode_true()
         else:
-            obj.accept_button.hide()
-            obj.pie_settings.hide()
+            self.set_edit_mode_false()
 
         self._edit_mode = mode_to_set
 
-    def _write_settings(self, obj: 'PieWidget') -> None:
+    def set_edit_mode_true(self):
+        self._obj.pie_widget.set_draggable(True)
+        self._obj.pie_widget.is_edit_mode = True
+        self._obj.pie_widget.repaint()
+        self._obj.pie_settings.show()
+        self._obj.accept_button.show()
+        self._obj.settings_button.hide()
+
+    def set_edit_mode_false(self):
+        self._obj.pie_widget.hide()
+        self._obj.pie_widget.set_draggable(False)
+        self._obj.pie_widget.is_edit_mode = False
+        self._obj.pie_settings.hide()
+        self._obj.accept_button.hide()
+        self._obj.settings_button.show()
+
+    def swap_mode(self):
+        self.set(not self._edit_mode)
+
+    def _write_settings(self) -> None:
         """If values were not hardcoded, but from config, write them back."""
-        if not obj.labels or obj.config is None:
+        widget = self._obj.pie_widget
+
+        if not widget.labels or widget.config is None:
             return
 
-        values = [widget.label.value for widget in obj.widget_holder]
-        obj.config.order.write(values)
+        values = [widget.label.value for widget in widget.widget_holder]
+        widget.config.order.write(values)

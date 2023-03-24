@@ -100,6 +100,7 @@ class ScrollArea(QScrollArea):
         for label in self.labels:
             children.append(create_label_widget(label, self._style, self))
             children[-1].setFixedSize(diameter, diameter)
+            children[-1].draggable = True
             self._scroll_area_layout.append(children[-1])
         return children
 

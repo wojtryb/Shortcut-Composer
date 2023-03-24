@@ -15,8 +15,8 @@ from .pie_menu_utils import (
     PieManager,
     PieWidget,
     PieStyle,
-    Label,
-)
+    Label)
+from .pie_menu_utils.widget_utils import EditMode, AcceptButton
 
 T = TypeVar('T')
 
@@ -108,34 +108,42 @@ class PieMenu(ComplexAction, Generic[T]):
         unscaled_style = copy(self._style)
         self._style.set_items(self._labels)
 
-        self._pie_settings = PieSettingsWindow(
+        self._edit_mode = EditMode(self)
+        self.pie_settings = PieSettingsWindow(
             style=unscaled_style,
             values=self._create_all_labels(self._values),
             pie_config=self._local_config,
             columns=3)
-        self._pie_widget = PieWidget(
+        self.pie_widget = PieWidget(
             style=self._style,
             labels=self._labels,
-            config=self._local_config,
-            pie_settings=self._pie_settings)
-        self._pie_manager = PieManager(
-            widget=self._pie_widget,
-            pie_settings=self._pie_settings)
+            config=self._local_config)
+        self.pie_manager = PieManager(
+            pie_widget=self.pie_widget,
+            pie_settings=self.pie_settings)
+
+        self.settings_button = AcceptButton(self._style, self.pie_widget)
+        self.settings_button.clicked.connect(lambda: self._edit_mode.set(True))
+
+        self.accept_button = AcceptButton(self._style, self.pie_widget)
+        self.accept_button.clicked.connect(lambda: self._edit_mode.set(False))
+        self.accept_button.move_center(self.pie_widget.center)
+        self.accept_button.hide()
 
     def on_key_press(self) -> None:
         """Show widget under mouse and start manager which repaints it."""
         self._controller.refresh()
-        self._pie_manager.start()
+        self.pie_manager.start()
         super().on_key_press()
 
     def on_every_key_release(self) -> None:
         """Stop the widget. Set selected value if deadzone was reached."""
         super().on_every_key_release()
-        if self._pie_widget.edit_mode:
+        if self._edit_mode.get():
             return
 
-        self._pie_manager.stop()
-        if widget := self._pie_widget.widget_holder.active:
+        self.pie_manager.stop()
+        if widget := self.pie_widget.widget_holder.active:
             self._controller.set_value(widget.label.value)
 
     def _create_labels(self, values: List[T]) -> List[Label]:

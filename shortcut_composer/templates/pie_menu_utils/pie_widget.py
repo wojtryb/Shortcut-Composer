@@ -13,7 +13,6 @@ from PyQt5.QtGui import (
 from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
 from composer_utils import Config
 from .pie_style import PieStyle
-from .pie_settings import PieSettingsWindow
 from .label import Label
 from .label_widget import LabelWidget
 from .label_widget_utils import create_label_widget
@@ -21,9 +20,7 @@ from .pie_config import PieConfig
 from .widget_utils import (
     WidgetHolder,
     CirclePoints,
-    AcceptButton,
-    PiePainter,
-    EditMode)
+    PiePainter)
 
 
 T = TypeVar('T')
@@ -52,14 +49,11 @@ class PieWidget(AnimatedWidget, BaseWidget):
     the LabelHolder are saved in the related configuration.
     """
 
-    edit_mode = EditMode()
-
     def __init__(
         self,
         style: PieStyle,
         labels: List[Label],
         config: PieConfig,
-        pie_settings: PieSettingsWindow,
         parent=None
     ):
         AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())
@@ -68,18 +62,14 @@ class PieWidget(AnimatedWidget, BaseWidget):
         self._style = style
         self.labels = labels
         self.config = config
-        self.pie_settings = pie_settings
         self._children_widgets: List[LabelWidget] = []
         self.widget_holder: WidgetHolder = WidgetHolder()
         self._last_widget = None
+        self.is_edit_mode = False
 
         self._circle_points = CirclePoints(
             center=self.center,
             radius=self._style.pie_radius)
-
-        self.accept_button = AcceptButton(self._style, self)
-        self.accept_button.move_center(self.center)
-        self.accept_button.clicked.connect(self.hide)
 
         self.setAcceptDrops(True)
         self.setWindowFlags((
@@ -98,20 +88,13 @@ class PieWidget(AnimatedWidget, BaseWidget):
         """Return the deadzone distance."""
         return self._style.deadzone_radius
 
-    def hide(self):
-        """Leave the edit mode when the widget is hidden."""
-        self.edit_mode = False
-        super().hide()
-
     def paintEvent(self, event: QPaintEvent) -> None:
         """Paint the entire widget using the Painter wrapper."""
         with Painter(self, event) as painter:
-            PiePainter(painter, self.labels, self._style, self.edit_mode)
+            PiePainter(painter, self.labels, self._style, self.is_edit_mode)
 
     def dragEnterEvent(self, e: QDragEnterEvent) -> None:
         """Start edit mode when one of the draggable children gets dragged."""
-        self.edit_mode = True
-        self.repaint()
         e.accept()
 
     def dragMoveEvent(self, e: QDragMoveEvent) -> None:
@@ -145,6 +128,10 @@ class PieWidget(AnimatedWidget, BaseWidget):
             self._remove_widget(self._last_widget)
         return super().dragLeaveEvent(e)
 
+    def show(self):
+        self.set_draggable(False)
+        return super().show()
+
     def _remove_widget(self, widget: LabelWidget):
         if widget.label in self.labels:
             self.labels.remove(widget.label)
@@ -174,3 +161,7 @@ class PieWidget(AnimatedWidget, BaseWidget):
             child.label.center = point
             child.move_to_label()
             self.widget_holder.add(child)
+
+    def set_draggable(self, draggable: bool):
+        for widget in self._children_widgets:
+            widget.draggable = draggable

@@ -21,6 +21,7 @@ class LabelWidget(BaseWidget):
     ) -> None:
         super().__init__(parent)
         self.setGeometry(0, 0, style.icon_radius*2, style.icon_radius*2)
+        self.draggable = True
 
         self.label = label
         self._style = style
@@ -32,8 +33,9 @@ class LabelWidget(BaseWidget):
 
     def mousePressEvent(self, e: QMouseEvent) -> None:
         """Initiate a drag loop for this Widget, so Widgets can be swapped."""
-        if e.buttons() != Qt.LeftButton:
+        if e.buttons() != Qt.LeftButton or not self.draggable:
             return
+
         drag = QDrag(self)
         drag.setMimeData(QMimeData())
 
