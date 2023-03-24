@@ -1,12 +1,12 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Dict, List, Union, Optional
+from abc import abstractmethod
+from typing import Any, List, Union, Final, Optional
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QDoubleSpinBox,
     QFormLayout,
-    QVBoxLayout,
     QHBoxLayout,
     QSplitter,
     QComboBox,
@@ -14,50 +14,109 @@ from PyQt5.QtWidgets import (
     QWidget,
     QLabel)
 
-from api_krita.wrappers import Database
-from ..config.fields import ImmutableField
+from ..config import ImmutableField
 
 
-class FieldUiWrapper:
-    def __init__(self, ui_widget: Union[QSpinBox, QDoubleSpinBox, QComboBox]):
-        self.ui_widget = ui_widget
+class ConfigBasedWidget:
+    def __init__(
+        self,
+        config_field: ImmutableField,
+        parent: Optional[QWidget] = None
+    ) -> None:
+        self._parent = parent
+        self.config_field: Final[ImmutableField] = config_field
+        self.widget: QWidget
+
+    @abstractmethod
+    def read(self): ...
+
+    @abstractmethod
+    def set(self, value): ...
+
+    def reset(self):
+        self.set(self.config_field.read())
+
+    def save(self):
+        self.config_field.write(self.read())
+
+
+class ConfigSpinBox(ConfigBasedWidget):
+    def __init__(
+        self,
+        config_field: Union[ImmutableField[int], ImmutableField[float]],
+        parent: Optional[QWidget] = None,
+        step: float = 1,
+        max_value: float = 100,
+    ) -> None:
+        super().__init__(config_field, parent)
+        self._step = step
+        self._max_value = max_value
+        self._spin_box = self._init_spin_box()
+        self.widget: Final[Union[QSpinBox, QDoubleSpinBox]] = self._spin_box
+        self.reset()
 
     def read(self):
-        if isinstance(self.ui_widget, (QSpinBox, QDoubleSpinBox)):
-            return self.ui_widget.value()
-        return self.ui_widget.currentText()
+        return self._spin_box.value()
 
-    def write(self, value):
-        if isinstance(self.ui_widget, (QSpinBox, QDoubleSpinBox)):
-            return self.ui_widget.setValue(value)
-        return self.ui_widget.setCurrentText(value)
+    def set(self, value):
+        self._spin_box.setValue(value)
+
+    def _init_spin_box(self):
+        spin_box = (QSpinBox() if self.config_field.type is int
+                    else QDoubleSpinBox())
+        spin_box.setObjectName(self.config_field.name)
+        spin_box.setMinimum(0)
+        spin_box.setSingleStep(self._step)  # type: ignore
+        spin_box.setMaximum(self._max_value)  # type: ignore
+        return spin_box
+
+class ConfigComboBox(ConfigBasedWidget):
+    def __init__(
+        self,
+        config_field: ImmutableField[str],
+        parent: Optional[QWidget] = None,
+        allowed_values: List[Any] = [],
+    ) -> None:
+        super().__init__(config_field, parent)
+        self._allowed_values = allowed_values
+        self._combo_box = self._init_combo_box()
+        self.widget: Final[QComboBox] = self._combo_box
+        self.reset()
+
+    def _init_combo_box(self) -> QComboBox:
+        combo_box = QComboBox()
+        combo_box.setObjectName(self.config_field.name)
+        return combo_box
+
+    def reset(self):
+        self._combo_box.clear()
+        self._combo_box.addItems(self._allowed_values)
+        self.set(self.config_field.read())
+
+    def read(self):
+        return self._combo_box.currentText()
+
+    def set(self, value):
+        return self._combo_box.setCurrentText(value)
 
 
 class ConfigFormLayout(QFormLayout):
     """Dialog zone consisting of spin boxes."""
 
-    def __init__(self, elements: List[Union[str, list, dict]]) -> None:
+    def __init__(self, elements: List[Union[ConfigBasedWidget, str]]) -> None:
         super().__init__()
-        self._forms: Dict[ImmutableField, FieldUiWrapper] = {}
-
+        self._widgets: List[ConfigBasedWidget] = []
         for element in elements:
             if isinstance(element, str):
                 self._add_label(element)
-            elif isinstance(element, list):
-                self._add_row(*element)
-            elif isinstance(element, dict):
-                self._add_row(**element)
+            elif isinstance(element, ConfigBasedWidget):
+                self._add_row(element)
             else:
                 raise TypeError("Unsupported arguments.")
 
-    def _add_row(
-            self,
-            config: ImmutableField,
-            step: Optional[float] = None,
-            max_value: Optional[float] = None) -> None:
-        field_ui = self.create_field_ui(config, step, max_value)
-        self._forms[config] = field_ui
-        self.addRow(config.name, field_ui.ui_widget)
+    def _add_row(self, element: ConfigBasedWidget) -> None:
+        self._widgets.append(element)
+        self.addRow(element.config_field.name, element.widget)
 
     def _add_label(self, text: str):
         label = QLabel(text)
@@ -67,48 +126,17 @@ class ConfigFormLayout(QFormLayout):
 
     def refresh(self) -> None:
         """Read values from krita config and apply them to stored boxes."""
-        for config, form in self._forms.items():
-            if config.type != str:
-                form.write(config.read())  # type: ignore
-            else:
-                # HACK: can't assume the combobox is tag chooser
-                with Database() as database:
-                    combo_box = form.ui_widget
-                    combo_box.clear()
-                    combo_box.addItems(
-                        sorted(database.get_brush_tags(), key=str.lower))
-                    combo_box.setCurrentText(config.read())
+        for element in self._widgets:
+            element.reset()
 
     def apply(self) -> None:
         """Write values from stored spin boxes to krita config file."""
-        for config, form in self._forms.items():
-            config.write(form.read())
-
-    @staticmethod
-    def create_field_ui(
-        config: ImmutableField,
-        step: Optional[float] = None,
-        max_value: Optional[float] = None
-    ):
-        if config.type in (float, int):
-            ui = QSpinBox() if config.type is int else QDoubleSpinBox()
-            ui.setObjectName(config.name)
-            ui.setMinimum(0)
-            ui.setMaximum(max_value)  # type: ignore
-            ui.setSingleStep(step)  # type: ignore
-        elif config.type is str:
-            ui = QComboBox()
-            ui.setObjectName(config.name)
-        else:
-            raise TypeError(f"{config.type} not supported.")
-
-        wrapper = FieldUiWrapper(ui)
-        wrapper.write(config.read())
-        return wrapper
+        for element in self._widgets:
+            element.save()
 
 
 class ConfigFormWidget(QWidget):
-    def __init__(self, elements: List[Union[str, list, dict]]) -> None:
+    def __init__(self, elements: List[Union[ConfigBasedWidget, str]]) -> None:
         super().__init__()
 
         self._layout = ConfigFormLayout(elements)

@@ -10,8 +10,13 @@ from PyQt5.QtWidgets import (
     QTabWidget,
 )
 from api_krita import Krita
+from api_krita.wrappers import Database
 from api_krita.pyqt import AnimatedWidget, BaseWidget
-from composer_utils.config import Config, ConfigFormWidget
+from composer_utils.config import (
+    ConfigFormWidget,
+    ConfigComboBox,
+    ConfigSpinBox,
+    Config)
 from .label import Label
 from .label_widget import LabelWidget
 from .label_widget_utils import create_label_widget
@@ -39,13 +44,15 @@ class PieSettingsWindow(AnimatedWidget, BaseWidget):
         self._style = style
         self._pie_config = pie_config
 
-        tab_holder = QTabWidget()
+        self._tags: List[str] = []
+        self._refresh_tags()
 
+        tab_holder = QTabWidget()
         self._local_settings = ConfigFormWidget([
             "Bla",
-            [pie_config.pie_radius_scale, 0.05, 4],
-            [pie_config.icon_radius_scale, 0.05, 4],
-            [Config.TAG_BLUE],
+            ConfigSpinBox(pie_config.pie_radius_scale, self, 0.05, 4),
+            ConfigSpinBox(pie_config.icon_radius_scale, self, 0.05, 4),
+            ConfigComboBox(Config.TAG_BLUE, self, self._tags),
             "Ble",
         ])
         tab_holder.addTab(self._local_settings, "Local settings")
@@ -65,6 +72,7 @@ class PieSettingsWindow(AnimatedWidget, BaseWidget):
         self.move_center(QCursor().pos() + point)  # type: ignore
 
     def show(self):
+        self._refresh_tags()
         self._local_settings.refresh()
         return super().show()
 
@@ -72,6 +80,12 @@ class PieSettingsWindow(AnimatedWidget, BaseWidget):
         self._local_settings.apply()
         Krita.trigger_action("Reload Shortcut Composer")
         return super().hide()
+    
+    def _refresh_tags(self):
+        with Database() as database:
+            tags = sorted(database.get_brush_tags(), key=str.lower)
+        self._tags.clear()
+        self._tags.extend(tags)
 
 
 class ScrollArea(QScrollArea):
