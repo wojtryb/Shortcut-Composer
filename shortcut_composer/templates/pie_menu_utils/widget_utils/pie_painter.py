@@ -96,21 +96,10 @@ class PiePainter:
             )
 
     def _pick_pie_color(self, label: Label) -> QColor:
-        """
-        Pick color of pie based on widget mode and animation progress.
-
-        In edit mode color is different to create visual distinction.
-        Two similar colors are merged with animated opacity to
-        distinguish two consequtive pies from each other.
-        """
-        if not self.edit_mode:
-            return self._overlay_colors(
-                self.style.active_color_dark,
-                self.style.active_color,
-                opacity=label.activation_progress.value)
+        """Pick color of pie based on widget mode and animation progress."""
         return self._overlay_colors(
-            self.style.icon_color,
-            self.style.border_color,
+            self.style.active_color_dark,
+            self.style.active_color,
             opacity=label.activation_progress.value)
 
     @staticmethod
