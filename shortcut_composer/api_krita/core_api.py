@@ -111,8 +111,7 @@ class KritaInstance:
     def is_light_theme_active(self) -> bool:
         """Return if currently set theme is light using it's main color."""
         main_color: QColor = qApp.palette().window().color()
-        average = (main_color.red()+main_color.green()+main_color.blue()) // 3
-        return average > 128
+        return main_color.value() > 128
 
 
 class KritaWindow(Protocol):
