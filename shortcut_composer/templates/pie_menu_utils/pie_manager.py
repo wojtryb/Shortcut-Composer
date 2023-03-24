@@ -25,7 +25,7 @@ class PieManager:
     def __init__(self, pie_widget: PieWidget, pie_settings: PieSettings):
         self._pie_widget = pie_widget
         self._pie_settings = pie_settings
-        self._holder = self._pie_widget.widget_holder
+        self._holder = self._pie_widget.child_aggregator.widget_holder
         self._timer = Timer(self._handle_cursor, Config.get_sleep_time())
         self._animator = LabelAnimator(pie_widget)
 
@@ -44,7 +44,7 @@ class PieManager:
         """Hide the widget and stop the mouse tracking loop."""
         self._pie_widget.hide()
         self._timer.stop()
-        for label in self._pie_widget.labels:
+        for label in self._pie_widget.child_aggregator:
             label.activation_progress.reset()
 
     def _handle_cursor(self) -> None:
@@ -78,7 +78,7 @@ class LabelAnimator:
 
     def __init__(self, pie_widget: PieWidget) -> None:
         self._pie_widget = pie_widget
-        self._children = pie_widget.widget_holder
+        self._children = pie_widget.child_aggregator.widget_holder
         self._timer = Timer(self._update, Config.get_sleep_time())
 
     def start(self) -> None:

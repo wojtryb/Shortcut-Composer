@@ -150,7 +150,7 @@ class PieMenu(ComplexAction, Generic[T]):
             return
 
         self.pie_manager.stop()
-        if widget := self.pie_widget.widget_holder.active:
+        if widget := self.pie_widget.child_aggregator.widget_holder.active:
             self._controller.set_value(widget.label.value)
 
     def _create_labels(self, values: List[T]) -> List[Label]:
