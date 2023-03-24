@@ -12,19 +12,17 @@ visible in `keyboard shortcuts` menu in krita settings.
 import templates
 from typing import List
 
-# from PyQt5.QtGui import QColor
+from PyQt5.QtGui import QColor
 
 from api_krita.enums import Tool, Toggle, BlendingMode, TransformMode
 from core_components import instructions, controllers
-# from composer_utils import Config
 from input_adapter import ComplexAction
 from data_components import (
     CurrentLayerStack,
-    # EnumConfigValues,
-    # TagConfigValues,
     PickStrategy,
     Slider,
     Range,
+    Tag,
 )
 infinity = float("inf")
 
@@ -246,38 +244,38 @@ def create_actions() -> List[ComplexAction]: return [
         ]
     ),
 
-    # # Use pie menu to pick one of presets from tag specified in settings.
-    # # Set tool to FREEHAND BRUSH if current tool does not allow to paint
-    # templates.PieMenu(
-    #     name="Pick brush presets (red)",
-    #     controller=controllers.PresetController(),
-    #     instructions=[instructions.SetBrushOnNonPaintable()],
-    #     values=TagConfigValues(Config.TAG_RED, Config.TAG_RED_VALUES),
-    #     background_color=QColor(95, 65, 65, 190),
-    #     active_color=QColor(200, 70, 70),
-    # ),
+    # Use pie menu to pick one of presets from tag specified in settings.
+    # Set tool to FREEHAND BRUSH if current tool does not allow to paint
+    templates.PieMenu(
+        name="Pick brush presets (red)",
+        controller=controllers.PresetController(),
+        instructions=[instructions.SetBrushOnNonPaintable()],
+        values=Tag("★ My Favorites"),
+        background_color=QColor(95, 65, 65, 190),
+        active_color=QColor(200, 70, 70),
+    ),
 
-    # # Use pie menu to pick one of presets from tag specified in settings.
-    # # Set tool to FREEHAND BRUSH if current tool does not allow to paint
-    # templates.PieMenu(
-    #     name="Pick brush presets (green)",
-    #     controller=controllers.PresetController(),
-    #     instructions=[instructions.SetBrushOnNonPaintable()],
-    #     values=TagConfigValues(Config.TAG_GREEN, Config.TAG_GREEN_VALUES),
-    #     background_color=QColor(65, 95, 65, 190),
-    #     active_color=QColor(70, 200, 70),
-    # ),
+    # Use pie menu to pick one of presets from tag specified in settings.
+    # Set tool to FREEHAND BRUSH if current tool does not allow to paint
+    templates.PieMenu(
+        name="Pick brush presets (green)",
+        controller=controllers.PresetController(),
+        instructions=[instructions.SetBrushOnNonPaintable()],
+        values=Tag("RGBA"),
+        background_color=QColor(65, 95, 65, 190),
+        active_color=QColor(70, 200, 70),
+    ),
 
-    # # Use pie menu to pick one of presets from tag specified in settings.
-    # # Set tool to FREEHAND BRUSH if current tool does not allow to paint
-    # templates.PieMenu(
-    #     name="Pick brush presets (blue)",
-    #     controller=controllers.PresetController(),
-    #     instructions=[instructions.SetBrushOnNonPaintable()],
-    #     values=TagConfigValues(Config.TAG_BLUE, Config.TAG_BLUE_VALUES),
-    #     background_color=QColor(70, 70, 105, 190),
-    #     active_color=QColor(110, 160, 235),
-    # ),
+    # Use pie menu to pick one of presets from tag specified in settings.
+    # Set tool to FREEHAND BRUSH if current tool does not allow to paint
+    templates.PieMenu(
+        name="Pick brush presets (blue)",
+        controller=controllers.PresetController(),
+        instructions=[instructions.SetBrushOnNonPaintable()],
+        values=Tag("Erasers"),
+        background_color=QColor(70, 70, 105, 190),
+        active_color=QColor(110, 160, 235),
+    ),
 
     # .......................................
     # Insert your actions implementation here

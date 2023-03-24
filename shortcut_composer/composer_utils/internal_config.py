@@ -9,14 +9,6 @@ from api_krita import Krita
 T = TypeVar('T')
 
 
-class ActionConfig:
-    def __init__(self) -> None:
-        self.some_str = BuiltinConfig("some_str", "bolek")
-        self.some_enum_list = EnumListConfig("some_enum_list", [])
-        self.some_string_list = BuiltinListConfig(
-            "some_string_list", ["a", "b"])
-
-
 class ConfigBase(Generic[T]):
     def __init__(self, name: str, default: T) -> None:
         self.name = name
@@ -54,8 +46,7 @@ class BuiltinConfig(ConfigBase, Generic[T]):
         Krita.write_setting(
             group="ShortcutComposer",
             name=self.name,
-            value=value
-        )
+            value=value)
 
 
 class EnumListConfig(ConfigBase):
@@ -78,8 +69,7 @@ class EnumListConfig(ConfigBase):
         Krita.write_setting(
             group="ShortcutComposer",
             name=self.name,
-            value=to_write
-        )
+            value=to_write)
 
 
 class BuiltinListConfig(ConfigBase):
@@ -100,5 +90,4 @@ class BuiltinListConfig(ConfigBase):
         Krita.write_setting(
             group="ShortcutComposer",
             name=self.name,
-            value="\t".join(map(str, value))
-        )
+            value="\t".join(map(str, value)))

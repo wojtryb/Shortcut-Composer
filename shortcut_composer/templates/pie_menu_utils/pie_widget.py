@@ -27,16 +27,15 @@ T = TypeVar('T')
 class PieConfig:
     def __init__(self, name: str, values: list) -> None:
         self.name = name
-        self.values = self._create_values(f"{values} values")
+        self.values = self._create_values(values)
 
     def _create_values(self, values: list):
+        values_name = f"{values} values"
         if not values:
-            return BuiltinListConfig(self.name, [None])
-
+            return BuiltinListConfig(values_name, [None])
         if isinstance(values[0], Enum):
-            return EnumListConfig(self.name, values)
-
-        return BuiltinListConfig(self.name, values)
+            return EnumListConfig(values_name, values)
+        return BuiltinListConfig(values_name, values)
 
 
 class PieWidget(AnimatedWidget, BaseWidget):
