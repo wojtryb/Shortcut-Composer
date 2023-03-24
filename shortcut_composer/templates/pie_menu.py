@@ -9,7 +9,6 @@ from PyQt5.QtGui import QColor
 
 from api_krita import Krita
 from core_components import Controller, Instruction
-from input_adapter import ComplexAction
 from .pie_menu_utils import (
     create_pie_settings_window,
     create_local_config,
@@ -18,11 +17,12 @@ from .pie_menu_utils import (
     PieStyle,
     Label)
 from .pie_menu_utils.widget_utils import EditMode, RoundButton, NotifyingList
+from .raw_instructions import RawInstructions
 
 T = TypeVar('T')
 
 
-class PieMenu(ComplexAction, Generic[T]):
+class PieMenu(RawInstructions, Generic[T]):
     """
     Pick value by hovering over a pie menu widget.
 

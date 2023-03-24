@@ -18,6 +18,6 @@ for all actions.
 """
 
 from .action_manager import ActionManager
-from .complex_action import ComplexAction
+from .complex_action_interface import ComplexActionInterface
 
-__all__ = ['ActionManager', 'ComplexAction']
+__all__ = ['ActionManager', 'ComplexActionInterface']

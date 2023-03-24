@@ -5,18 +5,18 @@ from typing import List, Optional, Generic, TypeVar
 
 from core_components import Instruction
 from data_components import Slider
-from input_adapter import ComplexAction
+from input_adapter import ComplexActionInterface
 from .mouse_tracker_utils import (
     SingleAxisTracker,
     DoubleAxisTracker,
-    SliderHandler,
-)
+    SliderHandler)
+from .raw_instructions import RawInstructions
 
 T = TypeVar("T")
 U = TypeVar("U")
 
 
-class CursorTracker(ComplexAction, Generic[T, U]):
+class CursorTracker(RawInstructions, Generic[T, U]):
     """
     Switch values with horizontal or vertical mouse movement.
 
@@ -67,7 +67,7 @@ class CursorTracker(ComplexAction, Generic[T, U]):
         horizontal_slider: Optional[Slider[T]] = None,
         vertical_slider: Optional[Slider[U]] = None,
         instructions: List[Instruction] = [],
-    ) -> ComplexAction:
+    ) -> ComplexActionInterface:
         """
         Pick and create correct ActionPlugin based on provided sliders.
 

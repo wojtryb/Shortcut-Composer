@@ -5,8 +5,8 @@ from time import time
 
 from PyQt5.QtGui import QKeyEvent, QKeySequence
 
-from api_krita import Krita
-from .complex_action import ComplexAction
+from .api_krita import Krita
+from .complex_action_interface import ComplexActionInterface
 
 
 class ShortcutAdapter:
@@ -24,7 +24,7 @@ class ShortcutAdapter:
     - on_every_key_release (called after short or long release callback)
     """
 
-    def __init__(self, action: ComplexAction) -> None:
+    def __init__(self, action: ComplexActionInterface) -> None:
         self.action = action
         self.key_released = True
         self.last_press_time = time()

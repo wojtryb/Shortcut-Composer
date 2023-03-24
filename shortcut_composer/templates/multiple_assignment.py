@@ -5,12 +5,12 @@ from typing import List, Iterator, TypeVar, Generic, Optional
 from itertools import cycle
 
 from core_components import Controller, Instruction
-from input_adapter import ComplexAction
+from .raw_instructions import RawInstructions
 
 T = TypeVar('T')
 
 
-class MultipleAssignment(ComplexAction, Generic[T]):
+class MultipleAssignment(RawInstructions, Generic[T]):
     """
     Cycle multiple values (short press) or return to default (long press).
 

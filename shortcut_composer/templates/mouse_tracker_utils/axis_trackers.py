@@ -6,11 +6,11 @@ from typing import List, Optional
 from api_krita import Krita
 from api_krita.pyqt import Timer
 from core_components import Instruction
-from input_adapter import ComplexAction
 from .slider_handler import SliderHandler
+from ..raw_instructions import RawInstructions
 
 
-class SingleAxisTracker(ComplexAction):
+class SingleAxisTracker(RawInstructions):
     """
     Track the mouse along one axis to switch values.
 
@@ -44,7 +44,7 @@ class SingleAxisTracker(ComplexAction):
         self._handler.stop()
 
 
-class DoubleAxisTracker(ComplexAction):
+class DoubleAxisTracker(RawInstructions):
     """
     Track the mouse along the axis which had the biggest initial movement.
 
