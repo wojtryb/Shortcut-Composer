@@ -6,7 +6,6 @@ from .fields import (
     FieldBase)
 from .config_ui import (
     ConfigBasedWidget,
-    ConfigFormLayout,
     ConfigFormWidget,
     ConfigComboBox,
     ConfigSpinBox)
@@ -18,7 +17,6 @@ __all__ = [
     "EnumsListField",
     "FieldBase",
     "ConfigBasedWidget",
-    "ConfigFormLayout",
     "ConfigFormWidget",
     "ConfigComboBox",
     "ConfigSpinBox"]

@@ -100,11 +100,18 @@ class ConfigComboBox(ConfigBasedWidget):
         return self._combo_box.setCurrentText(value)
 
 
-class ConfigFormLayout(QFormLayout):
+class ConfigFormWidget(QWidget):
     """Dialog zone consisting of spin boxes."""
 
     def __init__(self, elements: List[Union[ConfigBasedWidget, str]]) -> None:
         super().__init__()
+        self._layout = QFormLayout()
+        stretched = QHBoxLayout()
+        stretched.addStretch()
+        stretched.addLayout(self._layout)
+        stretched.addStretch()
+        self.setLayout(stretched)
+
         self._widgets: List[ConfigBasedWidget] = []
         for element in elements:
             if isinstance(element, str):
@@ -116,13 +123,13 @@ class ConfigFormLayout(QFormLayout):
 
     def _add_row(self, element: ConfigBasedWidget) -> None:
         self._widgets.append(element)
-        self.addRow(element.config_field.name, element.widget)
+        self._layout.addRow(element.config_field.name, element.widget)
 
     def _add_label(self, text: str):
         label = QLabel(text)
         label.setAlignment(Qt.AlignCenter)
-        self.addRow(QSplitter(Qt.Horizontal))
-        self.addRow(label)
+        self._layout.addRow(QSplitter(Qt.Horizontal))
+        self._layout.addRow(label)
 
     def refresh(self) -> None:
         """Read values from krita config and apply them to stored boxes."""
@@ -133,21 +140,3 @@ class ConfigFormLayout(QFormLayout):
         """Write values from stored spin boxes to krita config file."""
         for element in self._widgets:
             element.save()
-
-
-class ConfigFormWidget(QWidget):
-    def __init__(self, elements: List[Union[ConfigBasedWidget, str]]) -> None:
-        super().__init__()
-
-        self._layout = ConfigFormLayout(elements)
-        stretched = QHBoxLayout()
-        stretched.addStretch()
-        stretched.addLayout(self._layout)
-        stretched.addStretch()
-        self.setLayout(stretched)
-
-    def apply(self) -> None:
-        self._layout.apply()
-
-    def refresh(self) -> None:
-        self._layout.refresh()
