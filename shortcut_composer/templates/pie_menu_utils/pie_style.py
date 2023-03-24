@@ -71,6 +71,10 @@ class PieStyle:
         self._items = items
 
     @property
+    def setting_button_radius(self) -> int:
+        return round(30 * self._base_size)
+
+    @property
     def base_icon_radius(self) -> int:
         return round(
             50 * self._base_size

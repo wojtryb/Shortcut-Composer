@@ -5,8 +5,10 @@ from typing import List, TypeVar, Generic, Optional
 from copy import copy
 from enum import Enum
 
+from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QColor
 
+from api_krita import Krita
 from core_components import Controller, Instruction
 from input_adapter import ComplexAction
 from .pie_menu_utils import (
@@ -16,7 +18,7 @@ from .pie_menu_utils import (
     PieWidget,
     PieStyle,
     Label)
-from .pie_menu_utils.widget_utils import EditMode, AcceptButton
+from .pie_menu_utils.widget_utils import EditMode, RoundButton
 
 T = TypeVar('T')
 
@@ -129,10 +131,28 @@ class PieMenu(ComplexAction, Generic[T]):
             pie_widget=self.pie_widget,
             pie_settings=self.pie_settings)
 
-        self.settings_button = AcceptButton(self._style, self.pie_widget)
-        self.settings_button.clicked.connect(lambda: self._edit_mode.set(True))
+        default_radius = self._style.setting_button_radius
+        radius = self._style.deadzone_radius
+        radius = int(radius) if radius != float("inf") else default_radius
 
-        self.accept_button = AcceptButton(self._style, self.pie_widget)
+        self.settings_button = RoundButton(
+            radius=default_radius,
+            icon_scale=1.1,
+            style=self._style,
+            icon=Krita.get_icon("properties"),
+            parent=self.pie_widget)
+        self.settings_button.clicked.connect(lambda: self._edit_mode.set(True))
+        self._style.pie_radius
+        self.settings_button.move(QPoint(
+            self.pie_widget.width()-self.settings_button.width(),
+            self.pie_widget.height()-self.settings_button.height()))
+
+        self.accept_button = RoundButton(
+            radius=radius,
+            icon_scale=1.5,
+            style=self._style,
+            icon=Krita.get_icon("dialog-ok"),
+            parent=self.pie_widget)
         self.accept_button.clicked.connect(lambda: self._edit_mode.set(False))
         self.accept_button.move_center(self.pie_widget.center)
         self.accept_button.hide()
