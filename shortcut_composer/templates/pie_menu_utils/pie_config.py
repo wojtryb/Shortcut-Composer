@@ -1,8 +1,6 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import TypeVar
-
 from composer_utils import (
     EnumListConfig,
     BuiltinListConfig,
@@ -11,25 +9,44 @@ from composer_utils import (
 from data_components import Tag
 
 
-T = TypeVar('T')
-
-
-def create_pie_config(name: str, values: list) -> 'PieConfig':
+def create_pie_config(
+    name: str,
+    values: list,
+    pie_radius_scale: float,
+    icon_radius_scale: float,
+) -> 'PieConfig':
+    args = [name, values, pie_radius_scale, icon_radius_scale]
     if isinstance(values, Tag):
-        return PresetPieConfig(name, values)
-    return EnumPieConfig(name, values)
+        return PresetPieConfig(*args)
+    return EnumPieConfig(*args)
 
 
 class PieConfig:
-    name: str
-    order: ConfigBase
     values: list
+    order: ConfigBase
+
+    def __init__(
+        self,
+        name: str,
+        values: list,
+        pie_radius_scale: float,
+        icon_radius_scale: float,
+    ) -> None:
+        self.name = name
+        self._default_values = values
+        self.pie_radius_scale = BuiltinConfig(
+            f"{self.name} pie scale",
+            pie_radius_scale)
+        self.icon_radius_scale = BuiltinConfig(
+            f"{self.name} icon scale",
+            icon_radius_scale)
 
 
 class PresetPieConfig(PieConfig):
-    def __init__(self, name: str, tag: Tag) -> None:
-        self.name = name
-        self.tag_name = BuiltinConfig(name=name, default=tag.tag_name)
+    def __init__(self, *args):
+        super().__init__(*args)
+        self._default_values: Tag
+        self.tag_name = BuiltinConfig(self.name, self._default_values.tag_name)
         self.order = BuiltinListConfig(f"{self.name} values", [""])
 
     @property
@@ -43,9 +60,11 @@ class PresetPieConfig(PieConfig):
 
 
 class EnumPieConfig(PieConfig):
-    def __init__(self, name: str, values: list) -> None:
-        self.name = name
-        self.order = EnumListConfig(f"{self.name} values", values)
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.order = EnumListConfig(
+            f"{self.name} values",
+            self._default_values)
 
     @property
     def values(self):
