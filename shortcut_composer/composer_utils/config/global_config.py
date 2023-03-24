@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from .fields import Field, field
+from .fields import Field
 
 
 class Config:
@@ -21,14 +21,14 @@ class Config:
     EnumConfigValues.
     """
 
-    SHORT_VS_LONG_PRESS_TIME = field("Short vs long press time", 0.3)
-    TRACKER_SENSITIVITY_SCALE = field("Tracker sensitivity scale", 1.0)
-    TRACKER_DEADZONE = field("Tracker deadzone", 0)
-    FPS_LIMIT = field("FPS limit", 60)
-    PIE_GLOBAL_SCALE = field("Pie global scale", 1.0)
-    PIE_ICON_GLOBAL_SCALE = field("Pie icon global scale", 1.0)
-    PIE_DEADZONE_GLOBAL_SCALE = field("Pie deadzone global scale", 1.0)
-    PIE_ANIMATION_TIME = field("Pie animation time", 0.2)
+    SHORT_VS_LONG_PRESS_TIME = Field("Short vs long press time", 0.3)
+    TRACKER_SENSITIVITY_SCALE = Field("Tracker sensitivity scale", 1.0)
+    TRACKER_DEADZONE = Field("Tracker deadzone", 0)
+    FPS_LIMIT = Field("FPS limit", 60)
+    PIE_GLOBAL_SCALE = Field("Pie global scale", 1.0)
+    PIE_ICON_GLOBAL_SCALE = Field("Pie icon global scale", 1.0)
+    PIE_DEADZONE_GLOBAL_SCALE = Field("Pie deadzone global scale", 1.0)
+    PIE_ANIMATION_TIME = Field("Pie animation time", 0.2)
 
     @classmethod
     def reset_defaults(cls) -> None:

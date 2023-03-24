@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import List, Generic, TypeVar
-from composer_utils.config import Field, field
+from composer_utils.config import Field
 from data_components import Tag
 
 T = TypeVar("T")
@@ -22,10 +22,10 @@ class PieConfig(Generic[T]):
     ) -> None:
         self.name = name
         self._default_values = values
-        self.pie_radius_scale = field(
+        self.pie_radius_scale = Field(
             f"{self.name} pie scale",
             pie_radius_scale)
-        self.icon_radius_scale = field(
+        self.icon_radius_scale = Field(
             f"{self.name} icon scale",
             icon_radius_scale)
 
@@ -34,8 +34,8 @@ class PresetPieConfig(PieConfig):
     def __init__(self, *args):
         super().__init__(*args)
         self._default_values: Tag
-        self.tag_name = field(self.name, self._default_values.tag_name)
-        self.order = field(f"{self.name} values", [""])
+        self.tag_name = Field(self.name, self._default_values.tag_name)
+        self.order = Field(f"{self.name} values", [""])
         self.allow_remove = False
 
     @property
@@ -51,7 +51,7 @@ class PresetPieConfig(PieConfig):
 class EnumPieConfig(PieConfig):
     def __init__(self, *args):
         super().__init__(*args)
-        self.order = field(f"{self.name} values", self._default_values)
+        self.order = Field(f"{self.name} values", self._default_values)
         self.allow_remove = True
 
     @property

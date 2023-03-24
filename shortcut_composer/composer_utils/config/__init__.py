@@ -1,5 +1,5 @@
 from .global_config import Config
-from .fields import Field, field
+from .fields import Field
 from .config_ui import (
     ConfigBasedWidget,
     ConfigFormWidget,
@@ -9,7 +9,6 @@ from .config_ui import (
 __all__ = [
     "Config",
     "Field",
-    "field",
     "ConfigBasedWidget",
     "ConfigFormWidget",
     "ConfigComboBox",
