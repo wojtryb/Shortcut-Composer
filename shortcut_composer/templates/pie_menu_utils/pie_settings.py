@@ -25,12 +25,6 @@ class PieSettings(AnimatedWidget, BaseWidget):
         parent=None
     ) -> None:
         AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())
-        self.setFixedHeight(style.widget_radius*2)
-
-        self._style = style
-        self.labels = values
-        self.children_list = self._create_children()
-
         self.setAcceptDrops(True)
         self.setWindowFlags((
             self.windowFlags() |  # type: ignore
@@ -38,40 +32,57 @@ class PieSettings(AnimatedWidget, BaseWidget):
             Qt.FramelessWindowHint))
         self.setCursor(Qt.ArrowCursor)
 
-        self._scroll_area_layout = ScrollAreaLayout(columns, self)
+        self._style = style
+        self.scroll_area = ScrollArea(
+            values,
+            self._style,
+            columns)
 
-        diameter = self._style.icon_radius*2
-        for child in self.children_list:
-            child.setFixedSize(diameter, diameter)
-            self._scroll_area_layout.append(child)
+        layout = QHBoxLayout(self)
+        layout.addWidget(self.scroll_area)
+        self.setLayout(layout)
+
+        self.hide()
+
+    def move_to_pie_side(self):
+        offset = self.width()//2 + self._style.widget_radius * 1.05
+        point = QPoint(round(offset), 0)
+        self.move_center(QCursor().pos() + point)  # type: ignore
+
+
+class ScrollArea(QScrollArea):
+    def __init__(
+        self,
+        values: List[Label],
+        style: PieStyle,
+        columns: int,
+        parent=None
+    ) -> None:
+        super().__init__(parent)
+        self.setFixedHeight(style.widget_radius*2)
+        self.setFixedWidth(round(style.icon_radius*(2*columns + 1)))
+        self.setWidgetResizable(True)
+
+        self._style = style
+        self.labels = values
+
+        self._scroll_area_layout = ScrollAreaLayout(columns, self)
+        self._children_list = self._create_children()
 
         scroll_widget = QWidget()
         scroll_widget.setLayout(self._scroll_area_layout)
-
-        scroll_area = QScrollArea()
-        scroll_area.setWidget(scroll_widget)
-        scroll_area.setFixedWidth(round(diameter*(columns+0.5)))
-        scroll_area.setWidgetResizable(True)
-
-        pop_up_layout = QHBoxLayout(self)
-        pop_up_layout.addStretch()
-        pop_up_layout.addWidget(scroll_area)
-        pop_up_layout.addStretch()
-        self.setLayout(pop_up_layout)
-
-        self.hide()
+        self.setWidget(scroll_widget)
 
     def _create_children(self) -> List[LabelWidget]:
         """Create LabelWidgets that represent the labels."""
         children: List[LabelWidget] = []
+        diameter = self._style.icon_radius*2
+
         for label in self.labels:
             children.append(create_label_widget(label, self._style, self))
+            children[-1].setFixedSize(diameter, diameter)
+            self._scroll_area_layout.append(children[-1])
         return children
-
-    def move_to_pie_side(self):
-        offset = self.width()//2 + self._style.widget_radius * 1.05
-        point = QPoint(round(offset),0)
-        self.move_center(QCursor().pos() + point)  # type: ignore
 
 
 class ScrollAreaLayout(QGridLayout):
