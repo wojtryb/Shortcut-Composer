@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import List, TypeVar, Generic, Optional
+from copy import copy
 from enum import Enum
 
 from PyQt5.QtGui import QColor
@@ -101,12 +102,14 @@ class PieMenu(ComplexAction, Generic[T]):
         self._style = PieStyle(
             pie_radius_scale=self._config.pie_radius_scale.read(),
             icon_radius_scale=self._config.icon_radius_scale.read(),
-            icons=self._labels,
             background_color=background_color,
             active_color=active_color)
 
+        unscaled_style = copy(self._style)
+        self._style.set_items(self._labels)
+
         self._pie_settings = PieSettings(
-            style=self._style,
+            style=unscaled_style,
             values=self._create_all_labels(self._values),
             columns=3)
         self._pie_widget = PieWidget(

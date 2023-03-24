@@ -29,11 +29,10 @@ class PieStyle:
         self,
         pie_radius_scale: float,
         icon_radius_scale: float,
-        icons: list,
         background_color: Optional[QColor],
         active_color: QColor,
     ) -> None:
-        self._icons = icons
+        self._items = [None]
         self._base_size = Krita.screen_size/2560
 
         self.pie_radius_scale = pie_radius_scale
@@ -68,6 +67,9 @@ class PieStyle:
 
         self.font_multiplier = self.SYSTEM_FONT_SIZE[platform.system()]
 
+    def set_items(self, items: list):
+        self._items = items
+
     @property
     def base_icon_radius(self) -> int:
         return round(
@@ -77,9 +79,9 @@ class PieStyle:
 
     @property
     def max_icon_radius(self) -> int:
-        if not self._icons:
+        if not self._items:
             return 1
-        return round(self.pie_radius * math.pi / len(self._icons))
+        return round(self.pie_radius * math.pi / len(self._items))
 
     @property
     def icon_radius(self) -> int:
@@ -89,7 +91,7 @@ class PieStyle:
     @property
     def deadzone_radius(self) -> float:
         """Deadzone can be configured, but when pie is empty, becomes inf."""
-        if not self._icons:
+        if not self._items:
             return float("inf")
         return (
             40 * self._base_size

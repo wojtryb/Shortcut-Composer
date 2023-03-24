@@ -37,8 +37,7 @@ class ImageLabelWidget(LabelWidget):
                 outer_radius=(
                     self._style.icon_radius-self._style.border_thickness//2),
                 color=self._style.border_color,
-                thickness=self._style.border_thickness,
-            )
+                thickness=self._style.border_thickness)
             painter.paint_pixmap(self.center, self.ready_image)
 
     def _prepare_image(self) -> QPixmap:

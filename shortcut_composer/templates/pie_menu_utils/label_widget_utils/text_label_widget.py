@@ -33,14 +33,12 @@ class TextLabelWidget(LabelWidget):
             painter.paint_wheel(
                 center=self.center,
                 outer_radius=self._style.icon_radius,
-                color=self._style.icon_color,
-            )
+                color=self._style.icon_color)
             painter.paint_wheel(
                 center=self.center,
                 outer_radius=self._style.icon_radius,
                 color=self._style.border_color,
-                thickness=self._style.border_thickness,
-            )
+                thickness=self._style.border_thickness)
 
     def _create_pyqt_label(self) -> QLabel:
         """Create and show a new Qt5 label. Does not need redrawing."""

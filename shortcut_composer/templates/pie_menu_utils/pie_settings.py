@@ -1,4 +1,5 @@
 from typing import List
+
 from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import (
@@ -38,9 +39,10 @@ class PieSettings(AnimatedWidget, BaseWidget):
         self.setCursor(Qt.ArrowCursor)
 
         self._scroll_area_layout = ScrollAreaLayout(columns, self)
-        radius = self._style.icon_radius*2
+
+        diameter = self._style.icon_radius*2
         for child in self.children_list:
-            child.setFixedSize(radius, radius)
+            child.setFixedSize(diameter, diameter)
             self._scroll_area_layout.append(child)
 
         scroll_widget = QWidget()
@@ -48,7 +50,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
 
         scroll_area = QScrollArea()
         scroll_area.setWidget(scroll_widget)
-        scroll_area.setFixedWidth(self._style.icon_radius*(columns*2+1))
+        scroll_area.setFixedWidth(round(diameter*(columns+0.5)))
         scroll_area.setWidgetResizable(True)
 
         pop_up_layout = QHBoxLayout(self)
