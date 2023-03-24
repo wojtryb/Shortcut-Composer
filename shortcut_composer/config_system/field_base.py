@@ -7,7 +7,7 @@ from enum import Enum
 
 from api_krita import Krita
 from .parsers import Parser, BoolParser, EnumParser, BasicParser
-from .fields import Field
+from .field import Field
 
 T = TypeVar('T')
 E = TypeVar('E', bound=Enum)

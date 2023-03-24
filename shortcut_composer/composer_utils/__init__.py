@@ -4,5 +4,6 @@
 """Utilities specific for this plugin. Not directly reusable elsewhere."""
 
 from .settings_dialog import SettingsDialog
+from .global_config import Config
 
-__all__ = ["SettingsDialog"]
+__all__ = ["SettingsDialog", "Config"]

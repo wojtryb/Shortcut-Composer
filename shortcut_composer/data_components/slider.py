@@ -3,7 +3,8 @@
 
 from typing import List, Union, Optional, Generic, TypeVar
 
-from composer_utils.config import Config, Field
+from composer_utils import Config
+from config_system import Field
 from core_components import Controller
 from .range import Range
 

@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import (
 
 from api_krita.enums import BlendingMode, Tool, TransformMode
 from ..utils import ActionValues
-from ..config.global_config import Config
+from global_config import Config
 
 
 class ActionValuesTab(QWidget):

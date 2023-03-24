@@ -4,7 +4,7 @@ from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtGui import QCursor
 
 from api_krita.pyqt import AnimatedWidget, BaseWidget
-from composer_utils.config import Config
+from composer_utils import Config
 
 from ..label import Label
 from ..pie_style import PieStyle

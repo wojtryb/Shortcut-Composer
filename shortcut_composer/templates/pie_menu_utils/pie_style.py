@@ -9,7 +9,8 @@ from copy import copy
 from PyQt5.QtGui import QColor
 
 from api_krita import Krita
-from composer_utils.config import Config, Field
+from composer_utils import Config
+from config_system import Field
 
 
 class PieStyle:

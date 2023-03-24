@@ -9,7 +9,8 @@ from PyQt5.QtGui import QCursor
 
 from api_krita import Krita
 from api_krita.wrappers import Database
-from .config import Config, ConfigFormWidget, ConfigSpinBox
+from config_system.ui import ConfigFormWidget, ConfigSpinBox
+from .global_config import Config
 from .layouts import ButtonsLayout
 
 

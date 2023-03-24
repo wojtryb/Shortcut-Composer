@@ -3,7 +3,7 @@ from copy import copy
 
 from PyQt5.QtWidgets import QVBoxLayout, QTabWidget
 
-from composer_utils.config import ConfigFormWidget, ConfigSpinBox
+from config_system.ui import ConfigFormWidget, ConfigSpinBox
 from ..widget_utils import NotifyingList
 from ..label import Label
 from ..pie_style import PieStyle

@@ -3,7 +3,7 @@
 
 from typing import List, Optional
 
-from composer_utils.config import Config
+from composer_utils import Config
 from core_components import InstructionHolder, Instruction
 from input_adapter import ComplexActionInterface
 

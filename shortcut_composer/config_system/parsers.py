@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 from typing import Generic, TypeVar, Type, Protocol
 from enum import Enum
 
@@ -44,32 +47,3 @@ class EnumParser(Parser[EnumT]):
 
     def parse_from(self, value: EnumT) -> str:
         return str(value.name)
-
-
-# parser = BasicParser(int)
-# value = parser.parse_from(10)
-# print(value, type(value))
-
-# value = parser.parse_to("10")
-# print(value, type(value))
-
-# ###
-# parser = BoolParser()
-# value = parser.parse_from(True)
-# print(value, type(value))
-
-# value = parser.parse_to("true")
-# print(value, type(value))
-
-# class MyEnum(Enum):
-#     ASD = "asd"
-#     QWE = "qwe"
-#     ZXC = "zxc"
-
-
-# parser = EnumParser(MyEnum)
-# value = parser.parse_from(MyEnum.ASD)
-# print(value, type(value))
-
-# value = parser.parse_to("ASD")
-# print(value, type(value))

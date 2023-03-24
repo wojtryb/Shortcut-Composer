@@ -2,7 +2,7 @@ from typing import List
 
 from PyQt5.QtWidgets import QVBoxLayout
 from api_krita.wrappers import Database
-from composer_utils.config import (
+from config_system.ui import (
     ConfigFormWidget,
     ConfigComboBox,
     ConfigSpinBox)

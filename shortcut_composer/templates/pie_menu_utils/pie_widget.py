@@ -11,7 +11,7 @@ from PyQt5.QtGui import (
     QPaintEvent)
 
 from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
-from composer_utils.config import Config
+from composer_utils import Config
 from .pie_style import PieStyle
 from .label import Label
 from .label_widget import LabelWidget

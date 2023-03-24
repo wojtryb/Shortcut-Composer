@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QPixmap, QIcon
 
-from composer_utils.config import Config
+from composer_utils import Config
 
 T = TypeVar("T")
 
