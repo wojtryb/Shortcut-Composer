@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import TypeVar, Generic, List
+from typing import TypeVar, Generic, Optional, List, Type
+from abc import ABC, abstractmethod
 from enum import Enum
 
 from api_krita import Krita
@@ -9,85 +10,106 @@ from api_krita import Krita
 T = TypeVar('T')
 
 
-class ConfigBase(Generic[T]):
+class FieldBase(Generic[T], ABC):
     def __init__(self, name: str, default: T) -> None:
         self.name = name
         self.default = default
 
-    def _read_raw(self) -> str:
-        return Krita.read_setting(
+    def _read_raw(self) -> Optional[str]:
+        red_value = Krita.read_setting(
             group="ShortcutComposer",
             name=self.name,
-            default="",)
+            default="Not stored")
+        return None if red_value == "Not stored" else red_value
 
     def reset_default(self) -> None:
         self.write(self.default)
 
+    def _is_write_redundant(self, value: T):
+        current_value = self._read_raw()
+        return current_value is None and value == self.default
+
+    @abstractmethod
     def read(self) -> T: ...
+
+    @abstractmethod
     def write(self, value: T): ...
 
+    @property
+    def type(self) -> Type[T]: ...
 
-class BuiltinConfig(ConfigBase, Generic[T]):
-    "For str, int and float"
+
+class ImmutableField(FieldBase, Generic[T]):
+    "For str, int, float."
 
     def __init__(self, name: str, default: T) -> None:
         super().__init__(name, default)
 
     def read(self) -> T:
         raw = self._read_raw()
-
-        if raw == "":
+        if raw is None:
             return self.default
-
-        return type(self.default)(raw)
+        return self.type(raw)
 
     def write(self, value: T) -> None:
-        """Write given value to krita config file."""
+        if self._is_write_redundant(value):
+            return
+
         Krita.write_setting(
             group="ShortcutComposer",
             name=self.name,
             value=value)
 
+    @property
+    def type(self):
+        return type(self.default)
 
-class EnumListConfig(ConfigBase):
+
+class EnumsListField(FieldBase):
     def read(self) -> List[Enum]:
         raw = self._read_raw()
 
-        if raw == "":
+        if raw is None:
             return self.default
 
-        element = self.default[0]
         values_list = raw.split("\t")
-
-        enum_type = type(element)
-        return [enum_type[value] for value in values_list]
+        return [self.type[value] for value in values_list]
 
     def write(self, value: List[Enum]) -> None:
-        """Write given value to krita config file."""
-        to_write = "\t".join([enum.name for enum in value])
+        if self._is_write_redundant(value):
+            return
 
+        to_write = "\t".join([enum.name for enum in value])
         Krita.write_setting(
             group="ShortcutComposer",
             name=self.name,
             value=to_write)
 
+    @property
+    def type(self):
+        element = self.default[0]
+        return type(element)
 
-class BuiltinListConfig(ConfigBase, Generic[T]):
+
+class ImmutablesListField(FieldBase, Generic[T]):
     def __init__(self, name: str, default: List[T]) -> None:
         super().__init__(name, default)
 
     def read(self) -> List[T]:
         raw = self._read_raw()
-
-        if raw == "":
+        if raw is None:
             return self.default
-
-        parse_type = type(self.default[0])
-        return [parse_type(item) for item in raw.split("\t")]
+        return [self.type(item) for item in raw.split("\t")]
 
     def write(self, value: List[T]) -> None:
-        """Write given value to krita config file."""
+        if self._is_write_redundant(value):
+            return
+
         Krita.write_setting(
             group="ShortcutComposer",
             name=self.name,
             value="\t".join(map(str, value)))
+
+    @property
+    def type(self):
+        return type(self.default[0])

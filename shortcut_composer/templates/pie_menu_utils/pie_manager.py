@@ -6,7 +6,7 @@ from typing import Optional
 from PyQt5.QtGui import QCursor
 
 from api_krita.pyqt import Timer
-from composer_utils import Config
+from composer_utils.config import Config
 from .pie_settings import PieSettingsWindow
 from .pie_widget import PieWidget
 from .label_widget import LabelWidget

@@ -10,9 +10,8 @@ from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QCursor
 
 from api_krita import Krita
-from .config import Config
+from .config import Config, ConfigFormWidget 
 from .layouts import ButtonsLayout
-from .tabs import GeneralSettingsTab
 
 
 class SettingsDialog(QDialog):
@@ -25,7 +24,23 @@ class SettingsDialog(QDialog):
         self.setWindowTitle("Configure Shortcut Composer")
 
         self._tab_dict = {
-            "General": GeneralSettingsTab(),
+            "General": ConfigFormWidget([
+                "Preset pie-menus mapping",
+                [Config.TAG_RED],
+                [Config.TAG_GREEN],
+                [Config.TAG_BLUE],
+                "Common settings",
+                [Config.SHORT_VS_LONG_PRESS_TIME, 0.05, 4],
+                [Config.FPS_LIMIT, 5, 500],
+                "Cursor trackers",
+                [Config.TRACKER_SENSITIVITY_SCALE, 0.05, 4],
+                [Config.TRACKER_DEADZONE, 1, 200],
+                "Pie menus display",
+                [Config.PIE_GLOBAL_SCALE, 0.05, 4],
+                [Config.PIE_ICON_GLOBAL_SCALE, 0.05, 4],
+                [Config.PIE_DEADZONE_GLOBAL_SCALE, 0.05, 4],
+                [Config.PIE_ANIMATION_TIME, 0.01, 1],
+            ])
         }
         tab_holder = QTabWidget()
         for name, tab in self._tab_dict.items():

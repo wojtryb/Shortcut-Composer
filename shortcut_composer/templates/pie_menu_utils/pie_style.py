@@ -10,7 +10,7 @@ from copy import copy
 from PyQt5.QtGui import QColor
 
 from api_krita import Krita
-from composer_utils import Config
+from composer_utils.config import Config
 
 
 @dataclass

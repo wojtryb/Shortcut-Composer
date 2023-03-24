@@ -14,7 +14,7 @@ from PyQt5.QtWidgets import (
 )
 
 from api_krita import Krita
-from ..config import Config
+from ..config.global_config import Config
 from .value_list import ValueList
 
 

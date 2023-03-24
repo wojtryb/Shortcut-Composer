@@ -1,11 +1,11 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from composer_utils import (
-    EnumListConfig,
-    BuiltinListConfig,
-    BuiltinConfig,
-    ConfigBase)
+from composer_utils.config import (
+    EnumsListField,
+    ImmutablesListField,
+    ImmutableField,
+    FieldBase)
 from data_components import Tag
 
 
@@ -23,7 +23,7 @@ def create_local_config(
 
 class PieConfig:
     values: list
-    order: ConfigBase
+    order: FieldBase
 
     def __init__(
         self,
@@ -34,10 +34,10 @@ class PieConfig:
     ) -> None:
         self.name = name
         self._default_values = values
-        self.pie_radius_scale = BuiltinConfig(
+        self.pie_radius_scale = ImmutableField(
             f"{self.name} pie scale",
             pie_radius_scale)
-        self.icon_radius_scale = BuiltinConfig(
+        self.icon_radius_scale = ImmutableField(
             f"{self.name} icon scale",
             icon_radius_scale)
 
@@ -46,8 +46,9 @@ class PresetPieConfig(PieConfig):
     def __init__(self, *args):
         super().__init__(*args)
         self._default_values: Tag
-        self.tag_name = BuiltinConfig(self.name, self._default_values.tag_name)
-        self.order = BuiltinListConfig(f"{self.name} values", [""])
+        self.tag_name = ImmutableField(
+            self.name, self._default_values.tag_name)
+        self.order = ImmutablesListField(f"{self.name} values", [""])
 
     @property
     def values(self):
@@ -62,7 +63,7 @@ class PresetPieConfig(PieConfig):
 class EnumPieConfig(PieConfig):
     def __init__(self, *args):
         super().__init__(*args)
-        self.order = EnumListConfig(
+        self.order = EnumsListField(
             f"{self.name} values",
             self._default_values)
 

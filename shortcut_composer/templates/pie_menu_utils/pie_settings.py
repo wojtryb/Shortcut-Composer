@@ -11,13 +11,12 @@ from PyQt5.QtWidgets import (
 )
 from api_krita import Krita
 from api_krita.pyqt import AnimatedWidget, BaseWidget
-from composer_utils import Config
+from composer_utils.config import Config, ConfigFormWidget
 from .label import Label
 from .label_widget import LabelWidget
 from .label_widget_utils import create_label_widget
 from .pie_style import PieStyle
 from .pie_config import PieConfig
-from .pie_local_settings import LocalPieSettings
 
 
 class PieSettingsWindow(AnimatedWidget, BaseWidget):
@@ -42,7 +41,13 @@ class PieSettingsWindow(AnimatedWidget, BaseWidget):
 
         tab_holder = QTabWidget()
 
-        self._local_settings = LocalPieSettings(pie_config=self._pie_config)
+        self._local_settings = ConfigFormWidget([
+            "Bla",
+            [pie_config.pie_radius_scale, 0.05, 4],
+            [pie_config.icon_radius_scale, 0.05, 4],
+            [Config.TAG_BLUE],
+            "Ble",
+        ])
         tab_holder.addTab(self._local_settings, "Local settings")
         self._action_values = ScrollArea(
             values,

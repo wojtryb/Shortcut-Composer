@@ -3,7 +3,7 @@
 
 from typing import Any, List, Union, Optional
 
-from composer_utils import Config
+from composer_utils.config import Config, FieldBase
 from core_components import Controller
 from .range import Range
 
@@ -76,7 +76,7 @@ class Slider:
 
         self.deadzone = self._read(deadzone, Config.TRACKER_DEADZONE)
 
-    def _read(self, passed: Optional[int], field: Config) -> int:
+    def _read(self, passed: Optional[int], field: FieldBase) -> int:
         if passed is not None:
             return passed
         return field.read()

@@ -4,7 +4,7 @@
 from typing import TypeVar
 from enum import Enum
 
-from .internal_config import ConfigBase, BuiltinConfig
+from .fields import FieldBase, ImmutableField
 
 T = TypeVar('T', bound=Enum)
 
@@ -26,24 +26,26 @@ class Config:
     EnumConfigValues.
     """
 
-    SHORT_VS_LONG_PRESS_TIME = BuiltinConfig("Short vs long press time", 0.3)
-    TRACKER_SENSITIVITY_SCALE = BuiltinConfig("Tracker sensitivity scale", 1.0)
-    TRACKER_DEADZONE = BuiltinConfig("Tracker deadzone", 0)
-    FPS_LIMIT = BuiltinConfig("FPS limit", 60)
-    PIE_GLOBAL_SCALE = BuiltinConfig("Pie global scale", 1.0)
-    PIE_ICON_GLOBAL_SCALE = BuiltinConfig("Pie icon global scale", 1.0)
-    PIE_DEADZONE_GLOBAL_SCALE = BuiltinConfig("Pie deadzone global scale", 1.0)
-    PIE_ANIMATION_TIME = BuiltinConfig("Pie animation time", 0.2)
+    SHORT_VS_LONG_PRESS_TIME = ImmutableField("Short vs long press time", 0.3)
+    TRACKER_SENSITIVITY_SCALE = ImmutableField(
+        "Tracker sensitivity scale", 1.0)
+    TRACKER_DEADZONE = ImmutableField("Tracker deadzone", 0)
+    FPS_LIMIT = ImmutableField("FPS limit", 60)
+    PIE_GLOBAL_SCALE = ImmutableField("Pie global scale", 1.0)
+    PIE_ICON_GLOBAL_SCALE = ImmutableField("Pie icon global scale", 1.0)
+    PIE_DEADZONE_GLOBAL_SCALE = ImmutableField(
+        "Pie deadzone global scale", 1.0)
+    PIE_ANIMATION_TIME = ImmutableField("Pie animation time", 0.2)
 
-    TAG_RED = BuiltinConfig("Pick brush presets (red)", "★ My Favorites")
-    TAG_GREEN = BuiltinConfig("Pick brush presets (green)", "RGBA")
-    TAG_BLUE = BuiltinConfig("Pick brush presets (blue)", "Erasers")
+    TAG_RED = ImmutableField("Pick brush presets (red)", "★ My Favorites")
+    TAG_GREEN = ImmutableField("Pick brush presets (green)", "RGBA")
+    TAG_BLUE = ImmutableField("Pick brush presets (blue)", "Erasers")
 
     @classmethod
     def reset_defaults(cls) -> None:
         """Reset all config files."""
         for config_field in cls.__dict__.values():
-            if isinstance(config_field, ConfigBase):
+            if isinstance(config_field, FieldBase):
                 config_field.reset_default()
 
     @classmethod

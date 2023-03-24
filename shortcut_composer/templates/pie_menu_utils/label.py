@@ -11,7 +11,7 @@ from PyQt5.QtGui import (
     QIcon,
 )
 
-from composer_utils import Config
+from composer_utils.config import Config
 
 
 @dataclass
