@@ -133,5 +133,5 @@ class PieWidget(AnimatedWidget, BaseWidget):
         return super().show()
 
     def set_draggable(self, draggable: bool):
-        for widget in self.label_holder.widgets():
+        for widget in self.label_holder.widget_holder:
             widget.draggable = draggable

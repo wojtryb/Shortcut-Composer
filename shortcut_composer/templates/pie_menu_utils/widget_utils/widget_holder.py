@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# from typing import Dict, Iterator, Optional
 from typing import Dict, Iterator
 from ..label_widget import LabelWidget
 from ..label import Label

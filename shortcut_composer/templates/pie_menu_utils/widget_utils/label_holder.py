@@ -53,9 +53,6 @@ class LabelHolder:
     def __bool__(self):
         return bool(self._labels)
 
-    def widgets(self):
-        return iter(self.widget_holder)
-
     def _reset(self) -> None:
         for child in self.widget_holder:
             child.setParent(None)  # type: ignore

@@ -25,7 +25,6 @@ class PieManager:
     def __init__(self, pie_widget: PieWidget, pie_settings: PieSettings):
         self._pie_widget = pie_widget
         self._pie_settings = pie_settings
-        self._holder = pie_widget.label_holder.widget_holder
         self._timer = Timer(self._handle_cursor, Config.get_sleep_time())
         self._animator = LabelAnimator(pie_widget)
 
@@ -60,7 +59,8 @@ class PieManager:
             return self._set_active_label(None)
 
         angle = self._circle.angle_from_point(cursor)
-        self._set_active_label(self._holder.on_angle(angle).label)
+        holder = self._pie_widget.label_holder.widget_holder
+        self._set_active_label(holder.on_angle(angle).label)
 
     def _set_active_label(self, label: Optional[Label]) -> None:
         """Mark label as active and start animating the change."""
