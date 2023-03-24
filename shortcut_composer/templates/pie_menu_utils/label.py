@@ -2,20 +2,19 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from api_krita.pyqt import Text
-from typing import Union, Any
+from typing import Union, Generic, TypeVar
 from dataclasses import dataclass
 
 from PyQt5.QtCore import QPoint
-from PyQt5.QtGui import (
-    QPixmap,
-    QIcon,
-)
+from PyQt5.QtGui import QPixmap, QIcon
 
 from composer_utils.config import Config
 
+T = TypeVar("T")
+
 
 @dataclass
-class Label:
+class Label(Generic[T]):
     """
     Data representing a single value in PieWidget.
 
@@ -28,7 +27,7 @@ class Label:
     - `activation_progress` -- state of animation in range <0-1>
     """
 
-    value: Any
+    value: T
     center: QPoint = QPoint(0, 0)
     angle: int = 0
     display_value: Union[QPixmap, QIcon, Text, None] = None
@@ -36,12 +35,12 @@ class Label:
     def __post_init__(self) -> None:
         self.activation_progress = AnimationProgress(speed_scale=1, steep=1)
 
-    def swap_locations(self, other: 'Label') -> None:
+    def swap_locations(self, other: 'Label[T]') -> None:
         """Change position data with information Label."""
         self.angle, other.angle = other.angle, self.angle
         self.center, other.center = other.center, self.center
-    
-    def __eq__(self, other: Any) -> bool:
+
+    def __eq__(self, other: T) -> bool:
         if not isinstance(other, Label):
             return False
         return self.value == other.value

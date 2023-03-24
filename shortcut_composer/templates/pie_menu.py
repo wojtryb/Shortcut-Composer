@@ -188,8 +188,12 @@ class PieMenu(ComplexAction, Generic[T]):
         if label := self.pie_widget.active:
             self._controller.set_value(label.value)
 
-    def _reset_labels(self, label_list: List[Label], values: List[T]) -> None:
+    def _reset_labels(self, label_list: List[Label[T]], values: List[T]):
         """Wrap values into paintable label objects with position info."""
+        current = [label.value for label in label_list]
+        if current == values:
+            return
+
         label_list.clear()
         for value in values:
             try:
