@@ -1,6 +1,8 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+# from PyQt5.QtWidgets import QWidget
+
 from composer_utils.config import (
     EnumsListField,
     ImmutablesListField,
@@ -24,6 +26,7 @@ def create_local_config(
 class PieConfig:
     values: list
     order: FieldBase
+    # settings_window: QWidget
 
     def __init__(
         self,
@@ -41,6 +44,7 @@ class PieConfig:
             f"{self.name} icon scale",
             icon_radius_scale)
 
+    # def create_pie_window(self) -> QWidget: ...
 
 class PresetPieConfig(PieConfig):
     def __init__(self, *args):

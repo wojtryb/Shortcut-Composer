@@ -21,7 +21,20 @@ from .label import Label
 from .label_widget import LabelWidget
 from .label_widget_utils import create_label_widget
 from .pie_style import PieStyle
-from .pie_config import PieConfig
+from .pie_config import PieConfig, EnumPieConfig, PresetPieConfig
+
+
+def create_settings_window(
+    values: List[Label],
+    style: PieStyle,
+    pie_config: PieConfig,
+    parent=None
+) -> 'PieSettingsWindow':
+    if isinstance(pie_config, PresetPieConfig):
+        return TagPieSettingsWindow(values, style, pie_config, parent)
+    elif isinstance(pie_config, EnumPieConfig):
+        return EnumPieSettingsWindow(values, style, pie_config, parent)
+    raise ValueError(f"Unknown pie config {pie_config}")
 
 
 class PieSettingsWindow(AnimatedWidget, BaseWidget):
@@ -29,7 +42,6 @@ class PieSettingsWindow(AnimatedWidget, BaseWidget):
         self,
         values: List[Label],
         style: PieStyle,
-        columns: int,
         pie_config: PieConfig,
         parent=None
     ) -> None:
@@ -41,51 +53,97 @@ class PieSettingsWindow(AnimatedWidget, BaseWidget):
             Qt.FramelessWindowHint))
         self.setCursor(Qt.ArrowCursor)
 
+        self._values = values
         self._style = style
         self._pie_config = pie_config
-
-        self._tags: List[str] = []
-        self._refresh_tags()
-
-        tab_holder = QTabWidget()
-        self._local_settings = ConfigFormWidget([
-            "Bla",
-            ConfigSpinBox(pie_config.pie_radius_scale, self, 0.05, 4),
-            ConfigSpinBox(pie_config.icon_radius_scale, self, 0.05, 4),
-            ConfigComboBox(Config.TAG_BLUE, self, self._tags),
-            "Ble",
-        ])
-        tab_holder.addTab(self._local_settings, "Local settings")
-        self._action_values = ScrollArea(
-            values,
-            self._style,
-            columns)
-        tab_holder.addTab(self._action_values, "Action values")
-
-        layout = QVBoxLayout(self)
-        layout.addWidget(tab_holder)
-        self.setLayout(layout)
 
     def move_to_pie_side(self):
         offset = self.width()//2 + self._style.widget_radius * 1.05
         point = QPoint(round(offset), 0)
         self.move_center(QCursor().pos() + point)  # type: ignore
 
+    def hide(self) -> None:
+        Krita.trigger_action("Reload Shortcut Composer")
+        super().hide()
+
+
+class TagPieSettingsWindow(PieSettingsWindow):
+    def __init__(
+        self,
+        values: List[Label],
+        style: PieStyle,
+        pie_config: PresetPieConfig,
+        parent=None
+    ) -> None:
+        super().__init__(
+            values,
+            style,
+            pie_config,
+            parent)
+
+        self._tags: List[str] = []
+        self._refresh_tags()
+
+        self._local_settings = ConfigFormWidget([
+            ConfigComboBox(pie_config.tag_name, self, self._tags),
+            ConfigSpinBox(pie_config.pie_radius_scale, self, 0.05, 4),
+            ConfigSpinBox(pie_config.icon_radius_scale, self, 0.05, 4),
+        ])
+
+        layout = QVBoxLayout(self)
+        layout.addWidget(self._local_settings)
+        self.setLayout(layout)
+
     def show(self):
         self._refresh_tags()
         self._local_settings.refresh()
-        return super().show()
+        super().show()
 
     def hide(self) -> None:
         self._local_settings.apply()
-        Krita.trigger_action("Reload Shortcut Composer")
-        return super().hide()
-    
+        super().hide()
+
     def _refresh_tags(self):
         with Database() as database:
             tags = sorted(database.get_brush_tags(), key=str.lower)
         self._tags.clear()
         self._tags.extend(tags)
+
+
+class EnumPieSettingsWindow(PieSettingsWindow):
+    def __init__(
+        self,
+        values: List[Label],
+        style: PieStyle,
+        pie_config: EnumPieConfig,
+        parent=None
+    ) -> None:
+        super().__init__(
+            values,
+            style,
+            pie_config,
+            parent)
+
+        tab_holder = QTabWidget()
+        self._local_settings = ConfigFormWidget([
+            ConfigSpinBox(pie_config.pie_radius_scale, self, 0.05, 4),
+            ConfigSpinBox(pie_config.icon_radius_scale, self, 0.05, 4),
+        ])
+        tab_holder.addTab(self._local_settings, "Local settings")
+        self._action_values = ScrollArea(values, self._style, 3)
+        tab_holder.addTab(self._action_values, "Action values")
+
+        layout = QVBoxLayout(self)
+        layout.addWidget(tab_holder)
+        self.setLayout(layout)
+
+    def show(self):
+        self._local_settings.refresh()
+        super().show()
+
+    def hide(self) -> None:
+        self._local_settings.apply()
+        super().hide()
 
 
 class ScrollArea(QScrollArea):
