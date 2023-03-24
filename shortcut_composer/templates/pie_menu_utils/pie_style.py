@@ -49,10 +49,7 @@ class PieStyle:
             165 * self._base_size
             * self.pie_radius_scale
             * Config.PIE_GLOBAL_SCALE.read())
-
-        max_icon_size = max(self.base_icon_radius, self.secondary_icon_size)
-        self.widget_radius = self.pie_radius + max_icon_size
-        self.deadzone_radius = self._pick_deadzone_radius()
+        self.widget_radius = self.pie_radius + self.base_icon_radius
 
         self.border_thickness = round(self.pie_radius*0.02)
         self.area_thickness = round(self.pie_radius/self.pie_radius_scale*0.4)
@@ -79,7 +76,7 @@ class PieStyle:
             * Config.PIE_ICON_GLOBAL_SCALE.read())
 
     @property
-    def secondary_icon_size(self) -> int:
+    def max_icon_radius(self) -> int:
         if not self._icons:
             return 1
         return round(self.pie_radius * math.pi / len(self._icons))
@@ -87,16 +84,16 @@ class PieStyle:
     @property
     def icon_radius(self) -> int:
         """Icons radius depend on settings, but they have to fit in the pie."""
-        return min(self.base_icon_radius, self.secondary_icon_size)
+        return min(self.base_icon_radius, self.max_icon_radius)
 
-    def _pick_deadzone_radius(self) -> float:
+    @property
+    def deadzone_radius(self) -> float:
         """Deadzone can be configured, but when pie is empty, becomes inf."""
         if not self._icons:
             return float("inf")
         return (
             40 * self._base_size
-            * Config.PIE_DEADZONE_GLOBAL_SCALE.read()
-        )
+            * Config.PIE_DEADZONE_GLOBAL_SCALE.read())
 
     def _pick_background_color(self, color: Optional[QColor]) -> QColor:
         """Default background color depends on the app theme lightness."""

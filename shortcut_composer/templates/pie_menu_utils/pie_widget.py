@@ -116,44 +116,45 @@ class PieWidget(AnimatedWidget, BaseWidget):
 
     def dragMoveEvent(self, e: QDragMoveEvent) -> None:
         """Swap children during drag when mouse is moved to another zone."""
-        pos = e.pos()
+        e.accept()
         source_widget = e.source()
-        self._last_widget = source_widget
+        pos = e.pos()
         distance = self._circle_points.distance(pos)
+        if not isinstance(source_widget, LabelWidget):
+            return
 
-        if (not isinstance(source_widget, LabelWidget)
-                or distance < self._style.deadzone_radius):
-            return e.accept()
+        self._last_widget = source_widget
+        if distance > self._style.widget_radius:
+            return self._remove_widget(source_widget)
+        if distance < self._style.deadzone_radius:
+            return
 
         if source_widget.label not in self.labels:
             self.labels.append(source_widget.label)
             return self._reset()
 
-        if source_widget not in self._children_widgets:
-            source_widget = self.widget_holder.on_label(source_widget.label)
-
-        # NOTE: This computation is too heavy to be done on each call
         angle = self._circle_points.angle_from_point(pos)
-        widget = self.widget_holder.on_angle(angle)
-        if widget == source_widget:
-            return e.accept()
-
-        self.widget_holder.swap(widget, source_widget)
-        self.repaint()
-        e.accept()
+        source = self.widget_holder.on_label(source_widget.label)
+        held = self.widget_holder.on_angle(angle)
+        if held != source:
+            self.widget_holder.swap(held, source)
+            self.repaint()
 
     def dragLeaveEvent(self, e: QDragLeaveEvent) -> None:
-        if self._last_widget:
-            if self._last_widget.label in self.labels:
-                self.labels.remove(self._last_widget.label)
-                self._reset()
+        if self._last_widget is not None:
+            self._remove_widget(self._last_widget)
         return super().dragLeaveEvent(e)
+
+    def _remove_widget(self, widget: LabelWidget):
+        if widget.label in self.labels:
+            self.labels.remove(widget.label)
+            self._reset()
 
     def _reset(self):
         for child in self._children_widgets:
             child.setParent(None)  # type: ignore
         self._children_widgets.clear()
-        self.widget_holder.flush()
+        self.widget_holder.clear()
         self._reset_children()
         self._reset_holder()
 

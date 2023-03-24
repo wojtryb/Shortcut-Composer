@@ -59,7 +59,7 @@ class WidgetHolder:
         _a.move_to_label()
         _b.move_to_label()
 
-    def flush(self):
+    def clear(self):
         self._widgets = {}
         self.active = None
 
