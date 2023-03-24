@@ -1,12 +1,13 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Optional
+from typing import List, TypeVar
+from enum import Enum
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPaintEvent, QDragMoveEvent, QDragEnterEvent
 from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
-from composer_utils import Config
+from composer_utils import Config, EnumListConfig, BuiltinListConfig
 from .pie_style import PieStyle
 from .label import Label
 from .label_widget import LabelWidget
@@ -18,6 +19,24 @@ from .widget_utils import (
     EditMode,
 )
 from .label_widget_utils import create_label_widget
+
+
+T = TypeVar('T')
+
+
+class PieConfig:
+    def __init__(self, name: str, values: list) -> None:
+        self.name = name
+        self.values = self._create_values(f"{values} values")
+
+    def _create_values(self, values: list):
+        if not values:
+            return BuiltinListConfig(self.name, [None])
+
+        if isinstance(values[0], Enum):
+            return EnumListConfig(self.name, values)
+
+        return BuiltinListConfig(self.name, values)
 
 
 class PieWidget(AnimatedWidget, BaseWidget):
@@ -49,7 +68,7 @@ class PieWidget(AnimatedWidget, BaseWidget):
         self,
         style: PieStyle,
         labels: List[Label],
-        config_to_write_back: Optional[Config] = None,
+        config_to_write_back: PieConfig,
         parent=None
     ):
         AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())

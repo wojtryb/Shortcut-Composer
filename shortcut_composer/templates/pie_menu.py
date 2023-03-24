@@ -6,12 +6,12 @@ from typing import List, TypeVar, Generic, Union, Optional
 from PyQt5.QtGui import QColor, QPixmap, QIcon
 
 from api_krita.pyqt import Text
-from composer_utils import Config
 from core_components import Controller, Instruction
 from input_adapter import ComplexAction
 from .pie_menu_utils import (
     PieManager,
     PieWidget,
+    PieConfig,
     PieStyle,
     Label,
 )
@@ -91,7 +91,8 @@ class PieMenu(ComplexAction, Generic[T]):
             instructions=instructions)
         self._controller = controller
 
-        self._labels = self._create_labels(values)
+        self._config = PieConfig(name, values)
+        self._labels = self._create_labels(self._config.values.read())
         self._style = PieStyle(
             pie_radius_scale=pie_radius_scale,
             icon_radius_scale=icon_radius_scale,
@@ -100,8 +101,7 @@ class PieMenu(ComplexAction, Generic[T]):
             active_color=active_color,
         )
 
-        related_config = self._get_config_to_write_back(values)
-        self._pie_widget = PieWidget(self._style, self._labels, related_config)
+        self._pie_widget = PieWidget(self._style, self._labels, self._config)
         self._pie_manager = PieManager(self._pie_widget)
 
     def on_key_press(self) -> None:
@@ -133,11 +133,4 @@ class PieMenu(ComplexAction, Generic[T]):
         try:
             return self._controller.get_label(value)
         except KeyError:
-            return None
-
-    def _get_config_to_write_back(self, values: List[T]) -> Optional[Config]:
-        """Some value lists can contain metadata with config to write back."""
-        try:
-            return values.config_to_write  # type: ignore
-        except AttributeError:
             return None

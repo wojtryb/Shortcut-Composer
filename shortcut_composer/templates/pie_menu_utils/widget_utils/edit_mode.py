@@ -36,5 +36,4 @@ class EditMode:
             return
 
         values = [widget.label.value for widget in obj.widget_holder]
-        print("writing")
-        obj.config_to_write_back.write(values)
+        obj.config_to_write_back.values.write(values)

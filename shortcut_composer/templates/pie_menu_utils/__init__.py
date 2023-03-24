@@ -5,7 +5,7 @@
 
 from .label_widget import LabelWidget
 from .pie_manager import PieManager
-from .pie_widget import PieWidget
+from .pie_widget import PieWidget, PieConfig
 from .pie_style import PieStyle
 from .label import Label
 
@@ -13,6 +13,7 @@ __all__ = [
     "LabelWidget",
     "PieManager",
     "PieWidget",
+    "PieConfig",
     "PieStyle",
     "Label",
 ]
