@@ -57,8 +57,7 @@ class SettingsDialog(QDialog):
 
     def apply(self) -> None:
         """Ask all dialog zones to apply themselves."""
-        for tab in self._tab_dict.values():
-            tab.apply()
+        self._general_tab.apply()
         Krita.trigger_action("Reload Shortcut Composer")
 
     def ok(self) -> None:
