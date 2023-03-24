@@ -27,16 +27,19 @@ class SettingsDialog(QDialog):
 
         self._general_tab = ConfigFormWidget([
             "Common settings",
-            ConfigSpinBox(Config.SHORT_VS_LONG_PRESS_TIME, self, 0.05, 4),
-            ConfigSpinBox(Config.FPS_LIMIT, self, 5, 500),
+            ConfigSpinBox(
+                Config.SHORT_VS_LONG_PRESS_TIME, self, None, 0.05, 4),
+            ConfigSpinBox(Config.FPS_LIMIT, self, None, 5, 500),
             "Cursor trackers",
-            ConfigSpinBox(Config.TRACKER_SENSITIVITY_SCALE, self, 0.05, 400),
-            ConfigSpinBox(Config.TRACKER_DEADZONE, self, 1, 200),
+            ConfigSpinBox(
+                Config.TRACKER_SENSITIVITY_SCALE, self, None, 0.05, 400),
+            ConfigSpinBox(Config.TRACKER_DEADZONE, self, None, 1, 200),
             "Pie menus display",
-            ConfigSpinBox(Config.PIE_GLOBAL_SCALE, self, 0.05, 4),
-            ConfigSpinBox(Config.PIE_ICON_GLOBAL_SCALE, self, 0.05, 4),
-            ConfigSpinBox(Config.PIE_DEADZONE_GLOBAL_SCALE, self, 0.05, 4),
-            ConfigSpinBox(Config.PIE_ANIMATION_TIME, self, 0.01, 1),
+            ConfigSpinBox(Config.PIE_GLOBAL_SCALE, self, None, 0.05, 4),
+            ConfigSpinBox(Config.PIE_ICON_GLOBAL_SCALE, self, None, 0.05, 4),
+            ConfigSpinBox(
+                Config.PIE_DEADZONE_GLOBAL_SCALE, self, None, 0.05, 4),
+            ConfigSpinBox(Config.PIE_ANIMATION_TIME, self, None, 0.01, 1),
         ])
 
         full_layout = QVBoxLayout(self)

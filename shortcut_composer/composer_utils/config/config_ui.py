@@ -21,10 +21,12 @@ class ConfigBasedWidget:
     def __init__(
         self,
         config_field: ImmutableField,
-        parent: Optional[QWidget] = None
+        parent: Optional[QWidget] = None,
+        pretty_name: Optional[str] = None,
     ) -> None:
         self._parent = parent
         self.config_field: Final[ImmutableField] = config_field
+        self.pretty_name = self._init_pretty_name(pretty_name)
         self.widget: QWidget
 
     @abstractmethod
@@ -39,16 +41,22 @@ class ConfigBasedWidget:
     def save(self):
         self.config_field.write(self.read())
 
+    def _init_pretty_name(self, pretty_name: Optional[str]) -> str:
+        if pretty_name is not None:
+            return pretty_name
+        return self.config_field.name
+
 
 class ConfigSpinBox(ConfigBasedWidget):
     def __init__(
         self,
         config_field: Union[ImmutableField[int], ImmutableField[float]],
         parent: Optional[QWidget] = None,
+        pretty_name: Optional[str] = None,
         step: float = 1,
         max_value: float = 100,
     ) -> None:
-        super().__init__(config_field, parent)
+        super().__init__(config_field, parent, pretty_name)
         self._step = step
         self._max_value = max_value
         self._spin_box = self._init_spin_box()
@@ -70,14 +78,16 @@ class ConfigSpinBox(ConfigBasedWidget):
         spin_box.setMaximum(self._max_value)  # type: ignore
         return spin_box
 
+
 class ConfigComboBox(ConfigBasedWidget):
     def __init__(
         self,
         config_field: ImmutableField[str],
         parent: Optional[QWidget] = None,
+        pretty_name: Optional[str] = None,
         allowed_values: List[Any] = [],
     ) -> None:
-        super().__init__(config_field, parent)
+        super().__init__(config_field, parent, pretty_name)
         self._allowed_values = allowed_values
         self._combo_box = self._init_combo_box()
         self.widget: Final[QComboBox] = self._combo_box
@@ -123,7 +133,7 @@ class ConfigFormWidget(QWidget):
 
     def _add_row(self, element: ConfigBasedWidget) -> None:
         self._widgets.append(element)
-        self._layout.addRow(element.config_field.name, element.widget)
+        self._layout.addRow(f"{element.pretty_name}:", element.widget)
 
     def _add_label(self, text: str):
         label = QLabel(text)

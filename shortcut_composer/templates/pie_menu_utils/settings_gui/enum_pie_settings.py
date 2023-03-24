@@ -37,8 +37,10 @@ class EnumPieSettings(PieSettings):
         self._action_values = ScrollArea(values, new_style, 3)
         tab_holder.addTab(self._action_values, "Action values")
         self._local_settings = ConfigFormWidget([
-            ConfigSpinBox(pie_config.pie_radius_scale, self, 0.05, 4),
-            ConfigSpinBox(pie_config.icon_radius_scale, self, 0.05, 4),
+            ConfigSpinBox(
+                pie_config.pie_radius_scale, self, "Pie scale", 0.05, 4),
+            ConfigSpinBox(
+                pie_config.icon_radius_scale, self, "Icon scale",  0.05, 4),
         ])
         tab_holder.addTab(self._local_settings, "Local settings")
 
