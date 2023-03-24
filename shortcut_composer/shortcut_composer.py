@@ -68,7 +68,6 @@ class ShortcutComposer(Extension):
         return Krita.create_action(
             window=window,
             name="Reload Shortcut Composer",
-            group="tools/scripts",
             callback=self._reload_composer)
 
     def _create_settings_action(
