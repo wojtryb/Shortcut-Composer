@@ -82,6 +82,7 @@ class PieWidget(AnimatedWidget, BaseWidget):
             self._labels,
             self._style,
             self._circle_points,
+            self.config.allow_remove,
             self)
 
     @property

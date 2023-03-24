@@ -12,6 +12,7 @@ from data_components import Tag
 class PieConfig:
     values: list
     order: FieldBase
+    allow_remove: bool
 
     def __init__(
         self,
@@ -37,6 +38,8 @@ class PresetPieConfig(PieConfig):
         self.tag_name = ImmutableField(
             self.name, self._default_values.tag_name)
         self.order = ImmutablesListField(f"{self.name} values", [""])
+        self.allow_remove = False
+
 
     @property
     def values(self):
@@ -54,6 +57,7 @@ class EnumPieConfig(PieConfig):
         self.order = EnumsListField(
             f"{self.name} values",
             self._default_values)
+        self.allow_remove = True
 
     @property
     def values(self):

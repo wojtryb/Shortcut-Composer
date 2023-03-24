@@ -19,11 +19,13 @@ class LabelHolder:
         labels: List[Label],
         style: PieStyle,
         circle_points: CirclePoints,
+        allow_remove: bool,
         owner: QWidget,
     ) -> None:
         self._labels = labels
         self._style = style
         self._circle_points = circle_points
+        self._allow_remove = allow_remove
         self._owner = owner
 
         self.widget_holder: WidgetHolder = WidgetHolder()
@@ -34,7 +36,9 @@ class LabelHolder:
         self._reset()
 
     def remove(self, label: Label):
-        if label in self._labels and len(self._labels) > 1:
+        if (label in self._labels
+                and len(self._labels) > 1
+                and self._allow_remove):
             self._labels.remove(label)
             self._reset()
 
