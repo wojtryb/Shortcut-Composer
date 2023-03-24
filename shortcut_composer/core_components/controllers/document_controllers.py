@@ -31,6 +31,9 @@ class ActiveLayerController(DocumentBasedController, Controller[Node]):
     def set_value(self, value: Node) -> None:
         """Set passed node as current."""
         self.document.active_node = value
+    
+    def get_pretty_name(self, value: Node) -> str:
+        return value.name
 
 
 class TimeController(DocumentBasedController, Controller[int]):
@@ -50,4 +53,5 @@ class TimeController(DocumentBasedController, Controller[int]):
         self.document.current_time = value
 
     def get_label(self, value: int) -> Text:
-        return Text(str(value))
+        return Text(self.get_pretty_name(value))
+

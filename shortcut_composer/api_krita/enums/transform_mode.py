@@ -14,14 +14,6 @@ class TransformMode(Enum):
     Extended with modes of the transform tool.
 
     Example usage: `Tool.FREEHAND_BRUSH`
-
-    Available modes:
-    - `FREE`
-    - `PERSPECTIVE`
-    - `WARP`
-    - `CAGE`
-    - `LIQUIFY`
-    - `MESH`
     """
 
     FREE = "Transform tool: free"
@@ -46,6 +38,19 @@ class TransformMode(Enum):
         icon_name = _ICON_NAME_MAP[self]
         return Api.instance().icon(icon_name)
 
+    @property
+    def pretty_name(self) -> str:
+        return _PRETTY_NAME_MAP[self]
+
+
+_PRETTY_NAME_MAP = {
+    TransformMode.FREE: "Transform mode: free",
+    TransformMode.PERSPECTIVE: "Transform mode: perspective",
+    TransformMode.WARP: "Transform mode: warp",
+    TransformMode.CAGE: "Transform mode: cage",
+    TransformMode.LIQUIFY: "Transform mode: liquify",
+    TransformMode.MESH: "Transform mode: mesh",
+}
 
 _ICON_NAME_MAP = {
     TransformMode.FREE: "krita_tool_transform",

@@ -31,7 +31,10 @@ class CanvasZoomController(CanvasBasedController, Controller[float]):
         self.canvas.zoom = value
 
     def get_label(self, value: float) -> Text:
-        return Text(f"{round(value/100, 2)}")
+        return Text(self.get_pretty_name(value))
+
+    def get_pretty_name(self, value: float) -> str:
+        return f"{round(value/100, 2)}"
 
 
 class CanvasRotationController(CanvasBasedController, Controller[float]):
@@ -52,4 +55,7 @@ class CanvasRotationController(CanvasBasedController, Controller[float]):
         self.canvas.rotation = value
 
     def get_label(self, value: float) -> Text:
-        return Text(f"{round(value)}°")
+        return Text(self.get_pretty_name(value))
+
+    def get_pretty_name(self, value: float) -> str:
+        return f"{round(value)}°"

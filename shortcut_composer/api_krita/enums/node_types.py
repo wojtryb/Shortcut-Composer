@@ -11,20 +11,6 @@ class NodeType(Enum):
     Contains all known node types in krita.
 
     Example usage: `NodeType.PAINT_LAYER`
-
-    Available node types:
-    - `PAINT_LAYER`
-    - `GROUP_LAYER`
-    - `FILE_LAYER`
-    - `FILTER_LAYER`
-    - `FILL_LAYER`
-    - `CLONE_LAYER`
-    - `VECTOR_LAYER`
-    - `TRANSPARENCY_MASK`
-    - `FILTER_MASK`
-    - `TRANSFORM_MASK`
-    - `SELECTION_MASK`
-    - `COLORIZE_MASK`
     """
     
     PAINT_LAYER = "paintlayer"

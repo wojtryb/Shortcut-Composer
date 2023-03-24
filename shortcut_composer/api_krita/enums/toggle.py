@@ -3,6 +3,7 @@
 
 from krita import Krita as Api
 from enum import Enum
+from PyQt5.QtWidgets import QWidgetAction
 
 
 class Toggle(Enum):
@@ -10,21 +11,6 @@ class Toggle(Enum):
     Contains all known actions that toggle (can be activated and deactivated).
 
     Example usage: `Toggle.ERASER`
-
-    Available toggle actions:
-    - `ERASER`
-    - `PRESERVE_ALPHA`
-    - `MIRROR_CANVAS`
-    - `SOFT_PROOFING`
-    - `ISOLATE_LAYER`
-    - `VIEW_REFERENCE_IMAGES`
-    - `VIEW_ASSISTANTS`
-    - `VIEW_ASSISTANTS_PREVIEWS`
-    - `VIEW_GRID`
-    - `VIEW_RULER`
-    - `VIEW_ONION_SKIN`
-    - `SNAP_ASSISTANT`
-    - `SNAP_TO_GRID`
     """
 
     ERASER = "erase_action"
@@ -41,6 +27,11 @@ class Toggle(Enum):
     SNAP_ASSISTANT = "toggle_assistant"
     SNAP_TO_GRID = "view_snap_to_grid"
 
+    @property
+    def pretty_name(self) -> str:
+        action: QWidgetAction = Api.instance().action(self.value)
+        return action.text()
+    
     @property
     def state(self) -> bool:
         """Return state of checkable krita action called `action_name`."""

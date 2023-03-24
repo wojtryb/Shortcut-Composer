@@ -28,3 +28,6 @@ class Controller(Generic[T]):
     def get_label(self, value: T) -> Union[Text, QPixmap, QIcon, None]:
         """Get value representation that can be displayed in GUI,"""
         ...
+
+    def get_pretty_name(self, value: T) -> str:
+        return str(value)

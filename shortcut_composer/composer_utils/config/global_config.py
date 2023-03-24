@@ -1,12 +1,7 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import TypeVar
-from enum import Enum
-
 from .fields import FieldBase, ImmutableField
-
-T = TypeVar('T', bound=Enum)
 
 
 class Config:

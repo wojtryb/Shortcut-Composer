@@ -38,7 +38,10 @@ class LayerOpacityController(NodeBasedController, Controller[int]):
             self.active_document.refresh()
 
     def get_label(self, value: int) -> Text:
-        return Text(f"{value}%", Colorizer.percentage(value))
+        return Text(self.get_pretty_name(value), Colorizer.percentage(value))
+
+    def get_pretty_name(self, value: float) -> str:
+        return f"{value}%"
 
 
 class LayerBlendingModeController(NodeBasedController, Controller[BlendingMode]):
@@ -63,6 +66,9 @@ class LayerBlendingModeController(NodeBasedController, Controller[BlendingMode])
 
     def get_label(self, value: BlendingMode) -> Text:
         return Text(value.name[:3], Colorizer.blending_mode(value))
+
+    def get_pretty_name(self, value: BlendingMode) -> str:
+        return value.pretty_name
 
 
 class LayerVisibilityController(NodeBasedController, Controller[bool]):
@@ -106,3 +112,6 @@ class CreateLayerWithBlendingController(NodeBasedController, Controller[Blending
 
     def get_label(self, value: BlendingMode) -> Text:
         return Text("+" + value.name[:3], Colorizer.blending_mode(value))
+
+    def get_pretty_name(self, value: BlendingMode) -> str:
+        return value.pretty_name

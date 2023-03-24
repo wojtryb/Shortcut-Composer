@@ -35,6 +35,9 @@ class ToolController(Controller[Tool]):
     def get_label(self, value: Tool) -> QIcon:
         return value.icon
 
+    def get_pretty_name(self, value: Tool) -> str:
+        return value.pretty_name
+
 
 class TransformModeController(Controller[TransformMode]):
     """
@@ -64,6 +67,9 @@ class TransformModeController(Controller[TransformMode]):
     def get_label(self, value: Tool) -> QIcon:
         return value.icon
 
+    def get_pretty_name(self, value: Tool) -> str:
+        return value.pretty_name
+
 
 @dataclass
 class ToggleController(Controller[bool]):
@@ -84,6 +90,8 @@ class ToggleController(Controller[bool]):
     def set_value(self, value: bool) -> None:
         self.toggle.state = value
 
+    def get_pretty_name(self, value: Tool) -> str:
+        return value.pretty_name
 
 @dataclass
 class UndoController(Controller[float]):

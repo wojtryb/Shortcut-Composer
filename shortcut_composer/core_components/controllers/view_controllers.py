@@ -56,7 +56,10 @@ class BrushSizeController(ViewBasedController, Controller[int]):
         self.view.brush_size = value
 
     def get_label(self, value: float) -> Text:
-        return Text(f"{round(value)}px")
+        return Text(self.get_pretty_name(value))
+
+    def get_pretty_name(self, value: float) -> str:
+        return f"{round(value)}px"
 
 
 class BlendingModeController(ViewBasedController, Controller[BlendingMode]):
@@ -79,6 +82,9 @@ class BlendingModeController(ViewBasedController, Controller[BlendingMode]):
 
     def get_label(self, value: BlendingMode) -> Text:
         return Text(value.name[:3], Colorizer.blending_mode(value))
+    
+    def get_pretty_name(self, value: float) -> str:
+        return f"{round(value)}px"
 
 
 class OpacityController(ViewBasedController, Controller[int]):
@@ -100,8 +106,10 @@ class OpacityController(ViewBasedController, Controller[int]):
         self.view.opacity = value
 
     def get_label(self, value: int) -> Text:
-        return Text(f"{value}%", Colorizer.percentage(value))
+        return Text(self.get_pretty_name(value), Colorizer.percentage(value))
 
+    def get_pretty_name(self, value: float) -> str:
+        return f"{value}%"
 
 class FlowController(ViewBasedController, Controller[int]):
     """
@@ -120,4 +128,7 @@ class FlowController(ViewBasedController, Controller[int]):
         self.view.flow = value
 
     def get_label(self, value: int) -> Text:
-        return Text(f"{value}%", Colorizer.percentage(value))
+        return Text(self.get_pretty_name(value), Colorizer.percentage(value))
+
+    def get_pretty_name(self, value: float) -> str:
+        return f"{value}%"
