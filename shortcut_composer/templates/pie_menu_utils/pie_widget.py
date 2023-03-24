@@ -86,6 +86,15 @@ class PieWidget(AnimatedWidget, BaseWidget):
             self.config.allow_remove,
             self)
 
+    def reset(self, style: PieStyle):
+        self._style = style
+        self.setGeometry(0, 0, style.widget_radius*2, style.widget_radius*2)
+        self._circle_points = CirclePoints(
+            center=self.center,
+            radius=self._style.pie_radius)
+        self.label_holder.circle_points = self._circle_points
+        self.label_holder.reset(self._style)
+
     @property
     def deadzone(self) -> float:
         """Return the deadzone distance."""

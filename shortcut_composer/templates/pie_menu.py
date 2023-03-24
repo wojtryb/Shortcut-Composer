@@ -104,22 +104,24 @@ class PieMenu(ComplexAction, Generic[T]):
         self._background_color = background_color
         self._active_color = active_color
 
-    def reset(self):
-        self._values = self._local_config.values
-        self._labels = self._create_labels(self._values)
+        self._labels: NotifyingList[Label] = NotifyingList()
+        self._all_labels: NotifyingList[Label] = NotifyingList()
+        self._reset_labels(self._all_labels, self._get_all_values(values))
+
+        self._edit_mode = EditMode(self)
+
         self._style = PieStyle(
             pie_radius_scale=self._local_config.pie_radius_scale.read(),
             icon_radius_scale=self._local_config.icon_radius_scale.read(),
             background_color=self._background_color,
             active_color=self._active_color)
 
-        unscaled_style = copy(self._style)
+        self._unscaled_style = copy(self._style)
         self._style.set_items(self._labels)
 
-        self._edit_mode = EditMode(self)
         self.pie_settings = create_pie_settings_window(
-            style=unscaled_style,
-            values=self._create_all_labels(self._values),
+            style=self._unscaled_style,
+            values=self._all_labels,
             used_values=self._labels,
             pie_config=self._local_config)
         self.pie_widget = PieWidget(
@@ -130,31 +132,50 @@ class PieMenu(ComplexAction, Generic[T]):
             pie_widget=self.pie_widget,
             pie_settings=self.pie_settings)
 
+        self.settings_button = RoundButton(
+            icon=Krita.get_icon("properties"),
+            parent=self.pie_widget)
+        self.settings_button.clicked.connect(lambda: self._edit_mode.set(True))
+
+        self.accept_button = RoundButton(
+            icon=Krita.get_icon("dialog-ok"),
+            parent=self.pie_widget)
+        self.accept_button.clicked.connect(lambda: self._edit_mode.set(False))
+        self.accept_button.hide()
+
+    def reset(self):
+        values = self._local_config.values
+        self._reset_labels(self._labels, values)
+
+        self._style = PieStyle(
+            pie_radius_scale=self._local_config.pie_radius_scale.read(),
+            icon_radius_scale=self._local_config.icon_radius_scale.read(),
+            background_color=self._background_color,
+            active_color=self._active_color)
+
+        self._unscaled_style = copy(self._style)
+        self._style.set_items(self._labels)
+
+        self.pie_widget.reset(self._style)
+        self.pie_settings.reset(self._unscaled_style)
+
         default_radius = self._style.setting_button_radius
         radius = self._style.deadzone_radius
         radius = int(radius) if radius != float("inf") else default_radius
 
-        self.settings_button = RoundButton(
+        self.settings_button.reset(
             radius=default_radius,
             icon_scale=1.1,
-            style=self._style,
-            icon=Krita.get_icon("properties"),
-            parent=self.pie_widget)
-        self.settings_button.clicked.connect(lambda: self._edit_mode.set(True))
-        self._style.pie_radius
+            style=self._style)
         self.settings_button.move(QPoint(
             self.pie_widget.width()-self.settings_button.width(),
             self.pie_widget.height()-self.settings_button.height()))
 
-        self.accept_button = RoundButton(
+        self.accept_button.reset(
             radius=radius,
             icon_scale=1.5,
-            style=self._style,
-            icon=Krita.get_icon("dialog-ok"),
-            parent=self.pie_widget)
-        self.accept_button.clicked.connect(lambda: self._edit_mode.set(False))
+            style=self._style)
         self.accept_button.move_center(self.pie_widget.center)
-        self.accept_button.hide()
 
     def on_key_press(self) -> None:
         """Show widget under mouse and start manager which repaints it."""
@@ -174,20 +195,15 @@ class PieMenu(ComplexAction, Generic[T]):
         if label := self.pie_widget.active:
             self._controller.set_value(label.value)
 
-    def _create_labels(self, values: List[T]) -> NotifyingList[Label]:
+    def _reset_labels(self, label_list: List[Label], values: List[T]) -> None:
         """Wrap values into paintable label objects with position info."""
-        label_list = NotifyingList()
+        label_list.clear()
         for value in values:
             try:
                 label = self._controller.get_label(value)
             except KeyError:
                 continue
             label_list.append(Label(value=value, display_value=label))
-        return label_list
-
-    def _create_all_labels(self, values: List[T]) -> NotifyingList[Label]:
-        """Create labels of all unused values."""
-        return self._create_labels(self._get_all_values(values))
 
     def _get_all_values(self, values: List[T]) -> List[T]:
         if not values:

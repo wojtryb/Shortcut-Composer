@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List
+from typing import List, Optional
 
 from PyQt5.QtWidgets import QWidget
 
@@ -25,23 +25,23 @@ class LabelHolder:
     ) -> None:
         self._labels = labels
         self._style = style
-        self._circle_points = circle_points
+        self.circle_points = circle_points
         self._allow_remove = allow_remove
         self._owner = owner
 
         self.widget_holder: WidgetHolder = WidgetHolder()
-        self._reset()
+        self.reset()
 
     def append(self, label: Label):
         self._labels.append(label)
-        self._reset()
+        self.reset()
 
     def remove(self, label: Label):
         if (label in self._labels
                 and len(self._labels) > 1
                 and self._allow_remove):
             self._labels.remove(label)
-            self._reset()
+            self.reset()
 
     def swap(self, _a: Label, _b: Label):
         _a.swap_locations(_b)
@@ -50,7 +50,7 @@ class LabelHolder:
         self._labels[idx_b] = _a
         self._labels[idx_a] = _b
 
-        self._reset()
+        self.reset()
 
     def __iter__(self):
         return iter(self._labels)
@@ -58,7 +58,10 @@ class LabelHolder:
     def __bool__(self):
         return bool(self._labels)
 
-    def _reset(self) -> None:
+    def reset(self, style: Optional[PieStyle] = None) -> None:
+        if style is not None:
+            self._style = style
+
         for child in self.widget_holder:
             child.setParent(None)  # type: ignore
         self.widget_holder.clear()
@@ -68,7 +71,7 @@ class LabelHolder:
             children_widgets.append(
                 create_label_widget(label, self._style, self._owner))
 
-        angles = self._circle_points.iterate_over_circle(len(self._labels))
+        angles = self.circle_points.iterate_over_circle(len(self._labels))
         for child, (angle, point) in zip(children_widgets, angles):
             child.setParent(self._owner)
             child.show()
@@ -76,5 +79,5 @@ class LabelHolder:
             child.label.center = point
             child.move_to_label()
             self.widget_holder.add(child)
-        
+
         self._labels.notify_about_change()

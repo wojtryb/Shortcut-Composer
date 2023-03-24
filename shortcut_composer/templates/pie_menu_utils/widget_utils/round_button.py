@@ -13,15 +13,26 @@ class RoundButton(QPushButton, BaseWidget):
 
     def __init__(
         self,
-        radius: int,
-        icon_scale: float,
-        style: PieStyle,
         icon: QIcon,
         parent: Optional[QWidget] = None
     ):
         QPushButton.__init__(self, icon, "", parent)
-        self.setGeometry(0, 0, radius*2, radius*2)
         self.setCursor(Qt.ArrowCursor)
+
+        if parent is None:
+            self.setWindowFlags((
+                self.windowFlags() |  # type: ignore
+                Qt.Tool |
+                Qt.FramelessWindowHint |
+                Qt.NoDropShadowWindowHint))
+            self.setAttribute(Qt.WA_TranslucentBackground)
+            self.setStyleSheet("background: transparent;")
+
+        self.show()
+
+    def reset(self, radius: int, icon_scale: float, style: PieStyle):
+        self.setGeometry(0, 0, radius*2, radius*2)
+        
         self.setStyleSheet(f"""
             QPushButton [
                 border: {style.border_thickness}px
@@ -36,16 +47,6 @@ class RoundButton(QPushButton, BaseWidget):
             ]
         """.replace('[', '{').replace(']', '}'))
 
-        if parent is None:
-            self.setWindowFlags((
-                self.windowFlags() |  # type: ignore
-                Qt.Tool |
-                Qt.FramelessWindowHint |
-                Qt.NoDropShadowWindowHint))
-            self.setAttribute(Qt.WA_TranslucentBackground)
-            self.setStyleSheet("background: transparent;")
-
-        self.show()
 
     @staticmethod
     def _color_to_str(color: QColor) -> str: return f'''rgba(
