@@ -7,7 +7,7 @@ from PyQt5.QtGui import QCursor
 
 from api_krita.pyqt import Timer
 from composer_utils.config import Config
-from .pie_settings import PieSettingsWindow
+from .settings_gui import PieSettings
 from .pie_widget import PieWidget
 from .label_widget import LabelWidget
 from .widget_utils import CirclePoints
@@ -22,7 +22,7 @@ class PieManager:
     - Asks the widget to repaint when after changing active label.
     """
 
-    def __init__(self, pie_widget: PieWidget, pie_settings: PieSettingsWindow):
+    def __init__(self, pie_widget: PieWidget, pie_settings: PieSettings):
         self._pie_widget = pie_widget
         self._pie_settings = pie_settings
         self._holder = self._pie_widget.widget_holder

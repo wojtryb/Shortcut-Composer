@@ -10,9 +10,8 @@ from PyQt5.QtGui import QColor
 from core_components import Controller, Instruction
 from input_adapter import ComplexAction
 from .pie_menu_utils import (
-    create_settings_window,
+    create_pie_settings_window,
     create_local_config,
-    PieSettingsWindow,
     PieManager,
     PieWidget,
     PieStyle,
@@ -110,7 +109,7 @@ class PieMenu(ComplexAction, Generic[T]):
         self._style.set_items(self._labels)
 
         self._edit_mode = EditMode(self)
-        self.pie_settings = create_settings_window(
+        self.pie_settings = create_pie_settings_window(
             style=unscaled_style,
             values=self._create_all_labels(self._values),
             pie_config=self._local_config)
