@@ -80,7 +80,7 @@ class FieldBase(ABC, Field, Generic[T]):
     @final
     def _read_raw(self) -> Optional[str]:
         red_value = Krita.read_setting(
-            group="ShortcutComposer",
+            group=self.config_group,
             name=self.name,
             default="Not stored")
         return None if red_value == "Not stored" else red_value
