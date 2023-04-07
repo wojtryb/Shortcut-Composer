@@ -1,14 +1,14 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Generic, TypeVar, Protocol
+from typing import List, Generic, TypeVar
 from config_system import Field, FieldGroup
 from data_components import Tag
 
 T = TypeVar("T")
 
 
-class PieConfig(Protocol, Generic[T]):
+class PieConfig(FieldGroup, Generic[T]):
     name: str
     values: List[T]
     allow_remove: bool
@@ -17,7 +17,7 @@ class PieConfig(Protocol, Generic[T]):
     ICON_RADIUS_SCALE: Field[float]
 
 
-class PresetPieConfig(FieldGroup, PieConfig):
+class PresetPieConfig(PieConfig):
     def __init__(
         self,
         name: str,
@@ -43,7 +43,7 @@ class PresetPieConfig(FieldGroup, PieConfig):
         return preset_order + missing
 
 
-class EnumPieConfig(FieldGroup, PieConfig, Generic[T]):
+class EnumPieConfig(PieConfig, Generic[T]):
     def __init__(
         self,
         name: str,

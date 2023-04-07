@@ -111,15 +111,13 @@ class PieMenu(RawInstructions, Generic[T]):
         self._edit_mode = EditMode(self)
 
         style_args = {
-            "pie_radius_scale": self._local_config.PIE_RADIUS_SCALE,
-            "icon_radius_scale": self._local_config.ICON_RADIUS_SCALE,
+            "pie_config": self._local_config,
             "background_color": self._background_color,
             "active_color": self._active_color}
-        self._unscaled_style = PieStyle(items=[None], **style_args)
         self._style = PieStyle(items=self._labels, **style_args)
 
         self.pie_settings = create_pie_settings_window(
-            style=self._unscaled_style,
+            style=PieStyle(items=[None], **style_args),
             values=self._all_labels,
             used_values=self._labels,
             pie_config=self._local_config)
@@ -136,14 +134,16 @@ class PieMenu(RawInstructions, Generic[T]):
             parent=self.pie_widget,
             radius_callback=lambda: self._style.setting_button_radius,
             icon_scale=1.1,
-            style=self._style)
+            style=self._style,
+            config=self._local_config)
         self.settings_button.clicked.connect(lambda: self._edit_mode.set(True))
         self.accept_button = RoundButton(
             icon=Krita.get_icon("dialog-ok"),
             parent=self.pie_widget,
             radius_callback=lambda: self._style.accept_button_radius,
             icon_scale=1.5,
-            style=self._style)
+            style=self._style,
+            config=self._local_config)
         self.accept_button.clicked.connect(lambda: self._edit_mode.set(False))
         self.accept_button.hide()
 

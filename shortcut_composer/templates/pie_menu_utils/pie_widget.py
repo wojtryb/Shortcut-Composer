@@ -69,9 +69,9 @@ class PieWidget(AnimatedWidget, BaseWidget):
         self.setCursor(Qt.CrossCursor)
 
         self._style = style
-        self._style.register_callback(self._reset)
         self._labels = labels
         self.config = config
+        self.config.register_callback(self._reset)
 
         self.active: Optional[Label] = None
         self.is_edit_mode = False
@@ -80,7 +80,7 @@ class PieWidget(AnimatedWidget, BaseWidget):
         self.label_holder = LabelHolder(
             self._labels,
             self._style,
-            self.config.allow_remove,
+            self.config,
             self)
         self._circle_points: CirclePoints
         self._reset()

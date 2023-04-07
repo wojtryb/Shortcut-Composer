@@ -9,6 +9,7 @@ from ..pie_style import PieStyle
 from ..label import Label
 from ..label_widget import LabelWidget
 from ..label_widget_utils import create_label_widget
+from ..pie_config import PieConfig
 from .widget_holder import WidgetHolder
 from .circle_points import CirclePoints
 from .notifying_list import NotifyingList
@@ -19,14 +20,13 @@ class LabelHolder:
         self,
         labels: NotifyingList[Label],
         style: PieStyle,
-        allow_remove: bool,
+        config: PieConfig,
         owner: BaseWidget,
     ) -> None:
         self._labels = labels
-        self._labels.register_callback(partial(self._reset, False))
         self._style = style
-        self._style.register_callback(partial(self._reset, False))
-        self._allow_remove = allow_remove
+        self._config = config
+        self._config.register_callback(partial(self._reset, False))
         self._owner = owner
 
         self.widget_holder: WidgetHolder = WidgetHolder()
@@ -39,7 +39,7 @@ class LabelHolder:
     def remove(self, label: Label):
         if (label in self._labels
                 and len(self._labels) > 1
-                and self._allow_remove):
+                and self._config.allow_remove):
             self._labels.remove(label)
             self._reset()
 

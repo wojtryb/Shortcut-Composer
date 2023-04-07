@@ -29,8 +29,8 @@ class PieSettings(AnimatedWidget, BaseWidget):
 
         self._values = values
         self._style = style
-        self._style.register_callback(self._reset)
         self._pie_config = pie_config
+        self._pie_config.register_callback(self._reset)
         self._reset()
 
     def move_to_pie_side(self):

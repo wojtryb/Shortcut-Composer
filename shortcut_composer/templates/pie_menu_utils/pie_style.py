@@ -3,14 +3,14 @@
 
 import math
 import platform
-from typing import Optional, Callable, List
+from typing import Optional
 from copy import copy
 
 from PyQt5.QtGui import QColor
 
 from api_krita import Krita
 from composer_utils import Config
-from config_system import Field
+from .pie_config import PieConfig
 
 
 class PieStyle:
@@ -26,8 +26,7 @@ class PieStyle:
 
     def __init__(
         self,
-        pie_radius_scale: Field[float],
-        icon_radius_scale: Field[float],
+        pie_config: PieConfig,
         background_color: Optional[QColor],
         active_color: QColor,
         items: list,
@@ -35,29 +34,17 @@ class PieStyle:
         self._items = items
         self._base_size = Krita.screen_size/2560
 
-        self._pie_radius_scale = pie_radius_scale
-        self._icon_radius_scale = icon_radius_scale
+        self._pie_config = pie_config
         self._background_color = background_color
         self.active_color = active_color
 
-        self._pie_radius_scale.register_callback(self._notice_change)
-        self._icon_radius_scale.register_callback(self._notice_change)
-        self._on_change_callbacks: List[Callable[[], None]] = []
-
-    def _notice_change(self):
-        for callback in self._on_change_callbacks:
-            callback()
-
     @property
     def pie_radius_scale(self):
-        return self._pie_radius_scale.read()
+        return self._pie_config.PIE_RADIUS_SCALE.read()
 
     @property
     def icon_radius_scale(self):
-        return self._icon_radius_scale.read()
-
-    def register_callback(self, callback: Callable[[], None]):
-        self._on_change_callbacks.append(callback)
+        return self._pie_config.ICON_RADIUS_SCALE.read()
 
     @property
     def pie_radius(self) -> int:

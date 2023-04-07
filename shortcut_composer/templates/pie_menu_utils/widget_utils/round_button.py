@@ -5,6 +5,7 @@ from PyQt5.QtGui import QColor, QIcon
 from PyQt5.QtCore import Qt
 
 from ..pie_style import PieStyle
+from ..pie_config import PieConfig
 from api_krita.pyqt import BaseWidget
 
 
@@ -17,6 +18,7 @@ class RoundButton(QPushButton, BaseWidget):
         radius_callback: Callable[[], int],
         icon_scale: float,
         style: PieStyle,
+        config: PieConfig,
         parent: Optional[QWidget] = None,
     ):
         QPushButton.__init__(self, icon, "", parent)
@@ -25,7 +27,8 @@ class RoundButton(QPushButton, BaseWidget):
         self._radius_callback = radius_callback
         self._icon_scale = icon_scale
         self._style = style
-        self._style.register_callback(self._reset)
+        self._config = config
+        self._config.register_callback(self._reset)
 
         if parent is None:
             self.setWindowFlags((
