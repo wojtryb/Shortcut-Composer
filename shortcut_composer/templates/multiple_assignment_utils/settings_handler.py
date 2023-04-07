@@ -38,12 +38,16 @@ class SettingsHandler:
             initial_radius=25,
             background_color=QColor(75, 75, 75, 255),
             active_color=QColor(100, 150, 230, 255))
-        self._settings_button.clicked.connect(lambda: self._settings.show())
+        self._settings_button.clicked.connect(self._on_button_click)
         self._settings_button.move(0, 0)
         self._settings_button.hide()
 
         instructions.append(HandlerInstruction(
             self._settings, self._settings_button))
+
+    def _on_button_click(self):
+        self._settings.show()
+        self._settings_button.hide()
 
 
 @dataclass
