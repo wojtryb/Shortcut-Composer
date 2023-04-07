@@ -48,7 +48,7 @@ class PieStyle:
             * Config.PIE_GLOBAL_SCALE.read())
 
     @property
-    def base_icon_radius(self) -> int:
+    def _base_icon_radius(self) -> int:
         return round(
             50 * self._base_size
             * self._icon_radius_scale
@@ -73,7 +73,7 @@ class PieStyle:
     @property
     def icon_radius(self) -> int:
         """Icons radius depend on settings, but they have to fit in the pie."""
-        return min(self.base_icon_radius, self._max_icon_radius)
+        return min(self._base_icon_radius, self._max_icon_radius)
 
     @property
     def deadzone_radius(self) -> float:
@@ -86,7 +86,7 @@ class PieStyle:
 
     @property
     def widget_radius(self):
-        return self.pie_radius + self.base_icon_radius
+        return self.pie_radius + self._base_icon_radius
 
     @property
     def border_thickness(self):

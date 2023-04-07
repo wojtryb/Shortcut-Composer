@@ -100,13 +100,11 @@ class PieMenu(RawInstructions, Generic[T]):
         self._reset_labels(self._labels, self._config.values())
         self._all_labels: List[Label] = []
         self._reset_labels(self._all_labels, self._get_all_values(values))
-
         self._edit_mode = EditMode(self)
-
         self._style = PieStyle(items=self._labels, pie_config=self._config)
 
         self.pie_settings = create_pie_settings_window(
-            style=PieStyle(items=[None], pie_config=self._config),
+            style=self._style,
             values=self._all_labels,
             used_values=self._labels,
             pie_config=self._config)

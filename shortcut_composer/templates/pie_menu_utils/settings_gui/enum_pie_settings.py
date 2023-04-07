@@ -30,7 +30,8 @@ class EnumPieSettings(PieSettings):
         tab_holder = QTabWidget()
 
         self._action_values = ScrollArea(values, self._style, 3)
-        self._action_values.setMinimumHeight(round(style.base_icon_radius*6.2))
+        self._action_values.setMinimumHeight(
+            round(style.unscaled_icon_radius*6.2))
 
         tab_holder.addTab(self._action_values, "Action values")
         self._local_settings = ConfigFormWidget([
