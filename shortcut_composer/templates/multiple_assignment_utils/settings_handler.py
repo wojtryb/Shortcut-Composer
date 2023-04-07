@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from typing import List
 from enum import Enum
 
-from PyQt5.QtGui import QColor
+from PyQt5.QtGui import QColor, QCursor
 
 from api_krita import Krita
 from api_krita.pyqt import RoundButton, Timer
@@ -31,6 +31,7 @@ class SettingsHandler:
             return
 
         self._settings = ActionValuesWindow(type(to_cycle[0]), self.values)
+        self._settings.setWindowTitle(f"Configure: {name}")
 
         self._settings_button = RoundButton(
             icon=Krita.get_icon("properties"),
@@ -64,6 +65,7 @@ class HandlerInstruction(Instruction):
 
     def timer_callback(self):
         if not self.settings.isVisible():
+            self.button.move_center(QCursor().pos())
             self.button.show()
         self.timer.stop()
 
