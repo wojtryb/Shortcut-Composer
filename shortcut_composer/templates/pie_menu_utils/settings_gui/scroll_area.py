@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, NamedTuple
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QScrollArea, QGridLayout
@@ -49,27 +49,35 @@ class ScrollArea(QScrollArea):
         return children
 
 
+class GridPosition(NamedTuple):
+    gridrow: int
+    gridcol: int
+
+
 class ScrollAreaLayout(QGridLayout):
-    def __init__(self, cols: int, owner: QWidget):
+    def __init__(self, max_columns: int, owner: QWidget):
         super().__init__()
         self.widgets: List[QWidget] = []
-        self._max_rows = cols
-        self._uniques = 2*cols - 1
+        self._max_columns = max_columns
+        self._items_in_group = 2*max_columns - 1
         self._owner = owner
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.widgets)
 
-    def _get_position(self, index: int):
-        row, col = divmod(index, self._uniques)
-        if col < self._max_rows:
-            return (row*4, col*2)
-        return (row*4+2, (col-self._max_rows)*2+1)
+    def _get_position(self, index: int) -> GridPosition:
+        group, item = divmod(index, self._items_in_group)
 
-    def _new_position(self):
+        if item < self._max_columns:
+            return GridPosition(gridrow=group*4, gridcol=item*2)
+
+        col = item-self._max_columns
+        return GridPosition(gridrow=group*4+2, gridcol=col*2+1)
+
+    def _new_position(self) -> GridPosition:
         return self._get_position(len(self.widgets))
 
-    def append(self, widget: QWidget):
+    def append(self, widget: QWidget) -> None:
         if widget in self.widgets:
             return
         widget.setParent(self._owner)
