@@ -48,8 +48,8 @@ class ConfigSpinBox(ConfigBasedWidget[F]):
 
     def _init_spin_box(self) -> SpinBox:
         """Return the spinbox widget of type based on config field type."""
-        spin_box: QDoubleSpinBox = \
-            {int: QSpinBox, float: QDoubleSpinBox}[self.config_field.default]()
+        spin_box: QDoubleSpinBox = {int: QSpinBox, float: QDoubleSpinBox}[
+            type(self.config_field.default)]()
 
         spin_box.setMinimumWidth(90)
         spin_box.setObjectName(self.config_field.name)
