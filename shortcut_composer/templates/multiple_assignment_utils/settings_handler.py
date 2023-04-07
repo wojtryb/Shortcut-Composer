@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from dataclasses import dataclass
 from typing import List
 from enum import Enum
 
@@ -20,18 +21,16 @@ class SettingsHandler:
         values: list,
         instructions: List[Instruction],
     ) -> None:
-        self.values_field = Field(
+        self.values = Field(
             config_group=f"ShortcutComposer: {name}",
             name="Values",
             default=values)
 
-        to_cycle = self.values_field.read()
+        to_cycle = self.values.read()
         if not to_cycle or not isinstance(to_cycle[0], Enum):
             return
 
-        self._settings = ActionValuesWindow(
-            type(to_cycle[0]),
-            self.values_field)
+        self._settings = ActionValuesWindow(type(to_cycle[0]), self.values)
 
         self._settings_button = RoundButton(
             icon=Krita.get_icon("properties"),
@@ -43,7 +42,18 @@ class SettingsHandler:
         self._settings_button.move(0, 0)
         self._settings_button.hide()
 
-        inst = Instruction()
-        inst.on_key_press = lambda: self._settings_button.show()
-        inst.on_every_key_release = lambda: self._settings_button.hide()
-        instructions.append(inst)
+        instructions.append(HandlerInstruction(
+            self._settings, self._settings_button))
+
+
+@dataclass
+class HandlerInstruction(Instruction):
+    settings: ActionValuesWindow
+    button: RoundButton
+
+    def on_key_press(self) -> None:
+        if not self.settings.isVisible():
+            self.button.show()
+
+    def on_every_key_release(self) -> None:
+        self.button.hide()
