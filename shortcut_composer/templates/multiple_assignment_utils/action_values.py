@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Set, List
+from typing import List, Type
 from enum import Enum
 
 from PyQt5.QtCore import Qt
@@ -14,15 +14,16 @@ from PyQt5.QtWidgets import (
 )
 
 from api_krita import Krita
-from composer_utils import Config
+from config_system import Field
 from .value_list import ValueList
 
 
 class ActionValues(QWidget):
-    def __init__(self, allowed_values: Set[str], config: Config) -> None:
+    def __init__(self, enum_type: Type[Enum], config: Field[List[Enum]]):
         super().__init__()
+
         layout = QHBoxLayout()
-        self.allowed_values = allowed_values
+        self.enum_type = enum_type
         self.config = config
 
         self.available_list = ValueList(movable=False, parent=self)
@@ -62,8 +63,7 @@ class ActionValues(QWidget):
         for value in self.available_list.selected:
             self.current_list.insert(
                 position=self.current_list.current_row,
-                value=value,
-            )
+                value=value)
             self.available_list.remove(value=value,)
 
     def remove(self):
@@ -74,17 +74,23 @@ class ActionValues(QWidget):
         self.available_list.addItems(sorted(new_available))
 
     def apply(self):
-        texts = []
+        to_write: List[Enum] = []
         for row in range(self.current_list.count()):
-            texts.append(self.current_list.item(row).text())
-        self.config.write(texts)
+            text = self.current_list.item(row).text()
+            to_write.append(self.enum_type[text])
+
+        self.config.write(to_write)
 
     def refresh(self):
         self.current_list.clear()
-        current_list: List[Enum] = self.config.read()
-        text_list = [item.value for item in current_list]
+        current_list = self.config.read()
+        text_list = [item.name for item in current_list]
         self.current_list.addItems(text_list)
 
         self.available_list.clear()
-        allowed_items = sorted(self.allowed_values - set(text_list))
+        allowed_items = sorted(set(self.allowed_values) - set(text_list))
         self.available_list.addItems(allowed_items)
+
+    @property
+    def allowed_values(self):
+        return self.enum_type._member_names_

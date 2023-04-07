@@ -6,6 +6,7 @@ from itertools import cycle
 
 from core_components import Controller, Instruction
 from .raw_instructions import RawInstructions
+from .multiple_assignment_utils import SettingsHandler
 
 T = TypeVar('T')
 
@@ -70,8 +71,16 @@ class MultipleAssignment(RawInstructions, Generic[T]):
         super().__init__(name, instructions, short_vs_long_press_time)
 
         self._controller = controller
-        self._values_to_cycle = values
         self._default_value = self._read_default_value(default_value)
+
+        self.handler = SettingsHandler(name, values, instructions)
+        self._values_to_cycle = self.handler.values_field.read()
+
+        def reset() -> None:
+            self._values_to_cycle = self.handler.values_field.read()
+            self._reset_iterator()
+
+        self.handler.values_field.register_callback(reset)
 
         self._last_value: Optional[T] = None
         self._iterator: Iterator[T]
