@@ -16,7 +16,7 @@ from .pie_menu_utils import (
     PieWidget,
     PieStyle,
     Label)
-from .pie_menu_utils.widget_utils import EditMode, RoundButton
+from .pie_menu_utils.widget_utils import EditMode, PieButton
 from .raw_instructions import RawInstructions
 
 T = TypeVar('T')
@@ -106,7 +106,7 @@ class PieMenu(RawInstructions, Generic[T]):
             pie_widget=self.pie_widget,
             pie_settings=self.pie_settings)
 
-        self.settings_button = RoundButton(
+        self.settings_button = PieButton(
             icon=Krita.get_icon("properties"),
             icon_scale=1.1,
             parent=self.pie_widget,
@@ -114,7 +114,7 @@ class PieMenu(RawInstructions, Generic[T]):
             style=self._style,
             config=self._config)
         self.settings_button.clicked.connect(lambda: self._edit_mode.set(True))
-        self.accept_button = RoundButton(
+        self.accept_button = PieButton(
             icon=Krita.get_icon("dialog-ok"),
             icon_scale=1.5,
             parent=self.pie_widget,

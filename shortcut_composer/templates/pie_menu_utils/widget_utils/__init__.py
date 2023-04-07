@@ -5,16 +5,16 @@
 
 from .circle_points import CirclePoints
 from .widget_holder import WidgetHolder
-from .round_button import RoundButton
 from .label_holder import LabelHolder
 from .pie_painter import PiePainter
+from .pie_button import PieButton
 from .edit_mode import EditMode
 
 __all__ = [
     "CirclePoints",
     "WidgetHolder",
-    "RoundButton",
     "LabelHolder",
     "PiePainter",
+    "PieButton",
     "EditMode",
 ]
