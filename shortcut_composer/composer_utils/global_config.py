@@ -23,14 +23,17 @@ class GlobalConfig(FieldGroup):
 
     def __init__(self, name: str) -> None:
         super().__init__(name)
-        self.SHORT_VS_LONG_PRESS_TIME = self("Short vs long press time", 0.3)
-        self.TRACKER_SENSITIVITY_SCALE = self("Tracker sensitivity scale", 1.0)
-        self.TRACKER_DEADZONE = self("Tracker deadzone", 0)
-        self.FPS_LIMIT = self("FPS limit", 60)
-        self.PIE_GLOBAL_SCALE = self("Pie global scale", 1.0)
-        self.PIE_ICON_GLOBAL_SCALE = self("Pie icon global scale", 1.0)
-        self.PIE_DEADZONE_GLOBAL_SCALE = self("Pie deadzone global scale", 1.0)
-        self.PIE_ANIMATION_TIME = self("Pie animation time", 0.2)
+        self.SHORT_VS_LONG_PRESS_TIME = self.field(
+            "Short vs long press time", 0.3)
+        self.TRACKER_SENSITIVITY_SCALE = self.field(
+            "Tracker sensitivity scale", 1.0)
+        self.TRACKER_DEADZONE = self.field("Tracker deadzone", 0)
+        self.FPS_LIMIT = self.field("FPS limit", 60)
+        self.PIE_GLOBAL_SCALE = self.field("Pie global scale", 1.0)
+        self.PIE_ICON_GLOBAL_SCALE = self.field("Pie icon global scale", 1.0)
+        self.PIE_DEADZONE_GLOBAL_SCALE = self.field(
+            "Pie deadzone global scale", 1.0)
+        self.PIE_ANIMATION_TIME = self.field("Pie animation time", 0.2)
 
     def get_sleep_time(self) -> int:
         """Read sleep time from FPS_LIMIT config field."""

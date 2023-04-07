@@ -37,7 +37,7 @@ class FieldGroup:
         self._fields: List[Field] = []
         self._callbacks: List[Callable[[], None]] = []
 
-    def __call__(
+    def field(
         self,
         name: str,
         default: T,

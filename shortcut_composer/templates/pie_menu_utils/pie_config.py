@@ -28,10 +28,10 @@ class PresetPieConfig(FieldGroup, PieConfig):
         super().__init__(name)
         self.allow_remove = False
 
-        self.PIE_RADIUS_SCALE = self("Pie scale", pie_radius_scale)
-        self.ICON_RADIUS_SCALE = self("Icon scale", icon_radius_scale)
-        self.TAG_NAME = self("Tag", values.tag_name)
-        self.ORDER = self("Values", [], passed_type=str)
+        self.PIE_RADIUS_SCALE = self.field("Pie scale", pie_radius_scale)
+        self.ICON_RADIUS_SCALE = self.field("Icon scale", icon_radius_scale)
+        self.TAG_NAME = self.field("Tag", values.tag_name)
+        self.ORDER = self.field("Values", [], passed_type=str)
 
     @property
     def values(self) -> List[str]:
@@ -54,9 +54,9 @@ class EnumPieConfig(FieldGroup, PieConfig, Generic[T]):
         super().__init__(name)
         self.allow_remove = True
 
-        self.PIE_RADIUS_SCALE = self("Pie scale", pie_radius_scale)
-        self.ICON_RADIUS_SCALE = self("Icon scale", icon_radius_scale)
-        self.ORDER = self("Values", values)
+        self.PIE_RADIUS_SCALE = self.field("Pie scale", pie_radius_scale)
+        self.ICON_RADIUS_SCALE = self.field("Icon scale", icon_radius_scale)
+        self.ORDER = self.field("Values", values)
 
     @property
     def values(self) -> List[T]:
