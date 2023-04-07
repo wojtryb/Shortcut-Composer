@@ -46,6 +46,11 @@ class LabelHolder:
         self._labels.append(label)
         self._reset()
 
+    def insert(self, index: int, label: Label):
+        """Insert the new label to the holder at given index."""
+        self._labels.insert(index, label)
+        self._reset()
+
     def remove(self, label: Label):
         """Remove the label from the holder."""
         if (label in self._labels
@@ -53,6 +58,10 @@ class LabelHolder:
                 and self._config.ALLOW_REMOVE):
             self._labels.remove(label)
             self._reset()
+
+    def index(self, label: Label):
+        """Return the index at which the label is stored."""
+        return self._labels.index(label)
 
     def swap(self, _a: Label, _b: Label):
         """Swap positions of two labels from the holder."""

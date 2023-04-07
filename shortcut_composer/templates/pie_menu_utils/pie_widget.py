@@ -17,6 +17,7 @@ from .label import Label
 from .label_widget import LabelWidget
 from .pie_config import PieConfig
 from .widget_utils import (
+    WidgetHolder,
     CirclePoints,
     LabelHolder,
     PiePainter)
@@ -108,21 +109,29 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         source_widget = e.source()
         pos = e.pos()
         distance = self._circle_points.distance(pos)
+
         if not isinstance(source_widget, LabelWidget):
+            # Drag incoming from outside the PieWidget ecosystem
             return
 
         self._last_widget = source_widget
         if distance > self._style.widget_radius:
+            # Dragged out of the PieWidget
             return self.label_holder.remove(source_widget.label)
         if distance < self._style.deadzone_radius:
+            # Dragged over the deadzone
             return
 
-        if source_widget.label not in self.label_holder or not self._labels:
-            return self.label_holder.append(source_widget.label)
-
-        _a = self.label_holder.widget_holder.on_label(source_widget.label)
         angle = self._circle_points.angle_from_point(pos)
-        _b = self.label_holder.widget_holder.on_angle(angle)
+        _b = self._widget_holder.on_angle(angle)
+
+        if source_widget.label not in self.label_holder or not self._labels:
+            # Dragged with unknown label
+            index = self.label_holder.index(_b.label)
+            return self.label_holder.insert(index, source_widget.label)
+
+        # Dragged existing label to a new location
+        _a = self._widget_holder.on_label(source_widget.label)
         if _a != _b:
             self.label_holder.swap(_a.label, _b.label)
             self.repaint()
@@ -137,3 +146,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         """Change draggable state of all children."""
         for widget in self.label_holder.widget_holder:
             widget.draggable = draggable
+
+    @property
+    def _widget_holder(self) -> WidgetHolder:
+        return self.label_holder.widget_holder
