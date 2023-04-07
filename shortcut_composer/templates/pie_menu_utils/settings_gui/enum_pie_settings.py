@@ -1,6 +1,6 @@
-from typing import List
+from typing import List, Optional
 
-from PyQt5.QtWidgets import QVBoxLayout, QTabWidget
+from PyQt5.QtWidgets import QVBoxLayout, QTabWidget, QWidget
 
 from config_system.ui import ConfigFormWidget, ConfigSpinBox
 from ..label import Label
@@ -15,16 +15,13 @@ class EnumPieSettings(PieSettings):
         self,
         values: List[Label],
         used_values: List[Label],
+        config: NonPresetPieConfig,
         style: PieStyle,
-        pie_config: NonPresetPieConfig,
-        parent=None
+        parent: Optional[QWidget] = None,
     ) -> None:
-        super().__init__(
-            values,
-            used_values,
-            style,
-            pie_config,
-            parent)
+        super().__init__(config, style, parent)
+
+        self._used_values = used_values
 
         tab_holder = QTabWidget()
 
@@ -34,10 +31,9 @@ class EnumPieSettings(PieSettings):
 
         tab_holder.addTab(self._action_values, "Action values")
         self._local_settings = ConfigFormWidget([
+            ConfigSpinBox(config.PIE_RADIUS_SCALE, self, "Pie scale", 0.05, 4),
             ConfigSpinBox(
-                pie_config.PIE_RADIUS_SCALE, self, "Pie scale", 0.05, 4),
-            ConfigSpinBox(
-                pie_config.ICON_RADIUS_SCALE, self, "Icon scale",  0.05, 4),
+                config.ICON_RADIUS_SCALE, self, "Icon scale",  0.05, 4),
         ])
         tab_holder.addTab(self._local_settings, "Local settings")
 
@@ -45,7 +41,7 @@ class EnumPieSettings(PieSettings):
         layout.addWidget(tab_holder)
         self.setLayout(layout)
 
-        self._pie_config.ORDER.register_callback(self.refresh)
+        self._config.ORDER.register_callback(self.refresh)
         self.refresh()
 
     def refresh(self):

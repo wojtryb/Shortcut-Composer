@@ -11,22 +11,34 @@ T = TypeVar("T")
 
 
 class PieConfig(FieldGroup, Generic[T], ABC):
+    """Abstract FieldGroup representing config of PieMenu."""
 
     ALLOW_REMOVE: bool
+    """Is it allowed to remove elements in runtime. """
 
     name: str
+    """Name of the group in .kritarc."""
     background_color: Optional[QColor]
     active_color: QColor
 
     ORDER: Field[List[T]]
+    """Value order stored in .kritarc."""
     PIE_RADIUS_SCALE: Field[float]
     ICON_RADIUS_SCALE: Field[float]
 
     @abstractmethod
-    def values(self) -> List[T]: ...
+    def values(self) -> List[T]:
+        """Return values to display as icons on the pie."""
+        ...
 
 
-class PresetPieConfig(PieConfig):
+class PresetPieConfig(PieConfig[str]):
+    """
+    FieldGroup representing config of PieMenu of presets.
+
+    Values are calculated according to presets belonging to handled tag
+    and the custom order saved by the user in .kritarc.
+    """
 
     ALLOW_REMOVE = False
 
@@ -50,6 +62,7 @@ class PresetPieConfig(PieConfig):
         self.active_color = active_color
 
     def values(self) -> List[str]:
+        """Return all presets from the tag. Respect order from .kritarc."""
         saved_order = self.ORDER.read()
         tag_values = Tag(self.TAG_NAME.read())
 
@@ -58,7 +71,8 @@ class PresetPieConfig(PieConfig):
         return preset_order + missing
 
 
-class NonPresetPieConfig(PieConfig, Generic[T]):
+class NonPresetPieConfig(PieConfig[T], Generic[T]):
+    """FieldGroup representing config of PieMenu of non-preset values."""
 
     ALLOW_REMOVE = True
 
@@ -81,4 +95,5 @@ class NonPresetPieConfig(PieConfig, Generic[T]):
         self.active_color = active_color
 
     def values(self) -> List[T]:
+        """Return values to display as icons as defined be the user."""
         return self.ORDER.read()

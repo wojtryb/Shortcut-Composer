@@ -26,11 +26,12 @@ def create_local_config(
     background_color: Optional[QColor],
     active_color: QColor,
 ) -> PieConfig[T]:
+    """Create and return the right local config based on values type."""
     config_name = f"ShortcutComposer: {name}"
     args = [config_name, values, pie_radius_scale, icon_radius_scale,
             background_color, active_color]
     if isinstance(values, Tag):
-        return PresetPieConfig(*args)
+        return PresetPieConfig(*args)  # type: ignore
     return NonPresetPieConfig(*args)
 
 
@@ -41,11 +42,12 @@ def create_pie_settings_window(
     pie_config: PieConfig,
     parent=None
 ) -> PieSettings:
-    args = [values, used_values, style, pie_config, parent]
+    """Create and return the right settings based on config and value type."""
+    args = [pie_config, style, parent]
     if isinstance(pie_config, PresetPieConfig):
         return PresetPieSettings(*args)
     elif isinstance(pie_config, NonPresetPieConfig):
         if not values or isinstance(values[0], Enum):
             return NumberPieSettings(*args)
-        return EnumPieSettings(*args)
+        return EnumPieSettings(values, used_values, *args)
     raise ValueError(f"Unknown pie config {pie_config}")

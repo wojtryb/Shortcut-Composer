@@ -29,6 +29,7 @@ class BaseWidget(QWidget):
         super().setGeometry(ax, ay, aw, ah)
         self.move_center(center)
 
+
 class AnimatedWidget(QWidget):
     """Adds the fade-in animation when the widget is shown (60 FPS)."""
 

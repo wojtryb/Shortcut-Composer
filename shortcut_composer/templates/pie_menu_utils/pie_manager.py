@@ -19,7 +19,6 @@ class PieManager:
 
     - Displays the widget between start() and stop() calls.
     - Starts a thread loop which checks for changes of active label.
-    - Asks the widget to repaint when after changing active label.
     """
 
     def __init__(self, pie_widget: PieWidget, pie_settings: PieSettings):

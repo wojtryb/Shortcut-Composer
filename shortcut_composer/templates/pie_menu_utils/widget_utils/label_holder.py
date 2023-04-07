@@ -15,6 +15,14 @@ from .circle_points import CirclePoints
 
 
 class LabelHolder:
+    """
+    Represents the pie icons as a positional label container.
+
+    Creates and controls the publically available WidgetHolder with
+    actual pie widgets. Is responsible for making sure that WidgetHolder
+    state always reflect the internal state of this container.
+    """
+
     def __init__(
         self,
         labels: List[Label],
@@ -25,17 +33,21 @@ class LabelHolder:
         self._labels = labels
         self._style = style
         self._config = config
-        self._config.register_callback(partial(self._reset, False))
+        # Refresh itself when config changed, but do not notify change
+        # in config as holder was not their cause
+        self._config.register_callback(partial(self._reset, notify=False))
         self._owner = owner
 
-        self.widget_holder: WidgetHolder = WidgetHolder()
-        self._reset(False)
+        self.widget_holder = WidgetHolder()
+        self._reset(notify=False)
 
     def append(self, label: Label):
+        """Append the new label to the holder."""
         self._labels.append(label)
         self._reset()
 
     def remove(self, label: Label):
+        """Remove the label from the holder."""
         if (label in self._labels
                 and len(self._labels) > 1
                 and self._config.ALLOW_REMOVE):
@@ -43,6 +55,7 @@ class LabelHolder:
             self._reset()
 
     def swap(self, _a: Label, _b: Label):
+        """Swap positions of two labels from the holder."""
         _a.swap_locations(_b)
 
         idx_a, idx_b = self._labels.index(_a), self._labels.index(_b)
@@ -52,12 +65,18 @@ class LabelHolder:
         self._reset()
 
     def __iter__(self):
+        """Iterate over all labels in the holder."""
         return iter(self._labels)
 
-    def __bool__(self):
-        return bool(self._labels)
-
     def _reset(self, notify: bool = True) -> None:
+        """
+        Ensure the icon widgets properly represet this container.
+
+        If notify flag is set to True, saves the new order to config.
+
+        HACK: Small changes in container should not result in complete
+        widget recreation.
+        """
         for child in self.widget_holder:
             child.setParent(None)  # type: ignore
         self.widget_holder.clear()
@@ -77,7 +96,7 @@ class LabelHolder:
             child.label.angle = angle
             child.label.center = point
             child.move_to_label()
-            child.draggable = True  # FIXME: set False after config change
+            child.draggable = True
             self.widget_holder.add(child)
 
         if notify:

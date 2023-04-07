@@ -1,12 +1,13 @@
-from typing import List
+from typing import List, Optional
 
 from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QWidget
+
 from api_krita.wrappers import Database
 from config_system.ui import (
     ConfigFormWidget,
     ConfigComboBox,
     ConfigSpinBox)
-from ..label import Label
 from ..pie_style import PieStyle
 from ..pie_config import PresetPieConfig
 from .pie_settings import PieSettings
@@ -15,28 +16,20 @@ from .pie_settings import PieSettings
 class PresetPieSettings(PieSettings):
     def __init__(
         self,
-        values: List[Label],
-        used_values: List[Label],
+        config: PresetPieConfig,
         style: PieStyle,
-        pie_config: PresetPieConfig,
-        parent=None
+        parent: Optional[QWidget] = None,
     ) -> None:
-        super().__init__(
-            values,
-            used_values,
-            style,
-            pie_config,
-            parent)
+        super().__init__(config, style, parent)
 
         self._tags: List[str] = []
         self._refresh_tags()
 
         self._local_settings = ConfigFormWidget([
-            ConfigComboBox(pie_config.TAG_NAME, self, "Tag name", self._tags),
+            ConfigComboBox(config.TAG_NAME, self, "Tag name", self._tags),
+            ConfigSpinBox(config.PIE_RADIUS_SCALE, self, "Pie scale", 0.05, 4),
             ConfigSpinBox(
-                pie_config.PIE_RADIUS_SCALE, self, "Pie scale", 0.05, 4),
-            ConfigSpinBox(
-                pie_config.ICON_RADIUS_SCALE, self, "Icon scale", 0.05, 4),
+                config.ICON_RADIUS_SCALE, self, "Icon scale", 0.05, 4),
         ])
 
         layout = QVBoxLayout(self)

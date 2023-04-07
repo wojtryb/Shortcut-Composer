@@ -10,7 +10,12 @@ from api_krita.pyqt import BaseWidget
 
 
 class RoundButton(QPushButton, BaseWidget):
-    """Round button with a tick icon which uses provided PieStyle."""
+    """
+    Round button with a tick icon which uses provided PieStyle.
+
+    `Radius callback` defines how the button radius is determined. Each
+    change in passed `config` results in resetting the button size.
+    """
 
     def __init__(
         self,
@@ -43,6 +48,7 @@ class RoundButton(QPushButton, BaseWidget):
         self.show()
 
     def _reset(self):
+        """Reset the size and repaint the button."""
         radius = self._radius_callback()
         self.setGeometry(0, 0, radius*2, radius*2)
 
