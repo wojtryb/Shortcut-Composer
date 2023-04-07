@@ -10,10 +10,9 @@ from input_adapter import ComplexActionInterface
 
 class RawInstructions(ComplexActionInterface):
     """
-    Temporarily toggle plugin instructions.
+    ShortcutComposer action base.
 
-    Action starts all the instructions on key press, and ends them on
-    release.
+    Handles passed instructions, fulfilling the ComplexActionInterface.
 
     ### Arguments:
 

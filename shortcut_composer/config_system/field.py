@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import TypeVar, Generic, Optional, Callable, List
+from typing import TypeVar, Generic, Optional, Callable
 
 T = TypeVar('T')
 
@@ -13,9 +13,20 @@ class Field(Generic[T]):
     Fields are type aware, and allow to read and write from krita config
     automatically parsing to the value type.
 
-    Type is determined based on default value passed on initialization.
+    Type of default value passed on initlization is remembered, and used
+    to parse values both on read and write. Supported types are:
+    -`int`,
+    -`float`,
+    -`str`,
+    -`bool`,
+    -`custom Enums`
+    and homogeneous lists of every type above.
+
     For empty, homogeneous lists, `parser_type` must be used to
     determine type of list elements.
+
+    Callbacks can be registered to the field, to run a method each time
+    the value changes. Repeated saves of the same value are filtered.
     """
 
     def __new__(
@@ -30,7 +41,7 @@ class Field(Generic[T]):
         cls.original = super().__new__
         if isinstance(default, list):
             return ListField(config_group, name, default, parser_type)
-        return NonListField(config_group, name, default, parser_type)
+        return NonListField(config_group, name, default)
 
     config_group: str
     """Configuration section in .kritarc toml file."""
@@ -52,44 +63,3 @@ class Field(Generic[T]):
     def reset_default(self) -> None:
         """Write a default value to .kritarc file."""
         ...
-
-
-class FieldGroup:
-    """
-    Representation of section in .kritarc toml file.
-
-    All fields in the group must be created using `field()` method.
-    """
-
-    def __init__(self, name: str) -> None:
-        self.name = name
-        self._fields: List[Field] = []
-        self._callbacks: List[Callable[[], None]] = []
-
-    def field(
-        self,
-        name: str,
-        default: T,
-        passed_type: Optional[type] = None
-    ) -> Field[T]:
-        """Create and return a new field in the group."""
-        field = Field(self.name, name, default, passed_type)
-        self._fields.append(field)
-        for callback in self._callbacks:
-            field.register_callback(callback)
-        return field
-
-    def reset_default(self):
-        """Reset values of all fields stored in this group."""
-        for field in self._fields:
-            field.reset_default()
-
-    def register_callback(self, callback: Callable[[], None]):
-        """Register a callback on every past and future field in group."""
-        self._callbacks.append(callback)
-        for field in self._fields:
-            field.register_callback(callback)
-
-    def __iter__(self):
-        """Iterate over all fields in the group."""
-        return iter(self._fields)

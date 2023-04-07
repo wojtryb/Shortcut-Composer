@@ -42,6 +42,7 @@ class Label(Generic[T]):
         self.center, other.center = other.center, self.center
 
     def __eq__(self, other: T) -> bool:
+        """Consider two labels with the same value equal."""
         if not isinstance(other, Label):
             return False
         return self.value == other.value

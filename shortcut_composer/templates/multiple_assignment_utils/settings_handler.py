@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from dataclasses import dataclass
 from typing import List
 from enum import Enum
 
@@ -15,60 +14,68 @@ from .action_values_window import ActionValuesWindow
 
 
 class SettingsHandler:
+    """
+    Manages showing the MA settings window and button activating it.
+
+    Creates settings window and button, and installs a instruction in
+    multiple assignment action to show the button when the action key is
+    pressed for a short time.
+
+    Once clicked, the button shows the window in which the MA
+    configuration can be modified.
+    """
+
     def __init__(
         self,
         name: str,
-        values: list,
+        config: Field[list],
         instructions: List[Instruction],
     ) -> None:
-        self.values = Field(
-            config_group=f"ShortcutComposer: {name}",
-            name="Values",
-            default=values)
-
-        to_cycle = self.values.read()
+        to_cycle = config.read()
         if not to_cycle or not isinstance(to_cycle[0], Enum):
             return
 
-        self._settings = ActionValuesWindow(type(to_cycle[0]), self.values)
+        self._settings = ActionValuesWindow(type(to_cycle[0]), config)
         self._settings.setWindowTitle(f"Configure: {name}")
 
-        self._settings_button = RoundButton(
+        self._button = RoundButton(
             icon=Krita.get_icon("properties"),
             icon_scale=1.1,
             initial_radius=25,
             background_color=QColor(75, 75, 75, 255),
             active_color=QColor(100, 150, 230, 255))
-        self._settings_button.clicked.connect(self._on_button_click)
-        self._settings_button.move(0, 0)
-        self._settings_button.hide()
+        self._button.clicked.connect(self._on_button_click)
+        self._button.move(0, 0)
+        self._button.hide()
 
-        instructions.append(HandlerInstruction(
-            self._settings, self._settings_button))
+        instructions.append(HandlerInstruction(self._settings, self._button))
 
     def _on_button_click(self):
+        """Show the settings and hide the button after it was clicked."""
         self._settings.show()
-        self._settings_button.hide()
+        self._button.hide()
 
 
-@dataclass
 class HandlerInstruction(Instruction):
+    """Instruction installed on the MA action which activates the button."""
 
-    settings: ActionValuesWindow
-    button: RoundButton
-
-    def __post_init__(self):
-        self.timer = Timer(self.timer_callback, 500)
+    def __init__(self, settings: ActionValuesWindow, button: RoundButton):
+        self._settings = settings
+        self._button = button
+        self._timer = Timer(self.timer_callback, 500)
 
     def on_key_press(self) -> None:
-        self.timer.start()
+        """Start a timer which soon will run a callback once."""
+        self._timer.start()
 
     def timer_callback(self):
-        if not self.settings.isVisible():
-            self.button.move_center(QCursor().pos())
-            self.button.show()
-        self.timer.stop()
+        """Show a button under the cursor."""
+        if not self._settings.isVisible():
+            self._button.move_center(QCursor().pos())
+            self._button.show()
+        self._timer.stop()
 
     def on_every_key_release(self) -> None:
-        self.button.hide()
-        self.timer.stop()
+        """Hide the button when visible, or cancel the timer if not."""
+        self._button.hide()
+        self._timer.stop()

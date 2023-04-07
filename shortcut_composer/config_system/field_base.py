@@ -16,6 +16,7 @@ ListT = TypeVar('ListT', bound=List[Enum])
 
 class FieldBase(ABC, Field, Generic[T]):
     """Implementation base of List, and NonList field."""
+
     def __new__(cls, *args, **kwargs) -> 'FieldBase[T]':
         obj = object.__new__(cls)
         obj.__init__(*args, **kwargs)

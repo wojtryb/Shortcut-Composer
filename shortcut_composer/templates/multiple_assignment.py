@@ -5,6 +5,7 @@ from typing import List, Iterator, TypeVar, Generic, Optional
 from itertools import cycle
 
 from core_components import Controller, Instruction
+from config_system import Field
 from .raw_instructions import RawInstructions
 from .multiple_assignment_utils import SettingsHandler
 
@@ -73,14 +74,19 @@ class MultipleAssignment(RawInstructions, Generic[T]):
         self._controller = controller
         self._default_value = self._read_default_value(default_value)
 
-        self._settings = SettingsHandler(name, values, instructions)
-        self._values_to_cycle = self._settings.values.read()
+        self.config = Field(
+            config_group=f"ShortcutComposer: {name}",
+            name="Values",
+            default=values)
+
+        self._settings = SettingsHandler(name, self.config, instructions)
+        self._values_to_cycle = self.config.read()
 
         def reset() -> None:
-            self._values_to_cycle = self._settings.values.read()
+            self._values_to_cycle = self.config.read()
             self._reset_iterator()
 
-        self._settings.values.register_callback(reset)
+        self.config.register_callback(reset)
 
         self._last_value: Optional[T] = None
         self._iterator: Iterator[T]

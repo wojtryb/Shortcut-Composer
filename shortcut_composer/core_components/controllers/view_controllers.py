@@ -36,6 +36,7 @@ class PresetController(ViewBasedController, Controller[str]):
         self.view.brush_preset = value
 
     def get_label(self, value: str) -> Optional[QPixmap]:
+        """Return the preset icon or None, when there preset name unknown."""
         try:
             image: QImage = Krita.get_presets()[value].image()
         except KeyError:
@@ -55,15 +56,19 @@ class BrushSizeController(ViewBasedController, Controller[int]):
     default_value: float = 100
 
     def get_value(self) -> float:
+        """Get current brush size."""
         return self.view.brush_size
 
     def set_value(self, value: float) -> None:
+        """Set current brush size."""
         self.view.brush_size = value
 
     def get_label(self, value: float) -> Text:
+        """Return Text with formatted brush size."""
         return Text(self.get_pretty_name(value))
 
     def get_pretty_name(self, value: float) -> str:
+        """Format the brush size like: `100px`"""
         return f"{round(value)}px"
 
 
@@ -86,9 +91,11 @@ class BlendingModeController(ViewBasedController, Controller[BlendingMode]):
         self.view.blending_mode = value
 
     def get_label(self, value: BlendingMode) -> Text:
+        """Return Label of 3 first letters of mode name in correct color."""
         return Text(value.name[:3], Colorizer.blending_mode(value))
 
     def get_pretty_name(self, value: BlendingMode) -> str:
+        """Forward enums' pretty name."""
         return value.pretty_name
 
 
@@ -111,9 +118,11 @@ class OpacityController(ViewBasedController, Controller[int]):
         self.view.opacity = value
 
     def get_label(self, value: int) -> Text:
+        """Return Text with formatted brush opacity."""
         return Text(self.get_pretty_name(value), Colorizer.percentage(value))
 
     def get_pretty_name(self, value: float) -> str:
+        """Format the opacity like: `100%`"""
         return f"{value}%"
 
 
@@ -128,13 +137,17 @@ class FlowController(ViewBasedController, Controller[int]):
     default_value: int = 100
 
     def get_value(self) -> int:
+        """Get current brush flow."""
         return self.view.flow
 
     def set_value(self, value: int) -> None:
+        """Set passed brush flow."""
         self.view.flow = value
 
     def get_label(self, value: int) -> Text:
+        """Return Text with formatted brush flow."""
         return Text(self.get_pretty_name(value), Colorizer.percentage(value))
 
     def get_pretty_name(self, value: float) -> str:
+        """Format the flow like: `100%`"""
         return f"{value}%"

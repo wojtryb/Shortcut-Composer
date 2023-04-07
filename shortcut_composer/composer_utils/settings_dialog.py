@@ -11,7 +11,7 @@ from api_krita import Krita
 from api_krita.wrappers import Database
 from config_system.ui import ConfigFormWidget, ConfigSpinBox
 from .global_config import Config
-from .layouts import ButtonsLayout
+from .buttons_layout import ButtonsLayout
 
 
 class SettingsDialog(QDialog):

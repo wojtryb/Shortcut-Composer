@@ -33,9 +33,11 @@ class ToolController(Controller[Tool]):
         Krita.active_tool = value
 
     def get_label(self, value: Tool) -> QIcon:
+        """Forward the tools' icon."""
         return value.icon
 
     def get_pretty_name(self, value: Tool) -> str:
+        """Forward enums' pretty name."""
         return value.pretty_name
 
 
@@ -65,9 +67,11 @@ class TransformModeController(Controller[TransformMode]):
             value.activate()
 
     def get_label(self, value: Tool) -> QIcon:
+        """Forward the transform mode icon."""
         return value.icon
 
     def get_pretty_name(self, value: Tool) -> str:
+        """Forward enums' pretty name."""
         return value.pretty_name
 
 
@@ -85,12 +89,15 @@ class ToggleController(Controller[bool]):
     default_value = False
 
     def get_value(self) -> bool:
+        """Return whether the toggle action is on."""
         return self.toggle.state
 
     def set_value(self, value: bool) -> None:
+        """Set the toggle action on or off using a bool."""
         self.toggle.state = value
 
     def get_pretty_name(self, value: Tool) -> str:
+        """Forward enums' pretty name."""
         return value.pretty_name
 
 

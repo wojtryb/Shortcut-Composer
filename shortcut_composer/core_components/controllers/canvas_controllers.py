@@ -16,25 +16,29 @@ class CanvasBasedController:
 
 class CanvasZoomController(CanvasBasedController, Controller[float]):
     """
-    Gives access to `zoom`.
+    Gives access to `zoom` in %.
 
     - Operates on `float`
-    - Defaults to `1.0`
+    - Defaults to `100`
     """
 
     default_value: float = 100.0
 
     def get_value(self) -> float:
+        """Get current zoom level in %"""
         return self.canvas.zoom
 
     def set_value(self, value: float) -> None:
+        """Set current zoom level in %"""
         self.canvas.zoom = value
 
     def get_label(self, value: float) -> Text:
+        """Return Text with formatted canvas zoom."""
         return Text(self.get_pretty_name(value))
 
     def get_pretty_name(self, value: float) -> str:
-        return f"{round(value/100, 2)}"
+        """Format the canvas zoom like: `100%`."""
+        return f"{round(value)}%"
 
 
 class CanvasRotationController(CanvasBasedController, Controller[float]):
@@ -49,13 +53,17 @@ class CanvasRotationController(CanvasBasedController, Controller[float]):
     default_value: float = 0.0
 
     def get_value(self) -> float:
+        """Get canvas rotation in degrees."""
         return self.canvas.rotation
 
     def set_value(self, value: float) -> None:
+        """Set rotation in degrees."""
         self.canvas.rotation = value
 
     def get_label(self, value: float) -> Text:
+        """Return Text with formatted canvas rotation."""
         return Text(self.get_pretty_name(value))
 
     def get_pretty_name(self, value: float) -> str:
+        """Format the canvas rotation like: `30°`."""
         return f"{round(value)}°"

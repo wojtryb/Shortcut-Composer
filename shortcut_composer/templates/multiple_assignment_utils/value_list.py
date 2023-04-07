@@ -4,11 +4,7 @@
 from typing import Optional, List
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (
-    QAbstractItemView,
-    QListWidget,
-    QWidget,
-)
+from PyQt5.QtWidgets import QAbstractItemView, QListWidget, QWidget
 
 
 class ValueList(QListWidget):

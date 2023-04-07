@@ -43,7 +43,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
         """Move the widget on the right side of the pie."""
         offset = self.width()//2 + self._style.widget_radius * 1.05
         point = QPoint(round(offset), 0)
-        # Assume the pie center should be at the cursor
+        # HACK Assume the pie center should be at the cursor
         self.move_center(QCursor().pos() + point)  # type: ignore
 
     def _reset(self):

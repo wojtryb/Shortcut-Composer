@@ -23,7 +23,7 @@ def create_label_widget(
     style: PieStyle,
     parent: QWidget,
     is_unscaled: bool = False,
-) -> 'LabelWidget':
+) -> LabelWidget:
     """Return LabelWidget which can display this label."""
     if label.display_value is None:
         raise ValueError(f"Label {label} is not valid")

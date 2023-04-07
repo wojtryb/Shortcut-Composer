@@ -16,4 +16,5 @@ class UndoOnPress(Instruction):
     """
 
     def on_key_press(self) -> None:
+        """Trigger the undo action."""
         Krita.trigger_action("edit_undo")

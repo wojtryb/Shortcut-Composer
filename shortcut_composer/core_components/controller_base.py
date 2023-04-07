@@ -30,4 +30,5 @@ class Controller(Generic[T]):
         ...
 
     def get_pretty_name(self, value: T) -> str:
+        """Get value name that can be displayed to the user in GUI."""
         return str(value)

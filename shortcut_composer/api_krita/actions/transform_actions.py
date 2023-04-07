@@ -14,6 +14,7 @@ from PyQt5.QtWidgets import (
 
 from ..enums import Tool, TransformMode
 from ..core_api import KritaInstance
+
 Krita = KritaInstance()
 
 

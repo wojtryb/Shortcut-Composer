@@ -37,9 +37,11 @@ class LayerOpacityController(NodeBasedController, Controller[int]):
             self.active_document.refresh()
 
     def get_label(self, value: int) -> Text:
+        """Return Text with formatted layer opacity."""
         return Text(self.get_pretty_name(value), Colorizer.percentage(value))
 
     def get_pretty_name(self, value: float) -> str:
+        """Format the layer opacity like: `100%`"""
         return f"{value}%"
 
 
@@ -65,9 +67,11 @@ class LayerBlendingModeController(NodeBasedController,
             self.active_document.refresh()
 
     def get_label(self, value: BlendingMode) -> Text:
+        """Return Label of 3 first letters of mode name in correct color."""
         return Text(value.name[:3], Colorizer.blending_mode(value))
 
     def get_pretty_name(self, value: BlendingMode) -> str:
+        """Forward enums' pretty name."""
         return value.pretty_name
 
 
@@ -112,7 +116,9 @@ class CreateLayerWithBlendingController(NodeBasedController,
         parent.add_child_node(layer, self.active_node)
 
     def get_label(self, value: BlendingMode) -> Text:
+        """Return Label of 3 first letters of mode name in correct color."""
         return Text("+" + value.name[:3], Colorizer.blending_mode(value))
 
     def get_pretty_name(self, value: BlendingMode) -> str:
+        """Forward enums' pretty name."""
         return value.pretty_name

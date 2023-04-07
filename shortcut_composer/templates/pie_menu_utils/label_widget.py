@@ -15,8 +15,11 @@ from .label import Label
 class WidgetInstructions(Protocol):
     """Additional logic to do on entering and leaving a widget."""
 
-    def on_enter(self, label: Label) -> None: ...
-    def on_leave(self, label: Label) -> None: ...
+    def on_enter(self, label: Label) -> None:
+        """Logic to perform when mouse starts hovering over widget."""
+
+    def on_leave(self, label: Label) -> None:
+        """Logic to perform when mouse stops hovering over widget."""
 
 
 class LabelWidget(BaseWidget):
@@ -35,8 +38,7 @@ class LabelWidget(BaseWidget):
         self._style = style
         self._is_unscaled = is_unscaled
 
-        self._draggable = True
-        self.draggable = self._draggable
+        self.draggable = self._draggable = True
 
         self._enabled = True
         self._hovered = False
@@ -49,7 +51,7 @@ class LabelWidget(BaseWidget):
 
     @property
     def draggable(self) -> bool:
-        """Return whether the label accepts dragging."""
+        """Return whether the label can be dragged."""
         return self._draggable
 
     @draggable.setter
@@ -92,20 +94,20 @@ class LabelWidget(BaseWidget):
         drag.exec_(Qt.MoveAction)
 
     def enterEvent(self, e: QEvent) -> None:
+        super().enterEvent(e)
         """Notice that mouse moved over the widget."""
         self._hovered = True
         for instruction in self._instructions:
             instruction.on_enter(self.label)
         self.repaint()
-        return super().enterEvent(e)
 
     def leaveEvent(self, e: QEvent) -> None:
         """Notice that mouse moved out of the widget."""
+        super().leaveEvent(e)
         self._hovered = False
         for instruction in self._instructions:
             instruction.on_leave(self.label)
         self.repaint()
-        return super().leaveEvent(e)
 
     @property
     def _border_color(self):

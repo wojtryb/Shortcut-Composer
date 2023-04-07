@@ -57,7 +57,7 @@ class EnumPieSettings(PieSettings):
 
     def refresh(self):
         """Make all values currently used in pie undraggable and disabled."""
-        for widget in self._action_values._children_list:
+        for widget in self._action_values.children_list:
             if widget.label in self._used_values:
                 widget.enabled = False
                 widget.draggable = False

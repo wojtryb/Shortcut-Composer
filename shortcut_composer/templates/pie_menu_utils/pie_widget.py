@@ -34,10 +34,13 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     - hide() - hides the widget
     - repaint() - updates widget display after its data was changed
 
-    In LabelHolder it stores children widgets that are draggable when
-    pie menu is in edit mode.
+    It uses LabelHolder to store children widgets representing the
+    values user can pick. When the pie enters the edit mode, its
+    children become draggable.
 
-    Dragging them, makes changes to LabelHolder.
+    By dragging children, user can change their order or remove them
+    by moving them out of the widget. New children can be added by
+    dragging them from other widgets.
     """
 
     def __init__(
@@ -104,7 +107,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         e.ignore()
 
     def dragMoveEvent(self, e: QDragMoveEvent) -> None:
-        """Swap children during drag when mouse is moved to another zone."""
+        """Handle all children actions - order change, add and remove."""
         e.accept()
         source_widget = e.source()
         pos = e.pos()

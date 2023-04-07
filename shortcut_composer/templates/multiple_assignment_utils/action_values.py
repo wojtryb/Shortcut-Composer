@@ -19,6 +19,18 @@ from .value_list import ValueList
 
 
 class ActionValues(QWidget):
+    """
+    Widget for selecting values and their order available as Enum.
+
+    Consists of two lists next to each other. Values from the left
+    represent all unused Enum values. They can be moved to the list of
+    selected values on the right.
+
+    Elements are moved between lists using two buttons. Widget supports
+    moving multiple values at once. Drag&drop allows to change order in
+    the list of selected values.
+    """
+
     def __init__(self, enum_type: Type[Enum], config: Field[List[Enum]]):
         super().__init__()
 
@@ -45,13 +57,14 @@ class ActionValues(QWidget):
         control_layout.addWidget(remove_button)
         control_layout.addStretch()
 
-        layout.addLayout(self._labeled_list(self.available_list, "Available:"))
+        layout.addLayout(self._add_label(self.available_list, "Available:"))
         layout.addLayout(control_layout)
-        layout.addLayout(self._labeled_list(self.current_list, "Selected:"))
+        layout.addLayout(self._add_label(self.current_list, "Selected:"))
 
         self.setLayout(layout)
 
-    def _labeled_list(self, value_list: ValueList, text: str) -> QVBoxLayout:
+    def _add_label(self, value_list: ValueList, text: str) -> QVBoxLayout:
+        """Adds a label on top of the list area."""
         layout = QVBoxLayout()
         label = QLabel(text)
         label.setAlignment(Qt.AlignCenter)
@@ -59,21 +72,24 @@ class ActionValues(QWidget):
         layout.addWidget(value_list)
         return layout
 
-    def add(self):
+    def add(self) -> None:
+        """Move mouse-selected values from the left list to the right."""
         for value in self.available_list.selected:
             self.current_list.insert(
                 position=self.current_list.current_row,
                 value=value)
             self.available_list.remove(value=value,)
 
-    def remove(self):
+    def remove(self) -> None:
+        """Move mouse-selected values from the right list to the left."""
         selected = self.current_list.selected
         self.current_list.remove_selected()
         new_available = set(self.available_list.get_all()) | set(selected)
         self.available_list.clear()
         self.available_list.addItems(sorted(new_available))
 
-    def apply(self):
+    def apply(self) -> None:
+        """Save the right list into .kritarc."""
         to_write: List[Enum] = []
         for row in range(self.current_list.count()):
             text = self.current_list.item(row).text()
@@ -81,16 +97,18 @@ class ActionValues(QWidget):
 
         self.config.write(to_write)
 
-    def refresh(self):
+    def refresh(self) -> None:
+        """Refresh right list with .kritarc values and left one accordingly."""
         self.current_list.clear()
         current_list = self.config.read()
         text_list = [item.name for item in current_list]
         self.current_list.addItems(text_list)
 
         self.available_list.clear()
-        allowed_items = sorted(set(self.allowed_values) - set(text_list))
+        allowed_items = sorted(set(self._allowed_values) - set(text_list))
         self.available_list.addItems(allowed_items)
 
     @property
-    def allowed_values(self):
+    def _allowed_values(self) -> List[str]:
+        """Return list of all available values using the enum type."""
         return self.enum_type._member_names_

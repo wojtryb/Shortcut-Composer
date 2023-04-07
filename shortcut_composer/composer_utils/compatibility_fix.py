@@ -5,6 +5,7 @@ from api_krita import Krita
 
 
 def fix_config():
+    """Rewrites config values from their position in 1.1.1 to 1.2.0."""
     def fix(group: str, old_name: str, new_name: str):
         if Krita.read_setting(group, new_name, "not given") != "not given":
             return

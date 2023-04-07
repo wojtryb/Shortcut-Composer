@@ -33,6 +33,7 @@ class ActiveLayerController(DocumentBasedController, Controller[Node]):
         self.document.active_node = value
 
     def get_pretty_name(self, value: Node) -> str:
+        """Forward enums' pretty name."""
         return value.name
 
 
@@ -47,10 +48,13 @@ class TimeController(DocumentBasedController, Controller[int]):
     default_value = 0
 
     def get_value(self) -> int:
+        """Get current frame on animation timeline."""
         return self.document.current_time
 
     def set_value(self, value: int) -> None:
+        """Set passed frame of animation timeline as active."""
         self.document.current_time = value
 
     def get_label(self, value: int) -> Text:
+        """Return Text with frame id as string."""
         return Text(self.get_pretty_name(value))

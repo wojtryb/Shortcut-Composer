@@ -11,6 +11,8 @@ F = TypeVar("F", bound=float)
 
 
 class SpinBox(Protocol, Generic[F]):
+    """Representation of both Qt spinboxes as one generic class."""
+
     def value(self) -> F: ...
     def setValue(self, val: F) -> None: ...
 
