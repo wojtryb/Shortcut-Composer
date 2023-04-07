@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import TypeVar, Generic, Optional, Callable, final, List
+from typing import TypeVar, Generic, Callable, List
 from abc import ABC, abstractmethod
 from enum import Enum
 
@@ -15,6 +15,7 @@ ListT = TypeVar('ListT', bound=List[Enum])
 
 
 class FieldBase(ABC, Field, Generic[T]):
+    """Implementation base of List, and NonList field."""
     def __new__(cls, *args, **kwargs) -> 'FieldBase[T]':
         obj = object.__new__(cls)
         obj.__init__(*args, **kwargs)
@@ -25,41 +26,18 @@ class FieldBase(ABC, Field, Generic[T]):
         config_group: str,
         name: str,
         default: T,
-        type: Optional[type] = None
     ):
         self.config_group = config_group
         self.name = name
         self.default = default
-        self._type = self._get_type(type)
-        self._parser = self._get_parser()
         self._on_change_callbacks: List[Callable[[], None]] = []
 
-    @abstractmethod
-    def _get_type(self, passed_type: Optional[type]) -> type: ...
-
-    @abstractmethod
-    def _to_string(self, value: T) -> str: ...
-
-    @abstractmethod
-    def read(self) -> T: ...
-
-    @final
     def register_callback(self, callback: Callable[[], None]):
+        """Store callback in internal list."""
         self._on_change_callbacks.append(callback)
 
-    def _get_parser(self) -> Parser[T]:
-        if issubclass(self._type, Enum):
-            return EnumParser(self._type)  # type: ignore
-
-        return {
-            int: BasicParser(int),
-            float: BasicParser(float),
-            str: BasicParser(str),
-            bool: BoolParser()
-        }[self._type]  # type: ignore
-
-    @final
     def write(self, value: T):
+        """Write value to file and run callbacks if it was not redundant."""
         if self._is_write_redundant(value):
             return
 
@@ -70,21 +48,42 @@ class FieldBase(ABC, Field, Generic[T]):
         for callback in self._on_change_callbacks:
             callback()
 
-    @final
-    def _is_write_redundant(self, value: T):
+    @abstractmethod
+    def read(self) -> T:
+        """Return value from .kritarc parsed to field type."""
+        ...
+
+    @abstractmethod
+    def _to_string(self, value: T) -> str:
+        """Convert a value of field type to string."""
+        ...
+
+    def _is_write_redundant(self, value: T) -> bool:
+        """
+        Return if writing a value is not necessary.
+
+        That is when:
+        - the value is the same as the one stored in file
+        - value is a default one and it is not present in file
+        """
         if self.read() == value:
             return True
-        current_value = self._read_raw()
-        return current_value is None and value == self.default
+        raw = Krita.read_setting(self.config_group, self.name)
+        return raw is None and value == self.default
 
-    @final
-    def _read_raw(self) -> Optional[str]:
-        red_value = Krita.read_setting(
-            group=self.config_group,
-            name=self.name,
-            default="Not stored")
-        return None if red_value == "Not stored" else red_value
-
-    @final
     def reset_default(self) -> None:
+        """Write a default value to .kritarc file."""
         self.write(self.default)
+
+    @staticmethod
+    def _get_parser(parser_type: type) -> Parser[T]:
+        """Return field parser."""
+        if issubclass(parser_type, Enum):
+            return EnumParser(parser_type)  # type: ignore
+
+        return {
+            int: BasicParser(int),
+            float: BasicParser(float),
+            str: BasicParser(str),
+            bool: BoolParser()
+        }[parser_type]  # type: ignore
