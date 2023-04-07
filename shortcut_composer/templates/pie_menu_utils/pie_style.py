@@ -3,7 +3,6 @@
 
 import math
 import platform
-from typing import Optional
 from copy import copy
 
 from PyQt5.QtGui import QColor
@@ -27,16 +26,11 @@ class PieStyle:
     def __init__(
         self,
         pie_config: PieConfig,
-        background_color: Optional[QColor],
-        active_color: QColor,
         items: list,
     ) -> None:
         self._items = items
         self._base_size = Krita.screen_size/2560
-
         self._pie_config = pie_config
-        self._background_color = background_color
-        self.active_color = active_color
 
     @property
     def _pie_radius_scale(self):
@@ -121,10 +115,14 @@ class PieStyle:
         return int(radius) if radius != float("inf") else default_radius
 
     @property
+    def active_color(self):
+        return self._pie_config.active_color
+
+    @property
     def background_color(self) -> QColor:
         """Default background color depends on the app theme lightness."""
-        if self._background_color is not None:
-            return self._background_color
+        if self._pie_config.background_color is not None:
+            return self._pie_config.background_color
         if Krita.is_light_theme_active:
             return QColor(210, 210, 210, 190)
         return QColor(75, 75, 75, 190)

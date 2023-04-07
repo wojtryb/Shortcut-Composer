@@ -1,5 +1,7 @@
 
-from typing import List, TypeVar
+from typing import List, TypeVar, Optional
+
+from PyQt5.QtGui import QColor
 
 from data_components import Tag
 from .pie_config import PieConfig, PresetPieConfig, EnumPieConfig
@@ -15,9 +17,12 @@ def create_local_config(
     values: List[T],
     pie_radius_scale: float,
     icon_radius_scale: float,
+    background_color: Optional[QColor],
+    active_color: QColor,
 ) -> PieConfig[T]:
     config_name = f"ShortcutComposer: {name}"
-    args = [config_name, values, pie_radius_scale, icon_radius_scale]
+    args = [config_name, values, pie_radius_scale, icon_radius_scale,
+            background_color, active_color]
     if isinstance(values, Tag):
         return PresetPieConfig(*args)
     return EnumPieConfig(*args)
