@@ -6,7 +6,6 @@ from .pie_config import PieConfig, PresetPieConfig, EnumPieConfig
 from .settings_gui import PieSettings, PresetPieSettings, EnumPieSettings
 from .label import Label
 from .pie_style import PieStyle
-from .widget_utils import NotifyingList
 
 T = TypeVar("T")
 
@@ -26,7 +25,7 @@ def create_local_config(
 
 def create_pie_settings_window(
     values: List[Label],
-    used_values: NotifyingList[Label],
+    used_values: List[Label],
     style: PieStyle,
     pie_config: PieConfig,
     parent=None

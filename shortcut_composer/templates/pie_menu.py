@@ -16,7 +16,7 @@ from .pie_menu_utils import (
     PieWidget,
     PieStyle,
     Label)
-from .pie_menu_utils.widget_utils import EditMode, RoundButton, NotifyingList
+from .pie_menu_utils.widget_utils import EditMode, RoundButton
 from .raw_instructions import RawInstructions
 
 T = TypeVar('T')
@@ -103,9 +103,9 @@ class PieMenu(RawInstructions, Generic[T]):
         self._background_color = background_color
         self._active_color = active_color
 
-        self._labels: NotifyingList[Label] = NotifyingList()
+        self._labels: List[Label] = []
         self._reset_labels(self._labels, self._local_config.values)
-        self._all_labels: NotifyingList[Label] = NotifyingList()
+        self._all_labels: List[Label] = []
         self._reset_labels(self._all_labels, self._get_all_values(values))
 
         self._edit_mode = EditMode(self)
@@ -148,7 +148,9 @@ class PieMenu(RawInstructions, Generic[T]):
         self.accept_button.hide()
 
     def _reset(self):
-        self._reset_labels(self._labels, self._local_config.values)
+        values = self._local_config.values
+        self._reset_labels(self._labels, values)
+        self._local_config.ORDER.write(values)
 
         self.accept_button.move_center(self.pie_widget.center)
         self.settings_button.move(QPoint(
@@ -175,7 +177,7 @@ class PieMenu(RawInstructions, Generic[T]):
 
     def _reset_labels(
         self,
-        label_list: NotifyingList[Label[T]],
+        label_list: List[Label[T]],
         values: List[T]
     ) -> None:
         """Wrap values into paintable label objects with position info."""
@@ -189,7 +191,6 @@ class PieMenu(RawInstructions, Generic[T]):
             except KeyError:
                 continue
             label_list.append(Label(value=value, display_value=label))
-        label_list.notify_about_change()
 
     def _get_all_values(self, values: List[T]) -> List[T]:
         if not values:

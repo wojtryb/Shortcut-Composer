@@ -4,7 +4,6 @@ from copy import copy
 from PyQt5.QtWidgets import QVBoxLayout, QTabWidget
 
 from config_system.ui import ConfigFormWidget, ConfigSpinBox
-from ..widget_utils import NotifyingList
 from ..label import Label
 from ..pie_style import PieStyle
 from ..pie_config import EnumPieConfig
@@ -16,7 +15,7 @@ class EnumPieSettings(PieSettings):
     def __init__(
         self,
         values: List[Label],
-        used_values: NotifyingList[Label],
+        used_values: List[Label],
         style: PieStyle,
         pie_config: EnumPieConfig,
         parent=None
@@ -55,7 +54,7 @@ class EnumPieSettings(PieSettings):
         layout.addWidget(tab_holder)
         self.setLayout(layout)
 
-        self._used_values.register_callback(self.refresh)
+        self._pie_config.ORDER.register_callback(self.refresh)
 
     def refresh(self):
         for widget in self._action_values._children_list:

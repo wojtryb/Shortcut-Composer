@@ -12,13 +12,12 @@ from ..label_widget_utils import create_label_widget
 from ..pie_config import PieConfig
 from .widget_holder import WidgetHolder
 from .circle_points import CirclePoints
-from .notifying_list import NotifyingList
 
 
 class LabelHolder:
     def __init__(
         self,
-        labels: NotifyingList[Label],
+        labels: List[Label],
         style: PieStyle,
         config: PieConfig,
         owner: BaseWidget,
@@ -81,4 +80,5 @@ class LabelHolder:
             self.widget_holder.add(child)
 
         if notify:
-            self._labels.notify_about_change()
+            values = [label.value for label in self._labels]
+            self._config.ORDER.write(values)

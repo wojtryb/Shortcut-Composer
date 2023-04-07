@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import TypeVar, Optional
+from typing import TypeVar, Optional, Generic, List
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import (
@@ -17,7 +17,6 @@ from .label import Label
 from .label_widget import LabelWidget
 from .pie_config import PieConfig
 from .widget_utils import (
-    NotifyingList,
     CirclePoints,
     LabelHolder,
     PiePainter)
@@ -25,7 +24,7 @@ from .widget_utils import (
 T = TypeVar('T')
 
 
-class PieWidget(AnimatedWidget, BaseWidget):
+class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     """
     PyQt5 widget with icons on ring that can be selected by hovering.
 
@@ -51,7 +50,7 @@ class PieWidget(AnimatedWidget, BaseWidget):
     def __init__(
         self,
         style: PieStyle,
-        labels: NotifyingList,
+        labels: List[Label[T]],
         config: PieConfig,
         parent=None
     ):
