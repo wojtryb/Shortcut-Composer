@@ -10,7 +10,7 @@ from .settings_gui import (
     PieSettings,
     PresetPieSettings,
     EnumPieSettings,
-    NumberPieSettings,
+    NumericPieSettings,
 )
 from .label import Label
 from .pie_style import PieStyle
@@ -48,6 +48,6 @@ def create_pie_settings_window(
         return PresetPieSettings(*args)
     elif isinstance(pie_config, NonPresetPieConfig):
         if not values or isinstance(values[0], Enum):
-            return NumberPieSettings(*args)
+            return NumericPieSettings(*args)
         return EnumPieSettings(values, used_values, *args)
     raise ValueError(f"Unknown pie config {pie_config}")

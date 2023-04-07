@@ -11,6 +11,14 @@ from .scroll_area import ScrollArea
 
 
 class EnumPieSettings(PieSettings):
+    """
+    Pie setting window for pie values being enums.
+
+    Consists of two tabs:
+    - usual form with field values to set
+    - scrollable area with all available enum values to drag into pie
+    """
+
     def __init__(
         self,
         values: List[Label],
@@ -45,6 +53,7 @@ class EnumPieSettings(PieSettings):
         self.refresh()
 
     def refresh(self):
+        """Make all values currently used in pie undraggable and disabled."""
         for widget in self._action_values._children_list:
             if widget.label in self._used_values:
                 widget.enabled = False
@@ -54,9 +63,11 @@ class EnumPieSettings(PieSettings):
                 widget.draggable = True
 
     def show(self):
+        """Show the window after its settings are refreshed."""
         self._local_settings.refresh()
         super().show()
 
     def hide(self) -> None:
+        """Hide the window after its settings are saved to .kritarc."""
         self._local_settings.apply()
         super().hide()

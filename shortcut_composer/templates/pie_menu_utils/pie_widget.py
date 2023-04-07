@@ -123,15 +123,15 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             return
 
         angle = self._circle_points.angle_from_point(pos)
-        _b = self._widget_holder.on_angle(angle)
+        _a = self._widget_holder.on_angle(angle)
 
         if source_widget.label not in self.label_holder or not self._labels:
             # Dragged with unknown label
-            index = self.label_holder.index(_b.label)
+            index = self.label_holder.index(_a.label)
             return self.label_holder.insert(index, source_widget.label)
 
         # Dragged existing label to a new location
-        _a = self._widget_holder.on_label(source_widget.label)
+        _b = self._widget_holder.on_label(source_widget.label)
         if _a != _b:
             self.label_holder.swap(_a.label, _b.label)
             self.repaint()
@@ -149,4 +149,5 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
     @property
     def _widget_holder(self) -> WidgetHolder:
+        """Return the holder with child widgets."""
         return self.label_holder.widget_holder

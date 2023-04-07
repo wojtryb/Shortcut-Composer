@@ -42,14 +42,13 @@ class PiePainter:
             center=self._center,
             outer_radius=self.style.deadzone_radius,
             color=QColor(128, 255, 128, 120),
-            thickness=1,
-        )
+            thickness=1)
+
         self.painter.paint_wheel(
             center=self._center,
             outer_radius=self.style.deadzone_radius-1,
             color=QColor(255, 128, 128, 120),
-            thickness=1,
-        )
+            thickness=1)
 
     def _paint_base_wheel(self) -> None:
         """Paint a base circle."""
@@ -58,14 +57,13 @@ class PiePainter:
         self.painter.paint_wheel(
             center=self._center,
             outer_radius=self.style.no_border_radius,
-            color=QColor(128, 128, 128, 1),
-        )
+            color=QColor(128, 128, 128, 1))
+
         self.painter.paint_wheel(
             center=self._center,
             outer_radius=self.style.no_border_radius,
             color=self.style.background_color,
-            thickness=self.style.area_thickness,
-        )
+            thickness=self.style.area_thickness)
 
     def _paint_base_border(self) -> None:
         """Paint a border on the inner edge of base circle."""
@@ -73,8 +71,7 @@ class PiePainter:
             center=self._center,
             outer_radius=self.style.inner_edge_radius,
             color=self.style.border_color,
-            thickness=self.style.border_thickness,
-        )
+            thickness=self.style.border_thickness)
 
     def _paint_active_pie(self) -> None:
         """Paint a pie behind a label which is active or during animation."""
@@ -92,8 +89,7 @@ class PiePainter:
                 angle=label.angle,
                 span=360//len(self.labels),
                 color=self._pick_pie_color(label),
-                thickness=self.style.area_thickness + thickness_addition,
-            )
+                thickness=self.style.area_thickness + thickness_addition)
 
     def _pick_pie_color(self, label: Label) -> QColor:
         """Pick color of pie based on widget mode and animation progress."""

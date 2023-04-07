@@ -1,10 +1,7 @@
 from typing import List
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (
-    QWidget,
-    QScrollArea,
-    QGridLayout)
+from PyQt5.QtWidgets import QWidget, QScrollArea, QGridLayout
 
 from ..label import Label
 from ..label_widget import LabelWidget

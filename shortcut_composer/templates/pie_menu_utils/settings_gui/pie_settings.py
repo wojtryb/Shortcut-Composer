@@ -14,7 +14,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
     """
     Abstract widget that allows to change values in passed config.
 
-    List of values
+    Meant to be displayed next to pie menu, having the same heigth.
     """
 
     def __init__(

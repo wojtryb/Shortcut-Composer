@@ -73,14 +73,14 @@ class MultipleAssignment(RawInstructions, Generic[T]):
         self._controller = controller
         self._default_value = self._read_default_value(default_value)
 
-        self.handler = SettingsHandler(name, values, instructions)
-        self._values_to_cycle = self.handler.values_field.read()
+        self._settings = SettingsHandler(name, values, instructions)
+        self._values_to_cycle = self._settings.values.read()
 
         def reset() -> None:
-            self._values_to_cycle = self.handler.values_field.read()
+            self._values_to_cycle = self._settings.values.read()
             self._reset_iterator()
 
-        self.handler.values_field.register_callback(reset)
+        self._settings.values.register_callback(reset)
 
         self._last_value: Optional[T] = None
         self._iterator: Iterator[T]

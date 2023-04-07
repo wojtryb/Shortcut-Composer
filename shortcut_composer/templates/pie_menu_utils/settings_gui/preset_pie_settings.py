@@ -14,6 +14,8 @@ from .pie_settings import PieSettings
 
 
 class PresetPieSettings(PieSettings):
+    """Pie setting window for pie values being brush presets."""
+
     def __init__(
         self,
         config: PresetPieConfig,
@@ -37,16 +39,18 @@ class PresetPieSettings(PieSettings):
         self.setLayout(layout)
 
     def show(self):
+        """Show the window after its settings are refreshed."""
         self._refresh_tags()
         self._local_settings.refresh()
         super().show()
 
     def hide(self) -> None:
+        """Hide the window after its settings are saved to .kritarc."""
         self._local_settings.apply()
         super().hide()
 
     def _refresh_tags(self):
-        with Database() as database:
-            tags = sorted(database.get_brush_tags(), key=str.lower)
+        """Replace list of available tags with those red from database."""
         self._tags.clear()
-        self._tags.extend(tags)
+        with Database() as database:
+            self._tags.extend(sorted(database.get_brush_tags(), key=str.lower))
