@@ -1,8 +1,7 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import TypeVar, Generic, Optional, Callable
-from dataclasses import dataclass
+from typing import TypeVar, Generic, Optional, Callable, List
 
 T = TypeVar('T')
 
@@ -32,9 +31,11 @@ class Field(Generic[T]):
     def reset_default(self) -> None: ...
 
 
-@dataclass(frozen=True)
 class FieldGroup:
-    config_group: str
+    def __init__(self, name: str) -> None:
+        self.name = name
+        self._fields: List[Field] = []
+        self._callbacks: List[Callable[[], None]] = []
 
     def __call__(
         self,
@@ -42,4 +43,20 @@ class FieldGroup:
         default: T,
         passed_type: Optional[type] = None
     ) -> Field[T]:
-        return Field(self.config_group, name, default, passed_type)
+        field = Field(self.name, name, default, passed_type)
+        self._fields.append(field)
+        for callback in self._callbacks:
+            field.register_callback(callback)
+        return field
+
+    def reset_default(self):
+        for field in self._fields:
+            field.reset_default()
+
+    def register_callback(self, callback: Callable[[], None]):
+        self._callbacks.append(callback)
+        for field in self._fields:
+            field.register_callback(callback)
+
+    def __iter__(self):
+        return iter(self._fields)

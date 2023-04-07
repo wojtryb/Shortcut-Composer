@@ -1,11 +1,10 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from config_system import Field, FieldGroup
-field = FieldGroup("ShortcutComposer")
+from config_system import FieldGroup
 
 
-class Config:
+class GlobalConfig(FieldGroup):
     """
     Configuration fields available in the plugin.
 
@@ -22,27 +21,21 @@ class Config:
     EnumConfigValues.
     """
 
-    SHORT_VS_LONG_PRESS_TIME = field("Short vs long press time", 0.3)
-    TRACKER_SENSITIVITY_SCALE = field("Tracker sensitivity scale", 1.0)
-    TRACKER_DEADZONE = field("Tracker deadzone", 0)
-    FPS_LIMIT = field("FPS limit", 60)
-    PIE_GLOBAL_SCALE = field("Pie global scale", 1.0)
-    PIE_ICON_GLOBAL_SCALE = field("Pie icon global scale", 1.0)
-    PIE_DEADZONE_GLOBAL_SCALE = field("Pie deadzone global scale", 1.0)
-    PIE_ANIMATION_TIME = field("Pie animation time", 0.2)
+    def __init__(self, name: str) -> None:
+        super().__init__(name)
+        self.SHORT_VS_LONG_PRESS_TIME = self("Short vs long press time", 0.3)
+        self.TRACKER_SENSITIVITY_SCALE = self("Tracker sensitivity scale", 1.0)
+        self.TRACKER_DEADZONE = self("Tracker deadzone", 0)
+        self.FPS_LIMIT = self("FPS limit", 60)
+        self.PIE_GLOBAL_SCALE = self("Pie global scale", 1.0)
+        self.PIE_ICON_GLOBAL_SCALE = self("Pie icon global scale", 1.0)
+        self.PIE_DEADZONE_GLOBAL_SCALE = self("Pie deadzone global scale", 1.0)
+        self.PIE_ANIMATION_TIME = self("Pie animation time", 0.2)
 
-    @classmethod
-    def reset_defaults(cls) -> None:
-        """Reset all config files."""
-        for config_field in cls.__dict__.values():
-            try:
-                config_field: Field
-                config_field.reset_default()
-            except AttributeError:
-                pass
-
-    @classmethod
-    def get_sleep_time(cls) -> int:
+    def get_sleep_time(self) -> int:
         """Read sleep time from FPS_LIMIT config field."""
-        fps_limit = cls.FPS_LIMIT.read()
+        fps_limit = self.FPS_LIMIT.read()
         return round(1000/fps_limit) if fps_limit else 1
+
+
+Config = GlobalConfig("ShortcutComposer")
