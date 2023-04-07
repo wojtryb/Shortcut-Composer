@@ -39,37 +39,47 @@ class PieStyle:
         self.active_color = active_color
 
     @property
-    def pie_radius_scale(self):
+    def _pie_radius_scale(self):
         return self._pie_config.PIE_RADIUS_SCALE.read()
 
     @property
-    def icon_radius_scale(self):
+    def _icon_radius_scale(self):
         return self._pie_config.ICON_RADIUS_SCALE.read()
 
     @property
     def pie_radius(self) -> int:
         return round(
             165 * self._base_size
-            * self.pie_radius_scale
+            * self._pie_radius_scale
             * Config.PIE_GLOBAL_SCALE.read())
 
     @property
     def base_icon_radius(self) -> int:
         return round(
             50 * self._base_size
-            * self.icon_radius_scale
+            * self._icon_radius_scale
             * Config.PIE_ICON_GLOBAL_SCALE.read())
 
     @property
-    def max_icon_radius(self) -> int:
+    def _unscaled_base_icon_radius(self) -> int:
+        return round(
+            50 * self._base_size
+            * Config.PIE_ICON_GLOBAL_SCALE.read())
+
+    @property
+    def _max_icon_radius(self) -> int:
         if not self._items:
             return 1
         return round(self.pie_radius * math.pi / len(self._items))
 
     @property
+    def unscaled_icon_radius(self) -> int:
+        return min(self._unscaled_base_icon_radius, self._max_icon_radius)
+
+    @property
     def icon_radius(self) -> int:
         """Icons radius depend on settings, but they have to fit in the pie."""
-        return min(self.base_icon_radius, self.max_icon_radius)
+        return min(self.base_icon_radius, self._max_icon_radius)
 
     @property
     def deadzone_radius(self) -> float:
@@ -90,7 +100,7 @@ class PieStyle:
 
     @property
     def area_thickness(self):
-        return round(self.pie_radius/self.pie_radius_scale*0.4)
+        return round(self.pie_radius/self._pie_radius_scale*0.4)
 
     @property
     def inner_edge_radius(self):

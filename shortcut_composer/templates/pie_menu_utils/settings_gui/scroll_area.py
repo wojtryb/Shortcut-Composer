@@ -38,12 +38,16 @@ class ScrollArea(QScrollArea):
     def _create_children(self) -> List[LabelWidget]:
         """Create LabelWidgets that represent the labels."""
         children: List[LabelWidget] = []
-        diameter = self._style.icon_radius*2
 
         for label in self.labels:
-            children.append(create_label_widget(label, self._style, self))
-            children[-1].setFixedSize(diameter, diameter)
-            children[-1].draggable = True
+            child = create_label_widget(
+                label=label,
+                style=self._style,
+                parent=self,
+                is_unscaled=True)
+            child.setFixedSize(child.icon_radius*2, child.icon_radius*2)
+            child.draggable = True
+            children.append(child)
             self._scroll_area_layout.append(children[-1])
         return children
 
@@ -78,14 +82,15 @@ class ScrollAreaLayout(QGridLayout):
         self._refresh()
 
     def pop(self, index: int):
-        self.widgets.pop(index)
+        widget = self.widgets.pop(index)
+        self.removeWidget(widget)
         self._refresh()
+        return widget
 
     def remove(self, widget: QWidget):
         for index, held_widget in enumerate(self.widgets):
             if held_widget == widget:
-                self.pop(index)
-                return self._refresh()
+                return self.pop(index)
 
     def insert(self, index: int, widget: QWidget):
         self.widgets.insert(index, widget)

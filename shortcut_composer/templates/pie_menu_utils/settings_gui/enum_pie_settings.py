@@ -1,5 +1,4 @@
-from typing import List, Callable
-from copy import copy
+from typing import List
 
 from PyQt5.QtWidgets import QVBoxLayout, QTabWidget
 
@@ -30,15 +29,7 @@ class EnumPieSettings(PieSettings):
 
         tab_holder = QTabWidget()
 
-        # HACK! label widgets need to have "unscaled mode"
-        class Mock:
-            def read(self): return 1.0
-            def register_callback(self, callback: Callable): return
-
-        new_style = copy(self._style)
-        new_style._icon_radius_scale = Mock()  # type: ignore
-
-        self._action_values = ScrollArea(values, new_style, 3)
+        self._action_values = ScrollArea(values, self._style, 3)
         self._action_values.setMinimumHeight(round(style.base_icon_radius*6.2))
 
         tab_holder.addTab(self._action_values, "Action values")
@@ -55,6 +46,7 @@ class EnumPieSettings(PieSettings):
         self.setLayout(layout)
 
         self._pie_config.ORDER.register_callback(self.refresh)
+        self.refresh()
 
     def refresh(self):
         for widget in self._action_values._children_list:

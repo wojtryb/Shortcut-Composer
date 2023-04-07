@@ -16,8 +16,14 @@ from ..label_widget import LabelWidget
 class ImageLabelWidget(LabelWidget):
     """Displays a `label` which holds an image."""
 
-    def __init__(self, label: Label, style: PieStyle, parent: QWidget) -> None:
-        super().__init__(label, style, parent)
+    def __init__(
+        self,
+        label: Label,
+        style: PieStyle,
+        parent: QWidget,
+        is_unscaled: bool = False,
+    ) -> None:
+        super().__init__(label, style, parent, is_unscaled)
         self.ready_image = self._prepare_image()
 
     def paintEvent(self, event: QPaintEvent) -> None:
@@ -29,13 +35,13 @@ class ImageLabelWidget(LabelWidget):
         with Painter(self, event) as painter:
             painter.paint_wheel(
                 center=self.center,
-                outer_radius=self._style.icon_radius,
-                color=self._style.icon_color
-            )
+                outer_radius=self.icon_radius,
+                color=self._style.icon_color)
+
             painter.paint_wheel(
                 center=self.center,
                 outer_radius=(
-                    self._style.icon_radius-self._style.border_thickness//2),
+                    self.icon_radius-self._style.border_thickness//2),
                 color=self._border_color,
                 thickness=self._style.border_thickness)
             painter.paint_pixmap(self.center, self.ready_image)
@@ -50,5 +56,4 @@ class ImageLabelWidget(LabelWidget):
         rounded_image = PixmapTransform.make_pixmap_round(to_display)
         return PixmapTransform.scale_pixmap(
             pixmap=rounded_image,
-            size_px=round(self._style.icon_radius*1.8)
-        )
+            size_px=round(self.icon_radius*1.8))

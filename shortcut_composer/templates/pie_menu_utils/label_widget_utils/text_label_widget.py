@@ -19,8 +19,14 @@ from ..label_widget import LabelWidget
 class TextLabelWidget(LabelWidget):
     """Displays a `label` which holds text."""
 
-    def __init__(self, label: Label, style: PieStyle, parent: QWidget) -> None:
-        super().__init__(label, style, parent)
+    def __init__(
+        self,
+        label: Label,
+        style: PieStyle,
+        parent: QWidget,
+        is_unscaled: bool = False,
+    ) -> None:
+        super().__init__(label, style, parent, is_unscaled)
         self._pyqt_label = self._create_pyqt_label()
 
     def paintEvent(self, event: QPaintEvent) -> None:
@@ -32,11 +38,11 @@ class TextLabelWidget(LabelWidget):
         with Painter(self, event) as painter:
             painter.paint_wheel(
                 center=self.center,
-                outer_radius=self._style.icon_radius,
+                outer_radius=self.icon_radius,
                 color=self._style.icon_color)
             painter.paint_wheel(
                 center=self.center,
-                outer_radius=self._style.icon_radius,
+                outer_radius=self.icon_radius,
                 color=self._border_color,
                 thickness=self._style.border_thickness)
 
@@ -47,7 +53,7 @@ class TextLabelWidget(LabelWidget):
         if not isinstance(to_display, Text):
             raise TypeError("Label supposed to be text.")
 
-        heigth = round(self._style.icon_radius*0.8)
+        heigth = round(self.icon_radius*0.8)
 
         label = QLabel(self)
         label.setText(to_display.value)

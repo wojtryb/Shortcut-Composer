@@ -21,7 +21,8 @@ from .image_label_widget import ImageLabelWidget
 def create_label_widget(
     label: Label,
     style: PieStyle,
-    parent: QWidget
+    parent: QWidget,
+    is_unscaled: bool = False,
 ) -> 'LabelWidget':
     """Return LabelWidget which can display this label."""
     if label.display_value is None:
@@ -33,4 +34,4 @@ def create_label_widget(
         QIcon: IconLabelWidget,
     }[type(label.display_value)]
 
-    return painter_type(label, style, parent)
+    return painter_type(label, style, parent, is_unscaled)

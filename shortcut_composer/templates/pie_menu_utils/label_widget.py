@@ -18,14 +18,17 @@ class LabelWidget(BaseWidget):
         label: Label,
         style: PieStyle,
         parent: QWidget,
+        is_unscaled: bool = False,
     ) -> None:
         super().__init__(parent)
         self.setGeometry(0, 0, style.icon_radius*2, style.icon_radius*2)
         self.label = label
+        self._style = style
+        self._is_unscaled = is_unscaled
+
         self._draggable = True
         self.draggable = self._draggable
 
-        self._style = style
         self._enabled = True
         self._hovered = False
 
@@ -81,3 +84,9 @@ class LabelWidget(BaseWidget):
         if self._hovered and self.draggable:
             return self._style.active_color
         return self._style.border_color
+
+    @property
+    def icon_radius(self):
+        if self._is_unscaled:
+            return self._style.unscaled_icon_radius
+        return self._style.icon_radius
