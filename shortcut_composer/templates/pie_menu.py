@@ -111,8 +111,8 @@ class PieMenu(RawInstructions, Generic[T]):
         self._edit_mode = EditMode(self)
 
         style_args = {
-            "pie_radius_scale": self._local_config.pie_radius_scale,
-            "icon_radius_scale": self._local_config.icon_radius_scale,
+            "pie_radius_scale": self._local_config.PIE_RADIUS_SCALE,
+            "icon_radius_scale": self._local_config.ICON_RADIUS_SCALE,
             "background_color": self._background_color,
             "active_color": self._active_color}
         self._unscaled_style = PieStyle(items=[None], **style_args)

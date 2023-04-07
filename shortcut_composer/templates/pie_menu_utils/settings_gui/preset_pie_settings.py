@@ -32,11 +32,11 @@ class PresetPieSettings(PieSettings):
         self._refresh_tags()
 
         self._local_settings = ConfigFormWidget([
-            ConfigComboBox(pie_config.tag_name, self, "Tag name", self._tags),
+            ConfigComboBox(pie_config.TAG_NAME, self, "Tag name", self._tags),
             ConfigSpinBox(
-                pie_config.pie_radius_scale, self, "Pie scale", 0.05, 4),
+                pie_config.PIE_RADIUS_SCALE, self, "Pie scale", 0.05, 4),
             ConfigSpinBox(
-                pie_config.icon_radius_scale, self, "Icon scale", 0.05, 4),
+                pie_config.ICON_RADIUS_SCALE, self, "Icon scale", 0.05, 4),
         ])
 
         layout = QVBoxLayout(self)
