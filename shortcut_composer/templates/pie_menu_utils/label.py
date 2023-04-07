@@ -31,6 +31,7 @@ class Label(Generic[T]):
     center: QPoint = QPoint(0, 0)
     angle: int = 0
     display_value: Union[QPixmap, QIcon, Text, None] = None
+    pretty_name: str = ""
 
     def __post_init__(self) -> None:
         self.activation_progress = AnimationProgress(speed_scale=1, steep=1)

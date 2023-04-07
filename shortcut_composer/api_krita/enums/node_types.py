@@ -33,6 +33,10 @@ class NodeType(Enum):
         icon_name = _ICON_NAME_MAP.get(self, "edit-delete")
         return Api.instance().icon(icon_name)
 
+    @property
+    def pretty_name(self):
+        return self.name
+
 
 _ICON_NAME_MAP = {
     NodeType.PAINT_LAYER: "paintLayer",

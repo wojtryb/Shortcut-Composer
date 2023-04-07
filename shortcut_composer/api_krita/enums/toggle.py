@@ -3,7 +3,6 @@
 
 from krita import Krita as Api
 from enum import Enum
-from PyQt5.QtWidgets import QWidgetAction
 
 
 class Toggle(Enum):
@@ -28,9 +27,8 @@ class Toggle(Enum):
     SNAP_TO_GRID = "view_snap_to_grid"
 
     @property
-    def pretty_name(self) -> str:
-        action: QWidgetAction = Api.instance().action(self.value)
-        return action.text()
+    def pretty_name(self):
+        return self.name
 
     @property
     def state(self) -> bool:

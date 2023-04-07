@@ -5,7 +5,6 @@ from krita import Krita as Api
 from enum import Enum
 
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QWidgetAction
 
 
 class Tool(Enum):
@@ -69,9 +68,8 @@ class Tool(Enum):
         return Api.instance().icon(icon_name)
 
     @property
-    def pretty_name(self) -> str:
-        action: QWidgetAction = Api.instance().action(self.value)
-        return action.text()
+    def pretty_name(self):
+        return self.name
 
 
 _PAINTABLE = {

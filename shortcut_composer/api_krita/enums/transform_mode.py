@@ -40,17 +40,8 @@ class TransformMode(Enum):
 
     @property
     def pretty_name(self) -> str:
-        return _PRETTY_NAME_MAP[self]
+        return self.name
 
-
-_PRETTY_NAME_MAP = {
-    TransformMode.FREE: "Transform mode: free",
-    TransformMode.PERSPECTIVE: "Transform mode: perspective",
-    TransformMode.WARP: "Transform mode: warp",
-    TransformMode.CAGE: "Transform mode: cage",
-    TransformMode.LIQUIFY: "Transform mode: liquify",
-    TransformMode.MESH: "Transform mode: mesh",
-}
 
 _ICON_NAME_MAP = {
     TransformMode.FREE: "krita_tool_transform",

@@ -172,7 +172,10 @@ class PieMenu(RawInstructions, Generic[T]):
         for value in values:
             label = self._controller.get_label(value)
             if label is not None:
-                label_list.append(Label(value=value, display_value=label))
+                label_list.append(Label(
+                    value=value,
+                    display_value=label,
+                    pretty_name=self._controller.get_pretty_name(value)))
 
     @staticmethod
     def _get_all_values(values: List[T]) -> List[T]:

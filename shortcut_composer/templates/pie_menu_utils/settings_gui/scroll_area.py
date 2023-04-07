@@ -25,7 +25,7 @@ class ChildInstruction:
 
     def on_enter(self, label: Label) -> None:
         """Set text of label which was entered with mouse."""
-        self._display_label.setText(str(label.value))
+        self._display_label.setText(str(label.pretty_name))
 
     def on_leave(self, label: Label) -> None:
         """Reset text after mouse leaves the widget."""

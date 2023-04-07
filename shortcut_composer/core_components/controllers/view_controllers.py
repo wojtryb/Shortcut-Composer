@@ -88,8 +88,8 @@ class BlendingModeController(ViewBasedController, Controller[BlendingMode]):
     def get_label(self, value: BlendingMode) -> Text:
         return Text(value.name[:3], Colorizer.blending_mode(value))
 
-    def get_pretty_name(self, value: float) -> str:
-        return f"{round(value)}px"
+    def get_pretty_name(self, value: BlendingMode) -> str:
+        return value.pretty_name
 
 
 class OpacityController(ViewBasedController, Controller[int]):

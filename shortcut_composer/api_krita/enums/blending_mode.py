@@ -143,4 +143,4 @@ class BlendingMode(Enum):
 
     @property
     def pretty_name(self):
-        return self.value
+        return self.name
