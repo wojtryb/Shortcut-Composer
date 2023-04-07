@@ -4,7 +4,12 @@
 from typing import List, NamedTuple
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QScrollArea, QGridLayout
+from PyQt5.QtWidgets import (
+    QWidget,
+    QScrollArea,
+    QLabel,
+    QGridLayout,
+    QVBoxLayout)
 
 from ..label import Label
 from ..label_widget import LabelWidget
@@ -12,7 +17,22 @@ from ..label_widget_utils import create_label_widget
 from ..pie_style import PieStyle
 
 
-class ScrollArea(QScrollArea):
+class ChildInstruction:
+    """Logic of displaying widget text in passed QLabel."""
+
+    def __init__(self, display_label: QLabel) -> None:
+        self._display_label = display_label
+
+    def on_enter(self, label: Label) -> None:
+        """Set text of label which was entered with mouse."""
+        self._display_label.setText(str(label.value))
+
+    def on_leave(self, label: Label) -> None:
+        """Reset text after mouse leaves the widget."""
+        self._display_label.setText("")
+
+
+class ScrollArea(QWidget):
     def __init__(
         self,
         values: List[Label],
@@ -21,19 +41,25 @@ class ScrollArea(QScrollArea):
         parent=None
     ) -> None:
         super().__init__(parent)
-        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        self.setWidgetResizable(True)
+        self._area = QScrollArea()
+        self._area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self._area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        self._area.setWidgetResizable(True)
 
         self._style = style
         self.labels = values
 
         self._scroll_area_layout = ScrollAreaLayout(columns, self)
+        self._active_label_display = QLabel(self)
         self._children_list = self._create_children()
 
+        layout = QVBoxLayout()
         scroll_widget = QWidget()
         scroll_widget.setLayout(self._scroll_area_layout)
-        self.setWidget(scroll_widget)
+        self._area.setWidget(scroll_widget)
+        layout.addWidget(self._area)
+        layout.addWidget(self._active_label_display)
+        self.setLayout(layout)
 
     def _create_children(self) -> List[LabelWidget]:
         """Create LabelWidgets that represent the labels."""
@@ -47,8 +73,9 @@ class ScrollArea(QScrollArea):
                 is_unscaled=True)
             child.setFixedSize(child.icon_radius*2, child.icon_radius*2)
             child.draggable = True
+            child.add_instruction(ChildInstruction(self._active_label_display))
             children.append(child)
-            self._scroll_area_layout.append(children[-1])
+            self._scroll_area_layout.append(child)
         return children
 
 

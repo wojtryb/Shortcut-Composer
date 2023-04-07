@@ -1,6 +1,8 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from typing import Protocol
+
 from PyQt5.QtCore import Qt, QMimeData, QEvent
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QDrag, QPixmap, QMouseEvent
@@ -8,6 +10,13 @@ from PyQt5.QtGui import QDrag, QPixmap, QMouseEvent
 from api_krita.pyqt import PixmapTransform, BaseWidget
 from .pie_style import PieStyle
 from .label import Label
+
+
+class WidgetInstructions(Protocol):
+    """Additional logic to do on entering and leaving a widget."""
+
+    def on_enter(self, label: Label) -> None: ...
+    def on_leave(self, label: Label) -> None: ...
 
 
 class LabelWidget(BaseWidget):
@@ -31,6 +40,12 @@ class LabelWidget(BaseWidget):
 
         self._enabled = True
         self._hovered = False
+
+        self._instructions: list[WidgetInstructions] = []
+
+    def add_instruction(self, instruction: WidgetInstructions):
+        """Add additional logic to do on entering and leaving widget."""
+        self._instructions.append(instruction)
 
     @property
     def draggable(self) -> bool:
@@ -79,12 +94,16 @@ class LabelWidget(BaseWidget):
     def enterEvent(self, e: QEvent) -> None:
         """Notice that mouse moved over the widget."""
         self._hovered = True
+        for instruction in self._instructions:
+            instruction.on_enter(self.label)
         self.repaint()
         return super().enterEvent(e)
 
     def leaveEvent(self, e: QEvent) -> None:
         """Notice that mouse moved out of the widget."""
         self._hovered = False
+        for instruction in self._instructions:
+            instruction.on_leave(self.label)
         self.repaint()
         return super().leaveEvent(e)
 
