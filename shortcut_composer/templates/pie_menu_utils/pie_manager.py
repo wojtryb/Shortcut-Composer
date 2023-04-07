@@ -43,6 +43,10 @@ class PieManager:
         self._circle = CirclePoints(self._pie_widget.center_global, 0)
         self._timer.start()
 
+        # Make sure the pie widget is not draggable. It could have been
+        # broken by pie settings reloading the widgets.
+        self._pie_widget.set_draggable(False)
+
     def stop(self, hide: bool = True) -> None:
         """Hide the widget and stop the mouse tracking loop."""
         self._timer.stop()
