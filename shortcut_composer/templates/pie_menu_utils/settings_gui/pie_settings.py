@@ -27,6 +27,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
         parent: Optional[QWidget] = None,
     ) -> None:
         AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())
+        self.setMaximumHeight(round(style.widget_radius*3))
         self.setAcceptDrops(True)
         self.setWindowFlags((
             self.windowFlags() |  # type: ignore

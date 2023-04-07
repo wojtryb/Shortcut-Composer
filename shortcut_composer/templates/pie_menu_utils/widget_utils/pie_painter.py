@@ -56,7 +56,7 @@ class PiePainter:
         # of the widget, so a low opacity circle allows to trick it.
         self.painter.paint_wheel(
             center=self._center,
-            outer_radius=self.style.no_border_radius,
+            outer_radius=self.style.widget_radius,
             color=QColor(128, 128, 128, 1))
 
         self.painter.paint_wheel(

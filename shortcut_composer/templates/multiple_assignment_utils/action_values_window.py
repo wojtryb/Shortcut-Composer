@@ -4,20 +4,18 @@
 from typing import List, Type
 from enum import Enum
 
-from PyQt5.QtWidgets import QVBoxLayout, QWidget
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QVBoxLayout, QDialog
 
 from config_system import Field
 from composer_utils import ButtonsLayout
 from .action_values import ActionValues
 
 
-class ActionValuesWindow(QWidget):
+class ActionValuesWindow(QDialog):
     """Tab in which user can change action enums and their order."""
 
     def __init__(self, enum_type: Type[Enum], config: Field[List[Enum]]):
         super().__init__()
-        self.setWindowFlags(self.windowFlags() | Qt.Tool)  # type: ignore
         layout = QVBoxLayout()
 
         self._config = config
