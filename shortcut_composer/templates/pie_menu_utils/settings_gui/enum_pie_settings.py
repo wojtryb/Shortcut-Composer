@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QVBoxLayout, QTabWidget
 from config_system.ui import ConfigFormWidget, ConfigSpinBox
 from ..label import Label
 from ..pie_style import PieStyle
-from ..pie_config import EnumPieConfig
+from ..pie_config import NonPresetPieConfig
 from .pie_settings import PieSettings
 from .scroll_area import ScrollArea
 
@@ -16,16 +16,15 @@ class EnumPieSettings(PieSettings):
         values: List[Label],
         used_values: List[Label],
         style: PieStyle,
-        pie_config: EnumPieConfig,
+        pie_config: NonPresetPieConfig,
         parent=None
     ) -> None:
         super().__init__(
             values,
+            used_values,
             style,
             pie_config,
             parent)
-
-        self._used_values = used_values
 
         tab_holder = QTabWidget()
 

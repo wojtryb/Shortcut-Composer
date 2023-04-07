@@ -11,6 +11,7 @@ T = TypeVar("T")
 
 
 class PieConfig(FieldGroup, Generic[T], ABC):
+
     ALLOW_REMOVE: bool
 
     name: str
@@ -57,7 +58,7 @@ class PresetPieConfig(PieConfig):
         return preset_order + missing
 
 
-class EnumPieConfig(PieConfig, Generic[T]):
+class NonPresetPieConfig(PieConfig, Generic[T]):
 
     ALLOW_REMOVE = True
 

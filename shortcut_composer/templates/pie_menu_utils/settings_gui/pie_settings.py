@@ -15,6 +15,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
     def __init__(
         self,
         values: List[Label],
+        used_values: List[Label],
         style: PieStyle,
         pie_config: PieConfig,
         parent=None
@@ -28,6 +29,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
         self.setCursor(Qt.ArrowCursor)
 
         self._values = values
+        self._used_values = used_values
         self._style = style
         self._pie_config = pie_config
         self._pie_config.register_callback(self._reset)
