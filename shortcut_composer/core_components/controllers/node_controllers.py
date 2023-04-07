@@ -1,7 +1,6 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import TypeVar
 from api_krita import Krita
 from api_krita.enums import BlendingMode, NodeType
 from api_krita.pyqt import Text, Colorizer
@@ -44,7 +43,8 @@ class LayerOpacityController(NodeBasedController, Controller[int]):
         return f"{value}%"
 
 
-class LayerBlendingModeController(NodeBasedController, Controller[BlendingMode]):
+class LayerBlendingModeController(NodeBasedController,
+                                  Controller[BlendingMode]):
     """
     Gives access to active layers' `blending mode`.
 
@@ -92,7 +92,8 @@ class LayerVisibilityController(NodeBasedController, Controller[bool]):
             self.active_document.refresh()
 
 
-class CreateLayerWithBlendingController(NodeBasedController, Controller[BlendingMode]):
+class CreateLayerWithBlendingController(NodeBasedController,
+                                        Controller[BlendingMode]):
     """Creates Paint Layer with set Blending Mode."""
 
     default_value = BlendingMode.NORMAL

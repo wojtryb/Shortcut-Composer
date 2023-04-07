@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import (
@@ -16,6 +16,7 @@ T = TypeVar('T')
 
 class NonListField(FieldBase, Generic[T]):
     """Config field containing a basic, non-list value."""
+
     def __init__(
         self,
         config_group: str,
@@ -40,6 +41,7 @@ class NonListField(FieldBase, Generic[T]):
 
 class ListField(FieldBase, Generic[T]):
     """Config field containing a list value."""
+
     def __init__(
         self,
         config_group: str,

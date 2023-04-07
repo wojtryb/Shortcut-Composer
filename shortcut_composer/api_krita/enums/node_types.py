@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from krita import Krita as Api
@@ -6,13 +6,14 @@ from enum import Enum
 
 from PyQt5.QtGui import QIcon
 
+
 class NodeType(Enum):
     """
     Contains all known node types in krita.
 
     Example usage: `NodeType.PAINT_LAYER`
     """
-    
+
     PAINT_LAYER = "paintlayer"
     GROUP_LAYER = "grouplayer"
     FILE_LAYER = "filelayer"
@@ -31,7 +32,8 @@ class NodeType(Enum):
         """Return the icon of this node type."""
         icon_name = _ICON_NAME_MAP.get(self, "edit-delete")
         return Api.instance().icon(icon_name)
-    
+
+
 _ICON_NAME_MAP = {
     NodeType.PAINT_LAYER: "paintLayer",
     NodeType.GROUP_LAYER: "groupLayer",

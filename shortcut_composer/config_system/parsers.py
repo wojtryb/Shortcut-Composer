@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Generic, TypeVar, Type, Protocol
@@ -52,6 +52,7 @@ class BoolParser(Parser[bool]):
 
 class EnumParser(Parser[EnumT]):
     """Parses from string to enum and vice-versa."""
+
     def __init__(self, type: Type[EnumT]) -> None:
         self.type = type
 

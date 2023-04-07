@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from krita import Krita as Api
@@ -31,7 +31,7 @@ class Toggle(Enum):
     def pretty_name(self) -> str:
         action: QWidgetAction = Api.instance().action(self.value)
         return action.text()
-    
+
     @property
     def state(self) -> bool:
         """Return state of checkable krita action called `action_name`."""
