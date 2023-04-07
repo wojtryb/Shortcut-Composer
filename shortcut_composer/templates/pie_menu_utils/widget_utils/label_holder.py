@@ -35,21 +35,21 @@ class LabelHolder:
         self._config = config
         # Refresh itself when config changed, but do not notify change
         # in config as holder was not their cause
-        self._config.register_callback(partial(self._reset, notify=False))
+        self._config.register_callback(partial(self.reset, notify=False))
         self._owner = owner
 
         self.widget_holder = WidgetHolder()
-        self._reset(notify=False)
+        self.reset(notify=False)
 
     def append(self, label: Label):
         """Append the new label to the holder."""
         self._labels.append(label)
-        self._reset()
+        self.reset()
 
     def insert(self, index: int, label: Label):
         """Insert the new label to the holder at given index."""
         self._labels.insert(index, label)
-        self._reset()
+        self.reset()
 
     def remove(self, label: Label):
         """Remove the label from the holder."""
@@ -57,7 +57,7 @@ class LabelHolder:
                 and len(self._labels) > 1
                 and self._config.ALLOW_REMOVE):
             self._labels.remove(label)
-            self._reset()
+            self.reset()
 
     def index(self, label: Label):
         """Return the index at which the label is stored."""
@@ -71,13 +71,13 @@ class LabelHolder:
         self._labels[idx_b] = _a
         self._labels[idx_a] = _b
 
-        self._reset()
+        self.reset()
 
     def __iter__(self):
         """Iterate over all labels in the holder."""
         return iter(self._labels)
 
-    def _reset(self, notify: bool = True) -> None:
+    def reset(self, notify: bool = True) -> None:
         """
         Ensure the icon widgets properly represet this container.
 

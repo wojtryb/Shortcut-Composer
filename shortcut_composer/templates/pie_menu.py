@@ -86,6 +86,7 @@ class PieMenu(RawInstructions, Generic[T]):
             background_color=background_color,
             active_color=active_color)
 
+        self._last_values: List[T] = []
         self._labels: List[Label] = []
         self._reset_labels(self._labels, self._config.values())
         self._all_labels: List[Label] = []
@@ -135,9 +136,12 @@ class PieMenu(RawInstructions, Generic[T]):
         """Reload labels, start GUI manager and run instructions."""
         self._controller.refresh()
 
-        values = self._config.values()
-        self._reset_labels(self._labels, values)
-        self._config.ORDER.write(values)
+        new_values = self._config.values()
+        if self._last_values != new_values:
+            self._reset_labels(self._labels, new_values)
+            self._last_values = new_values
+            self.pie_widget.label_holder.reset()  # HACK: should be automatic
+
         self._move_buttons()
 
         self.pie_manager.start()
@@ -164,10 +168,7 @@ class PieMenu(RawInstructions, Generic[T]):
         label_list: List[Label[T]],
         values: List[T]
     ) -> None:
-        """Replace list values with newly created labels if changed."""
-        if [label.value for label in label_list] == values:
-            return
-
+        """Replace list values with newly created labels."""
         label_list.clear()
         for value in values:
             label = self._controller.get_label(value)
