@@ -1,5 +1,6 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
+"""Required part of api_krita package, so that no dependency is needed."""
 
 from krita import Krita as Api
 from typing import Callable, Protocol
@@ -35,7 +36,7 @@ class KritaInstance:
         name: str,
         group: str = "",
         callback: Callable[[], None] = lambda: None
-    ):
+    ) -> QWidgetAction:
         """
         Create a new action in krita.
 

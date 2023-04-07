@@ -1,21 +1,16 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
+from typing import Protocol
 
 
-class ComplexActionInterface:
+class ComplexActionInterface(Protocol):
     """
-    Grants main plugin action interface.
+    Interface of the main plugin action.
 
     - `name` -- unique name of action. Must match the definition in
                 shortcut_composer.action file
     - `short_vs_long_press_time` -- time [s] that specifies if key press
                                     is short or long.
-
-    Class is meant for creating child classes which override:
-    - on_key_press
-    - on_short_key_release
-    - on_long_key_release
-    - on_every_key_release
     """
 
     name: str

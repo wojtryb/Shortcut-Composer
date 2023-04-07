@@ -26,7 +26,6 @@ class ActionContainer:
     - `QWidgetAction` krita representation, which ComplexAction implements.
     - `ShortcutAdapter` manages running elements of ComplexAction
       interface at right time.
-
     """
     core_action: ComplexActionInterface
     krita_action: QWidgetAction
@@ -76,7 +75,8 @@ class ActionManager:
         )
         self._stored_actions[action.name] = container
 
-    def _create_adapter(self, action: ComplexActionInterface) -> ShortcutAdapter:
+    def _create_adapter(self, action: ComplexActionInterface) \
+            -> ShortcutAdapter:
         """
         Create ShortcutAdapter which runs elements of ComplexAction interface.
 
