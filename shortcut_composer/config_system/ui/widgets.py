@@ -16,6 +16,13 @@ class SpinBox(Protocol, Generic[F]):
 
 
 class ConfigSpinBox(ConfigBasedWidget[F]):
+    """
+    Wrapper of SpinBox linked to a configutation field.
+
+    Based on QSpinBox or QDoubleSpinBox depending on the config type.
+    Works only for fields of type: `int` or `float`.
+    """
+
     def __init__(
         self,
         config_field: Field[F],
@@ -32,23 +39,33 @@ class ConfigSpinBox(ConfigBasedWidget[F]):
         self.reset()
 
     def read(self) -> F:
+        """Return the current value of the spinbox widget."""
         return self._spin_box.value()
 
     def set(self, value: F):
+        """Replace the value of the spinbox widget with passed one."""
         self._spin_box.setValue(value)
 
     def _init_spin_box(self) -> SpinBox:
-        spin_box = (QSpinBox() if type(self.config_field.default) is int
-                    else QDoubleSpinBox())
+        """Return the spinbox widget of type based on config field type."""
+        spin_box: QDoubleSpinBox = \
+            {int: QSpinBox, float: QDoubleSpinBox}[self.config_field.default]()
+
         spin_box.setMinimumWidth(90)
         spin_box.setObjectName(self.config_field.name)
         spin_box.setMinimum(0)
-        spin_box.setSingleStep(self._step)  # type: ignore
-        spin_box.setMaximum(self._max_value)  # type: ignore
+        spin_box.setSingleStep(self._step)
+        spin_box.setMaximum(self._max_value)
         return spin_box
 
 
-class ConfigComboBox(ConfigBasedWidget):
+class ConfigComboBox(ConfigBasedWidget[str]):
+    """
+    Wrapper of Combobox linked to a configutation field.
+
+    Works only for fields of type: `str`.
+    """
+
     def __init__(
         self,
         config_field: Field[str],
@@ -62,18 +79,22 @@ class ConfigComboBox(ConfigBasedWidget):
         self.widget: Final[QComboBox] = self._combo_box
         self.reset()
 
-    def _init_combo_box(self) -> QComboBox:
-        combo_box = QComboBox()
-        combo_box.setObjectName(self.config_field.name)
-        return combo_box
-
     def reset(self) -> None:
+        """Update allowed values of the combobox and pick a default one."""
         self._combo_box.clear()
         self._combo_box.addItems(self._allowed_values)
         self.set(self.config_field.read())
 
     def read(self) -> str:
+        """Return the current value of the ComboBox."""
         return self._combo_box.currentText()
 
     def set(self, value: str):
+        """Replace the value of the ComboBox with passed one."""
         return self._combo_box.setCurrentText(value)
+
+    def _init_combo_box(self) -> QComboBox:
+        """Return the spinbox widget."""
+        combo_box = QComboBox()
+        combo_box.setObjectName(self.config_field.name)
+        return combo_box

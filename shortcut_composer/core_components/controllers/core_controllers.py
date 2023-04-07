@@ -93,6 +93,7 @@ class ToggleController(Controller[bool]):
     def get_pretty_name(self, value: Tool) -> str:
         return value.pretty_name
 
+
 @dataclass
 class UndoController(Controller[float]):
     """

@@ -13,31 +13,45 @@ from .config_based_widget import ConfigBasedWidget
 
 
 class ConfigFormWidget(QWidget):
-    """Dialog zone consisting of spin boxes."""
+    """
+    Configuration Widget with a form of ConfigBasedWidgets.
+
+    Consists of centered titles and labelled widgets added with
+    `add_row()` and `add_title`.
+
+    Alternatively, it can be initialized with a list of strings and
+    ConfigBasedWidgets which create titles and form rows.
+
+    Synchronizes stored ConfigBasedWidgets by allowing to refresh and
+    save values to config of all stored ones.
+    """
 
     def __init__(self, elements: List[Union[ConfigBasedWidget, str]]) -> None:
         super().__init__()
         self._layout = QFormLayout()
         self._layout.RowWrapPolicy(QFormLayout.DontWrapRows)
         self._layout.setFieldGrowthPolicy(QFormLayout.FieldsStayAtSizeHint)
-        self._layout.setFormAlignment(Qt.AlignHCenter | Qt.AlignTop)
         self._layout.setLabelAlignment(Qt.AlignRight)
+        self._layout.setFormAlignment(
+            Qt.AlignHCenter | Qt.AlignTop)  # type: ignore
         self.setLayout(self._layout)
 
         self._widgets: List[ConfigBasedWidget] = []
         for element in elements:
             if isinstance(element, str):
-                self._add_label(element)
+                self.add_title(element)
             elif isinstance(element, ConfigBasedWidget):
-                self._add_row(element)
+                self.add_row(element)
             else:
                 raise TypeError("Unsupported arguments.")
 
-    def _add_row(self, element: ConfigBasedWidget) -> None:
+    def add_row(self, element: ConfigBasedWidget) -> None:
+        """Add a ConfigBasedWidget along with a label."""
         self._widgets.append(element)
         self._layout.addRow(f"{element.pretty_name}:", element.widget)
 
-    def _add_label(self, text: str):
+    def add_title(self, text: str):
+        """Add a label with given text."""
         label = QLabel(text)
         label.setAlignment(Qt.AlignCenter)
         self._layout.addRow(QSplitter(Qt.Horizontal))
