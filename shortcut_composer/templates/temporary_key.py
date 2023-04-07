@@ -110,5 +110,5 @@ class TemporaryKey(RawInstructions, Generic[T]):
         """Read value from controller if it was not given."""
         if (default := self._controller.default_value) is None:
             raise ValueError(
-                "{self._controller} can't be used with TemporaryKeys.")
+                f"{self._controller} can't be used with TemporaryKeys.")
         return value if value is not None else default

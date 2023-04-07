@@ -104,7 +104,7 @@ class PieMenu(RawInstructions, Generic[T]):
         self._active_color = active_color
 
         self._labels: List[Label] = []
-        self._reset_labels(self._labels, self._local_config.values)
+        self._reset_labels(self._labels, self._local_config.values())
         self._all_labels: List[Label] = []
         self._reset_labels(self._all_labels, self._get_all_values(values))
 
@@ -148,7 +148,7 @@ class PieMenu(RawInstructions, Generic[T]):
         self.accept_button.hide()
 
     def _reset(self):
-        values = self._local_config.values
+        values = self._local_config.values()
         self._reset_labels(self._labels, values)
         self._local_config.ORDER.write(values)
 

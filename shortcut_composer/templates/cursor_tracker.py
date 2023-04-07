@@ -107,11 +107,3 @@ class CursorTracker(RawInstructions, Generic[T, U]):
                 )
             )
         raise ValueError("At least one slider needed.")
-
-    def __init__(
-        self,
-        name: str,
-        horizontal_slider: Optional[Slider[T]] = None,
-        vertical_slider: Optional[Slider[U]] = None,
-        instructions: List[Instruction] = [],
-    ) -> None: ...

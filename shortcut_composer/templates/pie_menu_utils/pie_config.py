@@ -10,11 +10,11 @@ T = TypeVar("T")
 
 class PieConfig(FieldGroup, Generic[T]):
     name: str
-    values: List[T]
     allow_remove: bool
     ORDER: Field[List[T]]
     PIE_RADIUS_SCALE: Field[float]
     ICON_RADIUS_SCALE: Field[float]
+    def values(self) -> List[T]: ...
 
 
 class PresetPieConfig(PieConfig):
@@ -33,7 +33,6 @@ class PresetPieConfig(PieConfig):
         self.TAG_NAME = self.field("Tag", values.tag_name)
         self.ORDER = self.field("Values", [], passed_type=str)
 
-    @property
     def values(self) -> List[str]:
         saved_order = self.ORDER.read()
         tag_values = Tag(self.TAG_NAME.read())
@@ -58,6 +57,5 @@ class EnumPieConfig(PieConfig, Generic[T]):
         self.ICON_RADIUS_SCALE = self.field("Icon scale", icon_radius_scale)
         self.ORDER = self.field("Values", values)
 
-    @property
     def values(self) -> List[T]:
         return self.ORDER.read()
