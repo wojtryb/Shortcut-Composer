@@ -8,7 +8,7 @@ from enum import Enum
 from PyQt5.QtGui import QColor
 
 from api_krita import Krita
-from api_krita.pyqt import RoundButton
+from api_krita.pyqt import RoundButton, Timer
 from core_components import Instruction
 from config_system import Field
 from .action_values_window import ActionValuesWindow
@@ -52,12 +52,21 @@ class SettingsHandler:
 
 @dataclass
 class HandlerInstruction(Instruction):
+
     settings: ActionValuesWindow
     button: RoundButton
 
+    def __post_init__(self):
+        self.timer = Timer(self.timer_callback, 500)
+
     def on_key_press(self) -> None:
+        self.timer.start()
+
+    def timer_callback(self):
         if not self.settings.isVisible():
             self.button.show()
+        self.timer.stop()
 
     def on_every_key_release(self) -> None:
         self.button.hide()
+        self.timer.stop()
