@@ -71,7 +71,7 @@ class SettingsDialog(QDialog):
 
     def reset(self) -> None:
         """Reset all config values to defaults in krita and elements."""
-        Config.reset_defaults()
+        Config.reset_default()
         self.refresh()
         Krita.trigger_action("Reload Shortcut Composer")
 
