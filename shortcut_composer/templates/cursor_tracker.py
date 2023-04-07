@@ -1,19 +1,21 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Optional
+from typing import List, Optional, Generic, TypeVar
 
 from core_components import Instruction
 from data_components import Slider
-from input_adapter import ComplexAction
 from .mouse_tracker_utils import (
     SingleAxisTracker,
     DoubleAxisTracker,
-    SliderHandler,
-)
+    SliderHandler)
+from .raw_instructions import RawInstructions
+
+T = TypeVar("T")
+U = TypeVar("U")
 
 
-class CursorTracker(ComplexAction):
+class CursorTracker(Generic[T, U]):
     """
     Switch values with horizontal or vertical mouse movement.
 
@@ -61,10 +63,10 @@ class CursorTracker(ComplexAction):
     def __new__(
         cls,
         name: str,
-        horizontal_slider: Optional[Slider] = None,
-        vertical_slider: Optional[Slider] = None,
+        horizontal_slider: Optional[Slider[T]] = None,
+        vertical_slider: Optional[Slider[U]] = None,
         instructions: List[Instruction] = [],
-    ) -> ComplexAction:
+    ) -> RawInstructions:
         """
         Pick and create correct ActionPlugin based on provided sliders.
 
@@ -78,8 +80,7 @@ class CursorTracker(ComplexAction):
                 instructions=instructions,
                 slider_handler=SliderHandler(
                     slider=horizontal_slider,
-                    is_horizontal=True,
-                )
+                    is_horizontal=True)
             )
         if not horizontal_slider and vertical_slider:
             return SingleAxisTracker(
@@ -87,8 +88,7 @@ class CursorTracker(ComplexAction):
                 instructions=instructions,
                 slider_handler=SliderHandler(
                     slider=vertical_slider,
-                    is_horizontal=False,
-                )
+                    is_horizontal=False)
             )
         if horizontal_slider and vertical_slider:
             return DoubleAxisTracker(
@@ -96,19 +96,9 @@ class CursorTracker(ComplexAction):
                 instructions=instructions,
                 horizontal_handler=SliderHandler(
                     slider=horizontal_slider,
-                    is_horizontal=True,
-                ),
+                    is_horizontal=True),
                 vertical_handler=SliderHandler(
                     slider=vertical_slider,
-                    is_horizontal=False,
-                )
+                    is_horizontal=False)
             )
         raise ValueError("At least one slider needed.")
-
-    def __init__(
-        self,
-        name: str,
-        horizontal_slider: Optional[Slider] = None,
-        vertical_slider: Optional[Slider] = None,
-        instructions: List[Instruction] = [],
-    ) -> None: ...

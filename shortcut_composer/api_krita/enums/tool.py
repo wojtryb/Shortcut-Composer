@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from krita import Krita as Api
@@ -14,43 +14,6 @@ class Tool(Enum):
     Extended with modes of the transform tool.
 
     Example usage: `Tool.FREEHAND_BRUSH`
-
-    Available tools:
-    - `FREEHAND_BRUSH`
-    - `FREEHAND_SELECTION`
-    - `GRADIENT`
-    - `LINE`
-    - `TRANSFORM`
-    - `MOVE`
-    - `RECTANGULAR_SELECTION`
-    - `CONTIGUOUS_SELECTION`
-    - `REFERENCE`
-    - `CROP`
-    - `BEZIER_PATH`
-    - `FREEHAND_PATH`
-    - `POLYLINE`
-    - `SHAPE_SELECT`
-    - `ASSISTANTS`
-    - `COLOR_SAMPLER`
-    - `POLYGON`
-    - `MEASUREMENT`
-    - `TEXT`
-    - `ELLIPSE`
-    - `FILL`
-    - `BEZIER_SELECTION`
-    - `DYNAMIC_BRUSH`
-    - `RECTANGLE`
-    - `PAN`
-    - `MULTI_BRUSH`
-    - `EDIT_SHAPES`
-    - `ELIPTICAL_SELECTION`
-    - `SMART_PATCH`
-    - `COLORIZE_MASK`
-    - `SIMILAR_COLOR_SELECTION`
-    - `ZOOM`
-    - `MAGNETIC_SELECTION`
-    - `CALLIGRAPHY`
-    - `POLYGONAL_SELECTION`
     """
 
     FREEHAND_BRUSH = "KritaShape/KisToolBrush"
@@ -103,6 +66,10 @@ class Tool(Enum):
         """Return the icon of this tool."""
         icon_name = _ICON_NAME_MAP.get(self, "edit-delete")
         return Api.instance().icon(icon_name)
+
+    @property
+    def pretty_name(self):
+        return self.name
 
 
 _PAINTABLE = {

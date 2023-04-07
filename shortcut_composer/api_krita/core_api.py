@@ -1,8 +1,8 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from krita import Krita as Api, Extension, qApp
-from typing import Callable, Protocol, Any
+from typing import Callable, Protocol, Any, Optional
 
 from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QWidgetAction
 from PyQt5.QtGui import QKeySequence, QColor, QIcon
@@ -64,9 +64,21 @@ class KritaInstance:
     def get_icon(self, icon_name: str) -> QIcon:
         return self.instance.icon(icon_name)
 
-    def read_setting(self, group: str, name: str, default: str) -> str:
-        """Read setting from .kritarc file as string."""
-        return self.instance.readSetting(group, name, default)
+    def read_setting(
+        self,
+        group: str,
+        name: str,
+        default: str = "Not stored"
+    ) -> Optional[str]:
+        """
+        Read a setting from .kritarc file.
+
+        - Return string red from file if present
+        - Return default if it was given
+        - Return None if default was not given
+        """
+        red_value = self.instance.readSetting(group, name, default)
+        return None if red_value == "Not stored" else red_value
 
     def write_setting(self, group: str, name: str, value: Any) -> None:
         """Write setting to .kritarc file. Value type will be lost."""
@@ -78,7 +90,7 @@ class KritaInstance:
         name: str,
         group: str = "",
         callback: Callable[[], None] = lambda: None
-    ):
+    ) -> QWidgetAction:
         """
         Create a new action in krita.
 
@@ -111,8 +123,7 @@ class KritaInstance:
     def is_light_theme_active(self) -> bool:
         """Return if currently set theme is light using it's main color."""
         main_color: QColor = qApp.palette().window().color()
-        average = (main_color.red()+main_color.green()+main_color.blue()) // 3
-        return average > 128
+        return main_color.value() > 128
 
 
 class KritaWindow(Protocol):

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from krita import Krita as Api
@@ -10,21 +10,6 @@ class Toggle(Enum):
     Contains all known actions that toggle (can be activated and deactivated).
 
     Example usage: `Toggle.ERASER`
-
-    Available toggle actions:
-    - `ERASER`
-    - `PRESERVE_ALPHA`
-    - `MIRROR_CANVAS`
-    - `SOFT_PROOFING`
-    - `ISOLATE_LAYER`
-    - `VIEW_REFERENCE_IMAGES`
-    - `VIEW_ASSISTANTS`
-    - `VIEW_ASSISTANTS_PREVIEWS`
-    - `VIEW_GRID`
-    - `VIEW_RULER`
-    - `VIEW_ONION_SKIN`
-    - `SNAP_ASSISTANT`
-    - `SNAP_TO_GRID`
     """
 
     ERASER = "erase_action"
@@ -40,6 +25,10 @@ class Toggle(Enum):
     VIEW_ONION_SKIN = "toggle_onion_skin"
     SNAP_ASSISTANT = "toggle_assistant"
     SNAP_TO_GRID = "view_snap_to_grid"
+
+    @property
+    def pretty_name(self):
+        return self.name
 
     @property
     def state(self) -> bool:

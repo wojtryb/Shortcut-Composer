@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Optional
@@ -12,7 +12,7 @@ from api_krita.actions import TransformModeFinder
 from ..controller_base import Controller
 
 
-class ToolController(Controller):
+class ToolController(Controller[Tool]):
     """
     Gives access to tools from toolbox.
 
@@ -33,10 +33,15 @@ class ToolController(Controller):
         Krita.active_tool = value
 
     def get_label(self, value: Tool) -> QIcon:
+        """Forward the tools' icon."""
         return value.icon
 
+    def get_pretty_name(self, value: Tool) -> str:
+        """Forward enums' pretty name."""
+        return value.pretty_name
 
-class TransformModeController(Controller):
+
+class TransformModeController(Controller[TransformMode]):
     """
     Gives access to tools from toolbox.
 
@@ -62,11 +67,16 @@ class TransformModeController(Controller):
             value.activate()
 
     def get_label(self, value: Tool) -> QIcon:
+        """Forward the transform mode icon."""
         return value.icon
+
+    def get_pretty_name(self, value: Tool) -> str:
+        """Forward enums' pretty name."""
+        return value.pretty_name
 
 
 @dataclass
-class ToggleController(Controller):
+class ToggleController(Controller[bool]):
     """
     Gives access to picked krita toggle action.
 
@@ -79,14 +89,20 @@ class ToggleController(Controller):
     default_value = False
 
     def get_value(self) -> bool:
+        """Return whether the toggle action is on."""
         return self.toggle.state
 
     def set_value(self, value: bool) -> None:
+        """Set the toggle action on or off using a bool."""
         self.toggle.state = value
+
+    def get_pretty_name(self, value: Tool) -> str:
+        """Forward enums' pretty name."""
+        return value.pretty_name
 
 
 @dataclass
-class UndoController(Controller):
+class UndoController(Controller[float]):
     """
     Gives access to `undo` and `redo` actions.
 
@@ -99,6 +115,7 @@ class UndoController(Controller):
     """
 
     state = 0
+    default_value = 0
 
     def get_value(self) -> int:
         """Return remembered position on undo stack"""

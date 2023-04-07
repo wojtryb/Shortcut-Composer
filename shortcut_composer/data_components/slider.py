@@ -1,14 +1,17 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Any, List, Union, Optional
+from typing import List, Union, Optional, Generic, TypeVar
 
 from composer_utils import Config
+from config_system import Field
 from core_components import Controller
 from .range import Range
 
+T = TypeVar("T")
 
-class Slider:
+
+class Slider(Generic[T]):
     """
     Part of CursorTracker specifying what to do on single axis movement.
 
@@ -60,8 +63,8 @@ class Slider:
 
     def __init__(
         self,
-        controller: Controller,
-        values: Union[List[Any], Range],
+        controller: Controller[T],
+        values: Union[List[T], Range],
         sensitivity_scale: float = 1.0,
         deadzone: Optional[int] = None,
     ) -> None:
@@ -76,7 +79,7 @@ class Slider:
 
         self.deadzone = self._read(deadzone, Config.TRACKER_DEADZONE)
 
-    def _read(self, passed: Optional[int], field: Config) -> int:
+    def _read(self, passed: Optional[int], field: Field) -> int:
         if passed is not None:
             return passed
         return field.read()

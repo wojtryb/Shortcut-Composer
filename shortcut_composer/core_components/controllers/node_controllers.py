@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from api_krita import Krita
@@ -7,7 +7,7 @@ from api_krita.pyqt import Text, Colorizer
 from ..controller_base import Controller
 
 
-class NodeBasedController(Controller):
+class NodeBasedController:
     """Family of controllers which operate on values from active node."""
 
     def refresh(self):
@@ -16,12 +16,12 @@ class NodeBasedController(Controller):
         self.active_node = self.active_document.active_node
 
 
-class LayerOpacityController(NodeBasedController):
+class LayerOpacityController(NodeBasedController, Controller[int]):
     """
-    Gives access to active layers' `blending mode`.
+    Gives access to active layers' `opacity` in %.
 
-    - Operates on `BlendingMode`
-    - Defaults to `BlendingMode.NORMAL`
+    - Operates on `integer` in range `0 to 100`
+    - Defaults to `100`
     """
 
     default_value: int = 100
@@ -37,15 +37,21 @@ class LayerOpacityController(NodeBasedController):
             self.active_document.refresh()
 
     def get_label(self, value: int) -> Text:
-        return Text(f"{value}%", Colorizer.percentage(value))
+        """Return Text with formatted layer opacity."""
+        return Text(self.get_pretty_name(value), Colorizer.percentage(value))
+
+    def get_pretty_name(self, value: float) -> str:
+        """Format the layer opacity like: `100%`"""
+        return f"{value}%"
 
 
-class LayerBlendingModeController(NodeBasedController):
+class LayerBlendingModeController(NodeBasedController,
+                                  Controller[BlendingMode]):
     """
-    Gives access to active layers' `opacity` in %.
+    Gives access to active layers' `blending mode`.
 
-    - Operates on `integer` in range `0 to 100`
-    - Defaults to `100`
+    - Operates on `BlendingMode`
+    - Defaults to `BlendingMode.NORMAL`
     """
 
     default_value = BlendingMode.NORMAL
@@ -61,10 +67,15 @@ class LayerBlendingModeController(NodeBasedController):
             self.active_document.refresh()
 
     def get_label(self, value: BlendingMode) -> Text:
+        """Return Label of 3 first letters of mode name in correct color."""
         return Text(value.name[:3], Colorizer.blending_mode(value))
 
+    def get_pretty_name(self, value: BlendingMode) -> str:
+        """Forward enums' pretty name."""
+        return value.pretty_name
 
-class LayerVisibilityController(NodeBasedController):
+
+class LayerVisibilityController(NodeBasedController, Controller[bool]):
     """
     Gives access to active layers' `visibility`.
 
@@ -85,7 +96,8 @@ class LayerVisibilityController(NodeBasedController):
             self.active_document.refresh()
 
 
-class CreateLayerWithBlendingController(NodeBasedController):
+class CreateLayerWithBlendingController(NodeBasedController,
+                                        Controller[BlendingMode]):
     """Creates Paint Layer with set Blending Mode."""
 
     default_value = BlendingMode.NORMAL
@@ -104,4 +116,9 @@ class CreateLayerWithBlendingController(NodeBasedController):
         parent.add_child_node(layer, self.active_node)
 
     def get_label(self, value: BlendingMode) -> Text:
+        """Return Label of 3 first letters of mode name in correct color."""
         return Text("+" + value.name[:3], Colorizer.blending_mode(value))
+
+    def get_pretty_name(self, value: BlendingMode) -> str:
+        """Forward enums' pretty name."""
+        return value.pretty_name

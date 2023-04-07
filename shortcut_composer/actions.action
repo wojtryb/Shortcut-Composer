@@ -108,10 +108,6 @@
         <Action name="Configure Shortcut Composer">
         <activationFlags>0</activationFlags>
         </Action>
-
-        <Action name="Reload Shortcut Composer">
-        <activationFlags>0</activationFlags>
-        </Action>
         
         <Action name="Transform tool: free">
         <activationFlags>1</activationFlags>

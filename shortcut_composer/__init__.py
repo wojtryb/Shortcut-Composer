@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 """
@@ -16,6 +16,8 @@ sys.path.append(directory := os.path.dirname(__file__))
 
 from .shortcut_composer import ShortcutComposer
 from .api_krita import Krita
+from .composer_utils.compatibility_fix import fix_config
+fix_config()
 Krita.add_extension(ShortcutComposer)
 
 sys.path.remove(directory)

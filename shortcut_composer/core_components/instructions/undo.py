@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from api_krita import Krita
@@ -16,4 +16,5 @@ class UndoOnPress(Instruction):
     """
 
     def on_key_press(self) -> None:
+        """Trigger the undo action."""
         Krita.trigger_action("edit_undo")

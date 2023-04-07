@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from dataclasses import dataclass
@@ -40,7 +40,7 @@ class Document:
     def create_node(self, name: str, node_type: NodeType) -> Node:
         """
         Create a Node.
-        
+
         IMPORTANT: Created node must be then added to node tree to be usable from Krita.
         For example with add_child_node() method of Node Class.
 

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from enum import Enum
@@ -9,137 +9,6 @@ class BlendingMode(Enum):
     Contains all known blending modes in krita.
 
     Example usage: `BlendingMode.NORMAL`
-
-    Available tools blending modes:
-    - `NORMAL`
-    - `ADD`
-    - `BURN`
-    - `COLOR`
-    - `DODGE`
-    - `DARKEN`
-    - `DIVIDE`
-    - `ERASE`
-    - `LIGHTEN`
-    - `LUMINIZE`
-    - `MULTIPLY`
-    - `OVERLAY`
-    - `SATURATION`
-    - `SCREEN`
-    - `SOFT_LIGHT_SVG`
-    - `INVERSE_SUBTRACT`
-    - `SUBTRACT`
-    - `AND`
-    - `CONVERSE`
-    - `IMPLICATION`
-    - `NAND`
-    - `NOR`
-    - `NOT_CONVERSE`
-    - `NOT_IMPLICATION`
-    - `OR`
-    - `XNOR`
-    - `XOR`
-    - `DARKER_COLOR`
-    - `EASY_BURN`
-    - `FOG_DARKEN_IFS_ILLUSIONS`
-    - `GAMMA_DARK`
-    - `SHADE_IFS_ILLUSIONS`
-    - `LINEAR_BURN`
-    - `COLOR_HSI`
-    - `DEC_INTENSITY`
-    - `DEC_SATURATION_HSI`
-    - `HUE_HSI`
-    - `INC_INTENSITY`
-    - `INC_SATURATION_HSI`
-    - `INTENSITY`
-    - `SATURATION_HSI`
-    - `DEC_LIGHTNESS`
-    - `COLOR_HSL`
-    - `DEC_SATURATION_HSL`
-    - `HUE_HSL`
-    - `INC_LIGHTNESS`
-    - `INC_SATURATION_HSL`
-    - `LIGHTNESS`
-    - `SATURATION_HSL`
-    - `COLOR_HSV`
-    - `DEC_SATURATION_HSV`
-    - `DEC_VALUE`
-    - `HUE_HSV`
-    - `INC_SATURATION_HSV`
-    - `INC_VALUE`
-    - `SATURATION_HSV`
-    - `VALUE`
-    - `DEC_SATURATION`
-    - `DEC_LUMINOSITY`
-    - `HUE`
-    - `INC_LUMINOSITY`
-    - `INC_SATURATION`
-    - `EASY_DODGE`
-    - `FLAT_LIGHT`
-    - `GAMMA_ILLUMINATION`
-    - `FOG_LIGHTEN_IFS_ILLUSIONS`
-    - `GAMMA_LIGHT`
-    - `HARD_LIGHT`
-    - `LIGHTER_COLOR`
-    - `LINEAR_DODGE`
-    - `LINEAR_LIGHT`
-    - `LUMINOSITY_SAI`
-    - `PNORM_A`
-    - `PNORM_B`
-    - `PIN_LIGHT`
-    - `SOFT_LIGHT_IFS_ILLUSIONS`
-    - `SOFT_LIGHT_PEGTOP_DELPHI`
-    - `SOFT_LIGHT`
-    - `SUPER_LIGHT`
-    - `TINT_IFS_ILLUSIONS`
-    - `VIVID_LIGHT`
-    - `BUMPMAP`
-    - `COMBINE_NORMAL`
-    - `COPY`
-    - `COPY_BLUE`
-    - `COPY_GREEN`
-    - `COPY_RED`
-    - `DISSOLVE`
-    - `TANGENT_NORMALMAP`
-    - `ALLANON`
-    - `ALPHADARKEN`
-    - `BEHIND`
-    - `DESTINATION_ATOP`
-    - `DESTINATION_IN`
-    - `GEOMETRIC_MEAN`
-    - `GRAIN_EXTRACT`
-    - `GRAIN_MERGE`
-    - `GREATER`
-    - `HARD_MIX`
-    - `HARD_MIX_PHOTOSHOP`
-    - `HARD_MIX_SOFTER_PHOTOSHOP`
-    - `HARD_OVERLAY`
-    - `INTERPOLATION`
-    - `INTERPOLATION_2X`
-    - `PARALLEL`
-    - `PENUMBRA_A`
-    - `PENUMBRA_B`
-    - `PENUMBRA_C`
-    - `PENUMBRA_D`
-    - `DIVISIVE_MODULO`
-    - `DIVISIVE_MODULO_CONTINUOUS`
-    - `MODULO_CONTINUOUS`
-    - `MODULO_SHIFT`
-    - `MODULO_SHIFT_CONTINUOUS`
-    - `ADDITIVE_SUBTRACTIVE`
-    - `ARC_TANGENT`
-    - `DIFF`
-    - `EQUIVALENCE`
-    - `EXCLUSION`
-    - `NEGATION`
-    - `FREEZE`
-    - `FREEZE_REFLECT`
-    - `GLOW`
-    - `GLOW_HEAT`
-    - `HEAT`
-    - `HEAT_GLOW`
-    - `HEAT_GLOW_FREEZE_REFLECT_HYBRID`
-    - `REFLECT`
-    - `REFLECT_FREEZE`
     """
 
     NORMAL = "normal"
@@ -271,3 +140,7 @@ class BlendingMode(Enum):
     HEAT_GLOW_FREEZE_REFLECT_HYBRID = "heat_glow_freeze_reflect_hybrid"
     REFLECT = "reflect"
     REFLECT_FREEZE = "reflect_freeze"
+
+    @property
+    def pretty_name(self):
+        return self.name

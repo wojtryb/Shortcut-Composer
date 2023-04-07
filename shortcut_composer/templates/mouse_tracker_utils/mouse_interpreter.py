@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from dataclasses import dataclass
@@ -33,7 +33,7 @@ class MouseInterpreter:
     start_value: Interpreted
     min: Interpreted
     max: Interpreted
-    pixels_in_unit: int
+    pixels_in_unit: float
 
     def interpret(self, mouse: MouseInput) -> Interpreted:
         """Return value corresponding to the `mouse`."""

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Dict, Optional
@@ -14,6 +14,7 @@ from PyQt5.QtWidgets import (
 
 from ..enums import Tool, TransformMode
 from ..core_api import KritaInstance
+
 Krita = KritaInstance()
 
 
