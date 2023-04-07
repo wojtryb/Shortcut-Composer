@@ -67,10 +67,7 @@ class MultipleAssignment(RawInstructions, Generic[T]):
         instructions: List[Instruction] = [],
         short_vs_long_press_time: Optional[float] = None
     ) -> None:
-        super().__init__(
-            name=name,
-            short_vs_long_press_time=short_vs_long_press_time,
-            instructions=instructions)
+        super().__init__(name, instructions, short_vs_long_press_time)
 
         self._controller = controller
         self._values_to_cycle = values

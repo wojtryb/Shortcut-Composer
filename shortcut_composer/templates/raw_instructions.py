@@ -41,7 +41,7 @@ class RawInstructions(ComplexActionInterface):
     """
 
     def __init__(
-        self, *,
+        self,
         name: str,
         instructions: List[Instruction] = [],
         short_vs_long_press_time: Optional[float] = None

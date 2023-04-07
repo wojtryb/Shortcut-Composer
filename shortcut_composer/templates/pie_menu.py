@@ -29,8 +29,7 @@ class PieMenu(RawInstructions, Generic[T]):
     - Widget is displayed under the cursor between key press and release
     - Moving mouse in a direction of a value activates in on key release
     - When the mouse was not moved past deadzone, value is not changed
-    - Dragging values activates edit mode in which pie does not hide
-    - Applying the changes in edit mode, saves its values to settings
+    - Edit button activates mode in pie does not hide and can be changed
 
     ### Arguments:
 
@@ -51,7 +50,6 @@ class PieMenu(RawInstructions, Generic[T]):
 
     Action is meant to change opacity of current layer to one of
     predefined values using the pie menu widget.
-
 
     ```python
     templates.PieMenu(
@@ -88,43 +86,34 @@ class PieMenu(RawInstructions, Generic[T]):
         active_color: QColor = QColor(100, 150, 230, 255),
         short_vs_long_press_time: Optional[float] = None
     ) -> None:
-        super().__init__(
-            name=name,
-            short_vs_long_press_time=short_vs_long_press_time,
-            instructions=instructions)
+        super().__init__(name, instructions, short_vs_long_press_time)
         self._controller = controller
-        self._local_config = create_local_config(
-            name,
-            values,
-            pie_radius_scale,
-            icon_radius_scale)
-
-        # TODO: colors should be in self._local_config
-        self._background_color = background_color
-        self._active_color = active_color
+        self._config = create_local_config(
+            name=name,
+            values=values,
+            pie_radius_scale=pie_radius_scale,
+            icon_radius_scale=icon_radius_scale,
+            background_color=background_color,
+            active_color=active_color)
 
         self._labels: List[Label] = []
-        self._reset_labels(self._labels, self._local_config.values())
+        self._reset_labels(self._labels, self._config.values())
         self._all_labels: List[Label] = []
         self._reset_labels(self._all_labels, self._get_all_values(values))
 
         self._edit_mode = EditMode(self)
 
-        style_args = {
-            "pie_config": self._local_config,
-            "background_color": self._background_color,
-            "active_color": self._active_color}
-        self._style = PieStyle(items=self._labels, **style_args)
+        self._style = PieStyle(items=self._labels, pie_config=self._config)
 
         self.pie_settings = create_pie_settings_window(
-            style=PieStyle(items=[None], **style_args),
+            style=PieStyle(items=[None], pie_config=self._config),
             values=self._all_labels,
             used_values=self._labels,
-            pie_config=self._local_config)
+            pie_config=self._config)
         self.pie_widget = PieWidget(
             style=self._style,
             labels=self._labels,
-            config=self._local_config)
+            config=self._config)
         self.pie_manager = PieManager(
             pie_widget=self.pie_widget,
             pie_settings=self.pie_settings)
@@ -135,7 +124,7 @@ class PieMenu(RawInstructions, Generic[T]):
             radius_callback=lambda: self._style.setting_button_radius,
             icon_scale=1.1,
             style=self._style,
-            config=self._local_config)
+            config=self._config)
         self.settings_button.clicked.connect(lambda: self._edit_mode.set(True))
         self.accept_button = RoundButton(
             icon=Krita.get_icon("dialog-ok"),
@@ -143,14 +132,14 @@ class PieMenu(RawInstructions, Generic[T]):
             radius_callback=lambda: self._style.accept_button_radius,
             icon_scale=1.5,
             style=self._style,
-            config=self._local_config)
+            config=self._config)
         self.accept_button.clicked.connect(lambda: self._edit_mode.set(False))
         self.accept_button.hide()
 
     def _reset(self):
-        values = self._local_config.values()
+        values = self._config.values()
         self._reset_labels(self._labels, values)
-        self._local_config.ORDER.write(values)
+        self._config.ORDER.write(values)
 
         self.accept_button.move_center(self.pie_widget.center)
         self.settings_button.move(QPoint(
