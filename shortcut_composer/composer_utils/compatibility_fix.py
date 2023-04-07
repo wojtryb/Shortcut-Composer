@@ -3,6 +3,8 @@ from api_krita import Krita
 
 def fix_config():
     def fix(group: str, old_name: str, new_name: str):
+        if Krita.read_setting(group, new_name, "not given") != "not given":
+            return
         value = Krita.read_setting("ShortcutComposer", old_name, "not given")
         if value != "not given":
             Krita.write_setting(group, new_name, value)
