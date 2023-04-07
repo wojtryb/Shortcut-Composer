@@ -78,21 +78,6 @@ class ScrollAreaLayout(QGridLayout):
         self.addWidget(widget, *self._new_position(), 2, 2)
         self._refresh()
 
-    def pop(self, index: int):
-        widget = self.widgets.pop(index)
-        self.removeWidget(widget)
-        self._refresh()
-        return widget
-
-    def remove(self, widget: QWidget):
-        for index, held_widget in enumerate(self.widgets):
-            if held_widget == widget:
-                return self.pop(index)
-
-    def insert(self, index: int, widget: QWidget):
-        self.widgets.insert(index, widget)
-        self._refresh()
-
     def _refresh(self):
         for i, widget in enumerate(self.widgets):
             self.addWidget(widget, *self._get_position(i), 2, 2)
