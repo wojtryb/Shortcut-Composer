@@ -15,8 +15,8 @@ class RoundButton(QPushButton, BaseWidget):
     def __init__(
         self,
         icon: QIcon,
-        radius_callback: Callable[[], int],
         icon_scale: float,
+        radius_callback: Callable[[], int],
         style: PieStyle,
         config: PieConfig,
         parent: Optional[QWidget] = None,

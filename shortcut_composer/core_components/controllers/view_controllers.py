@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from typing import Optional
 from PyQt5.QtGui import QPixmap, QImage
 from api_krita import Krita
 from api_krita.enums import BlendingMode
@@ -34,9 +35,13 @@ class PresetController(ViewBasedController, Controller[str]):
         """Set a preset of passed name."""
         self.view.brush_preset = value
 
-    def get_label(self, value: str) -> QPixmap:
-        image: QImage = Krita.get_presets()[value].image()
-        return QPixmap.fromImage(image)
+    def get_label(self, value: str) -> Optional[QPixmap]:
+        try:
+            image: QImage = Krita.get_presets()[value].image()
+        except KeyError:
+            return None
+        else:
+            return QPixmap.fromImage(image)
 
 
 class BrushSizeController(ViewBasedController, Controller[int]):
@@ -82,7 +87,7 @@ class BlendingModeController(ViewBasedController, Controller[BlendingMode]):
 
     def get_label(self, value: BlendingMode) -> Text:
         return Text(value.name[:3], Colorizer.blending_mode(value))
-    
+
     def get_pretty_name(self, value: float) -> str:
         return f"{round(value)}px"
 
@@ -110,6 +115,7 @@ class OpacityController(ViewBasedController, Controller[int]):
 
     def get_pretty_name(self, value: float) -> str:
         return f"{value}%"
+
 
 class FlowController(ViewBasedController, Controller[int]):
     """

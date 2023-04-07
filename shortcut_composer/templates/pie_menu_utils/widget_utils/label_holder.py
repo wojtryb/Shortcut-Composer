@@ -38,7 +38,7 @@ class LabelHolder:
     def remove(self, label: Label):
         if (label in self._labels
                 and len(self._labels) > 1
-                and self._config.allow_remove):
+                and self._config.ALLOW_REMOVE):
             self._labels.remove(label)
             self._reset()
 
@@ -77,6 +77,7 @@ class LabelHolder:
             child.label.angle = angle
             child.label.center = point
             child.move_to_label()
+            child.draggable = True  # FIXME: set False after config change
             self.widget_holder.add(child)
 
         if notify:

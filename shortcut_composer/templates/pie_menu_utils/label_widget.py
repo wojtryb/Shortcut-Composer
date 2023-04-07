@@ -33,25 +33,34 @@ class LabelWidget(BaseWidget):
         self._hovered = False
 
     @property
-    def draggable(self):
+    def draggable(self) -> bool:
+        """Return whether the label accepts dragging."""
         return self._draggable
 
     @draggable.setter
-    def draggable(self, value: bool):
+    def draggable(self, value: bool) -> None:
+        """Make the widget accept dragging or not."""
         self._draggable = value
         if value:
             return self.setCursor(Qt.ArrowCursor)
         self.setCursor(Qt.CrossCursor)
 
-    def move_to_label(self) -> None:
-        """Move the widget by providing a new center point."""
-        self.move_center(self.label.center)
+    @property
+    def enabled(self):
+        """Return whether the label interacts with mouse hover and drag."""
+        return self._enabled
 
-    def set_enabled(self, value: bool):
+    @enabled.setter
+    def enabled(self, value: bool) -> None:
+        """Make the widget interact with mouse or not."""
         self._enabled = value
         if not value:
-            self._draggable = False
+            self.draggable = False
         self.repaint()
+
+    def move_to_label(self) -> None:
+        """Move the widget according to current center of label it holds."""
+        self.move_center(self.label.center)
 
     def mousePressEvent(self, e: QMouseEvent) -> None:
         """Initiate a drag loop for this Widget, so Widgets can be swapped."""
@@ -68,18 +77,21 @@ class LabelWidget(BaseWidget):
         drag.exec_(Qt.MoveAction)
 
     def enterEvent(self, e: QEvent) -> None:
+        """Notice that mouse moved over the widget."""
         self._hovered = True
         self.repaint()
         return super().enterEvent(e)
 
     def leaveEvent(self, e: QEvent) -> None:
+        """Notice that mouse moved out of the widget."""
         self._hovered = False
         self.repaint()
         return super().leaveEvent(e)
 
     @property
     def _border_color(self):
-        if not self._enabled:
+        """Return border color which differs when enabled or hovered."""
+        if not self.enabled:
             return self._style.active_color_dark
         if self._hovered and self.draggable:
             return self._style.active_color
@@ -87,6 +99,7 @@ class LabelWidget(BaseWidget):
 
     @property
     def icon_radius(self):
+        """Return icon radius based flag passed on initialization."""
         if self._is_unscaled:
             return self._style.unscaled_icon_radius
         return self._style.icon_radius

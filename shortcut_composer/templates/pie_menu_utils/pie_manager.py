@@ -35,6 +35,7 @@ class PieManager:
         self._pie_widget.move_center(QCursor().pos())
         self._pie_widget.show()
 
+        # Qt bug workaround. Settings does not move right when hidden.
         self._pie_settings.show()
         self._pie_settings.move_to_pie_side()
         self._pie_settings.hide()
@@ -42,11 +43,13 @@ class PieManager:
         self._circle = CirclePoints(self._pie_widget.center_global, 0)
         self._timer.start()
 
-    def stop(self) -> None:
+    def stop(self, hide: bool = True) -> None:
         """Hide the widget and stop the mouse tracking loop."""
         self._timer.stop()
         for label in self._pie_widget.label_holder:
             label.activation_progress.reset()
+        if hide:
+            self._pie_widget.hide()
 
     def _handle_cursor(self) -> None:
         """Calculate zone of the cursor and mark which child is active."""

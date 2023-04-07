@@ -63,16 +63,6 @@ class PieMenu(RawInstructions, Generic[T]):
     )
     ```
     """
-    """
-    Class is responsible for:
-    - Handling the key press/release interface
-    - Reading widget configuration and storing it in PieStyle - passed
-      to objects that can be displayed
-    - Creating the PieWidget - and PieManager which displays it
-    - Starting and stopping the PieManager on key press and release
-    - Creating Labels - paintable representations of handled values
-    - Setting a value on key release when the deadzone was reached
-    """
 
     def __init__(
         self, *,
@@ -118,47 +108,54 @@ class PieMenu(RawInstructions, Generic[T]):
 
         self.settings_button = RoundButton(
             icon=Krita.get_icon("properties"),
+            icon_scale=1.1,
             parent=self.pie_widget,
             radius_callback=lambda: self._style.setting_button_radius,
-            icon_scale=1.1,
             style=self._style,
             config=self._config)
         self.settings_button.clicked.connect(lambda: self._edit_mode.set(True))
         self.accept_button = RoundButton(
             icon=Krita.get_icon("dialog-ok"),
+            icon_scale=1.5,
             parent=self.pie_widget,
             radius_callback=lambda: self._style.accept_button_radius,
-            icon_scale=1.5,
             style=self._style,
             config=self._config)
         self.accept_button.clicked.connect(lambda: self._edit_mode.set(False))
         self.accept_button.hide()
 
-    def _reset(self):
-        values = self._config.values()
-        self._reset_labels(self._labels, values)
-        self._config.ORDER.write(values)
-
+    def _move_buttons(self):
+        """Move accept button to center and setting button to bottom-right."""
         self.accept_button.move_center(self.pie_widget.center)
         self.settings_button.move(QPoint(
             self.pie_widget.width()-self.settings_button.width(),
             self.pie_widget.height()-self.settings_button.height()))
 
     def on_key_press(self) -> None:
-        """Show widget under mouse and start manager which repaints it."""
+        """Reload labels, start GUI manager and run instructions."""
         self._controller.refresh()
-        self._reset()
+
+        values = self._config.values()
+        self._reset_labels(self._labels, values)
+        self._config.ORDER.write(values)
+        self._move_buttons()
+
         self.pie_manager.start()
         super().on_key_press()
 
     def on_every_key_release(self) -> None:
-        """Stop the widget. Set selected value if deadzone was reached."""
+        """
+        Handle the key release event.
+
+        Ignore if in edit mode. Otherwise, stop the manager and set the
+        selected value if deadzone was reached.
+        """
         super().on_every_key_release()
+
         if self._edit_mode.get():
             return
 
         self.pie_manager.stop()
-        self.pie_widget.hide()
         if label := self.pie_widget.active:
             self._controller.set_value(label.value)
 
@@ -167,19 +164,19 @@ class PieMenu(RawInstructions, Generic[T]):
         label_list: List[Label[T]],
         values: List[T]
     ) -> None:
-        """Wrap values into paintable label objects with position info."""
+        """Replace list values with newly created labels if changed."""
         if [label.value for label in label_list] == values:
             return
 
         label_list.clear()
         for value in values:
-            try:
-                label = self._controller.get_label(value)
-            except KeyError:
-                continue
-            label_list.append(Label(value=value, display_value=label))
+            label = self._controller.get_label(value)
+            if label is not None:
+                label_list.append(Label(value=value, display_value=label))
 
-    def _get_all_values(self, values: List[T]) -> List[T]:
+    @staticmethod
+    def _get_all_values(values: List[T]) -> List[T]:
+        """Return list of available enum values. HACK"""
         if not values:
             return []
 

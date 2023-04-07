@@ -33,18 +33,10 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     - hide() - hides the widget
     - repaint() - updates widget display after its data was changed
 
-    Contains children widgets that are draggable. When one of the
-    children is dragged, the widget enters the edit mode. That can be
-    used by whoever controls this widget to handle it differently.
+    In LabelHolder it stores children widgets that are draggable when
+    pie menu is in edit mode.
 
-    Stores the values in three forms:
-    - Labels: contain bare data
-    - LabelWidgets: widget children displaying a single Label
-    - LabelHolder: container of all LabelWidgets that operate on angles
-
-    Makes changes to LabelHolder when one of children is dragged.
-    When the widget is hidden while in the edit mode, changes made to
-    the LabelHolder are saved in the related configuration.
+    Dragging them, makes changes to LabelHolder.
     """
 
     def __init__(
@@ -77,14 +69,17 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self._last_widget = None
 
         self.label_holder = LabelHolder(
-            self._labels,
-            self._style,
-            self.config,
-            self)
+            labels=self._labels,
+            style=self._style,
+            config=self.config,
+            owner=self)
         self._circle_points: CirclePoints
+
+        self.set_draggable(False)
         self._reset()
 
     def _reset(self):
+        """Set widget geometry according to style and refresh CirclePoints."""
         widget_diameter = self._style.widget_radius*2
         self.setGeometry(0, 0, widget_diameter, widget_diameter)
         self._circle_points = CirclePoints(
@@ -102,8 +97,10 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             PiePainter(painter, self._labels, self._style, self.is_edit_mode)
 
     def dragEnterEvent(self, e: QDragEnterEvent) -> None:
-        """Start edit mode when one of the draggable children gets dragged."""
-        e.accept()
+        """Allow dragging the widgets while in edit mode."""
+        if self.is_edit_mode:
+            return e.accept()
+        e.ignore()
 
     def dragMoveEvent(self, e: QDragMoveEvent) -> None:
         """Swap children during drag when mouse is moved to another zone."""
@@ -131,14 +128,12 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             self.repaint()
 
     def dragLeaveEvent(self, e: QDragLeaveEvent) -> None:
+        """Remove the label when its widget is dragged out."""
         if self._last_widget is not None:
             self.label_holder.remove(self._last_widget.label)
         return super().dragLeaveEvent(e)
 
-    def show(self):
-        self.set_draggable(False)
-        return super().show()
-
     def set_draggable(self, draggable: bool):
+        """Change draggable state of all children."""
         for widget in self.label_holder.widget_holder:
             widget.draggable = draggable

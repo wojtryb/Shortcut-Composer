@@ -51,19 +51,19 @@ class RawInstructions(ComplexActionInterface):
         self._instructions = InstructionHolder(instructions)
 
     def on_key_press(self) -> None:
-        """Called on each press of key specified in settings."""
+        """Run instructions meant for key press event."""
         self._instructions.on_key_press()
 
     def on_short_key_release(self) -> None:
-        """Called when related key was released shortly after press."""
+        """Run instructions meant for key release event."""
         self._instructions.on_short_key_release()
 
     def on_long_key_release(self) -> None:
-        """Called when related key was released after a long time."""
+        """Run instructions meant for key release event after long time."""
         self._instructions.on_long_key_release()
 
     def on_every_key_release(self) -> None:
-        """Called on each release of related key, after short/long callback."""
+        """Run instructions meant for key release event after short time."""
         self._instructions.on_every_key_release()
 
 

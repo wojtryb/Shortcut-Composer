@@ -52,10 +52,10 @@ class EnumPieSettings(PieSettings):
     def refresh(self):
         for widget in self._action_values._children_list:
             if widget.label in self._used_values:
-                widget.set_enabled(False)
+                widget.enabled = False
                 widget.draggable = False
             else:
-                widget.set_enabled(True)
+                widget.enabled = True
                 widget.draggable = True
 
     def show(self):
