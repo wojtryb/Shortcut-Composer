@@ -4,7 +4,11 @@
 from krita import Krita as Api, Extension, qApp
 from typing import Callable, Protocol, Any, Optional
 
-from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QWidgetAction
+from PyQt5.QtWidgets import (
+    QMainWindow,
+    QDesktopWidget,
+    QWidgetAction,
+    QMdiArea)
 from PyQt5.QtGui import QKeySequence, QColor, QIcon
 from PyQt5.QtCore import QTimer
 
@@ -60,6 +64,9 @@ class KritaInstance:
     def get_active_qwindow(self) -> QMainWindow:
         """Return qt window of krita. Don't use on plugin init phase."""
         return self.instance.activeWindow().qwindow()
+
+    def get_active_mdi_area(self) -> QMdiArea:
+        return self.get_active_qwindow().findChild(QMdiArea)  # type: ignore
 
     def get_icon(self, icon_name: str) -> QIcon:
         return self.instance.icon(icon_name)

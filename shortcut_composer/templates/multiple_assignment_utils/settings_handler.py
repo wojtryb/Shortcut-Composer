@@ -4,7 +4,7 @@
 from typing import List
 from enum import Enum
 
-from PyQt5.QtGui import QColor, QCursor
+from PyQt5.QtGui import QColor
 
 from api_krita import Krita
 from api_krita.pyqt import RoundButton, Timer
@@ -69,9 +69,10 @@ class HandlerInstruction(Instruction):
         self._timer.start()
 
     def timer_callback(self):
-        """Show a button under the cursor."""
+        """Show a button in top left corner of painting area."""
         if not self._settings.isVisible():
-            self._button.move_center(QCursor().pos())
+            mdiArea = Krita.get_active_mdi_area()
+            self._button.move(mdiArea.mapToGlobal(mdiArea.pos()))
             self._button.show()
         self._timer.stop()
 
