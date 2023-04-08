@@ -7,8 +7,8 @@ UI elements based on the config concept introduced in parent package.
 Grants QWidgets paired with configuration fields.
 All widgets have unified interface for reading and setting their values.
 
-They also allow to directly fill them with values from .kritarc, save
-their current values to .kritarc, and reset them to default values of
+They also allow to directly fill them with values from kritarc, save
+their current values to kritarc, and reset them to default values of
 fields they hold.
 
 ConfigFormWidget is a class that aggregates multiple input widgets,

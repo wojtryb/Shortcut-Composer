@@ -28,7 +28,7 @@ class NonListField(FieldBase, Generic[T]):
         self._parser: Parser[T] = self._get_parser(type(self.default))
 
     def read(self) -> T:
-        """Return value from .kritarc parsed to field type."""
+        """Return value from kritarc parsed to field type."""
         raw = Krita.read_setting(self.config_group, self.name)
         if raw is None:
             return self.default
@@ -73,7 +73,7 @@ class ListField(FieldBase, Generic[T]):
 
     def read(self) -> List[T]:
         """
-        Return value from .kritarc parsed to field type.
+        Return value from kritarc parsed to field type.
 
         Each list element requires parsing.
         """

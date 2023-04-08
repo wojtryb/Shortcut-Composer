@@ -48,7 +48,7 @@ class ConfigBasedWidget(ABC, Generic[T]):
         self.set(self.config_field.read())
 
     def save(self) -> None:
-        """Save the current value of the widget to .kritarc."""
+        """Save the current value of the widget to kritarc."""
         self.config_field.write(self.read())
 
     def _init_pretty_name(self, pretty_name: Optional[str]) -> str:

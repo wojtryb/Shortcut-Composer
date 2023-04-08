@@ -9,16 +9,15 @@ T = TypeVar('T')
 
 class FieldGroup:
     """
-    Representation of section in .kritarc toml file.
+    Representation of section in fields in kritarc file.
 
     All fields in the group should be created using `field()` method.
     It simplifies the field creation by auto-completing the group name.
 
     FieldGroup holds and aggregates fields created with it.
 
-    Allows to reset all the fields at once, as well as register a
-    callback to all existing fields, as well as those that will be
-    added to the group in the future.
+    Allows to reset all the fields at once, and register a callback to
+    all its fields: both existing and future ones.
     """
 
     def __init__(self, name: str) -> None:

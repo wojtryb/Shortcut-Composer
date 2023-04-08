@@ -78,7 +78,7 @@ class KritaInstance:
         default: str = "Not stored"
     ) -> Optional[str]:
         """
-        Read a setting from .kritarc file.
+        Read a setting from kritarc file.
 
         - Return string red from file if present
         - Return default if it was given
@@ -88,7 +88,7 @@ class KritaInstance:
         return None if red_value == "Not stored" else red_value
 
     def write_setting(self, group: str, name: str, value: Any) -> None:
-        """Write setting to .kritarc file. Value type will be lost."""
+        """Write setting to kritarc file. Value type will be lost."""
         self.instance.writeSetting(group, name, str(value))
 
     def create_action(

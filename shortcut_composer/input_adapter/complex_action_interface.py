@@ -6,10 +6,10 @@ from typing import Protocol
 
 class ComplexActionInterface(Protocol):
     """
-    Interface of the main plugin action.
+    Interface of action with extended keyboard events recognition.
 
     - `name` -- unique name of action. Must match the definition in
-                shortcut_composer.action file
+                the .action file
     - `short_vs_long_press_time` -- time [s] that specifies if key press
                                     is short or long.
     """

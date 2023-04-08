@@ -71,6 +71,6 @@ class EnumPieSettings(PieSettings):
         super().show()
 
     def hide(self) -> None:
-        """Hide the window after its settings are saved to .kritarc."""
+        """Hide the window after its settings are saved to kritarc."""
         self._local_settings.apply()
         super().hide()

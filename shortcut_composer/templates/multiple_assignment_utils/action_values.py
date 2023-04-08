@@ -89,7 +89,7 @@ class ActionValues(QWidget):
         self.available_list.addItems(sorted(new_available))
 
     def apply(self) -> None:
-        """Save the right list into .kritarc."""
+        """Save the right list into kritarc."""
         to_write: List[Enum] = []
         for row in range(self.current_list.count()):
             text = self.current_list.item(row).text()
@@ -98,7 +98,7 @@ class ActionValues(QWidget):
         self.config.write(to_write)
 
     def refresh(self) -> None:
-        """Refresh right list with .kritarc values and left one accordingly."""
+        """Refresh right list with kritarc values and left one accordingly."""
         self.current_list.clear()
         current_list = self.config.read()
         text_list = [item.name for item in current_list]

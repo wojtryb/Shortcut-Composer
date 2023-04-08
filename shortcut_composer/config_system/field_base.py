@@ -54,7 +54,7 @@ class FieldBase(ABC, Field, Generic[T]):
 
     @abstractmethod
     def read(self) -> T:
-        """Return value from .kritarc parsed to field type."""
+        """Return value from kritarc parsed to field type."""
         ...
 
     @abstractmethod
@@ -76,7 +76,7 @@ class FieldBase(ABC, Field, Generic[T]):
         return raw is None and value == self.default
 
     def reset_default(self) -> None:
-        """Write a default value to .kritarc file."""
+        """Write a default value to kritarc file."""
         self.write(self.default)
 
     @staticmethod

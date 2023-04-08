@@ -8,25 +8,30 @@ T = TypeVar('T')
 
 class Field(Generic[T]):
     """
-    Representation of a single value in .kritarc file.
+    Representation of a single value in kritarc file.
 
-    Fields are type aware, and allow to read and write from krita config
-    automatically parsing to the value type.
+    Once initialized with its group name, name, and default value, it
+    allows to:
+    - write a given value to kritarc.
+    - read current value from kritarc, parsing it to correct python type.
+    - reset the value to default.
+    - register a callback run on each value change.
 
     Type of default value passed on initlization is remembered, and used
     to parse values both on read and write. Supported types are:
-    -`int`,
-    -`float`,
-    -`str`,
-    -`bool`,
-    -`custom Enums`
-    and homogeneous lists of every type above.
+    - `int`, `list[int]`,
+    - `float`, `list[float]`,
+    - `str`, `list[str]`,
+    - `bool`, `list[bool]`,
+    - `Enum`, `list[Enum]`
 
-    For empty, homogeneous lists, `parser_type` must be used to
+    For empty, homogeneous lists, `parser_type` argument must be used to
     determine type of list elements.
 
-    Callbacks can be registered to the field, to run a method each time
-    the value changes. Repeated saves of the same value are filtered.
+    Default values are not saved when until the field does not exist in
+    kritarc. Repeated saves of the same value are filtered, so that
+    callbacks are not called when the same value is written multiple
+    times one after the other.
     """
 
     def __new__(
@@ -44,22 +49,22 @@ class Field(Generic[T]):
         return NonListField(config_group, name, default)
 
     config_group: str
-    """Configuration section in .kritarc toml file."""
+    """Configuration section in kritarc toml file."""
     name: str
     """Field name in entire config group."""
     default: T
     """Default value used when the field is not present in file."""
 
     def write(self, value: T) -> None:
-        """Write a value to .kritarc file."""
+        """Write a value to kritarc file."""
 
     def read(self) -> T:
-        """Return value from .kritarc parsed to field type."""
+        """Return value from kritarc parsed to field type."""
         ...
 
     def register_callback(self, callback: Callable[[], None]) -> None:
         """Register a method which will be called when field value changes."""
 
     def reset_default(self) -> None:
-        """Write a default value to .kritarc file."""
+        """Write a default value to kritarc file."""
         ...

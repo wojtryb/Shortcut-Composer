@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 """
-System granting easier API to control krita configuration in .kritarc.
+System granting easier API to control krita configuration in kritarc.
 
 Consists of two classes: "Field" and "FieldGroup".
 Read the documentation of those classes for more info.

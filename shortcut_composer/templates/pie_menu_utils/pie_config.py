@@ -17,12 +17,12 @@ class PieConfig(FieldGroup, Generic[T], ABC):
     """Is it allowed to remove elements in runtime. """
 
     name: str
-    """Name of the group in .kritarc."""
+    """Name of the group in kritarc."""
     background_color: Optional[QColor]
     active_color: QColor
 
     ORDER: Field[List[T]]
-    """Value order stored in .kritarc."""
+    """Value order stored in kritarc."""
     PIE_RADIUS_SCALE: Field[float]
     ICON_RADIUS_SCALE: Field[float]
 
@@ -37,7 +37,7 @@ class PresetPieConfig(PieConfig[str]):
     FieldGroup representing config of PieMenu of presets.
 
     Values are calculated according to presets belonging to handled tag
-    and the custom order saved by the user in .kritarc.
+    and the custom order saved by the user in kritarc.
     """
 
     ALLOW_REMOVE = False
@@ -62,7 +62,7 @@ class PresetPieConfig(PieConfig[str]):
         self.active_color = active_color
 
     def values(self) -> List[str]:
-        """Return all presets from the tag. Respect order from .kritarc."""
+        """Return all presets from the tag. Respect order from kritarc."""
         saved_order = self.ORDER.read()
         tag_values = Tag(self.TAG_NAME.read())
 

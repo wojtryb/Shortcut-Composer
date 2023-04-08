@@ -22,7 +22,7 @@ class ActionContainer:
     """
     Holds action elements together.
 
-    - `ComplexAction` is the action implementation.
+    - `ComplexActionInterface` is the action implementation.
     - `QWidgetAction` krita representation, which ComplexAction implements.
     - `ShortcutAdapter` manages running elements of ComplexAction
       interface at right time.
@@ -43,10 +43,13 @@ class ActionContainer:
 
 class ActionManager:
     """
-    Creates and stores `ActionContainers` from `ComplexActions`.
+    Creates and stores `ActionContainers` from `ComplexActionInterfaces`.
+
+    Ensures, that methods of the action interface will be called at
+    appropriate keyboard input events.
 
     `QWidgetAction` and `ShortcutAdapter` are created and stored in
-    container along with passed `ComplexAction` by using the
+    container along with passed `ComplexActionInterfaces` by using the
     bind_action() method.
     """
 
