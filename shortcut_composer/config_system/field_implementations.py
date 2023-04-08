@@ -52,6 +52,12 @@ class ListField(FieldBase, Generic[T]):
         super().__init__(config_group, name, default)
         self._parser: Parser[T] = self._get_parser(self._get_type(parser_type))
 
+    def write(self, value: List[T]):
+        for element in value:
+            if not isinstance(element, self._parser.type):
+                raise ValueError(f"{value} not of type {type(self.default)}")
+        return super().write(value)
+
     def _get_type(self, passed_type: Optional[type]) -> type:
         """
         Determine parser type based on default value or passed type.

@@ -39,6 +39,9 @@ class FieldBase(ABC, Field, Generic[T]):
 
     def write(self, value: T):
         """Write value to file and run callbacks if it was not redundant."""
+        if not isinstance(value, type(self.default)):
+            raise TypeError(f"{value} not of type {type(self.default)}")
+
         if self._is_write_redundant(value):
             return
 

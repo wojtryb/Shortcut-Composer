@@ -12,6 +12,8 @@ EnumT = TypeVar("EnumT", bound=Enum)
 class Parser(Generic[T], Protocol):
     """Parses from string to specific type and vice-versa."""
 
+    type: type
+
     def parse_to(self, value: str) -> T:
         """Parse from string to specific type."""
         ...
@@ -39,6 +41,8 @@ class BasicParser(Parser[Basic]):
 class BoolParser(Parser[bool]):
     """Parses from string to bool and vice-versa."""
 
+    type = bool
+
     def parse_to(self, value: str) -> bool:
         """Parses from string to bool."""
         if value not in ("true", "false"):
@@ -58,7 +62,7 @@ class EnumParser(Parser[EnumT]):
 
     def parse_to(self, value: str) -> EnumT:
         """Parse from string to enum."""
-        return self.type[value]
+        return self.type[value]  # type: ignore
 
     def parse_from(self, value: EnumT) -> str:
         """Parse from enum to string."""
