@@ -5,6 +5,7 @@ from typing import List, Type
 from enum import Enum
 
 from PyQt5.QtWidgets import QVBoxLayout, QDialog
+from PyQt5.QtCore import Qt
 
 from config_system import Field
 from composer_utils import ButtonsLayout
@@ -16,6 +17,8 @@ class ActionValuesWindow(QDialog):
 
     def __init__(self, enum_type: Type[Enum], config: Field[List[Enum]]):
         super().__init__()
+        self.setWindowFlags(
+            self.windowFlags() | Qt.WindowStaysOnTopHint)  # type: ignore
         layout = QVBoxLayout()
 
         self._config = config

@@ -1,10 +1,8 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List
-
 from PyQt5.QtWidgets import QVBoxLayout, QDialog
-from PyQt5.QtCore import QSize
+from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QCursor
 
 from api_krita import Krita
@@ -19,6 +17,8 @@ class SettingsDialog(QDialog):
 
     def __init__(self) -> None:
         super().__init__()
+        self.setWindowFlags(
+            self.windowFlags() | Qt.WindowStaysOnTopHint)  # type: ignore
 
         self.setMinimumSize(QSize(300, 200))
         self.setWindowTitle("Configure Shortcut Composer")
