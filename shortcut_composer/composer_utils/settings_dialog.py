@@ -23,9 +23,6 @@ class SettingsDialog(QDialog):
         self.setMinimumSize(QSize(300, 200))
         self.setWindowTitle("Configure Shortcut Composer")
 
-        self._tags: List[str] = []
-        self._refresh_tags()
-
         self._general_tab = ConfigFormWidget([
             "Common settings",
             ConfigSpinBox(
@@ -78,12 +75,5 @@ class SettingsDialog(QDialog):
         self.refresh()
         Krita.trigger_action("Reload Shortcut Composer")
 
-    def _refresh_tags(self):
-        with Database() as database:
-            tags = sorted(database.get_brush_tags(), key=str.lower)
-        self._tags.clear()
-        self._tags.extend(tags)
-
     def refresh(self):
-        self._refresh_tags()
         self._general_tab.refresh()
