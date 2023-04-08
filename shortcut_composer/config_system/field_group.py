@@ -30,10 +30,10 @@ class FieldGroup:
         self,
         name: str,
         default: T,
-        passed_type: Optional[type] = None
+        parser_type: Optional[type] = None
     ) -> Field[T]:
         """Create and return a new field in the group."""
-        field = Field(self.name, name, default, passed_type)
+        field = Field(self.name, name, default, parser_type)
         self._fields.append(field)
         for callback in self._callbacks:
             field.register_callback(callback)
