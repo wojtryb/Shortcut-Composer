@@ -34,7 +34,7 @@ class PresetPieSettings(PieSettings):
             ConfigComboBox(config.TAG_NAME, self, "Tag name", self._tags),
             ConfigSpinBox(config.PIE_RADIUS_SCALE, self, "Pie scale", 0.05, 4),
             ConfigSpinBox(
-                config.ICON_RADIUS_SCALE, self, "Icon scale", 0.05, 4),
+                config.ICON_RADIUS_SCALE, self, "Icon max scale", 0.05, 4),
         ])
 
         layout = QVBoxLayout(self)

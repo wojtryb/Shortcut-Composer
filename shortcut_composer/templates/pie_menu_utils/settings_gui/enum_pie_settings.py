@@ -44,7 +44,7 @@ class EnumPieSettings(PieSettings):
         self._local_settings = ConfigFormWidget([
             ConfigSpinBox(config.PIE_RADIUS_SCALE, self, "Pie scale", 0.05, 4),
             ConfigSpinBox(
-                config.ICON_RADIUS_SCALE, self, "Icon scale",  0.05, 4),
+                config.ICON_RADIUS_SCALE, self, "Icon max scale",  0.05, 4),
         ])
         tab_holder.addTab(self._local_settings, "Local settings")
 
