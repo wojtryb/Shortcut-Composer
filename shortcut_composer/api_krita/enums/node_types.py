@@ -35,7 +35,8 @@ class NodeType(Enum):
 
     @property
     def pretty_name(self):
-        return self.name
+        """Format node type name like: `Paint layer`."""
+        return f"{self.name[0]}{self.name[1:].lower().replace('_', ' ')}"
 
 
 _ICON_NAME_MAP = {

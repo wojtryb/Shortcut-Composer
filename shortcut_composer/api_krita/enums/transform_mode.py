@@ -40,7 +40,8 @@ class TransformMode(Enum):
 
     @property
     def pretty_name(self) -> str:
-        return self.name
+        """Format mode name like: `Liquify`."""
+        return f"{self.name[0]}{self.name[1:].lower()}"
 
 
 _ICON_NAME_MAP = {
