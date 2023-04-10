@@ -117,12 +117,16 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             # Drag incoming from outside the PieWidget ecosystem
             return
 
+        if self.type and not isinstance(source_widget.label.value, self.type):
+            # Label type does not match the type of pie menu
+            return
+
         self._last_widget = source_widget
         if distance > self._style.widget_radius:
             # Dragged out of the PieWidget
             return self.label_holder.remove(source_widget.label)
         if distance < self._style.deadzone_radius:
-            # Dragged over the deadzone
+            # Do nothing in deadzone
             return
 
         angle = self._circle_points.angle_from_point(pos)
@@ -154,3 +158,10 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     def _widget_holder(self) -> WidgetHolder:
         """Return the holder with child widgets."""
         return self.label_holder.widget_holder
+
+    @property
+    def type(self) -> Optional[type]:
+        """Return type of values stored in labels. None if no labels."""
+        if not self._labels:
+            return None
+        return type(self._labels[0].value)
