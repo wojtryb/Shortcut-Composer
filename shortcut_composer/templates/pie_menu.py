@@ -134,6 +134,9 @@ class PieMenu(RawInstructions, Generic[T]):
 
     def on_key_press(self) -> None:
         """Reload labels, start GUI manager and run instructions."""
+        if self.pie_widget.isVisible():
+            return
+
         self._controller.refresh()
 
         new_values = self._config.values()
