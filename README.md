@@ -9,9 +9,11 @@ The plugin adds new shortcuts of the following types:
 - `Multiple assignment` - repeatedly pressing a key, cycles between multiple values of krita property.
 - `Temporary key` - temporarily activates a krita property with long press or toggles it on/off with short press.
 
-[![PIE MENUS - introducing Shortcut Composer](http://img.youtube.com/vi/hrjBycVYFZM/0.jpg)](https://www.youtube.com/watch?v=hrjBycVYFZM "PIE MENUS - introducing Shortcut Composer")
+## What's new in **1.2.0**
 
-## What's new in `v1.2.0`
+[![PIE MENUS - introducing Shortcut Composer](http://img.youtube.com/vi/Tkf2-U0OyG4/0.jpg)](https://www.youtube.com/watch?v=Tkf2-U0OyG4 "PIE MENUS - introducing Shortcut Composer")
+
+
 ### Added
 - Adding and removing PieMenu icons with drag and drop.
 - Class-oriented configuration system with automatic value parsing. Can be reused in other plugins. 
@@ -31,12 +33,17 @@ The plugin adds new shortcuts of the following types:
 
 Check out historic [changelogs](https://github.com/wojtryb/Shortcut-Composer/wiki/Change-log).
 
+## Plugin release video:
+
+[![PIE MENUS - introducing Shortcut Composer](http://img.youtube.com/vi/hrjBycVYFZM/0.jpg)](https://www.youtube.com/watch?v=hrjBycVYFZM "PIE MENUS - introducing Shortcut Composer")
+
 ## Requirements
-Shortcut Composer **v1.2.0** Requires krita **5.1.0** or later.
+- Version of krita on plugin release: **5.1.5**
+- Required version of krita: **5.1.0**
 
 OS support state:
-- [x] Windows 10/11
-- [x] Linux
+- [x] Windows (10, 11)
+- [x] Linux (Ubuntu 20.04, 22.04)
 - [ ] MacOS (Known bug of canvas losing focus after using PieMenu)
 - [ ] Android (Does not support python plugins yet)
 
@@ -327,7 +334,7 @@ assert enums_field_2.read() == [EnumMock.MODE_A]
 ```
 
 The code above produces "MyGroup" section in kritarc file. my_enums_2 is missing, as the default value was not changed:
-```toml
+```
 [MyGroup]
 my_str=Digital
 my_enums_1=MODE_A\tMODE_B
