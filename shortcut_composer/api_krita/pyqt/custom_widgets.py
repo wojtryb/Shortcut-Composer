@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtCore import QPoint
 
@@ -23,6 +26,11 @@ class BaseWidget(QWidget):
     def move_center(self, new_center: QPoint) -> None:
         """Move the widget by providing a new center point."""
         self.move(new_center-self.center)  # type: ignore
+
+    def setGeometry(self, ax: int, ay: int, aw: int, ah: int):
+        center = self.center_global
+        super().setGeometry(ax, ay, aw, ah)
+        self.move_center(center)
 
 
 class AnimatedWidget(QWidget):

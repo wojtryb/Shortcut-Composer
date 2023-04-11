@@ -1,44 +1,71 @@
-from enum import Enum
-from composer_utils import Config
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
-    from ..pie_widget import PieWidget
+    from ...pie_menu import PieMenu
 
 
 class EditMode:
     """
-    Descriptor that handles the edit mode of PieWidget.
+    Handles the edit mode of the PieMenu action.
 
-    When red from, it returns a bool telling whether the Pie is in edit mode.
-    When mode is changed, changes the Pie's components to reflect that.
-    Whe edit mode is turned off, saves the current values to settings.
+    Changing its state to between False and True performs actions on
+    PieMenu widgets and components.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, obj: 'PieMenu') -> None:
         self._edit_mode = False
+        self._obj = obj
 
-    def __get__(self, *_) -> bool:
+    def get(self) -> bool:
         """Return whether the Pie is in edit mode"""
         return self._edit_mode
 
-    def __set__(self, obj: 'PieWidget', mode_to_set: bool) -> None:
+    def set(self, mode_to_set: bool) -> None:
         """Update the mode and change Pie's content accordingly."""
         if not mode_to_set and self._edit_mode:
-            self._write_settings(obj)
+            self._write_settings()
 
-        self._edit_mode = mode_to_set
-        if mode_to_set:
-            obj.accept_button.show()
-        else:
-            obj.accept_button.hide()
-
-    def _write_settings(self, obj: 'PieWidget') -> None:
-        """If values were not hardcoded, but from config, write them back."""
-        if not obj.labels or obj.config_to_write_back is None:
+        if not self._edit_mode ^ mode_to_set:
             return
 
-        values = [widget.label.value for widget in obj.widget_holder]
-        if isinstance(values[0], Enum):
-            obj.config_to_write_back.write(Config.format_enums(values))
+        if mode_to_set:
+            self.set_edit_mode_true()
         else:
-            obj.config_to_write_back.write('\t'.join(values))
+            self.set_edit_mode_false()
+        self._edit_mode = mode_to_set
+
+    def set_edit_mode_true(self):
+        """Set the edit mode on."""
+        self._obj.pie_manager.stop(hide=False)
+        self._obj.pie_widget.set_draggable(True)
+        self._obj.pie_widget.is_edit_mode = True
+        self._obj.pie_widget.repaint()
+        self._obj.pie_settings.show()
+        self._obj.accept_button.show()
+        self._obj.settings_button.hide()
+
+    def set_edit_mode_false(self):
+        """Set the edit mode off."""
+        self._obj.pie_widget.hide()
+        self._obj.pie_widget.set_draggable(False)
+        self._obj.pie_widget.is_edit_mode = False
+        self._obj.pie_settings.hide()
+        self._obj.accept_button.hide()
+        self._obj.settings_button.show()
+
+    def swap_mode(self):
+        """Change the edit mode to the other one."""
+        self.set(not self._edit_mode)
+
+    def _write_settings(self) -> None:
+        """If values were not hardcoded, but from config, write them back."""
+        widget = self._obj.pie_widget
+
+        if not widget.label_holder or widget.config is None:
+            return
+
+        values = [label.value for label in widget.label_holder]
+        widget.config.ORDER.write(values)

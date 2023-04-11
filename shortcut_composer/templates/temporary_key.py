@@ -1,15 +1,15 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import List, TypeVar, Generic, Optional
 
 from core_components import Controller, Instruction
-from input_adapter import ComplexAction
+from .raw_instructions import RawInstructions
 
 T = TypeVar('T')
 
 
-class TemporaryKey(ComplexAction, Generic[T]):
+class TemporaryKey(RawInstructions, Generic[T]):
     """
     Temporarily activate (long press) a value or toggle it (short press).
 
@@ -59,17 +59,13 @@ class TemporaryKey(ComplexAction, Generic[T]):
     def __init__(
         self, *,
         name: str,
-        controller: Controller,
+        controller: Controller[T],
         high_value: T,
         low_value: Optional[T] = None,
         instructions: List[Instruction] = [],
         short_vs_long_press_time: Optional[float] = None
     ) -> None:
-        super().__init__(
-            name=name,
-            short_vs_long_press_time=short_vs_long_press_time,
-            instructions=instructions)
-
+        super().__init__(name, instructions, short_vs_long_press_time)
         self._controller = controller
         self._high_value = high_value
         self._low_value = self._read_default_value(low_value)
@@ -106,6 +102,9 @@ class TemporaryKey(ComplexAction, Generic[T]):
         super().on_long_key_release()
         self._set_low()
 
-    def _read_default_value(self, value: Optional[T]):
+    def _read_default_value(self, value: Optional[T]) -> T:
         """Read value from controller if it was not given."""
-        return value if value else self._controller.default_value
+        if (default := self._controller.default_value) is None:
+            raise ValueError(
+                f"{self._controller} can't be used with TemporaryKeys.")
+        return value if value is not None else default

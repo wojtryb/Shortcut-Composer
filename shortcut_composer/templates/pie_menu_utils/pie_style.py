@@ -1,10 +1,9 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import math
 import platform
-from typing import Optional
-from dataclasses import dataclass
+from typing import TYPE_CHECKING
 from copy import copy
 
 from PyQt5.QtGui import QColor
@@ -12,94 +11,163 @@ from PyQt5.QtGui import QColor
 from api_krita import Krita
 from composer_utils import Config
 
+if TYPE_CHECKING:
+    from .pie_config import PieConfig
 
-@dataclass
+
 class PieStyle:
     """
     Holds and calculates configuration of displayed elements.
 
-    All style elements are calculated based on passed base colors and
-    scale multipliers.
+    Style elements are calculated based on passed local config and
+    imported global config.
 
-    Using adapt_to_item_amount() allows to modify the style to make it
-    fit the given amount of labels.
+    They are also affected by length of passed items list which size can
+    change over time.
     """
 
     def __init__(
         self,
-        pie_radius_scale: float,
-        icon_radius_scale: float,
-        icons_amount: int,
-        background_color: Optional[QColor],
-        active_color: QColor,
+        pie_config: 'PieConfig',
+        items: list,
     ) -> None:
-        self._icons_amount = icons_amount
+        self._items = items
         self._base_size = Krita.screen_size/2560
+        self._pie_config = pie_config
 
-        self.pie_radius_scale = pie_radius_scale
-        self.icon_radius_scale = icon_radius_scale
-        self.background_color = self._pick_background_color(background_color)
-        self.active_color = active_color
-        self.active_color_dark = QColor(
-            round(active_color.red()*0.8),
-            round(active_color.green()*0.8),
-            round(active_color.blue()*0.8))
+    @property
+    def _pie_radius_scale(self) -> float:
+        """Local scale of pie selected by user."""
+        return self._pie_config.PIE_RADIUS_SCALE.read()
 
-        self.pie_radius: int = round(
+    @property
+    def _icon_radius_scale(self) -> float:
+        """Local scale of pie child selected by user."""
+        return self._pie_config.ICON_RADIUS_SCALE.read()
+
+    @property
+    def pie_radius(self) -> int:
+        """Radius in pixels at which icon centers are located."""
+        return round(
             165 * self._base_size
-            * self.pie_radius_scale
+            * self._pie_radius_scale
             * Config.PIE_GLOBAL_SCALE.read())
 
-        self.icon_radius = self._pick_icon_radius()
-        self.widget_radius = self.pie_radius + self.icon_radius
-        self.deadzone_radius = self._pick_deadzone_radius()
+    @property
+    def _base_icon_radius(self) -> int:
+        """Radius of icons in pixels. Not affected by items amount."""
+        return round(
+            50 * self._base_size
+            * self._icon_radius_scale
+            * Config.PIE_ICON_GLOBAL_SCALE.read())
 
-        self.border_thickness = round(self.pie_radius*0.02)
-        self.area_thickness = round(self.pie_radius/self.pie_radius_scale*0.4)
+    @property
+    def unscaled_icon_radius(self) -> int:
+        """Radius of icons in pixels. Ignores local scale and items amount."""
+        return round(
+            50 * self._base_size
+            * Config.PIE_ICON_GLOBAL_SCALE.read())
 
-        self.inner_edge_radius = self.pie_radius - self.area_thickness
-        self.no_border_radius = self.pie_radius - self.border_thickness//2
+    @property
+    def _max_icon_radius(self) -> int:
+        """Max icon radius in pixels according to items amount."""
+        if not self._items:
+            return 1
+        return round(self.pie_radius * math.pi / len(self._items))
 
-        self.icon_color = copy(self.background_color)
-        self.icon_color.setAlpha(255)
+    @property
+    def icon_radius(self) -> int:
+        """Icons radius depend on settings, but they have to fit in the pie."""
+        return min(self._base_icon_radius, self._max_icon_radius)
 
-        self.border_color = QColor(
+    @property
+    def deadzone_radius(self) -> float:
+        """Deadzone can be configured, but when pie is empty, becomes inf."""
+        if not self._items:
+            return float("inf")
+        return (
+            40 * self._base_size
+            * Config.PIE_DEADZONE_GLOBAL_SCALE.read())
+
+    @property
+    def widget_radius(self) -> int:
+        """Radius of the entire widget, including base and the icons."""
+        return self.pie_radius + self._base_icon_radius
+
+    @property
+    def border_thickness(self):
+        """Thickness of border around icons."""
+        return round(self.unscaled_icon_radius*0.06)
+
+    @property
+    def area_thickness(self):
+        """Thickness of the base area of pie menu."""
+        return round(self.pie_radius*0.4)
+
+    @property
+    def inner_edge_radius(self):
+        """Radius at which the base area starts."""
+        return self.pie_radius - self.area_thickness
+
+    @property
+    def no_border_radius(self):
+        """Radius at which pie decoration border starts."""
+        return self.pie_radius - self.border_thickness//2
+
+    @property
+    def setting_button_radius(self) -> int:
+        """Radius of the button which activates edit mode."""
+        return round(30 * self._base_size)
+
+    @property
+    def accept_button_radius(self) -> int:
+        """Radius of the button which applies the changes from edit mode."""
+        default_radius = self.setting_button_radius
+        radius = self.deadzone_radius
+        return int(radius) if radius != float("inf") else default_radius
+
+    @property
+    def active_color(self):
+        """Color of active element."""
+        return self._pie_config.active_color
+
+    @property
+    def background_color(self) -> QColor:
+        """Color of base area. Depends on the app theme lightness"""
+        if self._pie_config.background_color is not None:
+            return self._pie_config.background_color
+        if Krita.is_light_theme_active:
+            return QColor(210, 210, 210, 190)
+        return QColor(75, 75, 75, 190)
+
+    @property
+    def active_color_dark(self):
+        """Color variation of active element."""
+        return QColor(
+            round(self.active_color.red()*0.8),
+            round(self.active_color.green()*0.8),
+            round(self.active_color.blue()*0.8))
+
+    @property
+    def icon_color(self):
+        """Color of icon background."""
+        color = copy(self.background_color)
+        color.setAlpha(255)
+        return color
+
+    @property
+    def border_color(self):
+        """Color of icon borders."""
+        return QColor(
             min(self.icon_color.red()+15, 255),
             min(self.icon_color.green()+15, 255),
             min(self.icon_color.blue()+15, 255),
             255)
 
-        self.font_multiplier = self.SYSTEM_FONT_SIZE[platform.system()]
-
-    def _pick_icon_radius(self) -> int:
-        """Icons radius depend on settings, but they have to fit in the pie."""
-        icon_radius: int = round(
-            50 * self._base_size
-            * self.icon_radius_scale
-            * Config.PIE_ICON_GLOBAL_SCALE.read())
-            
-        if not self._icons_amount:
-            return icon_radius
-
-        max_icon_size = round(self.pie_radius * math.pi / self._icons_amount)
-        return min(icon_radius, max_icon_size)
-
-    def _pick_deadzone_radius(self) -> float:
-        """Deadzone can be configured, but when pie is empty, becomes inf."""
-        if not self._icons_amount:
-            return float("inf")
-        return (
-            40 * self._base_size
-            * Config.PIE_DEADZONE_GLOBAL_SCALE.read()
-        )
-
-    def _pick_background_color(self, color: Optional[QColor]) -> QColor:
-        """Default background color depends on the app theme lightness."""
-        if color is not None:
-            return color
-        if Krita.is_light_theme_active:
-            return QColor(210, 210, 210, 190)
-        return QColor(75, 75, 75, 190)
+    @property
+    def font_multiplier(self):
+        """Multiplier to apply to the font depending on the used OS."""
+        return self.SYSTEM_FONT_SIZE[platform.system()]
 
     SYSTEM_FONT_SIZE = {
         "Linux": 0.175,

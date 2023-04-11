@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import List
@@ -65,7 +65,6 @@ class ShortcutComposer(Extension):
         return Krita.create_action(
             window=window,
             name="Reload Shortcut Composer",
-            group="tools/scripts",
             callback=self._reload_composer)
 
     def _create_settings_action(

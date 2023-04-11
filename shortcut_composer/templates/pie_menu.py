@@ -1,33 +1,35 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, TypeVar, Generic, Union, Optional
+from typing import List, TypeVar, Generic, Optional
+from enum import Enum
 
-from PyQt5.QtGui import QColor, QPixmap, QIcon
+from PyQt5.QtCore import QPoint
+from PyQt5.QtGui import QColor
 
-from api_krita.pyqt import Text
-from composer_utils import Config
+from api_krita import Krita
 from core_components import Controller, Instruction
-from input_adapter import ComplexAction
 from .pie_menu_utils import (
+    create_pie_settings_window,
+    create_local_config,
     PieManager,
     PieWidget,
     PieStyle,
-    Label,
-)
+    Label)
+from .pie_menu_utils.widget_utils import EditMode, PieButton
+from .raw_instructions import RawInstructions
 
 T = TypeVar('T')
 
 
-class PieMenu(ComplexAction, Generic[T]):
+class PieMenu(RawInstructions, Generic[T]):
     """
     Pick value by hovering over a pie menu widget.
 
     - Widget is displayed under the cursor between key press and release
     - Moving mouse in a direction of a value activates in on key release
     - When the mouse was not moved past deadzone, value is not changed
-    - Dragging values activates edit mode in which pie does not hide
-    - Applying the changes in edit mode, saves its values to settings
+    - Edit button activates mode in pie does not hide and can be changed
 
     ### Arguments:
 
@@ -49,7 +51,6 @@ class PieMenu(ComplexAction, Generic[T]):
     Action is meant to change opacity of current layer to one of
     predefined values using the pie menu widget.
 
-
     ```python
     templates.PieMenu(
         name="Pick active layer opacity",
@@ -62,21 +63,11 @@ class PieMenu(ComplexAction, Generic[T]):
     )
     ```
     """
-    """
-    Class is responsible for:
-    - Handling the key press/release interface
-    - Reading widget configuration and storing it in PieStyle - passed
-      to objects that can be displayed
-    - Creating the PieWidget - and PieManager which displays it
-    - Starting and stopping the PieManager on key press and release
-    - Creating Labels - paintable representations of handled values
-    - Setting a value on key release when the deadzone was reached
-    """
 
     def __init__(
         self, *,
         name: str,
-        controller: Controller,
+        controller: Controller[T],
         values: List[T],
         instructions: List[Instruction] = [],
         pie_radius_scale: float = 1.0,
@@ -85,59 +76,120 @@ class PieMenu(ComplexAction, Generic[T]):
         active_color: QColor = QColor(100, 150, 230, 255),
         short_vs_long_press_time: Optional[float] = None
     ) -> None:
-        super().__init__(
-            name=name,
-            short_vs_long_press_time=short_vs_long_press_time,
-            instructions=instructions)
+        super().__init__(name, instructions, short_vs_long_press_time)
         self._controller = controller
-
-        self._labels = self._create_labels(values)
-        self._style = PieStyle(
+        self._config = create_local_config(
+            name=name,
+            values=values,
             pie_radius_scale=pie_radius_scale,
             icon_radius_scale=icon_radius_scale,
-            icons_amount=len(self._labels),
             background_color=background_color,
-            active_color=active_color,
-        )
+            active_color=active_color)
 
-        related_config = self._get_config_to_write_back(values)
-        self._pie_widget = PieWidget(self._style, self._labels, related_config)
-        self._pie_manager = PieManager(self._pie_widget)
+        self._last_values: List[T] = []
+        self._labels: List[Label] = []
+        self._reset_labels(self._labels, self._config.values())
+        self._all_labels: List[Label] = []
+        self._reset_labels(self._all_labels, self._get_all_values(values))
+        self._edit_mode = EditMode(self)
+        self._style = PieStyle(items=self._labels, pie_config=self._config)
+
+        self.pie_settings = create_pie_settings_window(
+            style=self._style,
+            values=self._all_labels,
+            used_values=self._labels,
+            pie_config=self._config)
+        self.pie_widget = PieWidget(
+            style=self._style,
+            labels=self._labels,
+            config=self._config)
+        self.pie_manager = PieManager(
+            pie_widget=self.pie_widget,
+            pie_settings=self.pie_settings)
+
+        self.settings_button = PieButton(
+            icon=Krita.get_icon("properties"),
+            icon_scale=1.1,
+            parent=self.pie_widget,
+            radius_callback=lambda: self._style.setting_button_radius,
+            style=self._style,
+            config=self._config)
+        self.settings_button.clicked.connect(lambda: self._edit_mode.set(True))
+        self.accept_button = PieButton(
+            icon=Krita.get_icon("dialog-ok"),
+            icon_scale=1.5,
+            parent=self.pie_widget,
+            radius_callback=lambda: self._style.accept_button_radius,
+            style=self._style,
+            config=self._config)
+        self.accept_button.clicked.connect(lambda: self._edit_mode.set(False))
+        self.accept_button.hide()
+
+    def _move_buttons(self):
+        """Move accept button to center and setting button to bottom-right."""
+        self.accept_button.move_center(self.pie_widget.center)
+        self.settings_button.move(QPoint(
+            self.pie_widget.width()-self.settings_button.width(),
+            self.pie_widget.height()-self.settings_button.height()))
 
     def on_key_press(self) -> None:
-        """Show widget under mouse and start manager which repaints it."""
+        """Reload labels, start GUI manager and run instructions."""
+        if self.pie_widget.isVisible():
+            return
+
         self._controller.refresh()
-        self._pie_manager.start()
+
+        new_values = self._config.values()
+        if self._last_values != new_values:
+            self._reset_labels(self._labels, new_values)
+            self._last_values = new_values
+            self.pie_widget.label_holder.reset()  # HACK: should be automatic
+
+        self._move_buttons()
+
+        self.pie_manager.start()
         super().on_key_press()
 
     def on_every_key_release(self) -> None:
-        """Stop the widget. Set selected value if deadzone was reached."""
+        """
+        Handle the key release event.
+
+        Ignore if in edit mode. Otherwise, stop the manager and set the
+        selected value if deadzone was reached.
+        """
         super().on_every_key_release()
-        if self._pie_widget.edit_mode:
+
+        if self._edit_mode.get():
             return
-        self._pie_manager.stop()
-        if widget := self._pie_widget.widget_holder.active:
-            self._controller.set_value(widget.label.value)
 
-    def _create_labels(self, values: List[T]) -> List[Label]:
-        """Wrap values into paintable label objects with position info."""
-        label_list = []
+        self.pie_manager.stop()
+        if label := self.pie_widget.active:
+            self._controller.set_value(label.value)
+
+    def _reset_labels(
+        self,
+        label_list: List[Label[T]],
+        values: List[T]
+    ) -> None:
+        """Replace list values with newly created labels."""
+        label_list.clear()
         for value in values:
-            if icon := self._get_icon_if_possible(value):
-                label_list.append(Label(value=value, display_value=icon))
-        return label_list
+            label = self._controller.get_label(value)
+            if label is not None:
+                label_list.append(Label(
+                    value=value,
+                    display_value=label,
+                    pretty_name=self._controller.get_pretty_name(value)))
 
-    def _get_icon_if_possible(self, value: T) \
-            -> Union[Text, QPixmap, QIcon, None]:
-        """Return the paintable icon of the value or None if missing."""
-        try:
-            return self._controller.get_label(value)
-        except KeyError:
-            return None
+    @staticmethod
+    def _get_all_values(values: List[T]) -> List[T]:
+        """Return list of available enum values. HACK"""
+        if not values:
+            return []
 
-    def _get_config_to_write_back(self, values: List[T]) -> Optional[Config]:
-        """Some value lists can contain metadata with config to write back."""
-        try:
-            return values.config_to_write  # type: ignore
-        except AttributeError:
-            return None
+        value_type = values[0]
+        if not isinstance(value_type, Enum):
+            return []
+
+        names = type(value_type)._member_names_
+        return [type(value_type)[name] for name in names]

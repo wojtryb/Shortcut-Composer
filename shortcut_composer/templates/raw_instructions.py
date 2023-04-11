@@ -1,15 +1,18 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from input_adapter import ComplexAction
+from typing import List, Optional
+
+from composer_utils import Config
+from core_components import InstructionHolder, Instruction
+from input_adapter import ComplexActionInterface
 
 
-class RawInstructions(ComplexAction):
+class RawInstructions(ComplexActionInterface):
     """
-    Temporarily toggle plugin instructions.
+    ShortcutComposer action base.
 
-    Action starts all the instructions on key press, and ends them on
-    release.
+    Handles passed instructions, fulfilling the ComplexActionInterface.
 
     ### Arguments:
 
@@ -35,3 +38,36 @@ class RawInstructions(ComplexAction):
     )
     ```
     """
+
+    def __init__(
+        self,
+        name: str,
+        instructions: List[Instruction] = [],
+        short_vs_long_press_time: Optional[float] = None
+    ) -> None:
+        self.name = name
+        self.short_vs_long_press_time = _read_time(short_vs_long_press_time)
+        self._instructions = InstructionHolder(instructions)
+
+    def on_key_press(self) -> None:
+        """Run instructions meant for key press event."""
+        self._instructions.on_key_press()
+
+    def on_short_key_release(self) -> None:
+        """Run instructions meant for key release event."""
+        self._instructions.on_short_key_release()
+
+    def on_long_key_release(self) -> None:
+        """Run instructions meant for key release event after long time."""
+        self._instructions.on_long_key_release()
+
+    def on_every_key_release(self) -> None:
+        """Run instructions meant for key release event after short time."""
+        self._instructions.on_every_key_release()
+
+
+def _read_time(short_vs_long_press_time: Optional[float]) -> float:
+    """Return the given time, or time red from krita config if not given."""
+    if short_vs_long_press_time is None:
+        return Config.SHORT_VS_LONG_PRESS_TIME.read()
+    return short_vs_long_press_time

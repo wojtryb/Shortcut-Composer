@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 """
@@ -14,23 +14,19 @@ from typing import List
 
 from PyQt5.QtGui import QColor
 
-from api_krita.enums import BlendingMode, Tool, Toggle, TransformMode
+from api_krita.enums import Tool, Toggle, BlendingMode, TransformMode
 from core_components import instructions, controllers
-from composer_utils import Config
-from input_adapter import ComplexAction
 from data_components import (
     CurrentLayerStack,
     PickStrategy,
-    EnumConfigValues,
-    TagConfigValues,
     Slider,
     Range,
+    Tag,
 )
 infinity = float("inf")
 
 
-def create_actions() -> List[ComplexAction]: return [
-
+def create_actions() -> List[templates.RawInstructions]: return [
     # Switch between FREEHAND BRUSH and the MOVE tool
     templates.TemporaryKey(
         name="Temporary move tool",
@@ -95,7 +91,11 @@ def create_actions() -> List[ComplexAction]: return [
         name="Cycle selection tools",
         controller=controllers.ToolController(),
         default_value=Tool.FREEHAND_BRUSH,
-        values=EnumConfigValues(Config.SELECTION_TOOLS_VALUES, Tool),
+        values=[
+            Tool.FREEHAND_SELECTION,
+            Tool.RECTANGULAR_SELECTION,
+            Tool.CONTIGUOUS_SELECTION,
+        ],
     ),
 
     # Control undo and redo actions by sliding the cursor horizontally
@@ -183,7 +183,13 @@ def create_actions() -> List[ComplexAction]: return [
     templates.PieMenu(
         name="Pick misc tools",
         controller=controllers.ToolController(),
-        values=EnumConfigValues(Config.MISC_TOOLS_VALUES, Tool),
+        values=[
+            Tool.CROP,
+            Tool.REFERENCE,
+            Tool.GRADIENT,
+            Tool.MULTI_BRUSH,
+            Tool.ASSISTANTS,
+        ],
         pie_radius_scale=0.9
     ),
 
@@ -193,22 +199,47 @@ def create_actions() -> List[ComplexAction]: return [
         name="Pick painting blending modes",
         controller=controllers.BlendingModeController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        values=EnumConfigValues(Config.BLENDING_MODES_VALUES, BlendingMode),
+        values=[
+            BlendingMode.NORMAL,
+            BlendingMode.OVERLAY,
+            BlendingMode.COLOR,
+            BlendingMode.MULTIPLY,
+            BlendingMode.ADD,
+            BlendingMode.SCREEN,
+            BlendingMode.DARKEN,
+            BlendingMode.LIGHTEN,
+        ]
     ),
 
     # Use pie menu to create painting layer with selected blending mode.
     templates.PieMenu(
         name="Create painting layer with blending mode",
         controller=controllers.CreateLayerWithBlendingController(),
-        values=EnumConfigValues(
-            Config.CREATE_BLENDING_LAYER_VALUES, BlendingMode),
+        values=[
+            BlendingMode.NORMAL,
+            BlendingMode.ERASE,
+            BlendingMode.OVERLAY,
+            BlendingMode.COLOR,
+            BlendingMode.MULTIPLY,
+            BlendingMode.ADD,
+            BlendingMode.SCREEN,
+            BlendingMode.DARKEN,
+            BlendingMode.LIGHTEN,
+        ],
     ),
 
     # Pick one of the transform tool modes.
     templates.PieMenu(
         name="Pick transform tool modes",
         controller=controllers.TransformModeController(),
-        values=EnumConfigValues(Config.TRANSFORM_MODES_VALUES, TransformMode),
+        values=[
+            TransformMode.FREE,
+            TransformMode.PERSPECTIVE,
+            TransformMode.WARP,
+            TransformMode.CAGE,
+            TransformMode.LIQUIFY,
+            TransformMode.MESH,
+        ]
     ),
 
     # Use pie menu to pick one of presets from tag specified in settings.
@@ -217,7 +248,7 @@ def create_actions() -> List[ComplexAction]: return [
         name="Pick brush presets (red)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        values=TagConfigValues(Config.TAG_RED, Config.TAG_RED_VALUES),
+        values=Tag("★ My Favorites"),
         background_color=QColor(95, 65, 65, 190),
         active_color=QColor(200, 70, 70),
     ),
@@ -228,7 +259,7 @@ def create_actions() -> List[ComplexAction]: return [
         name="Pick brush presets (green)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        values=TagConfigValues(Config.TAG_GREEN, Config.TAG_GREEN_VALUES),
+        values=Tag("RGBA"),
         background_color=QColor(65, 95, 65, 190),
         active_color=QColor(70, 200, 70),
     ),
@@ -239,7 +270,7 @@ def create_actions() -> List[ComplexAction]: return [
         name="Pick brush presets (blue)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        values=TagConfigValues(Config.TAG_BLUE, Config.TAG_BLUE_VALUES),
+        values=Tag("Erasers"),
         background_color=QColor(70, 70, 105, 190),
         active_color=QColor(110, 160, 235),
     ),

@@ -1,7 +1,7 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Callable, Iterable
+from typing import Callable, Iterable, Generic, TypeVar
 
 from api_krita import Krita
 from api_krita.pyqt import Timer
@@ -15,10 +15,11 @@ from .slider_values import (
     SliderValues,
 )
 
+T = TypeVar("T")
 MouseGetter = Callable[[], MouseInput]
 
 
-class SliderHandler:
+class SliderHandler(Generic[T]):
     """
     When started, tracks the mouse, interprets it and sets corresponding value.
 
@@ -48,7 +49,7 @@ class SliderHandler:
     phase in which case main loop will never be started.
     """
 
-    def __init__(self, slider: Slider, is_horizontal: bool) -> None:
+    def __init__(self, slider: Slider[T], is_horizontal: bool) -> None:
         """Store the slider configuration, create value adapter."""
         self._slider = slider
         self._to_cycle = self._create_slider_values(slider)
@@ -129,7 +130,7 @@ class SliderHandler:
         return lambda: MouseInput(-cursor.y())
 
     @staticmethod
-    def _create_slider_values(slider: Slider) -> SliderValues:
+    def _create_slider_values(slider: Slider[T]) -> SliderValues[T]:
         """Return the right values adapter based on passed data type."""
         if isinstance(slider.values, Iterable):
             return ListSliderValues(slider.values)

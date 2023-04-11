@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from krita import Krita as Api
@@ -14,14 +14,6 @@ class TransformMode(Enum):
     Extended with modes of the transform tool.
 
     Example usage: `Tool.FREEHAND_BRUSH`
-
-    Available modes:
-    - `FREE`
-    - `PERSPECTIVE`
-    - `WARP`
-    - `CAGE`
-    - `LIQUIFY`
-    - `MESH`
     """
 
     FREE = "Transform tool: free"
@@ -45,6 +37,11 @@ class TransformMode(Enum):
         """Return the icon of this transform mode."""
         icon_name = _ICON_NAME_MAP[self]
         return Api.instance().icon(icon_name)
+
+    @property
+    def pretty_name(self) -> str:
+        """Format mode name like: `Liquify`."""
+        return f"{self.name[0]}{self.name[1:].lower()}"
 
 
 _ICON_NAME_MAP = {

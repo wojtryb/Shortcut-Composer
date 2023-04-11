@@ -1,16 +1,18 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import List, Iterator, TypeVar, Generic, Optional
 from itertools import cycle
 
 from core_components import Controller, Instruction
-from input_adapter import ComplexAction
+from config_system import Field
+from .raw_instructions import RawInstructions
+from .multiple_assignment_utils import SettingsHandler
 
 T = TypeVar('T')
 
 
-class MultipleAssignment(ComplexAction, Generic[T]):
+class MultipleAssignment(RawInstructions, Generic[T]):
     """
     Cycle multiple values (short press) or return to default (long press).
 
@@ -61,20 +63,30 @@ class MultipleAssignment(ComplexAction, Generic[T]):
     def __init__(
         self, *,
         name: str,
-        controller: Controller,
+        controller: Controller[T],
         values: List[T],
         default_value: Optional[T] = None,
         instructions: List[Instruction] = [],
         short_vs_long_press_time: Optional[float] = None
     ) -> None:
-        super().__init__(
-            name=name,
-            short_vs_long_press_time=short_vs_long_press_time,
-            instructions=instructions)
+        super().__init__(name, instructions, short_vs_long_press_time)
 
         self._controller = controller
-        self._values_to_cycle = values
         self._default_value = self._read_default_value(default_value)
+
+        self.config = Field(
+            config_group=f"ShortcutComposer: {name}",
+            name="Values",
+            default=values)
+
+        self._settings = SettingsHandler(name, self.config, instructions)
+        self._values_to_cycle = self.config.read()
+
+        def reset() -> None:
+            self._values_to_cycle = self.config.read()
+            self._reset_iterator()
+
+        self.config.register_callback(reset)
 
         self._last_value: Optional[T] = None
         self._iterator: Iterator[T]
@@ -107,4 +119,7 @@ class MultipleAssignment(ComplexAction, Generic[T]):
 
     def _read_default_value(self, value: Optional[T]) -> T:
         """Read value from controller if it was not given."""
-        return value if value is not None else self._controller.default_value
+        if (default := self._controller.default_value) is None:
+            raise ValueError(
+                f"{self._controller} can't be used with MultipleAssignment.")
+        return value if value is not None else default

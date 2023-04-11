@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 """
@@ -10,16 +10,15 @@ complex logic.
 """
 
 from .current_layer_stack import CurrentLayerStack
-from .writable_values import TagConfigValues, EnumConfigValues
 from .pick_strategy import PickStrategy
 from .slider import Slider
 from .range import Range
+from .tag import Tag
 
 __all__ = [
     "CurrentLayerStack",
-    "EnumConfigValues",
-    "TagConfigValues",
     "PickStrategy",
     "Slider",
     "Range",
+    "Tag",
 ]

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from krita import Krita as Api
@@ -14,81 +14,44 @@ class Tool(Enum):
     Extended with modes of the transform tool.
 
     Example usage: `Tool.FREEHAND_BRUSH`
-
-    Available tools:
-    - `FREEHAND_BRUSH`
-    - `FREEHAND_SELECTION`
-    - `GRADIENT`
-    - `LINE`
-    - `TRANSFORM`
-    - `MOVE`
-    - `RECTANGULAR_SELECTION`
-    - `CONTIGUOUS_SELECTION`
-    - `REFERENCE`
-    - `CROP`
-    - `BEZIER_PATH`
-    - `FREEHAND_PATH`
-    - `POLYLINE`
-    - `SHAPE_SELECT`
-    - `ASSISTANTS`
-    - `COLOR_SAMPLER`
-    - `POLYGON`
-    - `MEASUREMENT`
-    - `TEXT`
-    - `ELLIPSE`
-    - `FILL`
-    - `BEZIER_SELECTION`
-    - `DYNAMIC_BRUSH`
-    - `RECTANGLE`
-    - `PAN`
-    - `MULTI_BRUSH`
-    - `EDIT_SHAPES`
-    - `ELIPTICAL_SELECTION`
-    - `SMART_PATCH`
-    - `COLORIZE_MASK`
-    - `SIMILAR_COLOR_SELECTION`
-    - `ZOOM`
-    - `MAGNETIC_SELECTION`
-    - `CALLIGRAPHY`
-    - `POLYGONAL_SELECTION`
     """
 
+    SHAPE_SELECT = "InteractionTool"
+    TEXT = "SvgTextTool"
+    EDIT_SHAPES = "PathTool"
+    CALLIGRAPHY = "KarbonCalligraphyTool"
     FREEHAND_BRUSH = "KritaShape/KisToolBrush"
-    FREEHAND_SELECTION = "KisToolSelectOutline"
-    GRADIENT = "KritaFill/KisToolGradient"
     LINE = "KritaShape/KisToolLine"
-    TRANSFORM = "KisToolTransform"
-    MOVE = "KritaTransform/KisToolMove"
-    RECTANGULAR_SELECTION = "KisToolSelectRectangular"
-    CONTIGUOUS_SELECTION = "KisToolSelectContiguous"
-    REFERENCE = "ToolReferenceImages"
-    CROP = "KisToolCrop"
+    RECTANGLE = "KritaShape/KisToolRectangle"
+    ELLIPSE = "KritaShape/KisToolEllipse"
+    POLYGON = "KisToolPolygon"
+    POLYLINE = "KisToolPolyline"
     BEZIER_PATH = "KisToolPath"
     FREEHAND_PATH = "KisToolPencil"
-    POLYLINE = "KisToolPolyline"
-    SHAPE_SELECT = "InteractionTool"
-    ASSISTANTS = "KisAssistantTool"
+    DYNAMIC_BRUSH = "KritaShape/KisToolDyna"
+    MULTI_BRUSH = "KritaShape/KisToolMultiBrush"
+    TRANSFORM = "KisToolTransform"
+    MOVE = "KritaTransform/KisToolMove"
+    CROP = "KisToolCrop"
+    GRADIENT = "KritaFill/KisToolGradient"
     COLOR_SAMPLER = "KritaSelected/KisToolColorSampler"
-    POLYGON = "KisToolPolygon"
-    MEASUREMENT = "KritaShape/KisToolMeasure"
-    TEXT = "SvgTextTool"
-    ELLIPSE = "KritaShape/KisToolEllipse"
+    COLORIZE_MASK = "KritaShape/KisToolLazyBrush"
+    SMART_PATCH = "KritaShape/KisToolSmartPatch"
     FILL = "KritaFill/KisToolFill"
     ENCLOSE_AND_FILL = "KisToolEncloseAndFill"
-    BEZIER_SELECTION = "KisToolSelectPath"
-    DYNAMIC_BRUSH = "KritaShape/KisToolDyna"
-    RECTANGLE = "KritaShape/KisToolRectangle"
-    PAN = "PanTool"
-    MULTI_BRUSH = "KritaShape/KisToolMultiBrush"
-    EDIT_SHAPES = "PathTool"
+    ASSISTANTS = "KisAssistantTool"
+    MEASUREMENT = "KritaShape/KisToolMeasure"
+    REFERENCE = "ToolReferenceImages"
+    RECTANGULAR_SELECTION = "KisToolSelectRectangular"
     ELIPTICAL_SELECTION = "KisToolSelectElliptical"
-    SMART_PATCH = "KritaShape/KisToolSmartPatch"
-    COLORIZE_MASK = "KritaShape/KisToolLazyBrush"
-    SIMILAR_COLOR_SELECTION = "KisToolSelectSimilar"
-    ZOOM = "ZoomTool"
-    MAGNETIC_SELECTION = "KisToolSelectMagnetic"
-    CALLIGRAPHY = "KarbonCalligraphyTool"
     POLYGONAL_SELECTION = "KisToolSelectPolygonal"
+    FREEHAND_SELECTION = "KisToolSelectOutline"
+    CONTIGUOUS_SELECTION = "KisToolSelectContiguous"
+    SIMILAR_COLOR_SELECTION = "KisToolSelectSimilar"
+    BEZIER_SELECTION = "KisToolSelectPath"
+    MAGNETIC_SELECTION = "KisToolSelectMagnetic"
+    ZOOM = "ZoomTool"
+    PAN = "PanTool"
 
     def activate(self):
         Api.instance().action(self.value).trigger()
@@ -103,6 +66,11 @@ class Tool(Enum):
         """Return the icon of this tool."""
         icon_name = _ICON_NAME_MAP.get(self, "edit-delete")
         return Api.instance().icon(icon_name)
+
+    @property
+    def pretty_name(self):
+        """Format tool name like: `Shape select tool`."""
+        return f"{self.name[0]}{self.name[1:].lower().replace('_', ' ')} tool"
 
 
 _PAINTABLE = {

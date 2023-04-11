@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import List, Optional
@@ -6,11 +6,11 @@ from typing import List, Optional
 from api_krita import Krita
 from api_krita.pyqt import Timer
 from core_components import Instruction
-from input_adapter import ComplexAction
 from .slider_handler import SliderHandler
+from ..raw_instructions import RawInstructions
 
 
-class SingleAxisTracker(ComplexAction):
+class SingleAxisTracker(RawInstructions):
     """
     Track the mouse along one axis to switch values.
 
@@ -26,10 +26,7 @@ class SingleAxisTracker(ComplexAction):
         instructions: List[Instruction] = [],
         short_vs_long_press_time: Optional[float] = None
     ) -> None:
-        super().__init__(
-            name=name,
-            short_vs_long_press_time=short_vs_long_press_time,
-            instructions=instructions)
+        super().__init__(name, instructions, short_vs_long_press_time)
 
         self._handler = slider_handler
 
@@ -44,7 +41,7 @@ class SingleAxisTracker(ComplexAction):
         self._handler.stop()
 
 
-class DoubleAxisTracker(ComplexAction):
+class DoubleAxisTracker(RawInstructions):
     """
     Track the mouse along the axis which had the biggest initial movement.
 
@@ -61,10 +58,7 @@ class DoubleAxisTracker(ComplexAction):
         instructions: List[Instruction] = [],
         short_vs_long_press_time: Optional[float] = None
     ) -> None:
-        super().__init__(
-            name=name,
-            short_vs_long_press_time=short_vs_long_press_time,
-            instructions=instructions)
+        super().__init__(name, instructions, short_vs_long_press_time)
 
         self._horizontal_handler = horizontal_handler
         self._vertical_handler = vertical_handler
