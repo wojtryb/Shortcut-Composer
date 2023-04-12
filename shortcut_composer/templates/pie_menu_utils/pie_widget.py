@@ -58,6 +58,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             self.windowFlags() |  # type: ignore
             Qt.Tool |
             Qt.FramelessWindowHint |
+            Qt.WindowStaysOnTopHint |
             Qt.NoDropShadowWindowHint))
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setStyleSheet("background: transparent;")

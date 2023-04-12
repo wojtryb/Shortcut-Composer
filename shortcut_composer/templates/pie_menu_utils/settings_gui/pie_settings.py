@@ -32,6 +32,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
         self.setWindowFlags((
             self.windowFlags() |  # type: ignore
             Qt.Tool |
+            Qt.WindowStaysOnTopHint |
             Qt.FramelessWindowHint))
         self.setCursor(Qt.ArrowCursor)
 

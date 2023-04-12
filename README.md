@@ -9,9 +9,12 @@ The plugin adds new shortcuts of the following types:
 - `Multiple assignment` - repeatedly pressing a key, cycles between multiple values of krita property.
 - `Temporary key` - temporarily activates a krita property with long press or toggles it on/off with short press.
 
-## What's new in **1.2.0**
+## What's new in **1.2**
 
 [![PIE MENUS - introducing Shortcut Composer](http://img.youtube.com/vi/Tkf2-U0OyG4/0.jpg)](https://www.youtube.com/watch?v=Tkf2-U0OyG4 "PIE MENUS - introducing Shortcut Composer")
+
+
+- [hotfix **1.2.1**] - Fixed pie menus in edit mode hiding when clicked outside on the canvas.
 
 
 ### Added
