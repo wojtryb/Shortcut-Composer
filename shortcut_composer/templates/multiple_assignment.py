@@ -66,7 +66,7 @@ class MultipleAssignment(RawInstructions, Generic[T]):
         controller: Controller[T],
         values: List[T],
         default_value: Optional[T] = None,
-        instructions: List[Instruction] = [],
+        instructions: Optional[List[Instruction]] = None,
         short_vs_long_press_time: Optional[float] = None
     ) -> None:
         super().__init__(name, instructions, short_vs_long_press_time)
@@ -75,11 +75,14 @@ class MultipleAssignment(RawInstructions, Generic[T]):
         self._default_value = self._read_default_value(default_value)
 
         self.config = Field(
-            config_group=f"ShortcutComposer: {name}",
+            config_group=f"ShortcutComposer: {self.name}",
             name="Values",
             default=values)
 
-        self._settings = SettingsHandler(name, self.config, instructions)
+        self._settings = SettingsHandler(
+            self.name,
+            self.config,
+            self._instructions)
         self._values_to_cycle = self.config.read()
 
         def reset() -> None:

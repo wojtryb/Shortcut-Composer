@@ -27,8 +27,12 @@ class InstructionHolder:
     respective method in every stored Instruction.
     """
 
-    def __init__(self, instructions: List[Instruction] = []) -> None:
+    def __init__(self, instructions: List[Instruction]) -> None:
         self._instructions = instructions
+
+    def append(self, instruction: Instruction):
+        """Add new instruction to the list on runtime."""
+        self._instructions.append(instruction)
 
     def _template(self, method_name: str) -> None:
         """Perform method `method_name` of each held instruction."""

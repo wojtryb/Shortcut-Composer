@@ -13,7 +13,7 @@ The plugin adds new shortcuts of the following types:
 
 [![PIE MENUS - introducing Shortcut Composer](http://img.youtube.com/vi/Tkf2-U0OyG4/0.jpg)](https://www.youtube.com/watch?v=Tkf2-U0OyG4 "PIE MENUS - introducing Shortcut Composer")
 
-
+- [hotfix **1.2.2**] - Fixed MultipleAssignment actions sharing one configuration window.
 - [hotfix **1.2.1**] - Fixed pie menus in edit mode hiding when clicked outside on the canvas.
 
 
@@ -34,7 +34,7 @@ The plugin adds new shortcuts of the following types:
 - Make `input_adapter` package independent from the rest of the plugin to improve re-usability.
 - Fix crash when picking a deleted preset with PieMenu.
 
-Check out historic [changelogs](https://github.com/wojtryb/Shortcut-Composer/wiki/Change-log).
+Check out historic [changelogs](https://github.com/wojtryb/Shortcut-Composer/releases).
 
 ## Plugin release video:
 
