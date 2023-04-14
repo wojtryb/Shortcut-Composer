@@ -1,14 +1,13 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List
 from enum import Enum
 
 from PyQt5.QtGui import QColor
 
 from api_krita import Krita
 from api_krita.pyqt import RoundButton, Timer
-from core_components import Instruction
+from core_components import Instruction, InstructionHolder
 from config_system import Field
 from .action_values_window import ActionValuesWindow
 
@@ -29,7 +28,7 @@ class SettingsHandler:
         self,
         name: str,
         config: Field[list],
-        instructions: List[Instruction],
+        instructions: InstructionHolder,
     ) -> None:
         to_cycle = config.read()
         if not to_cycle or not isinstance(to_cycle[0], Enum):

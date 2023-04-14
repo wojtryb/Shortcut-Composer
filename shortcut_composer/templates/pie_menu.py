@@ -69,7 +69,7 @@ class PieMenu(RawInstructions, Generic[T]):
         name: str,
         controller: Controller[T],
         values: List[T],
-        instructions: List[Instruction] = [],
+        instructions: Optional[List[Instruction]] = None,
         pie_radius_scale: float = 1.0,
         icon_radius_scale: float = 1.0,
         background_color: Optional[QColor] = None,

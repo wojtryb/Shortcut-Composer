@@ -42,12 +42,13 @@ class RawInstructions(ComplexActionInterface):
     def __init__(
         self,
         name: str,
-        instructions: List[Instruction] = [],
+        instructions: Optional[List[Instruction]] = None,
         short_vs_long_press_time: Optional[float] = None
     ) -> None:
         self.name = name
         self.short_vs_long_press_time = _read_time(short_vs_long_press_time)
-        self._instructions = InstructionHolder(instructions)
+        self._instructions = InstructionHolder(
+            instructions if instructions is not None else [])
 
     def on_key_press(self) -> None:
         """Run instructions meant for key press event."""

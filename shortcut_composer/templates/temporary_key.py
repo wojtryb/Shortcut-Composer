@@ -62,7 +62,7 @@ class TemporaryKey(RawInstructions, Generic[T]):
         controller: Controller[T],
         high_value: T,
         low_value: Optional[T] = None,
-        instructions: List[Instruction] = [],
+        instructions: Optional[List[Instruction]] = None,
         short_vs_long_press_time: Optional[float] = None
     ) -> None:
         super().__init__(name, instructions, short_vs_long_press_time)
