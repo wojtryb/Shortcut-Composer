@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+import re
 from typing import List, NamedTuple
 
 from PyQt5.QtCore import Qt
@@ -8,8 +9,10 @@ from PyQt5.QtWidgets import (
     QWidget,
     QScrollArea,
     QLabel,
+    QLineEdit,
     QGridLayout,
-    QVBoxLayout)
+    QVBoxLayout,
+    QHBoxLayout)
 
 from ..label import Label
 from ..label_widget import LabelWidget
@@ -54,6 +57,7 @@ class ScrollArea(QWidget):
         super().__init__(parent)
         self._style = style
         self._labels = labels
+        self._labels_copy = labels.copy()
 
         self._scroll_area_layout = OffsetGridLayout(columns, self)
         scroll_widget = QWidget()
@@ -64,10 +68,18 @@ class ScrollArea(QWidget):
         area.setWidgetResizable(True)
         area.setWidget(scroll_widget)
 
+        footer = QHBoxLayout()
+        self._active_label_display = QLabel(self)
+        footer.addWidget(self._active_label_display, 1)
+        self._search_bar = QLineEdit(self)
+        self._search_bar.setPlaceholderText("Search")
+        self._search_bar.setClearButtonEnabled(True)
+        footer.addWidget(self._search_bar, 1)
+        self._search_bar.textChanged.connect(self._refresh)
+
         layout = QVBoxLayout()
         layout.addWidget(area)
-        self._active_label_display = QLabel(self)
-        layout.addWidget(self._active_label_display)
+        layout.addLayout(footer)
         self.setLayout(layout)
 
         self.children_list = self._create_children()
@@ -76,7 +88,7 @@ class ScrollArea(QWidget):
         """Create LabelWidgets that represent the labels."""
         children: List[LabelWidget] = []
 
-        for label in self._labels:
+        for label in self._labels_copy:
             child = create_label_widget(
                 label=label,
                 style=self._style,
@@ -89,6 +101,17 @@ class ScrollArea(QWidget):
 
         self._scroll_area_layout.extend(children)
         return children
+
+    def _refresh(self):
+        pattern = self._search_bar.text()
+        regex = re.compile(pattern, flags=re.IGNORECASE)
+
+        children = []
+        for child in self.children_list:
+            if regex.search(child.label.pretty_name):
+                children.append(child)
+
+        self._scroll_area_layout.replace(children)
 
 
 class GridPosition(NamedTuple):
@@ -159,7 +182,17 @@ class OffsetGridLayout(QGridLayout):
             self._internal_insert(len(self), widget)
         self._refresh()
 
+    def replace(self, widgets: List[LabelWidget]):
+        for kept_widget in self._widgets:
+            if kept_widget not in widgets:
+                self.removeWidget(kept_widget)
+                kept_widget.setParent(None)  # type: ignore
+
+        self._widgets.clear()
+        self._widgets.extend(widgets)
+        self._refresh()
+
     def _refresh(self):
         """Refresh the layout by adding all the internal widgets to it."""
         for i, widget in enumerate(self._widgets):
-            self.addWidget(widget, *self._get_position(i), 2, 2)
+            self.addWidget(widget, *self._get_position(i), 2, 2, Qt.AlignTop)
