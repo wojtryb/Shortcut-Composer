@@ -4,7 +4,7 @@
 import re
 from typing import List, NamedTuple
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import (
     QWidget,
     QScrollArea,
@@ -86,10 +86,10 @@ class ScrollArea(QWidget):
         footer.addWidget(self._search_bar, 1)
         self._search_bar.textChanged.connect(self._apply_search_bar_filter)
 
-        layout = QVBoxLayout()
-        layout.addWidget(area)
-        layout.addLayout(footer)
-        self.setLayout(layout)
+        self._layout = QVBoxLayout()
+        self._layout.addWidget(area)
+        self._layout.addLayout(footer)
+        self.setLayout(self._layout)
 
         self._known_children: dict[Label, LabelWidget] = {}
         self._children_list: List[LabelWidget] = []
@@ -110,6 +110,8 @@ class ScrollArea(QWidget):
 
     def replace_handled_labels(self, labels: List[Label]) -> None:
         """Replace current list of widgets with new ones."""
+        # HACK: disable painting for short time to prevent artifacts
+        self.setUpdatesEnabled(False)
         self._children_list.clear()
 
         for label in labels:
@@ -119,9 +121,11 @@ class ScrollArea(QWidget):
                 self._children_list.append(self._create_child(label))
 
         self._scroll_area_layout.extend(self._children_list)
+        QTimer.singleShot(10, lambda: self.setUpdatesEnabled(True))
 
     def _apply_search_bar_filter(self):
         """Replace widgets in layout with those thich match the filter."""
+        self.setUpdatesEnabled(False)
         pattern = re.escape(self._search_bar.text())
         regex = re.compile(pattern, flags=re.IGNORECASE)
 
@@ -129,6 +133,7 @@ class ScrollArea(QWidget):
                     if regex.search(child.label.pretty_name)]
 
         self._scroll_area_layout.replace(children)
+        QTimer.singleShot(10, lambda: self.setUpdatesEnabled(True))
 
     def mark_used_labels(self, used_values: List[Label]):
         """Make all values currently used in pie undraggable and disabled."""
@@ -219,6 +224,7 @@ class OffsetGridLayout(QGridLayout):
 
         for kept_widget in self._widgets:
             if kept_widget not in widgets:
+                kept_widget.hide()
                 self.removeWidget(kept_widget)
                 kept_widget.setParent(None)  # type: ignore
 

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from krita import Krita as Api, Extension, qApp
-from typing import Callable, Protocol, Any, Optional
+from typing import Callable, Protocol, Any, Dict, Optional
 
 from PyQt5.QtWidgets import (
     QMainWindow,
@@ -57,7 +57,7 @@ class KritaInstance:
         """Return shortcut of krita action called `action_name`."""
         return self.instance.action(action_name).shortcut()
 
-    def get_presets(self) -> dict:
+    def get_presets(self) -> Dict[str, Any]:
         """Return a list of unwrapped preset objects"""
         return self.instance.resources('preset')
 

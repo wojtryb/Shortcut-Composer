@@ -57,6 +57,7 @@ class PresetPieConfig(PieConfig[str]):
         self.ICON_RADIUS_SCALE = self.field("Icon scale", icon_radius_scale)
         self.TAG_NAME = self.field("Tag", values.tag_name)
         self.ORDER = self.field("Values", [], parser_type=str)
+        self.LAST_TAG_SELECTED = self.field("Last tag selected", "All")
 
         self.background_color = background_color
         self.active_color = active_color
