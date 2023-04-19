@@ -92,7 +92,7 @@ class ScrollArea(QWidget):
         self.setLayout(layout)
 
         self._known_children: dict[Label, LabelWidget] = {}
-        self.children_list: List[LabelWidget] = []
+        self._children_list: List[LabelWidget] = []
 
     def _create_child(self, label: Label) -> LabelWidget:
         """Create LabelWidget that represent the label."""
@@ -110,25 +110,35 @@ class ScrollArea(QWidget):
 
     def replace_handled_labels(self, labels: List[Label]) -> None:
         """Replace current list of widgets with new ones."""
-        self.children_list.clear()
+        self._children_list.clear()
 
         for label in labels:
             if label in self._known_children:
-                self.children_list.append(self._known_children[label])
+                self._children_list.append(self._known_children[label])
             else:
-                self.children_list.append(self._create_child(label))
+                self._children_list.append(self._create_child(label))
 
-        self._scroll_area_layout.extend(self.children_list)
+        self._scroll_area_layout.extend(self._children_list)
 
     def _apply_search_bar_filter(self):
         """Replace widgets in layout with those thich match the filter."""
         pattern = re.escape(self._search_bar.text())
         regex = re.compile(pattern, flags=re.IGNORECASE)
 
-        children = [child for child in self.children_list
+        children = [child for child in self._children_list
                     if regex.search(child.label.pretty_name)]
 
         self._scroll_area_layout.replace(children)
+
+    def mark_used_labels(self, used_values: List[Label]):
+        """Make all values currently used in pie undraggable and disabled."""
+        for widget in self._children_list:
+            if widget.label in used_values:
+                widget.enabled = False
+                widget.draggable = False
+            else:
+                widget.enabled = True
+                widget.draggable = True
 
 
 class GridPosition(NamedTuple):

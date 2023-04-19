@@ -3,20 +3,37 @@
 
 from typing import List, Optional
 
-from PyQt5.QtWidgets import QVBoxLayout, QTabWidget, QWidget
+from PyQt5.QtWidgets import QWidget
 
 from core_components.controllers import PresetController
+from config_system import Field
+from config_system.ui import ConfigComboBox
 from api_krita import Krita
 from api_krita.wrappers import Database
-from config_system.ui import (
-    ConfigFormWidget,
-    ConfigComboBox,
-    ConfigSpinBox)
 from ..label import Label
 from ..pie_style import PieStyle
 from ..pie_config import PresetPieConfig
 from .pie_settings import PieSettings
 from .scroll_area import ScrollArea
+
+
+class TagComboBox(ConfigComboBox):
+    def __init__(
+        self,
+        config_field: Field[str],
+        parent: Optional[QWidget] = None,
+        pretty_name: Optional[str] = None,
+    ) -> None:
+        self._preset_tags = []
+        self.refresh()
+        super().__init__(config_field, parent, pretty_name, self._preset_tags)
+
+    def refresh(self):
+        """Replace list of available tags with those red from database."""
+        self._preset_tags.clear()
+        with Database() as database:
+            self._preset_tags.extend(sorted(
+                database.get_brush_tags(), key=str.lower))
 
 
 class PresetPieSettings(PieSettings):
@@ -32,61 +49,26 @@ class PresetPieSettings(PieSettings):
         super().__init__(config, style, parent)
 
         self._used_values = used_values
-        self._tags: List[str] = []
-
-        tab_holder = QTabWidget()
 
         controller = PresetController()
-        values: List[Label[str]] = []
+        labels: List[Label[str]] = []
         for preset_name in Krita.get_presets().keys():
             label = Label.from_value(preset_name, controller)
             if label is not None:
-                values.append(label)
+                labels.append(label)
 
         self._action_values = ScrollArea(self._style, 3)
-        self._action_values.replace_handled_labels(values)
+        self._action_values.replace_handled_labels(labels)
         self._action_values.setMinimumHeight(
             round(style.unscaled_icon_radius*6.2))
+        self._tab_holder.addTab(self._action_values, "Action values")
 
-        tab_holder.addTab(self._action_values, "Action values")
-        self._local_settings = ConfigFormWidget([
-            ConfigComboBox(config.TAG_NAME, self, "Tag name", self._tags),
-            ConfigSpinBox(config.PIE_RADIUS_SCALE, self, "Pie scale", 0.05, 4),
-            ConfigSpinBox(
-                config.ICON_RADIUS_SCALE, self, "Icon max scale", 0.05, 4),
-        ])
-        tab_holder.addTab(self._local_settings, "Local settings")
-
-        self._refresh_tags()
+        self._config.ORDER.register_callback(self._refresh_draggable)
         self._refresh_draggable()
-
-        layout = QVBoxLayout(self)
-        layout.addWidget(tab_holder)
-        self.setLayout(layout)
-
-    def show(self):
-        """Show the window after its settings are refreshed."""
-        self._refresh_tags()
-        self._local_settings.refresh()
-        super().show()
-
-    def hide(self) -> None:
-        """Hide the window after its settings are saved to kritarc."""
-        self._local_settings.apply()
-        super().hide()
-
-    def _refresh_tags(self):
-        """Replace list of available tags with those red from database."""
-        self._tags.clear()
-        with Database() as database:
-            self._tags.extend(sorted(database.get_brush_tags(), key=str.lower))
 
     def _refresh_draggable(self):
         """Make all values currently used in pie undraggable and disabled."""
-        for widget in self._action_values.children_list:
-            if widget.label in self._used_values:
-                widget.enabled = False
-                widget.draggable = False
-            else:
-                widget.enabled = True
-                widget.draggable = True
+        self._action_values.mark_used_labels(self._used_values)
+
+# tag_combo = TagComboBox(config.TAG_NAME, self, "Tag name"),
+# tag_combo.refresh()

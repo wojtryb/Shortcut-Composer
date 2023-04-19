@@ -5,9 +5,10 @@ from typing import Optional
 
 from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtGui import QCursor
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QTabWidget, QVBoxLayout
 
 from api_krita.pyqt import AnimatedWidget, BaseWidget
+from config_system.ui import ConfigFormWidget, ConfigSpinBox
 from composer_utils import Config
 from ..pie_style import PieStyle
 from ..pie_config import PieConfig
@@ -40,6 +41,28 @@ class PieSettings(AnimatedWidget, BaseWidget):
         self._config = config
         self._config.register_callback(self._reset)
         self._reset()
+
+        self._tab_holder = QTabWidget()
+        self._local_settings = ConfigFormWidget([
+            ConfigSpinBox(config.PIE_RADIUS_SCALE, self, "Pie scale", 0.05, 4),
+            ConfigSpinBox(config.ICON_RADIUS_SCALE, self, "Icon max scale",
+                          0.05, 4),
+        ])
+        self._tab_holder.addTab(self._local_settings, "Local settings")
+
+        layout = QVBoxLayout(self)
+        layout.addWidget(self._tab_holder)
+        self.setLayout(layout)
+
+    def show(self):
+        """Show the window after its settings are refreshed."""
+        self._local_settings.refresh()
+        super().show()
+
+    def hide(self) -> None:
+        """Hide the window after its settings are saved to kritarc."""
+        self._local_settings.apply()
+        super().hide()
 
     def move_to_pie_side(self):
         """Move the widget on the right side of the pie."""

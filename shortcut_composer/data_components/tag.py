@@ -10,6 +10,11 @@ class Tag(List[str]):
 
     def __init__(self, tag_name: str):
         self.tag_name = tag_name
+        self.refresh()
+
+    def refresh(self):
+        """Update itself with current list of presets that belong to tag."""
+        self.clear()
         self.extend(self._read_presets())
 
     def _read_presets(self) -> List[str]:
