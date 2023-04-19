@@ -127,13 +127,11 @@ class PresetPieSettings(PieSettings):
         self._refresh_draggable()
 
         action_layout = QVBoxLayout()
-        mode_switch_button = QPushButton()
-        mode_switch_button.setText("Switch mode")
-        mode_switch_button.clicked.connect(self._switch_mode)
+        self._mode_switch_button = QPushButton()
+        self._mode_switch_button.clicked.connect(self._switch_is_tag_mode)
         self._tag_combobox = TagComboBox(config.TAG_NAME, self, "Tag name")
-        self._tag_combobox.refresh()
 
-        action_layout.addWidget(mode_switch_button)
+        action_layout.addWidget(self._mode_switch_button)
         action_layout.addWidget(self._tag_combobox.widget)
         action_layout.addWidget(self._action_values)
         action_layout.addStretch()
@@ -151,13 +149,16 @@ class PresetPieSettings(PieSettings):
         """Set if presets should be picked from tag or by free picking."""
         self._config.IS_TAG_MODE.write(value)
         if value:
+            self._mode_switch_button.setText("Switch to free select mode")
             self._action_values.hide()
             self._tag_combobox.widget.show()
         else:
+            self._mode_switch_button.setText("Switch to tag mode")
             self._action_values.show()
             self._tag_combobox.widget.hide()
 
-    def _switch_mode(self):
+    def _switch_is_tag_mode(self):
+        """Change the is_tag_mode to the opposite state."""
         self._set_is_tag_mode(not self._config.IS_TAG_MODE.read())
 
     def hide(self) -> None:

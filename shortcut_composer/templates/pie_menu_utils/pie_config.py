@@ -13,7 +13,7 @@ T = TypeVar("T")
 class PieConfig(FieldGroup, Generic[T], ABC):
     """Abstract FieldGroup representing config of PieMenu."""
 
-    ALLOW_REMOVE: bool
+    allow_value_edit: bool
     """Is it allowed to remove elements in runtime. """
 
     name: str
@@ -40,8 +40,6 @@ class PresetPieConfig(PieConfig[str]):
     and the custom order saved by the user in kritarc.
     """
 
-    ALLOW_REMOVE = False
-
     def __init__(
         self,
         name: str,
@@ -64,8 +62,15 @@ class PresetPieConfig(PieConfig[str]):
         self.background_color = background_color
         self.active_color = active_color
 
+    @property
+    def allow_value_edit(self):
+        """Return whether user can add and remove items from the pie."""
+        return not self.IS_TAG_MODE.read()
+
     def values(self) -> List[str]:
         """Return all presets from the tag. Respect order from kritarc."""
+        if not self.IS_TAG_MODE.read():
+            return self.ORDER.read()
         saved_order = self.ORDER.read()
         tag_values = Tag(self.TAG_NAME.read())
 
@@ -76,8 +81,6 @@ class PresetPieConfig(PieConfig[str]):
 
 class NonPresetPieConfig(PieConfig[T], Generic[T]):
     """FieldGroup representing config of PieMenu of non-preset values."""
-
-    ALLOW_REMOVE = True
 
     def __init__(
         self,
@@ -96,6 +99,7 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
 
         self.background_color = background_color
         self.active_color = active_color
+        self.allow_value_edit = True
 
     def values(self) -> List[T]:
         """Return values to display as icons as defined be the user."""

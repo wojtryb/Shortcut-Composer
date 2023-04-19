@@ -43,17 +43,19 @@ class LabelHolder:
 
     def append(self, label: Label):
         """Append the new label to the holder."""
-        self._labels.append(label)
-        self.reset()
+        if (self._config.allow_value_edit):
+            self._labels.append(label)
+            self.reset()
 
     def insert(self, index: int, label: Label):
         """Insert the new label to the holder at given index."""
-        self._labels.insert(index, label)
-        self.reset()
+        if (self._config.allow_value_edit):
+            self._labels.insert(index, label)
+            self.reset()
 
     def remove(self, label: Label):
         """Remove the label from the holder."""
-        if (label in self._labels and self._config.ALLOW_REMOVE):
+        if (label in self._labels and self._config.allow_value_edit):
             self._labels.remove(label)
             self.reset()
 
