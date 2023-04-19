@@ -106,7 +106,7 @@ class PresetPieSettings(PieSettings):
 
     def __init__(
         self,
-        used_values: List[Label],
+        used_values: List[Label[str]],
         config: PresetPieConfig,
         style: PieStyle,
         parent: Optional[QWidget] = None,
@@ -130,6 +130,8 @@ class PresetPieSettings(PieSettings):
         self._mode_switch_button = QPushButton()
         self._mode_switch_button.clicked.connect(self._switch_is_tag_mode)
         self._tag_combobox = TagComboBox(config.TAG_NAME, self, "Tag name")
+        self._tag_combobox.widget.currentTextChanged.connect(
+            self._reset_preset_config)
 
         action_layout.addWidget(self._mode_switch_button)
         action_layout.addWidget(self._tag_combobox.widget)
@@ -141,6 +143,9 @@ class PresetPieSettings(PieSettings):
 
         self._set_is_tag_mode(self._config.IS_TAG_MODE.read())
 
+    def _reset_preset_config(self):
+        self._tag_combobox.save()
+
     def _refresh_draggable(self):
         """Make all values currently used in pie undraggable and disabled."""
         self._action_values.mark_used_labels(self._used_values)
@@ -149,10 +154,14 @@ class PresetPieSettings(PieSettings):
         """Set if presets should be picked from tag or by free picking."""
         self._config.IS_TAG_MODE.write(value)
         if value:
+            # moving to tag mode
             self._mode_switch_button.setText("Switch to free select mode")
             self._action_values.hide()
             self._tag_combobox.widget.show()
         else:
+            # moving to free pick mode
+            self._config.ORDER.write(
+                [label.value for label in self._used_values])
             self._mode_switch_button.setText("Switch to tag mode")
             self._action_values.show()
             self._tag_combobox.widget.hide()
