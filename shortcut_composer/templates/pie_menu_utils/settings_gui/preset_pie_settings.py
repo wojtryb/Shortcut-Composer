@@ -16,6 +16,7 @@ from ..label import Label
 from ..pie_style import PieStyle
 from ..pie_config import PresetPieConfig
 from .pie_settings import PieSettings
+from .scroll_area import ScrollArea
 
 
 class PresetPieSettings(PieSettings):
@@ -42,6 +43,12 @@ class PresetPieSettings(PieSettings):
             if label is not None:
                 values.append(label)
 
+        self._action_values = ScrollArea(self._style, 3)
+        self._action_values.replace_handled_labels(values)
+        self._action_values.setMinimumHeight(
+            round(style.unscaled_icon_radius*6.2))
+
+        tab_holder.addTab(self._action_values, "Action values")
         self._local_settings = ConfigFormWidget([
             ConfigComboBox(config.TAG_NAME, self, "Tag name", self._tags),
             ConfigSpinBox(config.PIE_RADIUS_SCALE, self, "Pie scale", 0.05, 4),
@@ -51,6 +58,7 @@ class PresetPieSettings(PieSettings):
         tab_holder.addTab(self._local_settings, "Local settings")
 
         self._refresh_tags()
+        self._refresh_draggable()
 
         layout = QVBoxLayout(self)
         layout.addWidget(tab_holder)
@@ -72,3 +80,13 @@ class PresetPieSettings(PieSettings):
         self._tags.clear()
         with Database() as database:
             self._tags.extend(sorted(database.get_brush_tags(), key=str.lower))
+
+    def _refresh_draggable(self):
+        """Make all values currently used in pie undraggable and disabled."""
+        for widget in self._action_values.children_list:
+            if widget.label in self._used_values:
+                widget.enabled = False
+                widget.draggable = False
+            else:
+                widget.enabled = True
+                widget.draggable = True
