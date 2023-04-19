@@ -39,12 +39,23 @@ class ScrollArea(QWidget):
     """
     Widget containing a scrollable list of PieWidgets.
 
-    Widgets are created based on the passed labels and then made
-    publically available in `children_list` attribute, so that the owner
-    of the class can change their state (draggable, enabled).
+    Widgets are defined with replace_handled_labels method which
+    creates the widgets representing them if needed. Using the method
+    again will replace handled widgets with new ones representing newer
+    passed labels.
+
+    All the created widgets are stored in case they may need to be
+    reused when labels change again.
+
+    Currently handled widgets are publically available, so that the
+    class owner can change their state (draggable, enabled).
 
     ScrollArea comes with embedded QLabel showing the name of the
-    children widget over which mouse was hovered.
+    children widget over which mouse was hovered, and a filter bar.
+
+    Writing something to the filter results in widgets which do not
+    match the phrase to not be displayed. Hidden widgets, are still
+    available under children_list.
     """
 
     def __init__(
@@ -97,7 +108,7 @@ class ScrollArea(QWidget):
         self._known_children[label] = child
         return child
 
-    def replace_widgets(self, labels: List[Label]) -> None:
+    def replace_handled_labels(self, labels: List[Label]) -> None:
         """Replace current list of widgets with new ones."""
         self.children_list.clear()
 
