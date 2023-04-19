@@ -2,13 +2,14 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from api_krita.pyqt import Text
-from typing import Union, Generic, TypeVar, Final
+from typing import Union, Generic, TypeVar, Final, Optional
 from dataclasses import dataclass
 
 from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QPixmap, QIcon
 
 from composer_utils import Config
+from core_components import Controller
 
 T = TypeVar("T")
 
@@ -50,6 +51,16 @@ class Label(Generic[T]):
     def __hash__(self) -> int:
         """Use value for hashing, as it should not change over time."""
         return hash(self.value)
+
+    @staticmethod
+    def from_value(value: T, controller: Controller) -> 'Optional[Label[T]]':
+        if (label := controller.get_label(value)) is None:
+            return None
+
+        return Label(
+            value=value,
+            display_value=label,
+            pretty_name=controller.get_pretty_name(value))
 
 
 class AnimationProgress:

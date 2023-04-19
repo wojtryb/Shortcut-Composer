@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import List, TypeVar, Generic, Optional
-from enum import Enum
 
 from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QColor
@@ -81,6 +80,7 @@ class PieMenu(RawInstructions, Generic[T]):
         self._config = create_local_config(
             name=name,
             values=values,
+            controller_type=self._controller.TYPE,
             pie_radius_scale=pie_radius_scale,
             icon_radius_scale=icon_radius_scale,
             background_color=background_color,
@@ -89,15 +89,13 @@ class PieMenu(RawInstructions, Generic[T]):
         self._last_values: List[T] = []
         self._labels: List[Label] = []
         self._reset_labels(self._labels, self._config.values())
-        self._all_labels: List[Label] = []
-        self._reset_labels(self._all_labels, self._get_all_values(values))
         self._edit_mode = EditMode(self)
         self._style = PieStyle(items=self._labels, pie_config=self._config)
 
         self.pie_settings = create_pie_settings_window(
+            controller=self._controller,
             style=self._style,
-            values=self._all_labels,
-            used_values=self._labels,
+            used_labels=self._labels,
             pie_config=self._config)
         self.pie_widget = PieWidget(
             style=self._style,
@@ -174,22 +172,6 @@ class PieMenu(RawInstructions, Generic[T]):
         """Replace list values with newly created labels."""
         label_list.clear()
         for value in values:
-            label = self._controller.get_label(value)
+            label = Label.from_value(value, self._controller)
             if label is not None:
-                label_list.append(Label(
-                    value=value,
-                    display_value=label,
-                    pretty_name=self._controller.get_pretty_name(value)))
-
-    @staticmethod
-    def _get_all_values(values: List[T]) -> List[T]:
-        """Return list of available enum values. HACK"""
-        if not values:
-            return []
-
-        value_type = values[0]
-        if not isinstance(value_type, Enum):
-            return []
-
-        names = type(value_type)._member_names_
-        return [type(value_type)[name] for name in names]
+                label_list.append(label)

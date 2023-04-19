@@ -2,9 +2,11 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import List, Optional
+from enum import Enum
 
 from PyQt5.QtWidgets import QVBoxLayout, QTabWidget, QWidget
 
+from core_components import Controller
 from config_system.ui import ConfigFormWidget, ConfigSpinBox
 from ..label import Label
 from ..pie_style import PieStyle
@@ -24,7 +26,7 @@ class EnumPieSettings(PieSettings):
 
     def __init__(
         self,
-        values: List[Label],
+        controller: Controller[Enum],
         used_values: List[Label],
         config: NonPresetPieConfig,
         style: PieStyle,
@@ -34,10 +36,15 @@ class EnumPieSettings(PieSettings):
 
         self._used_values = used_values
 
+        names = controller.TYPE._member_names_
+        values = [controller.TYPE[name] for name in names]
+        labels = [Label.from_value(value, controller) for value in values]
+        labels = [label for label in labels if label is not None]
+
         tab_holder = QTabWidget()
 
         self._action_values = ScrollArea(self._style, 3)
-        self._action_values.replace_handled_labels(values)
+        self._action_values.replace_handled_labels(labels)
         self._action_values.setMinimumHeight(
             round(style.unscaled_icon_radius*6.2))
 

@@ -6,7 +6,7 @@ from enum import Enum
 
 from PyQt5.QtGui import QColor
 
-from data_components import Tag
+from core_components import Controller
 from .pie_config import PieConfig, PresetPieConfig, NonPresetPieConfig
 from .settings_gui import (
     PieSettings,
@@ -23,6 +23,7 @@ T = TypeVar("T")
 def create_local_config(
     name: str,
     values: List[T],
+    controller_type: type,
     pie_radius_scale: float,
     icon_radius_scale: float,
     background_color: Optional[QColor],
@@ -32,24 +33,26 @@ def create_local_config(
     config_name = f"ShortcutComposer: {name}"
     args = [config_name, values, pie_radius_scale, icon_radius_scale,
             background_color, active_color]
-    if isinstance(values, Tag):
+
+    if issubclass(controller_type, str):
         return PresetPieConfig(*args)  # type: ignore
     return NonPresetPieConfig(*args)
 
 
 def create_pie_settings_window(
-    values: List[Label],
-    used_values: List[Label],
+    controller: Controller,
+    used_labels: List[Label],
     style: PieStyle,
     pie_config: PieConfig,
     parent=None
 ) -> PieSettings:
     """Create and return the right settings based on config and value type."""
     args = [pie_config, style, parent]
-    if isinstance(pie_config, PresetPieConfig):
-        return PresetPieSettings(*args)
-    elif isinstance(pie_config, NonPresetPieConfig):
-        if not values or isinstance(values[0], Enum):
-            return NumericPieSettings(*args)
-        return EnumPieSettings(values, used_values, *args)
+
+    if issubclass(controller.TYPE, str):
+        return PresetPieSettings(used_labels, *args)
+    elif issubclass(controller.TYPE, Enum):
+        return EnumPieSettings(controller, used_labels, *args)
+    elif issubclass(controller.TYPE, float):
+        return NumericPieSettings(*args)
     raise ValueError(f"Unknown pie config {pie_config}")
