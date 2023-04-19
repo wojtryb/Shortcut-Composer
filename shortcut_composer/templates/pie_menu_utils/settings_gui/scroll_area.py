@@ -49,14 +49,12 @@ class ScrollArea(QWidget):
 
     def __init__(
         self,
-        labels: List[Label],
         style: PieStyle,
         columns: int,
         parent=None
     ) -> None:
         super().__init__(parent)
         self._style = style
-        self._labels = labels
 
         scroll_widget = QWidget()
         self._scroll_area_layout = OffsetGridLayout(columns, self)
@@ -82,25 +80,34 @@ class ScrollArea(QWidget):
         layout.addLayout(footer)
         self.setLayout(layout)
 
-        self.children_list = self._create_children()
+        self._known_children: dict[Label, LabelWidget] = {}
+        self.children_list: List[LabelWidget] = []
 
-    def _create_children(self) -> List[LabelWidget]:
-        """Create LabelWidgets that represent the labels."""
-        children: List[LabelWidget] = []
+    def _create_child(self, label: Label) -> LabelWidget:
+        """Create LabelWidget that represent the label."""
+        child = create_label_widget(
+            label=label,
+            style=self._style,
+            parent=self,
+            is_unscaled=True)
+        child.setFixedSize(child.icon_radius*2, child.icon_radius*2)
+        child.draggable = True
+        child.add_instruction(ChildInstruction(self._active_label_display))
 
-        for label in self._labels:
-            child = create_label_widget(
-                label=label,
-                style=self._style,
-                parent=self,
-                is_unscaled=True)
-            child.setFixedSize(child.icon_radius*2, child.icon_radius*2)
-            child.draggable = True
-            child.add_instruction(ChildInstruction(self._active_label_display))
-            children.append(child)
+        self._known_children[label] = child
+        return child
 
-        self._scroll_area_layout.extend(children)
-        return children
+    def replace_widgets(self, labels: List[Label]) -> None:
+        """Replace current list of widgets with new ones."""
+        self.children_list.clear()
+
+        for label in labels:
+            if label in self._known_children:
+                self.children_list.append(self._known_children[label])
+            else:
+                self.children_list.append(self._create_child(label))
+
+        self._scroll_area_layout.extend(self.children_list)
 
     def _apply_search_bar_filter(self):
         """Replace widgets in layout with those thich match the filter."""

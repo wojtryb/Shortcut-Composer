@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from api_krita.pyqt import Text
-from typing import Union, Generic, TypeVar
+from typing import Union, Generic, TypeVar, Final
 from dataclasses import dataclass
 
 from PyQt5.QtCore import QPoint
@@ -27,7 +27,7 @@ class Label(Generic[T]):
     - `activation_progress` -- state of animation in range <0-1>
     """
 
-    value: T
+    value: Final[T]
     center: QPoint = QPoint(0, 0)
     angle: int = 0
     display_value: Union[QPixmap, QIcon, Text, None] = None
@@ -46,6 +46,10 @@ class Label(Generic[T]):
         if not isinstance(other, Label):
             return False
         return self.value == other.value
+
+    def __hash__(self) -> int:
+        """Use value for hashing, as it should not change over time."""
+        return hash(self.value)
 
 
 class AnimationProgress:
