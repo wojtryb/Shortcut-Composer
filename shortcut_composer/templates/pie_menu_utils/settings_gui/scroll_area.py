@@ -122,7 +122,7 @@ class ScrollArea(QWidget):
 
     def _apply_search_bar_filter(self):
         """Replace widgets in layout with those thich match the filter."""
-        pattern = self._search_bar.text()
+        pattern = re.escape(self._search_bar.text())
         regex = re.compile(pattern, flags=re.IGNORECASE)
 
         children = [child for child in self.children_list
