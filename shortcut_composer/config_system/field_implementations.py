@@ -81,6 +81,9 @@ class ListField(FieldBase, Generic[T]):
         if raw is None:
             return self.default
 
+        if raw == "":
+            return []
+
         values_list = raw.split("\t")
         return [self._parser.parse_to(value) for value in values_list]
 
