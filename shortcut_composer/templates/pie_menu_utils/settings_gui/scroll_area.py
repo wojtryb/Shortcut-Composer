@@ -106,10 +106,8 @@ class ScrollArea(QWidget):
         pattern = self._search_bar.text()
         regex = re.compile(pattern, flags=re.IGNORECASE)
 
-        children = []
-        for child in self.children_list:
-            if regex.search(child.label.pretty_name):
-                children.append(child)
+        children = [child for child in self.children_list
+                    if regex.search(child.label.pretty_name)]
 
         self._scroll_area_layout.replace(children)
 
@@ -139,7 +137,7 @@ class OffsetGridLayout(QGridLayout):
 
     def __init__(self, max_columns: int, owner: QWidget):
         super().__init__()
-        self._widgets: List[QWidget] = []
+        self._widgets: List[LabelWidget] = []
         self._max_columns = max_columns
         self._items_in_group = 2*max_columns - 1
         self._owner = owner
@@ -166,6 +164,14 @@ class OffsetGridLayout(QGridLayout):
         widget.show()
         self._widgets.insert(index, widget)
 
+    def _internal_remove(self, widget: LabelWidget) -> None:
+        """Remove the widget from layout if stored there."""
+        if widget not in self._widgets:
+            return
+        self.removeWidget(widget)
+        widget.setParent(None)  # type: ignore
+        self._widgets.remove(widget)
+
     def insert(self, index: int, widget: LabelWidget) -> None:
         """Insert the widget at given index and refresh the layout."""
         self._internal_insert(index, widget)
@@ -183,10 +189,12 @@ class OffsetGridLayout(QGridLayout):
         self._refresh()
 
     def replace(self, widgets: List[LabelWidget]):
+        if widgets == self._widgets:
+            return
+
         for kept_widget in self._widgets:
             if kept_widget not in widgets:
-                self.removeWidget(kept_widget)
-                kept_widget.setParent(None)  # type: ignore
+                self._internal_remove(kept_widget)
 
         self._widgets.clear()
         self._widgets.extend(widgets)
