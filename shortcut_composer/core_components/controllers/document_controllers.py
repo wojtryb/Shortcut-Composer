@@ -24,6 +24,8 @@ class ActiveLayerController(DocumentBasedController, Controller[Node]):
     - Does not have a default
     """
 
+    TYPE = Node
+
     def get_value(self) -> Node:
         """Get current node."""
         return self.document.active_node
@@ -45,7 +47,8 @@ class TimeController(DocumentBasedController, Controller[int]):
     - Defaults to `0`
     """
 
-    default_value = 0
+    TYPE = int
+    DEFAULT_VALUE = 0
 
     def get_value(self) -> int:
         """Get current frame on animation timeline."""

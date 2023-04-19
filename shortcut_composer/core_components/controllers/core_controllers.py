@@ -20,7 +20,8 @@ class ToolController(Controller[Tool]):
     - Defaults to `Tool.FREEHAND_BRUSH`
     """
 
-    default_value: Tool = Tool.FREEHAND_BRUSH
+    TYPE = Tool
+    DEFAULT_VALUE: Tool = Tool.FREEHAND_BRUSH
 
     @staticmethod
     def get_value() -> Tool:
@@ -49,7 +50,8 @@ class TransformModeController(Controller[TransformMode]):
     - Defaults to `TransformMode.FREE`
     """
 
-    default_value: TransformMode = TransformMode.FREE
+    TYPE = TransformMode
+    DEFAULT_VALUE: TransformMode = TransformMode.FREE
 
     def __init__(self) -> None:
         self.button_finder = TransformModeFinder()
@@ -86,7 +88,8 @@ class ToggleController(Controller[bool]):
     """
 
     toggle: Toggle
-    default_value = False
+    TYPE = bool
+    DEFAULT_VALUE = False
 
     def get_value(self) -> bool:
         """Return whether the toggle action is on."""
@@ -101,7 +104,6 @@ class ToggleController(Controller[bool]):
         return value.pretty_name
 
 
-@dataclass
 class UndoController(Controller[float]):
     """
     Gives access to `undo` and `redo` actions.
@@ -115,7 +117,8 @@ class UndoController(Controller[float]):
     """
 
     state = 0
-    default_value = 0
+    TYPE = float
+    DEFAULT_VALUE = 0
 
     def get_value(self) -> int:
         """Return remembered position on undo stack"""

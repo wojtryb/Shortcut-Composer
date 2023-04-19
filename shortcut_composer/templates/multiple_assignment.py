@@ -122,7 +122,7 @@ class MultipleAssignment(RawInstructions, Generic[T]):
 
     def _read_default_value(self, value: Optional[T]) -> T:
         """Read value from controller if it was not given."""
-        if (default := self._controller.default_value) is None:
+        if (default := self._controller.DEFAULT_VALUE) is None:
             raise ValueError(
                 f"{self._controller} can't be used with MultipleAssignment.")
         return value if value is not None else default

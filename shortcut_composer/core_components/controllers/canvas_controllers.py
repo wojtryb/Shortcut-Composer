@@ -22,7 +22,8 @@ class CanvasZoomController(CanvasBasedController, Controller[float]):
     - Defaults to `100`
     """
 
-    default_value: float = 100.0
+    TYPE = float
+    DEFAULT_VALUE: float = 100.0
 
     def get_value(self) -> float:
         """Get current zoom level in %"""
@@ -50,7 +51,8 @@ class CanvasRotationController(CanvasBasedController, Controller[float]):
     - Defaults to `0.0`
     """
 
-    default_value: float = 0.0
+    TYPE = float
+    DEFAULT_VALUE: float = 0.0
 
     def get_value(self) -> float:
         """Get canvas rotation in degrees."""

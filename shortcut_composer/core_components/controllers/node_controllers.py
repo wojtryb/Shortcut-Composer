@@ -24,7 +24,8 @@ class LayerOpacityController(NodeBasedController, Controller[int]):
     - Defaults to `100`
     """
 
-    default_value: int = 100
+    TYPE = int
+    DEFAULT_VALUE = 100
 
     def get_value(self) -> int:
         """Get currently active blending mode."""
@@ -54,7 +55,8 @@ class LayerBlendingModeController(NodeBasedController,
     - Defaults to `BlendingMode.NORMAL`
     """
 
-    default_value = BlendingMode.NORMAL
+    TYPE = BlendingMode
+    DEFAULT_VALUE = BlendingMode.NORMAL
 
     def get_value(self) -> BlendingMode:
         """Get current brush opacity."""
@@ -83,7 +85,8 @@ class LayerVisibilityController(NodeBasedController, Controller[bool]):
     - Defaults to `True`
     """
 
-    default_value: bool = True
+    TYPE = bool
+    DEFAULT_VALUE = True
 
     def get_value(self) -> bool:
         """Get current brush opacity."""
@@ -100,7 +103,8 @@ class CreateLayerWithBlendingController(NodeBasedController,
                                         Controller[BlendingMode]):
     """Creates Paint Layer with set Blending Mode."""
 
-    default_value = BlendingMode.NORMAL
+    TYPE = BlendingMode
+    DEFAULT_VALUE = BlendingMode.NORMAL
 
     def get_value(self) -> BlendingMode:
         """Get current layer blending mode."""
