@@ -57,7 +57,6 @@ class ScrollArea(QWidget):
         super().__init__(parent)
         self._style = style
         self._labels = labels
-        self._labels_copy = labels.copy()
 
         self._scroll_area_layout = OffsetGridLayout(columns, self)
         scroll_widget = QWidget()
@@ -75,7 +74,7 @@ class ScrollArea(QWidget):
         self._search_bar.setPlaceholderText("Search")
         self._search_bar.setClearButtonEnabled(True)
         footer.addWidget(self._search_bar, 1)
-        self._search_bar.textChanged.connect(self._refresh)
+        self._search_bar.textChanged.connect(self._apply_search_bar_filter)
 
         layout = QVBoxLayout()
         layout.addWidget(area)
@@ -88,7 +87,7 @@ class ScrollArea(QWidget):
         """Create LabelWidgets that represent the labels."""
         children: List[LabelWidget] = []
 
-        for label in self._labels_copy:
+        for label in self._labels:
             child = create_label_widget(
                 label=label,
                 style=self._style,
@@ -102,7 +101,8 @@ class ScrollArea(QWidget):
         self._scroll_area_layout.extend(children)
         return children
 
-    def _refresh(self):
+    def _apply_search_bar_filter(self):
+        """Replace widgets in layout with those thich match the filter."""
         pattern = self._search_bar.text()
         regex = re.compile(pattern, flags=re.IGNORECASE)
 
@@ -164,14 +164,6 @@ class OffsetGridLayout(QGridLayout):
         widget.show()
         self._widgets.insert(index, widget)
 
-    def _internal_remove(self, widget: LabelWidget) -> None:
-        """Remove the widget from layout if stored there."""
-        if widget not in self._widgets:
-            return
-        self.removeWidget(widget)
-        widget.setParent(None)  # type: ignore
-        self._widgets.remove(widget)
-
     def insert(self, index: int, widget: LabelWidget) -> None:
         """Insert the widget at given index and refresh the layout."""
         self._internal_insert(index, widget)
@@ -189,15 +181,17 @@ class OffsetGridLayout(QGridLayout):
         self._refresh()
 
     def replace(self, widgets: List[LabelWidget]):
+        """Replace all existing widgets with the ones provided."""
         if widgets == self._widgets:
             return
 
         for kept_widget in self._widgets:
             if kept_widget not in widgets:
-                self._internal_remove(kept_widget)
+                self.removeWidget(kept_widget)
+                kept_widget.setParent(None)  # type: ignore
 
         self._widgets.clear()
-        self._widgets.extend(widgets)
+        self.extend(widgets)
         self._refresh()
 
     def _refresh(self):
