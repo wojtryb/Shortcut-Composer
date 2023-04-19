@@ -50,6 +50,7 @@ class PresetPieConfig(PieConfig[str]):
         icon_radius_scale: float,
         background_color: Optional[QColor],
         active_color: QColor,
+        is_tag_mode: bool,
     ) -> None:
         super().__init__(name)
 
@@ -58,6 +59,7 @@ class PresetPieConfig(PieConfig[str]):
         self.TAG_NAME = self.field("Tag", values.tag_name)
         self.ORDER = self.field("Values", [], parser_type=str)
         self.LAST_TAG_SELECTED = self.field("Last tag selected", "All")
+        self.IS_TAG_MODE = self.field("Is tag mode", is_tag_mode)
 
         self.background_color = background_color
         self.active_color = active_color

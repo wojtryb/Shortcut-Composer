@@ -3,7 +3,7 @@
 
 from typing import List, Optional, Iterable
 
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton
 
 from config_system import Field
 from config_system.ui import ConfigComboBox
@@ -112,20 +112,56 @@ class PresetPieSettings(PieSettings):
         parent: Optional[QWidget] = None,
     ) -> None:
         super().__init__(config, style, parent)
+        self._config: PresetPieConfig
 
         self._used_values = used_values
 
-        self._action_values = PresetScrollArea(self._style, 3, config)
+        self._action_values = PresetScrollArea(self._style, 3, self._config)
         self._action_values.setMinimumHeight(
             round(style.unscaled_icon_radius*6.2))
-        self._tab_holder.addTab(self._action_values, "Action values")
+        policy = self._action_values.sizePolicy()
+        policy.setRetainSizeWhenHidden(True)
+        self._action_values.setSizePolicy(policy)
 
         self._config.ORDER.register_callback(self._refresh_draggable)
         self._refresh_draggable()
+
+        action_layout = QVBoxLayout()
+        mode_switch_button = QPushButton()
+        mode_switch_button.setText("Switch mode")
+        mode_switch_button.clicked.connect(self._switch_mode)
+        self._tag_combobox = TagComboBox(config.TAG_NAME, self, "Tag name")
+        self._tag_combobox.refresh()
+
+        action_layout.addWidget(mode_switch_button)
+        action_layout.addWidget(self._tag_combobox.widget)
+        action_layout.addWidget(self._action_values)
+        action_layout.addStretch()
+        tab_widget = QWidget()
+        tab_widget.setLayout(action_layout)
+        self._tab_holder.addTab(tab_widget, "Action values")
+
+        self._set_is_tag_mode(self._config.IS_TAG_MODE.read())
 
     def _refresh_draggable(self):
         """Make all values currently used in pie undraggable and disabled."""
         self._action_values.mark_used_labels(self._used_values)
 
-# tag_combo = TagComboBox(config.TAG_NAME, self, "Tag name"),
-# tag_combo.refresh()
+    def _set_is_tag_mode(self, value: bool):
+        """Set if presets should be picked from tag or by free picking."""
+        self._config.IS_TAG_MODE.write(value)
+        if value:
+            self._action_values.hide()
+            self._tag_combobox.widget.show()
+        else:
+            self._action_values.show()
+            self._tag_combobox.widget.hide()
+
+    def _switch_mode(self):
+        self._set_is_tag_mode(not self._config.IS_TAG_MODE.read())
+
+    def hide(self) -> None:
+        """Save the picked tag when in tag mode."""
+        if self._config.IS_TAG_MODE.read():
+            self._tag_combobox.save()
+        return super().hide()
