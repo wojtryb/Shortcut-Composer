@@ -58,9 +58,10 @@ class ScrollArea(QWidget):
         self._style = style
         self._labels = labels
 
-        self._scroll_area_layout = OffsetGridLayout(columns, self)
         scroll_widget = QWidget()
+        self._scroll_area_layout = OffsetGridLayout(columns, self)
         scroll_widget.setLayout(self._scroll_area_layout)
+
         area = QScrollArea()
         area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
@@ -196,5 +197,6 @@ class OffsetGridLayout(QGridLayout):
 
     def _refresh(self):
         """Refresh the layout by adding all the internal widgets to it."""
+        align: Qt.AlignmentFlag = Qt.AlignTop | Qt.AlignLeft  # type: ignore
         for i, widget in enumerate(self._widgets):
-            self.addWidget(widget, *self._get_position(i), 2, 2, Qt.AlignTop)
+            self.addWidget(widget, *self._get_position(i), 2, 2, align)
