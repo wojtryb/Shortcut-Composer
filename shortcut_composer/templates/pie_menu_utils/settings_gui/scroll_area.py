@@ -149,6 +149,9 @@ class OffsetGridLayout(QGridLayout):
         self._max_columns = max_columns
         self._items_in_group = 2*max_columns - 1
         self._owner = owner
+        self.setAlignment(Qt.AlignTop | Qt.AlignLeft)  # type: ignore
+        self.setVerticalSpacing(5)
+        self.setHorizontalSpacing(5)
 
     def __len__(self) -> int:
         """Amount of held LabelWidgets."""
@@ -204,6 +207,5 @@ class OffsetGridLayout(QGridLayout):
 
     def _refresh(self):
         """Refresh the layout by adding all the internal widgets to it."""
-        align: Qt.AlignmentFlag = Qt.AlignTop | Qt.AlignLeft  # type: ignore
         for i, widget in enumerate(self._widgets):
-            self.addWidget(widget, *self._get_position(i), 2, 2, align)
+            self.addWidget(widget, *self._get_position(i), 2, 2)
