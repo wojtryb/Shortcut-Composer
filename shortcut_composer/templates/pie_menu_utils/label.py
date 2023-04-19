@@ -54,6 +54,7 @@ class Label(Generic[T]):
 
     @staticmethod
     def from_value(value: T, controller: Controller) -> 'Optional[Label[T]]':
+        """Use provided controller to create a label holding passed value."""
         if (label := controller.get_label(value)) is None:
             return None
 

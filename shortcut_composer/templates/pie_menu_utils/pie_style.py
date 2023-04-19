@@ -85,9 +85,7 @@ class PieStyle:
         """Deadzone can be configured, but when pie is empty, becomes inf."""
         if not self._items:
             return float("inf")
-        return (
-            40 * self._base_size
-            * Config.PIE_DEADZONE_GLOBAL_SCALE.read())
+        return self.accept_button_radius
 
     @property
     def widget_radius(self) -> int:
@@ -122,9 +120,9 @@ class PieStyle:
     @property
     def accept_button_radius(self) -> int:
         """Radius of the button which applies the changes from edit mode."""
-        default_radius = self.setting_button_radius
-        radius = self.deadzone_radius
-        return int(radius) if radius != float("inf") else default_radius
+        return round(
+            40 * self._base_size
+            * Config.PIE_DEADZONE_GLOBAL_SCALE.read())
 
     @property
     def active_color(self):

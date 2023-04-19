@@ -12,8 +12,7 @@ from .settings_gui import (
     PieSettings,
     PresetPieSettings,
     EnumPieSettings,
-    NumericPieSettings,
-)
+    NumericPieSettings)
 from .label import Label
 from .pie_style import PieStyle
 
@@ -29,7 +28,7 @@ def create_local_config(
     background_color: Optional[QColor],
     active_color: QColor,
 ) -> PieConfig[T]:
-    """Create and return the right local config based on values type."""
+    """Create and return the right local config based on labels type."""
     config_name = f"ShortcutComposer: {name}"
     args = [config_name, values, pie_radius_scale, icon_radius_scale,
             background_color, active_color]
@@ -46,7 +45,7 @@ def create_pie_settings_window(
     pie_config: PieConfig,
     parent=None
 ) -> PieSettings:
-    """Create and return the right settings based on config and value type."""
+    """Create and return the right settings based on labels type."""
     args = [pie_config, style, parent]
 
     if issubclass(controller.TYPE, str):

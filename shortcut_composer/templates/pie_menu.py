@@ -88,7 +88,7 @@ class PieMenu(RawInstructions, Generic[T]):
 
         self._last_values: List[T] = []
         self._labels: List[Label] = []
-        self._reset_labels(self._labels, self._config.values())
+        self._reset_labels(self._config.values())
         self._edit_mode = EditMode(self)
         self._style = PieStyle(items=self._labels, pie_config=self._config)
 
@@ -139,7 +139,7 @@ class PieMenu(RawInstructions, Generic[T]):
 
         new_values = self._config.values()
         if self._last_values != new_values:
-            self._reset_labels(self._labels, new_values)
+            self._reset_labels(new_values)
             self._last_values = new_values
             self.pie_widget.label_holder.reset()  # HACK: should be automatic
 
@@ -164,14 +164,10 @@ class PieMenu(RawInstructions, Generic[T]):
         if label := self.pie_widget.active:
             self._controller.set_value(label.value)
 
-    def _reset_labels(
-        self,
-        label_list: List[Label[T]],
-        values: List[T]
-    ) -> None:
+    def _reset_labels(self, values: List[T]) -> None:
         """Replace list values with newly created labels."""
-        label_list.clear()
+        self._labels.clear()
         for value in values:
             label = Label.from_value(value, self._controller)
             if label is not None:
-                label_list.append(label)
+                self._labels.append(label)
