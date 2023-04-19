@@ -126,6 +126,9 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         if distance > self._style.widget_radius:
             # Dragged out of the PieWidget
             return self.label_holder.remove(source_widget.label)
+        if not self._labels:
+            # First label dragged to empty pie
+            return self.label_holder.insert(0, source_widget.label)
         if distance < self._style.deadzone_radius:
             # Do nothing in deadzone
             return

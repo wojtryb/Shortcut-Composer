@@ -53,9 +53,7 @@ class LabelHolder:
 
     def remove(self, label: Label):
         """Remove the label from the holder."""
-        if (label in self._labels
-                and len(self._labels) > 1
-                and self._config.ALLOW_REMOVE):
+        if (label in self._labels and self._config.ALLOW_REMOVE):
             self._labels.remove(label)
             self.reset()
 
