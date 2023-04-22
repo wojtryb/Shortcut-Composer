@@ -56,7 +56,7 @@ class PresetPieConfig(PieConfig[str]):
         self.ICON_RADIUS_SCALE = self.field("Icon scale", icon_radius_scale)
         self.TAG_NAME = self.field("Tag", values.tag_name)
         self.ORDER = self.field("Values", [], parser_type=str)
-        self.IS_TAG_MODE = self.field("Is tag mode", is_tag_mode)
+        self.TAG_MODE = self.field("Is tag mode", is_tag_mode)
 
         self.background_color = background_color
         self.active_color = active_color
@@ -64,11 +64,11 @@ class PresetPieConfig(PieConfig[str]):
     @property
     def allow_value_edit(self):
         """Return whether user can add and remove items from the pie."""
-        return not self.IS_TAG_MODE.read()
+        return not self.TAG_MODE.read()
 
     def values(self) -> List[str]:
         """Return all presets from the tag. Respect order from kritarc."""
-        if not self.IS_TAG_MODE.read():
+        if not self.TAG_MODE.read():
             return self.ORDER.read()
         saved_order = self.ORDER.read()
         tag_values = Tag(self.TAG_NAME.read())

@@ -53,6 +53,10 @@ class PresetScrollArea(ScrollArea):
 
     Extends usual scroll area with the combobox over the area for
     picking displayed tag. The picked tag is saved to given field.
+
+    Operates in two modes:
+    - Tag mode - the presets are determined by tracking krita tag
+    - Manual mode - the presets are manually picked by the user
     """
 
     def __init__(
@@ -100,33 +104,71 @@ class PresetPieSettings(PieSettings):
         super().__init__(config, style, parent)
         self._config: PresetPieConfig
 
-        self._action_values = PresetScrollArea(
+        self._preset_scroll_area = self._init_preset_scroll_area()
+        self._mode_button = self._init_mode_button()
+        self._auto_combobox = self._init_auto_combobox()
+        self._manual_combobox = self._preset_scroll_area.tag_chooser
+
+        self.tag_mode = self._config.TAG_MODE.read()
+        self._tab_holder.addTab(self._init_action_values(), "Action values")
+
+    def _init_preset_scroll_area(self) -> PresetScrollArea:
+        """Create preset scroll area which tracks which ones are used."""
+        preset_scroll_area = PresetScrollArea(
             style=self._style,
             columns=3,
             field=self._config.field("Last tag selected", "All"))
-        self.retain_size_policy(self._action_values, True)
+        policy = preset_scroll_area.sizePolicy()
+        policy.setRetainSizeWhenHidden(True)
+        preset_scroll_area.setSizePolicy(policy)
 
         def refresh_draggable():
-            """Make all values used in pie undraggable and disabled."""
-            self._action_values.mark_used_values(self._config.values())
+            """Mark which pies are currently used in the pie."""
+            preset_scroll_area.mark_used_values(self._config.values())
 
         self._config.ORDER.register_callback(refresh_draggable)
-        self._action_values.reloaded_signal.connect(refresh_draggable)
+        preset_scroll_area.reloaded_signal.connect(refresh_draggable)
         refresh_draggable()
+        return preset_scroll_area
 
-        self._mode_button = SafeConfirmButton()
-        self._mode_button.clicked.connect(self._switch_is_tag_mode)
-        self._mode_button.setFixedHeight(
-            self._mode_button.sizeHint().height()*2)
+    def _init_mode_button(self) -> SafeConfirmButton:
+        """Create button which switches between tag and manual mode."""
+        def switch_mode():
+            """Change the is_tag_mode to the opposite state."""
+            self.tag_mode = not self.tag_mode
+            if self.tag_mode:
+                self._auto_combobox.set(self._manual_combobox.read())
+                self._auto_combobox.save()
+            else:
+                self._manual_combobox.set(self._auto_combobox.read())
+                self._manual_combobox.save()
 
-        def save_picked_tag():
-            self._auto_combobox.save()
+        mode_button = SafeConfirmButton()
+        mode_button.clicked.connect(switch_mode)
+        mode_button.setFixedHeight(mode_button.sizeHint().height()*2)
+        return mode_button
+
+    def _init_auto_combobox(self) -> TagComboBox:
+        """Create tag modecombobox, which sets tag presets to the pie."""
+        def handle_picked_tag():
+            """Save used tag in config and report the values changed."""
+            auto_combobox.save()
             self._config.refresh_order()
 
-        self._auto_combobox = TagComboBox(config.TAG_NAME, self, "Tag name")
-        self._auto_combobox.widget.currentTextChanged.connect(save_picked_tag)
+        auto_combobox = TagComboBox(self._config.TAG_NAME, self, "Tag name")
+        auto_combobox.widget.currentTextChanged.connect(handle_picked_tag)
+        return auto_combobox
 
-        self._manual_combobox = self._action_values.tag_chooser
+    def _init_action_values(self) -> QWidget:
+        """
+        Create Action Values tab of the Settings Window.
+
+        - Mode button and two comboboxes are places at the top
+        - Below them lies the preset scroll area
+        - Two comboboxes will swap with each other when the mode changes
+        - Scroll area combobox is taken out of it, and placed with the
+          other one to save space.
+        """
         top_layout = QHBoxLayout()
         top_layout.addWidget(self._mode_button, 1)
         top_layout.addWidget(self._auto_combobox.widget, 2)
@@ -134,46 +176,32 @@ class PresetPieSettings(PieSettings):
 
         action_layout = QVBoxLayout()
         action_layout.addLayout(top_layout)
-        action_layout.addWidget(self._action_values)
+        action_layout.addWidget(self._preset_scroll_area)
         action_layout.addStretch()
 
-        tab_widget = QWidget()
-        tab_widget.setLayout(action_layout)
-        self._tab_holder.addTab(tab_widget, "Action values")
+        action_values_tab = QWidget()
+        action_values_tab.setLayout(action_layout)
+        return action_values_tab
 
-        self._set_is_tag_mode(self._config.IS_TAG_MODE.read())
+    @property
+    def tag_mode(self):
+        """Return whether pie is in tag mode or not (manual mode)."""
+        return self._config.TAG_MODE.read()
 
-    def _set_is_tag_mode(self, value: bool):
-        """Set if presets should be picked from tag or by free picking."""
-        self._config.IS_TAG_MODE.write(value)
+    @tag_mode.setter
+    def tag_mode(self, value: bool):
+        """Set the pie mode to tag (True) or manual (False)."""
+        self._config.TAG_MODE.write(value)
         self._config.refresh_order()
         if value:
             # moving to tag mode
             self._mode_button.main_text = "Tag mode"
-            self._action_values.hide()
+            self._preset_scroll_area.hide()
             self._manual_combobox.widget.hide()
             self._auto_combobox.widget.show()
         else:
             # moving to manual mode
             self._mode_button.main_text = "Manual mode"
-            self._action_values.show()
+            self._preset_scroll_area.show()
             self._manual_combobox.widget.show()
             self._auto_combobox.widget.hide()
-
-    def _switch_is_tag_mode(self):
-        """Change the is_tag_mode to the opposite state."""
-        value = not self._config.IS_TAG_MODE.read()
-        self._set_is_tag_mode(value)
-        if value:
-            self._auto_combobox.set(self._manual_combobox.read())
-            self._auto_combobox.save()
-        else:
-            self._manual_combobox.set(self._auto_combobox.read())
-            self._manual_combobox.save()
-
-    @staticmethod
-    def retain_size_policy(widget: QWidget, value: bool):
-        """Make widget keep its place, when hidden."""
-        policy = widget.sizePolicy()
-        policy.setRetainSizeWhenHidden(value)
-        widget.setSizePolicy(policy)
