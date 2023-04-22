@@ -35,24 +35,16 @@ class TagComboBox(ConfigComboBox):
         allow_all: bool = False,
     ) -> None:
         self._allow_all = allow_all
-        self._preset_tags = []
+        super().__init__(config_field, parent, pretty_name)
 
-        super().__init__(config_field, parent, pretty_name, self._preset_tags)
-
-        self.refresh()
-        self.reset()
-
-    def refresh(self):
+    def reset(self):
         """Replace list of available tags with those red from database."""
-        self._preset_tags.clear()
-        with Database() as database:
-            self._preset_tags.extend(sorted(
-                database.get_brush_tags(), key=str.lower))
-
-        self.widget.clear()
+        self._combo_box.clear()
         if self._allow_all:
-            self.widget.addItem("All")
-        self.widget.addItems(self._preset_tags)
+            self._combo_box.addItem("All")
+        with Database() as database:
+            self._combo_box.addItems(database.get_brush_tags())
+        self.set(self.config_field.read())
 
 
 class PresetScrollArea(ScrollArea):
