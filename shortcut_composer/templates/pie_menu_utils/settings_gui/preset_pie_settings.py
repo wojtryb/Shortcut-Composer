@@ -3,7 +3,7 @@
 
 from typing import List, Optional, Iterable
 
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 
 from config_system import Field
 from config_system.ui import ConfigComboBox
@@ -11,6 +11,7 @@ from core_components.controllers import PresetController
 from data_components import Tag
 from api_krita import Krita
 from api_krita.wrappers import Database
+from api_krita.pyqt import SafeConfirmButton
 from ..label import Label
 from ..pie_style import PieStyle
 from ..pie_config import PresetPieConfig
@@ -104,7 +105,6 @@ class PresetScrollArea(ScrollArea):
 class PresetPieSettings(PieSettings):
     """Pie setting window for pie values being brush presets."""
 
-    # TODO: use self._config.values() instead of used_values?
     def __init__(
         self,
         config: PresetPieConfig,
@@ -120,8 +120,10 @@ class PresetPieSettings(PieSettings):
         self._config.ORDER.register_callback(self._refresh_draggable)
         self._refresh_draggable()
 
-        self._mode_switch_button = QPushButton()
+        self._mode_switch_button = SafeConfirmButton()
         self._mode_switch_button.clicked.connect(self._switch_is_tag_mode)
+        self._mode_switch_button.setFixedHeight(
+            self._mode_switch_button.sizeHint().height()*2)
         self._tag_combobox = TagComboBox(config.TAG_NAME, self, "Tag name")
         self._tag_combobox.widget.currentTextChanged.connect(
             self._reset_preset_config)
@@ -158,12 +160,12 @@ class PresetPieSettings(PieSettings):
         self._save_order()
         if value:
             # moving to tag mode
-            self._mode_switch_button.setText("Tag mode")
+            self._mode_switch_button.main_text = "Tag mode"
             self._action_values.hide()
             self._tag_combobox.widget.show()
         else:
             # moving to manual mode
-            self._mode_switch_button.setText("Manual mode")
+            self._mode_switch_button.main_text = "Manual mode"
             self._action_values.show()
             self._tag_combobox.widget.hide()
 
