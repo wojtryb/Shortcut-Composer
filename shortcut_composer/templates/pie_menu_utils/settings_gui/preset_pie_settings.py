@@ -107,15 +107,12 @@ class PresetPieSettings(PieSettings):
     # TODO: use self._config.values() instead of used_values?
     def __init__(
         self,
-        used_values: List[Label[str]],
         config: PresetPieConfig,
         style: PieStyle,
         parent: Optional[QWidget] = None,
     ) -> None:
         super().__init__(config, style, parent)
         self._config: PresetPieConfig
-
-        self._used_values = used_values
 
         self._action_values = PresetScrollArea(self._style, 3, self._config)
         self.retain_size_policy(self._action_values, True)
@@ -153,7 +150,7 @@ class PresetPieSettings(PieSettings):
 
     def _refresh_draggable(self):
         """Make all values currently used in pie undraggable and disabled."""
-        self._action_values.mark_used_labels(self._used_values)
+        self._action_values.mark_used_values(self._config.values())
 
     def _set_is_tag_mode(self, value: bool):
         """Set if presets should be picked from tag or by free picking."""

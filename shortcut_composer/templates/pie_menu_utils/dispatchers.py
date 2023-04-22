@@ -14,7 +14,6 @@ from .settings_gui import (
     PresetPieSettings,
     EnumPieSettings,
     NumericPieSettings)
-from .label import Label
 from .pie_style import PieStyle
 
 T = TypeVar("T")
@@ -42,7 +41,6 @@ def create_local_config(
 
 def create_pie_settings_window(
     controller: Controller,
-    used_labels: List[Label],
     style: PieStyle,
     pie_config: PieConfig,
     parent=None
@@ -51,9 +49,9 @@ def create_pie_settings_window(
     args = [pie_config, style, parent]
 
     if issubclass(controller.TYPE, str):
-        return PresetPieSettings(used_labels, *args)
+        return PresetPieSettings(*args)
     elif issubclass(controller.TYPE, Enum):
-        return EnumPieSettings(controller, used_labels, *args)
+        return EnumPieSettings(controller, *args)
     elif issubclass(controller.TYPE, float):
         return NumericPieSettings(*args)
     raise ValueError(f"Unknown pie config {pie_config}")

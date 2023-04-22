@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Optional
+from typing import Optional
 from enum import Enum
 
 from PyQt5.QtWidgets import QWidget
@@ -26,14 +26,11 @@ class EnumPieSettings(PieSettings):
     def __init__(
         self,
         controller: Controller[Enum],
-        used_values: List[Label],
         config: NonPresetPieConfig,
         style: PieStyle,
         parent: Optional[QWidget] = None,
     ) -> None:
         super().__init__(config, style, parent)
-
-        self._used_values = used_values
 
         names = controller.TYPE._member_names_
         values = [controller.TYPE[name] for name in names]
@@ -49,4 +46,4 @@ class EnumPieSettings(PieSettings):
 
     def _refresh_draggable(self):
         """Make all values currently used in pie undraggable and disabled."""
-        self._action_values.mark_used_labels(self._used_values)
+        self._action_values.mark_used_values(self._config.values())

@@ -139,10 +139,10 @@ class ScrollArea(QWidget):
         self._scroll_area_layout.replace(children)
         QTimer.singleShot(10, lambda: self.setUpdatesEnabled(True))
 
-    def mark_used_labels(self, used_values: List[Label]):
+    def mark_used_values(self, used_values: list):
         """Make all values currently used in pie undraggable and disabled."""
         for widget in self._children_list:
-            if widget.label in used_values:
+            if widget.label.value in used_values:
                 widget.enabled = False
                 widget.draggable = False
             else:

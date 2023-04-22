@@ -97,7 +97,6 @@ class PieMenu(RawInstructions, Generic[T]):
         self.pie_settings = create_pie_settings_window(
             controller=self._controller,
             style=self._style,
-            used_labels=self._labels,
             pie_config=self._config)
         self.pie_widget = PieWidget(
             style=self._style,
