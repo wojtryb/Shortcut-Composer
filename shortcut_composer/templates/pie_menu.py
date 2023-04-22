@@ -85,7 +85,7 @@ class PieMenu(RawInstructions, Generic[T]):
             icon_radius_scale=icon_radius_scale,
             background_color=background_color,
             active_color=active_color)
-        self._config.register_callback(
+        self._config.ORDER.register_callback(
             lambda: self._reset_labels(self._config.values()))
 
         self._last_values: List[T] = []

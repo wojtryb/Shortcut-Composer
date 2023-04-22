@@ -104,6 +104,7 @@ class PresetScrollArea(ScrollArea):
 class PresetPieSettings(PieSettings):
     """Pie setting window for pie values being brush presets."""
 
+    # TODO: use self._config.values() instead of used_values?
     def __init__(
         self,
         used_values: List[Label[str]],
@@ -145,6 +146,10 @@ class PresetPieSettings(PieSettings):
 
     def _reset_preset_config(self):
         self._tag_combobox.save()
+        self._save_order()
+
+    def _save_order(self):
+        self._config.ORDER.write(self._config.values())
 
     def _refresh_draggable(self):
         """Make all values currently used in pie undraggable and disabled."""
@@ -153,6 +158,7 @@ class PresetPieSettings(PieSettings):
     def _set_is_tag_mode(self, value: bool):
         """Set if presets should be picked from tag or by free picking."""
         self._config.IS_TAG_MODE.write(value)
+        self._save_order()
         if value:
             # moving to tag mode
             self._mode_switch_button.setText("Tag mode")
@@ -160,8 +166,6 @@ class PresetPieSettings(PieSettings):
             self._tag_combobox.widget.show()
         else:
             # moving to manual mode
-            self._config.ORDER.write(
-                [label.value for label in self._used_values])
             self._mode_switch_button.setText("Manual mode")
             self._action_values.show()
             self._tag_combobox.widget.hide()
