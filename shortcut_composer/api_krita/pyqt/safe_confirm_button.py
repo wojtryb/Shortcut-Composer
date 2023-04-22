@@ -22,11 +22,13 @@ class SafeConfirmButton(QPushButton):
         self,
         icon: QIcon = QIcon(),
         text: str = "",
+        confirm_text: str = "Confirm?",
         parent: Optional[QWidget] = None
     ) -> None:
         super().__init__(icon, text, parent)
         super().clicked.connect(self._clicked)
         self._main_text = text
+        self.confirm_text = confirm_text
         self._icon = icon
         self._confirm_mode = False
 
@@ -46,7 +48,7 @@ class SafeConfirmButton(QPushButton):
     def _confirm_mode(self, value: bool):
         """Set mode. Confirmation mode requires red border and other text."""
         if value is True:
-            self.setText("Confirm")
+            self.setText(self.confirm_text)
             self.setIcon(self._empty_icon)
             self.setStyleSheet(
                 "border-style: solid;"

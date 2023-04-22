@@ -143,7 +143,7 @@ class PresetPieSettings(PieSettings):
                 self._manual_combobox.set(self._auto_combobox.read())
                 self._manual_combobox.save()
 
-        mode_button = SafeConfirmButton()
+        mode_button = SafeConfirmButton(confirm_text="Change?")
         mode_button.clicked.connect(switch_mode)
         mode_button.setFixedHeight(mode_button.sizeHint().height()*2)
         return mode_button
