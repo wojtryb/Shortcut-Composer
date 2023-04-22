@@ -127,7 +127,7 @@ class PresetPieSettings(PieSettings):
             preset_scroll_area.mark_used_values(self._config.values())
 
         self._config.ORDER.register_callback(refresh_draggable)
-        preset_scroll_area.reloaded_signal.connect(refresh_draggable)
+        preset_scroll_area.widgets_changed.connect(refresh_draggable)
         refresh_draggable()
         return preset_scroll_area
 

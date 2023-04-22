@@ -37,6 +37,7 @@ class ChildInstruction:
 
 class EmptySignal(Protocol):
     """Protocol fixing the wrong PyQt typing."""
+
     def emit(self) -> None: ...
     def connect(self, method: Callable[[], None]) -> None: ...
 
@@ -64,7 +65,7 @@ class ScrollArea(QWidget):
     available under children_list.
     """
 
-    reloaded_signal: EmptySignal = pyqtSignal()  # type: ignore
+    widgets_changed: EmptySignal = pyqtSignal()  # type: ignore
 
     def __init__(
         self,
@@ -74,37 +75,70 @@ class ScrollArea(QWidget):
     ) -> None:
         super().__init__(parent)
         self._style = style
+        self._columns = columns
 
-        scroll_widget = QWidget()
-        self._scroll_area_layout = OffsetGridLayout(columns, self)
-        scroll_widget.setLayout(self._scroll_area_layout)
+        self._known_children: dict[Label, LabelWidget] = {}
+        self._children_list: List[LabelWidget] = []
+
+        self._grid = OffsetGridLayout(self._columns, self)
+        self._active_label_display = QLabel(self)
+        self._search_bar = self._init_search_bar()
+        self._layout = self._init_layout()
+
+        self.setLayout(self._layout)
+
+    def _init_scroll_area(self):
+        """Create a widget, which scrolls internal widget with grid layout."""
+        internal = QWidget()
+        internal.setLayout(self._grid)
 
         area = QScrollArea()
         area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        area.setMinimumWidth(
-            round(self._style.unscaled_icon_radius*columns*2.3))
-        area.setMinimumHeight(
-            round(self._style.unscaled_icon_radius*9.2))
+        radius = self._style.unscaled_icon_radius
+        area.setMinimumWidth(round(radius*self._columns*2.3))
+        area.setMinimumHeight(round(radius*9.2))
         area.setWidgetResizable(True)
-        area.setWidget(scroll_widget)
+        area.setWidget(internal)
+        return area
 
+    def _init_search_bar(self):
+        """Create search bar which hides icons not matching its text."""
+        search_bar = QLineEdit(self)
+        search_bar.setPlaceholderText("Search")
+        search_bar.setClearButtonEnabled(True)
+        search_bar.textChanged.connect(self._apply_search_bar_filter)
+        return search_bar
+
+    def _init_layout(self):
+        """
+        Create scroll area layout.
+
+        - most part is taken by the scrollable widget with icons
+        - below there is a footer which consists of:
+            - label displaying hovered icon name
+            - search bar which filters icons
+        """
         footer = QHBoxLayout()
-        self._active_label_display = QLabel(self)
         footer.addWidget(self._active_label_display, 1)
-        self._search_bar = QLineEdit(self)
-        self._search_bar.setPlaceholderText("Search")
-        self._search_bar.setClearButtonEnabled(True)
         footer.addWidget(self._search_bar, 1)
-        self._search_bar.textChanged.connect(self._apply_search_bar_filter)
 
-        self._layout = QVBoxLayout()
-        self._layout.addWidget(area)
-        self._layout.addLayout(footer)
-        self.setLayout(self._layout)
+        layout = QVBoxLayout()
+        layout.addWidget(self._init_scroll_area())
+        layout.addLayout(footer)
+        return layout
 
-        self._known_children: dict[Label, LabelWidget] = {}
-        self._children_list: List[LabelWidget] = []
+    def _apply_search_bar_filter(self):
+        """Replace widgets in layout with those thich match the filter."""
+        self.setUpdatesEnabled(False)
+        pattern = re.escape(self._search_bar.text())
+        regex = re.compile(pattern, flags=re.IGNORECASE)
+
+        children = [child for child in self._children_list
+                    if regex.search(child.label.pretty_name)]
+
+        self._grid.replace(children)
+        QTimer.singleShot(10, lambda: self.setUpdatesEnabled(True))
 
     def _create_child(self, label: Label) -> LabelWidget:
         """Create LabelWidget that represent the label."""
@@ -122,7 +156,6 @@ class ScrollArea(QWidget):
 
     def replace_handled_labels(self, labels: List[Label]) -> None:
         """Replace current list of widgets with new ones."""
-        # HACK: disable painting for short time to prevent artifacts
         self.setUpdatesEnabled(False)
         self._children_list.clear()
 
@@ -132,21 +165,9 @@ class ScrollArea(QWidget):
             else:
                 self._children_list.append(self._create_child(label))
 
-        self._scroll_area_layout.extend(self._children_list)
+        self._grid.extend(self._children_list)
         QTimer.singleShot(10, lambda: self.setUpdatesEnabled(True))
-        self.reloaded_signal.emit()
-
-    def _apply_search_bar_filter(self):
-        """Replace widgets in layout with those thich match the filter."""
-        self.setUpdatesEnabled(False)
-        pattern = re.escape(self._search_bar.text())
-        regex = re.compile(pattern, flags=re.IGNORECASE)
-
-        children = [child for child in self._children_list
-                    if regex.search(child.label.pretty_name)]
-
-        self._scroll_area_layout.replace(children)
-        QTimer.singleShot(10, lambda: self.setUpdatesEnabled(True))
+        self.widgets_changed.emit()
 
     def mark_used_values(self, used_values: list):
         """Make all values currently used in pie undraggable and disabled."""
