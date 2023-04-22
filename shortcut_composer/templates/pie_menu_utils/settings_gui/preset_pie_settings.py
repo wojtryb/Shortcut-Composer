@@ -72,15 +72,15 @@ class PresetScrollArea(ScrollArea):
     ) -> None:
         super().__init__(style, columns, parent)
         self._field = config.LAST_TAG_SELECTED
-        self._tag_chooser = TagComboBox(self._field, allow_all=True)
-        self._tag_chooser.widget.currentTextChanged.connect(
+        self.tag_chooser = TagComboBox(self._field, allow_all=True)
+        self.tag_chooser.widget.currentTextChanged.connect(
             self._change_handled_tag)
-        self._layout.insertWidget(0, self._tag_chooser.widget)
+        self._layout.insertWidget(0, self.tag_chooser.widget)
         self._change_handled_tag()
 
     def _change_handled_tag(self):
         """Get newly set tag, create it's labels and update widgets."""
-        picked_tag = self._tag_chooser.widget.currentText()
+        picked_tag = self.tag_chooser.widget.currentText()
         if picked_tag == "All":
             values = Krita.get_presets().keys()
         else:
@@ -89,7 +89,7 @@ class PresetScrollArea(ScrollArea):
         labels = self._create_labels(values)
         self.replace_handled_labels(labels)
         self._apply_search_bar_filter()
-        self._tag_chooser.save()
+        self.tag_chooser.save()
 
     def _create_labels(self, values: Iterable[str]):
         """Create labels from list of preset names."""
@@ -127,11 +127,13 @@ class PresetPieSettings(PieSettings):
         self._tag_combobox = TagComboBox(config.TAG_NAME, self, "Tag name")
         self._tag_combobox.widget.currentTextChanged.connect(
             self._reset_preset_config)
-        self.retain_size_policy(self._tag_combobox.widget, True)
+
+        self._manual_tag_combobox = self._action_values.tag_chooser
 
         top_layout = QHBoxLayout()
         top_layout.addWidget(self._mode_switch_button, 1)
         top_layout.addWidget(self._tag_combobox.widget, 2)
+        top_layout.addWidget(self._manual_tag_combobox.widget, 2)
 
         action_layout = QVBoxLayout()
         action_layout.addLayout(top_layout)
@@ -161,12 +163,18 @@ class PresetPieSettings(PieSettings):
         if value:
             # moving to tag mode
             self._mode_switch_button.main_text = "Tag mode"
+            self._tag_combobox.set(self._manual_tag_combobox.read())
+            self._tag_combobox.save()
             self._action_values.hide()
+            self._manual_tag_combobox.widget.hide()
             self._tag_combobox.widget.show()
         else:
             # moving to manual mode
             self._mode_switch_button.main_text = "Manual mode"
+            self._manual_tag_combobox.set(self._tag_combobox.read())
+            self._manual_tag_combobox.save()
             self._action_values.show()
+            self._manual_tag_combobox.widget.show()
             self._tag_combobox.widget.hide()
 
     def _switch_is_tag_mode(self):
