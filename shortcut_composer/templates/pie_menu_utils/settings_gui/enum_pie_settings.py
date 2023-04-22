@@ -42,8 +42,6 @@ class EnumPieSettings(PieSettings):
 
         self._action_values = ScrollArea(self._style, 3)
         self._action_values.replace_handled_labels(labels)
-        self._action_values.setMinimumHeight(
-            round(style.unscaled_icon_radius*6.2))
         self._tab_holder.addTab(self._action_values, "Action values")
 
         self._config.ORDER.register_callback(self._refresh_draggable)

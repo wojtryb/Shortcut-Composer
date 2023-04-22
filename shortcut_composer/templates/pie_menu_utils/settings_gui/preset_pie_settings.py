@@ -117,8 +117,6 @@ class PresetPieSettings(PieSettings):
         self._used_values = used_values
 
         self._action_values = PresetScrollArea(self._style, 3, self._config)
-        self._action_values.setMinimumHeight(
-            round(style.unscaled_icon_radius*6.2))
         self.retain_size_policy(self._action_values, True)
 
         self._config.ORDER.register_callback(self._refresh_draggable)

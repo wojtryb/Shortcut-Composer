@@ -74,6 +74,10 @@ class ScrollArea(QWidget):
         area = QScrollArea()
         area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        area.setMinimumWidth(
+            round(self._style.unscaled_icon_radius*columns*2.3))
+        area.setMinimumHeight(
+            round(self._style.unscaled_icon_radius*9.2))
         area.setWidgetResizable(True)
         area.setWidget(scroll_widget)
 

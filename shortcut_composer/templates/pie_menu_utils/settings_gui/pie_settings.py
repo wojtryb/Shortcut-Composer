@@ -28,7 +28,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
         parent: Optional[QWidget] = None,
     ) -> None:
         AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())
-        self.setMaximumHeight(round(style.widget_radius*3))
+        self.setMinimumHeight(round(style.widget_radius*2))
         self.setAcceptDrops(True)
         self.setWindowFlags((
             self.windowFlags() |  # type: ignore
@@ -40,7 +40,6 @@ class PieSettings(AnimatedWidget, BaseWidget):
         self._style = style
         self._config = config
         self._config.register_callback(self._reset)
-        self._reset()
 
         self._tab_holder = QTabWidget()
         self._local_settings = ConfigFormWidget([
