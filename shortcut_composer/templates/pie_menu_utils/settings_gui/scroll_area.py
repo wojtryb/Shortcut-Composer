@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import re
-from typing import List
+from typing import List, Protocol, Callable
 
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtCore import Qt, QTimer, pyqtSignal
 from PyQt5.QtWidgets import (
     QWidget,
     QScrollArea,
@@ -35,6 +35,12 @@ class ChildInstruction:
         self._display_label.setText("")
 
 
+class EmptySignal(Protocol):
+    """Protocol fixing the wrong PyQt typing."""
+    def emit(self) -> None: ...
+    def connect(self, method: Callable[[], None]) -> None: ...
+
+
 class ScrollArea(QWidget):
     """
     Widget containing a scrollable list of PieWidgets.
@@ -57,6 +63,8 @@ class ScrollArea(QWidget):
     match the phrase to not be displayed. Hidden widgets, are still
     available under children_list.
     """
+
+    reloaded_signal: EmptySignal = pyqtSignal()  # type: ignore
 
     def __init__(
         self,
@@ -126,6 +134,7 @@ class ScrollArea(QWidget):
 
         self._scroll_area_layout.extend(self._children_list)
         QTimer.singleShot(10, lambda: self.setUpdatesEnabled(True))
+        self.reloaded_signal.emit()
 
     def _apply_search_bar_filter(self):
         """Replace widgets in layout with those thich match the filter."""

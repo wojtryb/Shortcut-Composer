@@ -56,7 +56,6 @@ class PresetPieConfig(PieConfig[str]):
         self.ICON_RADIUS_SCALE = self.field("Icon scale", icon_radius_scale)
         self.TAG_NAME = self.field("Tag", values.tag_name)
         self.ORDER = self.field("Values", [], parser_type=str)
-        self.LAST_TAG_SELECTED = self.field("Last tag selected", "All")
         self.IS_TAG_MODE = self.field("Is tag mode", is_tag_mode)
 
         self.background_color = background_color
@@ -77,6 +76,10 @@ class PresetPieConfig(PieConfig[str]):
         preset_order = [p for p in saved_order if p in tag_values]
         missing = [p for p in tag_values if p not in saved_order]
         return preset_order + missing
+
+    def refresh_order(self):
+        """Write current list of values to order field."""
+        self.ORDER.write(self.values())
 
 
 class NonPresetPieConfig(PieConfig[T], Generic[T]):
