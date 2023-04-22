@@ -196,12 +196,14 @@ class PresetPieSettings(PieSettings):
         if value:
             # moving to tag mode
             self._mode_button.main_text = "Tag mode"
+            self._mode_button.icon = Krita.get_icon("tag")
             self._preset_scroll_area.hide()
             self._manual_combobox.widget.hide()
             self._auto_combobox.widget.show()
         else:
             # moving to manual mode
             self._mode_button.main_text = "Manual mode"
+            self._mode_button.icon = Krita.get_icon("color-to-alpha")
             self._preset_scroll_area.show()
             self._manual_combobox.widget.show()
             self._auto_combobox.widget.hide()
