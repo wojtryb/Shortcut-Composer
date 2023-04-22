@@ -163,23 +163,26 @@ class PresetPieSettings(PieSettings):
         if value:
             # moving to tag mode
             self._mode_switch_button.main_text = "Tag mode"
-            self._tag_combobox.set(self._manual_tag_combobox.read())
-            self._tag_combobox.save()
             self._action_values.hide()
             self._manual_tag_combobox.widget.hide()
             self._tag_combobox.widget.show()
         else:
             # moving to manual mode
             self._mode_switch_button.main_text = "Manual mode"
-            self._manual_tag_combobox.set(self._tag_combobox.read())
-            self._manual_tag_combobox.save()
             self._action_values.show()
             self._manual_tag_combobox.widget.show()
             self._tag_combobox.widget.hide()
 
     def _switch_is_tag_mode(self):
         """Change the is_tag_mode to the opposite state."""
-        self._set_is_tag_mode(not self._config.IS_TAG_MODE.read())
+        value = not self._config.IS_TAG_MODE.read()
+        self._set_is_tag_mode(value)
+        if value:
+            self._tag_combobox.set(self._manual_tag_combobox.read())
+            self._tag_combobox.save()
+        else:
+            self._manual_tag_combobox.set(self._tag_combobox.read())
+            self._manual_tag_combobox.save()
 
     def hide(self) -> None:
         """Save the picked tag when in tag mode."""
