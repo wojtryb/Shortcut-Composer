@@ -3,7 +3,7 @@
 
 from typing import List, Optional, Iterable
 
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton
 
 from config_system import Field
 from config_system.ui import ConfigComboBox
@@ -119,22 +119,24 @@ class PresetPieSettings(PieSettings):
         self._action_values = PresetScrollArea(self._style, 3, self._config)
         self._action_values.setMinimumHeight(
             round(style.unscaled_icon_radius*6.2))
-        policy = self._action_values.sizePolicy()
-        policy.setRetainSizeWhenHidden(True)
-        self._action_values.setSizePolicy(policy)
+        self.retain_size_policy(self._action_values, True)
 
         self._config.ORDER.register_callback(self._refresh_draggable)
         self._refresh_draggable()
 
-        action_layout = QVBoxLayout()
         self._mode_switch_button = QPushButton()
         self._mode_switch_button.clicked.connect(self._switch_is_tag_mode)
         self._tag_combobox = TagComboBox(config.TAG_NAME, self, "Tag name")
         self._tag_combobox.widget.currentTextChanged.connect(
             self._reset_preset_config)
+        self.retain_size_policy(self._tag_combobox.widget, True)
 
-        action_layout.addWidget(self._mode_switch_button)
-        action_layout.addWidget(self._tag_combobox.widget)
+        top_layout = QHBoxLayout()
+        top_layout.addWidget(self._mode_switch_button, 1)
+        top_layout.addWidget(self._tag_combobox.widget, 2)
+
+        action_layout = QVBoxLayout()
+        action_layout.addLayout(top_layout)
         action_layout.addWidget(self._action_values)
         action_layout.addStretch()
         tab_widget = QWidget()
@@ -155,14 +157,14 @@ class PresetPieSettings(PieSettings):
         self._config.IS_TAG_MODE.write(value)
         if value:
             # moving to tag mode
-            self._mode_switch_button.setText("Switch to free select mode")
+            self._mode_switch_button.setText("Tag mode")
             self._action_values.hide()
             self._tag_combobox.widget.show()
         else:
-            # moving to free pick mode
+            # moving to manual mode
             self._config.ORDER.write(
                 [label.value for label in self._used_values])
-            self._mode_switch_button.setText("Switch to tag mode")
+            self._mode_switch_button.setText("Manual mode")
             self._action_values.show()
             self._tag_combobox.widget.hide()
 
@@ -175,3 +177,10 @@ class PresetPieSettings(PieSettings):
         if self._config.IS_TAG_MODE.read():
             self._tag_combobox.save()
         return super().hide()
+
+    @staticmethod
+    def retain_size_policy(widget: QWidget, value: bool):
+        """Make widget keep its place, when hidden."""
+        policy = widget.sizePolicy()
+        policy.setRetainSizeWhenHidden(value)
+        widget.setSizePolicy(policy)
