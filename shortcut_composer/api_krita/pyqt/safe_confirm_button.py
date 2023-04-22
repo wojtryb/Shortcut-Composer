@@ -4,10 +4,16 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSignal, QEvent
 from PyQt5.QtWidgets import QWidget, QPushButton
 
-trigger = pyqtSignal()
-
 
 class SafeConfirmButton(QPushButton):
+    """
+    Button that requires repeating click to confirm first one was intentional.
+
+    After first click, the border is changed, and button changes its
+    label to "Confirm".
+
+    Moving the mouse out of the button aborts the confirmation mode.
+    """
 
     clicked = pyqtSignal()  # type: ignore
 
@@ -20,10 +26,10 @@ class SafeConfirmButton(QPushButton):
         super().__init__(icon, text, parent)
         super().clicked.connect(self._clicked)
         self._main_text = text
-        self.hover_text: Optional[str] = None
         self._confirm_mode = False
 
     def _clicked(self) -> None:
+        """Enter the confirmation mode. If already there, forward the click."""
         if self._confirm_mode:
             self._confirm_mode = False
             return self.clicked.emit()
@@ -31,15 +37,18 @@ class SafeConfirmButton(QPushButton):
 
     @property
     def _confirm_mode(self):
+        """Return whether in confirmation mode."""
         return self.__confirm_mode
 
     @_confirm_mode.setter
     def _confirm_mode(self, value: bool):
+        """Set mode. Confirmation mode requires red border and other text."""
         if value is True:
             self.setText("Confirm")
             self.setStyleSheet(
                 "border-style: solid;"
                 "border-color: Tomato;"
+                "border-radius: 3px;"
                 "border-width: 1px")
         else:
             super().setText(self._main_text)
@@ -48,18 +57,16 @@ class SafeConfirmButton(QPushButton):
 
     @property
     def main_text(self):
+        """Return the text displayed when not in confirmation mode."""
         return self._main_text
 
     @main_text.setter
     def main_text(self, text):
+        """Set the text displayed when not in confirmation mode."""
         self._main_text = text
         self.setText(self._main_text)
 
-    def enterEvent(self, a0: QEvent) -> None:
-        if self.hover_text is not None:
-            self.setText(self.hover_text)
-        return super().enterEvent(a0)
-
     def leaveEvent(self, e: QEvent) -> None:
+        """Abort confirmation mode when mouse leaves the button."""
         self._confirm_mode = False
         return super().leaveEvent(e)
