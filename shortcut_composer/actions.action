@@ -11,14 +11,17 @@
 
         <Action name="Temporary move tool">
         <activationFlags>1</activationFlags>
+        <icon>krita_tool_move</icon>
         </Action>
 
         <Action name="Temporary eraser">
         <activationFlags>1</activationFlags>
+        <icon>draw-eraser</icon>
         </Action>
 
         <Action name="Temporary preserve alpha">
         <activationFlags>1</activationFlags>
+        <icon>bar-transparency-unlocked</icon>
         </Action>
 
     </Actions>
@@ -27,10 +30,12 @@
 
         <Action name="Preview current layer visibility">
         <activationFlags>1</activationFlags>
+        <icon>current-layer</icon>
         </Action>
 
         <Action name="Preview projection below">
         <activationFlags>1</activationFlags>
+        <icon>all-layers</icon>
         </Action>
 
     </Actions>
@@ -39,10 +44,12 @@
 
         <Action name="Cycle painting opacity">
         <activationFlags>1</activationFlags>
+        <icon>opacity-increase</icon>
         </Action>
 
         <Action name="Cycle selection tools">
         <activationFlags>1</activationFlags>
+        <icon>selectionMask</icon>
         </Action>
 
     </Actions>
@@ -51,22 +58,27 @@
 
         <Action name="Scroll undo stack">
         <activationFlags>1</activationFlags>
+        <icon>edit-undo</icon>
         </Action>
 
         <Action name="Scroll isolated layers">
         <activationFlags>1</activationFlags>
+        <icon>all-layers</icon>
         </Action>
 
         <Action name="Scroll timeline or animated layers">
         <activationFlags>1</activationFlags>
+        <icon>addduplicateframe</icon>
         </Action>
 
         <Action name="Scroll brush size or opacity">
         <activationFlags>1</activationFlags>
+        <icon>brushsize-increase</icon>
         </Action>
 
         <Action name="Scroll canvas zoom or rotation">
         <activationFlags>1</activationFlags>
+        <icon>zoom-original</icon>
         </Action>
 
     </Actions>
@@ -75,30 +87,37 @@
 
         <Action name="Pick misc tools">
         <activationFlags>1</activationFlags>
+        <icon>krita_tool_grid</icon>
         </Action>
 
         <Action name="Pick painting blending modes">
         <activationFlags>1</activationFlags>
+        <icon>format-text-bold</icon>
         </Action>
 
         <Action name="Pick transform tool modes">
         <activationFlags>1</activationFlags>
+        <icon>krita_tool_transform</icon>
         </Action>
 
         <Action name="Pick brush presets (red)">
         <activationFlags>1</activationFlags>
+        <icon>config-popup-palette</icon>
         </Action>
 
         <Action name="Pick brush presets (green)">
         <activationFlags>1</activationFlags>
+        <icon>config-popup-palette</icon>
         </Action>
 
         <Action name="Pick brush presets (blue)">
         <activationFlags>1</activationFlags>
+        <icon>config-popup-palette</icon>
         </Action>
 
         <Action name="Create painting layer with blending mode">
         <activationFlags>1</activationFlags>
+        <icon>addlayer</icon>
         </Action>
 
     </Actions>
@@ -107,36 +126,43 @@
 
         <Action name="Configure Shortcut Composer">
         <activationFlags>0</activationFlags>
+        <icon>configure</icon>
         </Action>
         
         <Action name="Transform tool: free">
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
+        <icon>krita_tool_transform</icon>
         </Action>
         
         <Action name="Transform tool: perspective">
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
+        <icon>transform_icons_perspective</icon>
         </Action>
 
         <Action name="Transform tool: warp">
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
+        <icon>transform_icons_warp</icon>
         </Action>
 
         <Action name="Transform tool: cage">
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
+        <icon>transform_icons_cage</icon>
         </Action>
 
         <Action name="Transform tool: liquify">
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
+        <icon>transform_icons_liquify_main</icon>
         </Action>
 
         <Action name="Transform tool: mesh">
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
+        <icon>transform_icons_mesh</icon>
         </Action>
 
     </Actions>
