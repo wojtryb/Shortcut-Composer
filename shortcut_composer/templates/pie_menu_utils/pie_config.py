@@ -36,7 +36,12 @@ class PieConfig(FieldGroup, Generic[T], ABC):
         ...
 
 
-class DualField(Generic[T]):
+class DualField(Field, Generic[T]):
+    def __new__(cls, *args, **kwargs) -> 'DualField[T]':
+        obj = object.__new__(cls)
+        obj.__init__(*args, **kwargs)
+        return obj
+
     def __init__(
         self,
         group: PieConfig,
