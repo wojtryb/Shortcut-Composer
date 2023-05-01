@@ -3,6 +3,7 @@
 
 from typing import TypeVar, Optional, Callable, List
 from .field import Field
+from .save_location import SaveLocation
 
 T = TypeVar('T')
 
@@ -29,10 +30,11 @@ class FieldGroup:
         self,
         name: str,
         default: T,
-        parser_type: Optional[type] = None
+        parser_type: Optional[type] = None,
+        location: SaveLocation = SaveLocation.GLOBAL,
     ) -> Field[T]:
         """Create and return a new field in the group."""
-        field = Field(self.name, name, default, parser_type)
+        field = Field(self.name, name, default, parser_type, location)
         self._fields.append(field)
         for callback in self._callbacks:
             field.register_callback(callback)

@@ -3,9 +3,9 @@
 
 from typing import TypeVar, Generic, Optional, List
 
-from .api_krita import Krita
 from .parsers import Parser
 from .field_base import FieldBase
+from .save_location import SaveLocation
 
 T = TypeVar('T')
 
@@ -19,13 +19,14 @@ class NonListField(FieldBase, Generic[T]):
         name: str,
         default: T,
         parser_type: Optional[type] = None,
+        location: SaveLocation = SaveLocation.GLOBAL,
     ) -> None:
-        super().__init__(config_group, name, default)
+        super().__init__(config_group, name, default, location)
         self._parser: Parser[T] = self._get_parser(type(self.default))
 
     def read(self) -> T:
         """Return value from kritarc parsed to field type."""
-        raw = Krita.read_setting(self.config_group, self.name)
+        raw = self.location.read(self.config_group, self.name)
         if raw is None:
             return self.default
         return self._parser.parse_to(raw)
@@ -44,8 +45,9 @@ class ListField(FieldBase, Generic[T]):
         name: str,
         default: List[T],
         parser_type: Optional[type] = None,
+        location: SaveLocation = SaveLocation.GLOBAL,
     ) -> None:
-        super().__init__(config_group, name, default)
+        super().__init__(config_group, name, default, location)
         self._parser: Parser[T] = self._get_parser(self._get_type(parser_type))
 
     def write(self, value: List[T]):
@@ -73,7 +75,7 @@ class ListField(FieldBase, Generic[T]):
 
         Each list element requires parsing.
         """
-        raw = Krita.read_setting(self.config_group, self.name)
+        raw = self.location.read(self.config_group, self.name)
         if raw is None:
             return self.default
 

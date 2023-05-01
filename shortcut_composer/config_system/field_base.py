@@ -5,9 +5,9 @@ from typing import TypeVar, Generic, Callable, List
 from abc import ABC, abstractmethod
 from enum import Enum
 
-from .api_krita import Krita
 from .parsers import Parser, BoolParser, EnumParser, BasicParser
 from .field import Field
+from .save_location import SaveLocation
 
 T = TypeVar('T')
 E = TypeVar('E', bound=Enum)
@@ -27,10 +27,12 @@ class FieldBase(ABC, Field, Generic[T]):
         config_group: str,
         name: str,
         default: T,
+        location: SaveLocation = SaveLocation.GLOBAL,
     ):
         self.config_group = config_group
         self.name = name
         self.default = default
+        self.location = location
         self._on_change_callbacks: List[Callable[[], None]] = []
 
     def register_callback(self, callback: Callable[[], None]):
@@ -45,7 +47,7 @@ class FieldBase(ABC, Field, Generic[T]):
         if self._is_write_redundant(value):
             return
 
-        Krita.write_setting(
+        self.location.write(
             group=self.config_group,
             name=self.name,
             value=self._to_string(value))
@@ -72,7 +74,7 @@ class FieldBase(ABC, Field, Generic[T]):
         """
         if self.read() == value:
             return True
-        raw = Krita.read_setting(self.config_group, self.name)
+        raw = self.location.read(self.config_group, self.name)
         return raw is None and value == self.default
 
     def reset_default(self) -> None:

@@ -4,7 +4,10 @@
 """Required part of api_krita package, so that no dependency is needed."""
 
 from krita import Krita as Api
-from typing import Any, Optional
+from typing import Any, Optional, Protocol, List
+from dataclasses import dataclass
+
+from PyQt5.QtCore import QByteArray
 
 
 class KritaInstance:
@@ -32,6 +35,45 @@ class KritaInstance:
     def write_setting(self, group: str, name: str, value: Any) -> None:
         """Write setting to kritarc file. Value type will be lost."""
         self.instance.writeSetting(group, name, str(value))
+
+    def get_active_document(self) -> Optional['Document']:
+        """Return wrapper of krita `Document`."""
+        document = self.instance.activeDocument()
+        if document is None:
+            return None
+        return Document(document)
+
+
+class KritaDocument(Protocol):
+    """Krita `Document` object API."""
+
+    def setAnnotation(
+        self,
+        type: str,
+        description: str,
+        annotation: bytes) -> None: ...
+
+    def annotation(self, type: str) -> QByteArray: ...
+    def annotationTypes(self) -> List[str]: ...
+
+
+@dataclass
+class Document:
+    """Wraps krita `Document` for typing, docs and PEP8 compatibility."""
+
+    document: KritaDocument
+
+    def read_annotation(self, name: str) -> str:
+        return self.document.annotation(name).data().decode(encoding="utf-8")
+
+    def write_annotation(self, name: str, description: str, value: str):
+        self.document.setAnnotation(
+            name,
+            description,
+            value.encode(encoding="utf-8"))
+
+    def contains_annotation(self, name: str) -> bool:
+        return name in self.document.annotationTypes()
 
 
 Krita = KritaInstance()

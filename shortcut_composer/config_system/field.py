@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import TypeVar, Generic, Optional, Callable
+from .save_location import SaveLocation
 
 T = TypeVar('T')
 
@@ -39,14 +40,15 @@ class Field(Generic[T]):
         config_group: str,
         name: str,
         default: T,
-        parser_type: Optional[type] = None
+        parser_type: Optional[type] = None,
+        location: SaveLocation = SaveLocation.GLOBAL,
     ) -> 'Field[T]':
         from .field_implementations import ListField, NonListField
 
         cls.original = super().__new__
-        if isinstance(default, list):
-            return ListField(config_group, name, default, parser_type)
-        return NonListField(config_group, name, default)
+        if not isinstance(default, list):
+            return NonListField(config_group, name, default, location=location)
+        return ListField(config_group, name, default, parser_type, location)
 
     config_group: str
     """Configuration section in kritarc toml file."""

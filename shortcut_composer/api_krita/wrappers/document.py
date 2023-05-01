@@ -41,14 +41,15 @@ class Document:
         """
         Create a Node.
 
-        IMPORTANT: Created node must be then added to node tree to be usable from Krita.
-        For example with add_child_node() method of Node Class.
+        IMPORTANT: Created node must be then added to node tree to be
+        usable from Krita. For example with add_child_node() method of
+        Node Class.
 
-        When relevant, the new Node will have the colorspace of the image by default;
-        that can be changed with Node::setColorSpace.
+        When relevant, the new Node will have the colorspace of the
+        image by default; that can be changed with Node::setColorSpace.
 
-        The settings and selections for relevant layer and mask types can also be set
-        after the Node has been created.
+        The settings and selections for relevant layer and mask types
+        can also be set after the Node has been created.
         """
         return Node(self.document.createNode(name, node_type.value))
 
