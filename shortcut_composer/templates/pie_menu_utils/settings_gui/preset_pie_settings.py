@@ -15,7 +15,7 @@ from api_krita.pyqt import SafeConfirmButton
 from ..label import Label
 from ..pie_style import PieStyle
 from ..pie_config import PresetPieConfig
-from .pie_settings import PieSettings
+from .pie_settings import PieSettings, LocationTab
 from .scroll_area import ScrollArea
 
 
@@ -112,7 +112,11 @@ class PresetPieSettings(PieSettings):
         self._manual_combobox = self._preset_scroll_area.tag_chooser
 
         self.set_tag_mode(self._config.TAG_MODE.read())
-        self._tab_holder.addTab(self._init_action_values(), "Action values")
+        action_values = self._init_action_values()
+        self._tab_holder.addTab(action_values, "Action values")
+        location_tab = LocationTab(self._config.SAVE_LOCAL)
+        self._tab_holder.addTab(location_tab, "Location")
+        self._tab_holder.setCurrentIndex(1)
 
     def _init_preset_scroll_area(self) -> PresetScrollArea:
         """Create preset scroll area which tracks which ones are used."""

@@ -7,7 +7,8 @@ from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import QWidget, QTabWidget, QVBoxLayout
 
-from api_krita.pyqt import AnimatedWidget, BaseWidget
+from api_krita.pyqt import AnimatedWidget, BaseWidget, SafeConfirmButton
+from config_system import Field
 from config_system.ui import ConfigFormWidget, ConfigSpinBox
 from composer_utils import Config
 from ..pie_style import PieStyle
@@ -73,3 +74,44 @@ class PieSettings(AnimatedWidget, BaseWidget):
     def _reset(self):
         """React to change in pie size."""
         self.setMinimumHeight(self._style.widget_radius*2)
+
+
+class LocationTab(QWidget):
+    def __init__(
+        self,
+        location_field: Field,
+        parent: Optional[QWidget] = None
+    ) -> None:
+        super().__init__(parent)
+        self.location_field = location_field
+
+        self.location_button = self._init_location_button()
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.location_button, 1)
+        layout.addStretch()
+        self.setLayout(layout)
+
+        self.location_mode = self.location_field.read()
+
+    def _init_location_button(self):
+        def switch_mode():
+            new_value = not self.location_mode
+            self.location_field.write(new_value)
+            self.location_mode = new_value
+
+        location_button = SafeConfirmButton(confirm_text="Change?")
+        location_button.clicked.connect(switch_mode)
+        location_button.setFixedHeight(location_button.sizeHint().height()*2)
+        return location_button
+
+    @property
+    def location_mode(self):
+        return self.location_field.read()
+
+    @location_mode.setter
+    def location_mode(self, value: bool):
+        if value:
+            self.location_button.main_text = "Local mode"
+        else:
+            self.location_button.main_text = "Global mode"

@@ -39,7 +39,8 @@ class EnumPieSettings(PieSettings):
 
         self._action_values = ScrollArea(self._style, 3)
         self._action_values.replace_handled_labels(labels)
-        self._tab_holder.addTab(self._action_values, "Action values")
+        self._tab_holder.insertTab(1, self._action_values, "Action values")
+        self._tab_holder.setCurrentIndex(1)
 
         self._config.ORDER.register_callback(self._refresh_draggable)
         self._refresh_draggable()
