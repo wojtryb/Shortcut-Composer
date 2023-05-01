@@ -10,6 +10,67 @@ from data_components import Tag
 T = TypeVar("T")
 
 
+class DualField(Field, Generic[T]):
+    """
+    Field switching save location based on passed field.
+
+    Implementation uses two identical fields, but with different save
+    location. Each time DualField is red or written, correct field is
+    picked from the determiner field.
+    """
+    def __new__(cls, *args, **kwargs) -> 'DualField[T]':
+        obj = object.__new__(cls)
+        obj.__init__(*args, **kwargs)
+        return obj
+
+    def __init__(
+        self,
+        group: 'PieConfig',
+        is_local_determiner: Field[bool],
+        field_name: str,
+        default: T,
+        parser_type: Optional[type] = None
+    ) -> None:
+        self.name = field_name
+        self.config_group = group.name
+        self.default = default
+        self._is_local_determiner = is_local_determiner
+        self._is_local_determiner.register_callback(self.refresh)
+        self._loc = group.field(field_name, default, parser_type, local=True)
+        self._glob = group.field(field_name, default, parser_type, local=False)
+
+    def write(self, value: T) -> None:
+        """Write to local or global field, based on determiner."""
+        if self._is_local_determiner.read():
+            return self._loc.write(value)
+        self._glob.write(value)
+
+    def read(self) -> T:
+        """Read from local or global field, based on determiner."""
+        if self._is_local_determiner.read():
+            return self._loc.read()
+        return self._glob.read()
+
+    def register_callback(self, callback: Callable[[], None]) -> None:
+        """Subscribe callback to both fields, as only one changes on write."""
+        self._loc.register_callback(callback)
+        self._glob.register_callback(callback)
+
+    def reset_default(self) -> None:
+        """Reset both fields to default."""
+        self._loc.reset_default()
+        self._glob.reset_default()
+
+    def refresh(self) -> None:
+        """
+        Write red value back to itself.
+
+        Need to be performed manually when active document changes, as it does
+        not run callbacks.
+        """
+        self.write(self.read())
+
+
 class PieConfig(FieldGroup, Generic[T], ABC):
     """Abstract FieldGroup representing config of PieMenu."""
 
@@ -17,12 +78,11 @@ class PieConfig(FieldGroup, Generic[T], ABC):
     """Is it allowed to remove elements in runtime. """
 
     name: str
-    """Name of the group in kritarc."""
+    """Name of field group."""
     background_color: Optional[QColor]
     active_color: QColor
 
     ORDER: Field[List[T]]
-    """Value order stored in kritarc."""
     PIE_RADIUS_SCALE: Field[float]
     ICON_RADIUS_SCALE: Field[float]
 
@@ -33,46 +93,8 @@ class PieConfig(FieldGroup, Generic[T], ABC):
 
     @abstractmethod
     def set_values(self, values: List[T]) -> None:
+        """Set values. Needs to be run when active document changes."""
         ...
-
-
-class DualField(Field, Generic[T]):
-    def __new__(cls, *args, **kwargs) -> 'DualField[T]':
-        obj = object.__new__(cls)
-        obj.__init__(*args, **kwargs)
-        return obj
-
-    def __init__(
-        self,
-        group: PieConfig,
-        is_local_determiner: Field[bool],
-        field_name: str,
-        default: T,
-        parser_type: Optional[type] = None
-    ) -> None:
-        self.name = field_name
-        self.config_group = group.name
-        self.default = default
-        self._is_local_determiner = is_local_determiner
-        self._loc = group.field(field_name, default, parser_type, local=True)
-        self._glob = group.field(field_name, default, parser_type, local=False)
-
-    def write(self, value: T):
-        if self._is_local_determiner.read():
-            self._loc.write(value)
-        self._glob.write(value)
-
-    def read(self) -> T:
-        if self._is_local_determiner.read():
-            return self._loc.read()
-        return self._glob.read()
-
-    def register_callback(self, callback: Callable[[], None]):
-        self._glob.register_callback(callback)
-
-    def reset_default(self) -> None:
-        self._glob.reset_default()
-        self._loc.reset_default()
 
 
 class PresetPieConfig(PieConfig[str]):
@@ -92,25 +114,25 @@ class PresetPieConfig(PieConfig[str]):
         save_local: bool,
         background_color: Optional[QColor],
         active_color: QColor,
-        tag_mode: bool,
     ) -> None:
         super().__init__(name)
-        tag_name = values.tag_name if isinstance(values, Tag) else ""
 
         self.PIE_RADIUS_SCALE = self.field("Pie scale", pie_radius_scale)
         self.ICON_RADIUS_SCALE = self.field("Icon scale", icon_radius_scale)
 
-        self.IS_LOCAL = self.field("Is local", save_local)
+        self.SAVE_LOCAL = self.field("Save local", save_local)
 
-        self.TAG_NAME = DualField(self, self.IS_LOCAL, "Tag", tag_name)
-        self.ORDER = DualField(self, self.IS_LOCAL, "Values", [], str)
-        self.TAG_MODE = DualField(self, self.IS_LOCAL, "Is tag mode", tag_mode)
+        tag_mode = isinstance(values, Tag)
+        tag_name = values.tag_name if isinstance(values, Tag) else ""
+        self.TAG_MODE = DualField(self, self.SAVE_LOCAL, "Tag mode", tag_mode)
+        self.TAG_NAME = DualField(self, self.SAVE_LOCAL, "Tag", tag_name)
+        self.ORDER = DualField(self, self.SAVE_LOCAL, "Values", [], str)
 
         self.background_color = background_color
         self.active_color = active_color
 
     @property
-    def allow_value_edit(self):
+    def allow_value_edit(self) -> bool:
         """Return whether user can add and remove items from the pie."""
         return not self.TAG_MODE.read()
 
@@ -125,12 +147,13 @@ class PresetPieConfig(PieConfig[str]):
         missing = [p for p in tag_values if p not in saved_order]
         return preset_order + missing
 
-    def set_values(self, values: List[str]):
-        self.TAG_MODE.write(self.TAG_MODE.read())
-        self.TAG_NAME.write(self.TAG_NAME.read())
+    def set_values(self, values: List[str]) -> None:
+        """Set values. Needs to be run when active document changes."""
+        self.TAG_MODE.refresh()
+        self.TAG_NAME.refresh()
         self.ORDER.write(values)
 
-    def refresh_order(self):
+    def refresh_order(self) -> None:
         """Write current list of values to order field."""
         self.set_values(self.values())
 
@@ -152,10 +175,9 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
 
         self.PIE_RADIUS_SCALE = self.field("Pie scale", pie_radius_scale)
         self.ICON_RADIUS_SCALE = self.field("Icon scale", icon_radius_scale)
-        self.ORDER = self.field("Values", values)
 
-        self.IS_LOCAL = self.field("Is local", save_local)
-        self.ORDER = DualField(self, self.IS_LOCAL, "Values", values)
+        self.SAVE_LOCAL = self.field("Save local", save_local)
+        self.ORDER = DualField(self, self.SAVE_LOCAL, "Values", values)
 
         self.background_color = background_color
         self.active_color = active_color
@@ -166,4 +188,5 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
         return self.ORDER.read()
 
     def set_values(self, values: List[T]):
+        """Set values. Needs to be run when active document changes."""
         self.ORDER.write(values)

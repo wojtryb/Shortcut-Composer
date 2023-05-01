@@ -7,7 +7,6 @@ from enum import Enum
 from PyQt5.QtGui import QColor
 
 from core_components import Controller
-from data_components import Tag
 from .pie_config import PieConfig, PresetPieConfig, NonPresetPieConfig
 from .settings_gui import (
     PieSettings,
@@ -35,8 +34,7 @@ def create_local_config(
             save_local, background_color, active_color]
 
     if issubclass(controller_type, str):
-        is_tag_mode = isinstance(values, Tag)
-        return PresetPieConfig(*args, is_tag_mode)  # type: ignore
+        return PresetPieConfig(*args)  # type: ignore
     return NonPresetPieConfig(*args)
 
 
