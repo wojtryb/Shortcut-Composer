@@ -143,9 +143,9 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             index = self.label_holder.index(_a.label)
             return self.label_holder.insert(index, source_widget.label)
 
-        # Dragged existing label to a new location
         _b = self._widget_holder.on_label(source_widget.label)
         if _a != _b:
+            # Dragged existing label to a new location
             self.label_holder.swap(_a.label, _b.label)
             self.repaint()
 

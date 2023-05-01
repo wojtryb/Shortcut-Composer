@@ -276,12 +276,12 @@ def create_actions() -> List[templates.RawInstructions]: return [
     ),
 
     templates.PieMenu(
-        name="Pick brush presets (yellow)",
+        name="Pick local brush presets",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
         values=[],
         save_local=True,
-        active_color=QColor(243, 186, 16),
+        active_color=QColor(234, 172, 0),
     ),
 
     # .......................................

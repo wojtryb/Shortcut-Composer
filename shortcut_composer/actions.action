@@ -115,8 +115,9 @@
         <icon>config-popup-palette</icon>
         </Action>
 
-        <Action name="Pick brush presets (yellow)">
+        <Action name="Pick local brush presets">
         <activationFlags>1</activationFlags>
+        <icon>config-popup-palette</icon>
         </Action>
 
         <Action name="Create painting layer with blending mode">
@@ -132,13 +133,13 @@
         <activationFlags>0</activationFlags>
         <icon>configure</icon>
         </Action>
-        
+
         <Action name="Transform tool: free">
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
         <icon>krita_tool_transform</icon>
         </Action>
-        
+
         <Action name="Transform tool: perspective">
         <activationFlags>1</activationFlags>
         <activationConditions>1</activationConditions>
