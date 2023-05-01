@@ -144,9 +144,9 @@ class PieMenu(RawInstructions, Generic[T]):
         if self._last_values != new_values:
             self._reset_labels(new_values)
             self._last_values = new_values
-            self.pie_widget.label_holder.reset()  # HACK: should be automatic
             self._config.refresh_order()
 
+        self.pie_widget.label_holder.reset()  # HACK: should be automatic
         self._move_buttons()
 
         self.pie_manager.start()
