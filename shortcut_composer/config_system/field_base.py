@@ -27,21 +27,21 @@ class FieldBase(ABC, Field, Generic[T]):
         config_group: str,
         name: str,
         default: T,
-        parser_type: Optional[type],
-        location: SaveLocation,
-    ):
+        parser_type: Optional[type] = None,
+        local: bool = False,
+    ) -> None:
         self.config_group = config_group
         self.name = name
         self.default = default
         self.parser_type = parser_type
-        self.location = location
+        self.location = SaveLocation.LOCAL if local else SaveLocation.GLOBAL
         self._on_change_callbacks: List[Callable[[], None]] = []
 
-    def register_callback(self, callback: Callable[[], None]):
+    def register_callback(self, callback: Callable[[], None]) -> None:
         """Store callback in internal list."""
         self._on_change_callbacks.append(callback)
 
-    def write(self, value: T):
+    def write(self, value: T) -> None:
         """Write value to file and run callbacks if it was not redundant."""
         if not isinstance(value, type(self.default)):
             raise TypeError(f"{value} not of type {type(self.default)}")

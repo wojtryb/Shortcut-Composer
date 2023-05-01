@@ -64,15 +64,18 @@ class Document:
     document: KritaDocument
 
     def read_annotation(self, name: str) -> str:
+        """Read annotation from .kra document parsed as string."""
         return self.document.annotation(name).data().decode(encoding="utf-8")
 
     def write_annotation(self, name: str, description: str, value: str):
+        """Write annotation to .kra document."""
         self.document.setAnnotation(
             name,
             description,
             value.encode(encoding="utf-8"))
 
     def contains_annotation(self, name: str) -> bool:
+        """Return if annotation of given name is stored in .kra."""
         return name in self.document.annotationTypes()
 
 

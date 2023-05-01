@@ -36,9 +36,12 @@ class KritaInstance:
         """Return wrapper of krita `View`."""
         return View(self.instance.activeWindow().activeView())
 
-    def get_active_document(self) -> Document:
+    def get_active_document(self) -> Optional[Document]:
         """Return wrapper of krita `Document`."""
-        return Document(self.instance.activeDocument())
+        document = self.instance.activeDocument()
+        if document is None:
+            return None
+        return Document(document)
 
     def get_active_canvas(self) -> Canvas:
         """Return wrapper of krita `Canvas`."""

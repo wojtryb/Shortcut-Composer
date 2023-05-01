@@ -3,8 +3,8 @@
 
 from dataclasses import dataclass
 from typing import List, Protocol
+from PyQt5.QtCore import QByteArray
 from ..enums import NodeType
-
 from .node import Node, KritaNode
 
 
@@ -19,6 +19,14 @@ class KritaDocument(Protocol):
     def currentTime(self) -> int: ...
     def setCurrentTime(self, time: int) -> None: ...
     def refreshProjection(self) -> None: ...
+    def annotation(self, type: str) -> QByteArray: ...
+    def annotationTypes(self) -> List[str]: ...
+
+    def setAnnotation(
+        self,
+        type: str,
+        description: str,
+        annotation: bytes) -> None: ...
 
 
 @dataclass
@@ -86,6 +94,17 @@ class Document:
         """Refresh OpenGL projection of this document."""
         self.document.refreshProjection()
 
-    def __bool__(self) -> bool:
-        """Return true if the wrapped document exists."""
-        return bool(self.document)
+    def read_annotation(self, name: str) -> str:
+        """Read annotation from .kra document parsed as string."""
+        return self.document.annotation(name).data().decode(encoding="utf-8")
+
+    def write_annotation(self, name: str, description: str, value: str):
+        """Write annotation to .kra document."""
+        self.document.setAnnotation(
+            name,
+            description,
+            value.encode(encoding="utf-8"))
+
+    def contains_annotation(self, name: str) -> bool:
+        """Return if annotation of given name is stored in .kra."""
+        return name in self.document.annotationTypes()

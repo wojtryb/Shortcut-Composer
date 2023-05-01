@@ -5,7 +5,6 @@ from typing import TypeVar, Generic, Optional, List
 
 from .parsers import Parser
 from .field_base import FieldBase
-from .save_location import SaveLocation
 
 T = TypeVar('T')
 
@@ -18,10 +17,10 @@ class NonListField(FieldBase, Generic[T]):
         config_group: str,
         name: str,
         default: T,
-        parser_type: Optional[type],
-        location: SaveLocation,
+        parser_type: Optional[type] = None,
+        local: bool = False,
     ) -> None:
-        super().__init__(config_group, name, default, parser_type, location)
+        super().__init__(config_group, name, default, parser_type, local)
         self._parser: Parser[T] = self._get_parser(type(self.default))
 
     def read(self) -> T:
@@ -44,10 +43,10 @@ class ListField(FieldBase, Generic[T]):
         config_group: str,
         name: str,
         default: List[T],
-        parser_type: Optional[type],
-        location: SaveLocation,
+        parser_type: Optional[type] = None,
+        local: bool = False,
     ) -> None:
-        super().__init__(config_group, name, default, parser_type, location)
+        super().__init__(config_group, name, default, parser_type, local)
         self._parser: Parser[T] = self._get_parser(
             self._get_type(self.parser_type))
 
