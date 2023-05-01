@@ -25,13 +25,14 @@ def create_local_config(
     controller_type: type,
     pie_radius_scale: float,
     icon_radius_scale: float,
+    save_local: bool,
     background_color: Optional[QColor],
     active_color: QColor,
 ) -> PieConfig[T]:
     """Create and return the right local config based on labels type."""
     config_name = f"ShortcutComposer: {name}"
     args = [config_name, values, pie_radius_scale, icon_radius_scale,
-            background_color, active_color]
+            save_local, background_color, active_color]
 
     if issubclass(controller_type, str):
         is_tag_mode = isinstance(values, Tag)

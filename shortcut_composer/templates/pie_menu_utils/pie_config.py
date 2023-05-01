@@ -89,6 +89,7 @@ class PresetPieConfig(PieConfig[str]):
         values: Union[Tag, List[str]],
         pie_radius_scale: float,
         icon_radius_scale: float,
+        save_local: bool,
         background_color: Optional[QColor],
         active_color: QColor,
         tag_mode: bool,
@@ -99,7 +100,7 @@ class PresetPieConfig(PieConfig[str]):
         self.PIE_RADIUS_SCALE = self.field("Pie scale", pie_radius_scale)
         self.ICON_RADIUS_SCALE = self.field("Icon scale", icon_radius_scale)
 
-        self.IS_LOCAL = self.field("Is local", True)
+        self.IS_LOCAL = self.field("Is local", save_local)
 
         self.TAG_NAME = DualField(self, self.IS_LOCAL, "Tag", tag_name)
         self.ORDER = DualField(self, self.IS_LOCAL, "Values", [], str)
@@ -143,6 +144,7 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
         values: List[T],
         pie_radius_scale: float,
         icon_radius_scale: float,
+        save_local: bool,
         background_color: Optional[QColor],
         active_color: QColor,
     ) -> None:
@@ -151,6 +153,9 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
         self.PIE_RADIUS_SCALE = self.field("Pie scale", pie_radius_scale)
         self.ICON_RADIUS_SCALE = self.field("Icon scale", icon_radius_scale)
         self.ORDER = self.field("Values", values)
+
+        self.IS_LOCAL = self.field("Is local", save_local)
+        self.ORDER = DualField(self, self.IS_LOCAL, "Values", values)
 
         self.background_color = background_color
         self.active_color = active_color

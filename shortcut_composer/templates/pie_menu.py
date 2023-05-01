@@ -73,6 +73,7 @@ class PieMenu(RawInstructions, Generic[T]):
         icon_radius_scale: float = 1.0,
         background_color: Optional[QColor] = None,
         active_color: QColor = QColor(100, 150, 230, 255),
+        save_local: bool = False,
         short_vs_long_press_time: Optional[float] = None
     ) -> None:
         super().__init__(name, instructions, short_vs_long_press_time)
@@ -83,6 +84,7 @@ class PieMenu(RawInstructions, Generic[T]):
             controller_type=self._controller.TYPE,
             pie_radius_scale=pie_radius_scale,
             icon_radius_scale=icon_radius_scale,
+            save_local=save_local,
             background_color=background_color,
             active_color=active_color)
         self._config.ORDER.register_callback(

@@ -113,6 +113,5 @@ class LabelHolder:
 
         self.locked = True
         if notify:
-            values = [label.value for label in self._labels]
-            self._config.set_values(values)
+            self._config.set_values([label.value for label in self._labels])
         self.locked = False

@@ -280,6 +280,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
         values=[],
+        save_local=True,
         active_color=QColor(243, 186, 16),
     ),
 
