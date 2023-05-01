@@ -111,7 +111,7 @@ class PresetPieSettings(PieSettings):
         self._auto_combobox = self._init_auto_combobox()
         self._manual_combobox = self._preset_scroll_area.tag_chooser
 
-        self.tag_mode = self._config.TAG_MODE.read()
+        self.set_tag_mode(self._config.TAG_MODE.read())
         self._tab_holder.addTab(self._init_action_values(), "Action values")
 
     def _init_preset_scroll_area(self) -> PresetScrollArea:
@@ -126,7 +126,6 @@ class PresetPieSettings(PieSettings):
 
         def refresh_draggable():
             """Mark which pies are currently used in the pie."""
-            print("mark used")
             preset_scroll_area.mark_used_values(self._config.values())
 
         self._config.ORDER.register_callback(refresh_draggable)
@@ -138,8 +137,9 @@ class PresetPieSettings(PieSettings):
         """Create button which switches between tag and manual mode."""
         def switch_mode():
             """Change the is_tag_mode to the opposite state."""
-            self.tag_mode = not self.tag_mode
-            if self.tag_mode:
+            new_value = not self.get_tag_mode()
+            self.set_tag_mode(new_value)
+            if new_value:
                 self._auto_combobox.set(self._manual_combobox.read())
                 self._auto_combobox.save()
             else:
@@ -149,6 +149,8 @@ class PresetPieSettings(PieSettings):
         mode_button = SafeConfirmButton(confirm_text="Change?")
         mode_button.clicked.connect(switch_mode)
         mode_button.setFixedHeight(mode_button.sizeHint().height()*2)
+        self._config.TAG_MODE.register_callback(
+            lambda: self.set_tag_mode(self._config.TAG_MODE.read(), False))
         return mode_button
 
     def _init_auto_combobox(self) -> TagComboBox:
@@ -186,15 +188,14 @@ class PresetPieSettings(PieSettings):
         action_values_tab.setLayout(action_layout)
         return action_values_tab
 
-    @property
-    def tag_mode(self):
+    def get_tag_mode(self):
         """Return whether pie is in tag mode or not (manual mode)."""
         return self._config.TAG_MODE.read()
 
-    @tag_mode.setter
-    def tag_mode(self, value: bool):
+    def set_tag_mode(self, value: bool, notify: bool = True):
         """Set the pie mode to tag (True) or manual (False)."""
-        self._config.TAG_MODE.write(value)
+        if notify:
+            self._config.TAG_MODE.write(value)
         self._config.refresh_order()
         if value:
             # moving to tag mode
