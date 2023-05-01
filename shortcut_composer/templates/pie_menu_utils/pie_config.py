@@ -4,7 +4,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Generic, TypeVar, Optional, Union
 from PyQt5.QtGui import QColor
-from config_system import Field, FieldGroup, SaveLocation
+from config_system import Field, FieldGroup
 from data_components import Tag
 
 T = TypeVar("T")
@@ -51,16 +51,13 @@ class PresetPieConfig(PieConfig[str]):
         is_tag_mode: bool,
     ) -> None:
         super().__init__(name)
+        tag_name = values.tag_name if isinstance(values, Tag) else ""
 
         self.PIE_RADIUS_SCALE = self.field("Pie scale", pie_radius_scale)
         self.ICON_RADIUS_SCALE = self.field("Icon scale", icon_radius_scale)
-        tag_name = "" if not isinstance(values, Tag) else values.tag_name
-        self.TAG_NAME = self.field("Tag", tag_name,
-                                   location=SaveLocation.LOCAL)
-        self.ORDER = self.field("Values", [], parser_type=str,
-                                location=SaveLocation.LOCAL)
-        self.TAG_MODE = self.field("Is tag mode", is_tag_mode,
-                                   location=SaveLocation.LOCAL)
+        self.TAG_NAME = self.field("Tag", tag_name, local=True)
+        self.ORDER = self.field("Values", [], parser_type=str, local=True)
+        self.TAG_MODE = self.field("Is tag mode", is_tag_mode, local=True)
 
         self.background_color = background_color
         self.active_color = active_color

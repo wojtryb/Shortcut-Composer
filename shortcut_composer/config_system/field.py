@@ -41,13 +41,15 @@ class Field(Generic[T]):
         name: str,
         default: T,
         parser_type: Optional[type] = None,
-        location: SaveLocation = SaveLocation.GLOBAL,
+        local: bool = False,
     ) -> 'Field[T]':
         from .field_implementations import ListField, NonListField
 
         cls.original = super().__new__
+        location = SaveLocation.LOCAL if local else SaveLocation.GLOBAL
         if not isinstance(default, list):
-            return NonListField(config_group, name, default, location=location)
+            return NonListField(
+                config_group, name, default, parser_type, location)
         return ListField(config_group, name, default, parser_type, location)
 
     config_group: str

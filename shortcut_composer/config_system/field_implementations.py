@@ -18,10 +18,10 @@ class NonListField(FieldBase, Generic[T]):
         config_group: str,
         name: str,
         default: T,
-        parser_type: Optional[type] = None,
-        location: SaveLocation = SaveLocation.GLOBAL,
+        parser_type: Optional[type],
+        location: SaveLocation,
     ) -> None:
-        super().__init__(config_group, name, default, location)
+        super().__init__(config_group, name, default, parser_type, location)
         self._parser: Parser[T] = self._get_parser(type(self.default))
 
     def read(self) -> T:
@@ -44,11 +44,12 @@ class ListField(FieldBase, Generic[T]):
         config_group: str,
         name: str,
         default: List[T],
-        parser_type: Optional[type] = None,
-        location: SaveLocation = SaveLocation.GLOBAL,
+        parser_type: Optional[type],
+        location: SaveLocation,
     ) -> None:
-        super().__init__(config_group, name, default, location)
-        self._parser: Parser[T] = self._get_parser(self._get_type(parser_type))
+        super().__init__(config_group, name, default, parser_type, location)
+        self._parser: Parser[T] = self._get_parser(
+            self._get_type(self.parser_type))
 
     def write(self, value: List[T]):
         for element in value:

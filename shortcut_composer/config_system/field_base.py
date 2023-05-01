@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import TypeVar, Generic, Callable, List
+from typing import TypeVar, Generic, Callable, List, Optional
 from abc import ABC, abstractmethod
 from enum import Enum
 
@@ -27,11 +27,13 @@ class FieldBase(ABC, Field, Generic[T]):
         config_group: str,
         name: str,
         default: T,
-        location: SaveLocation = SaveLocation.GLOBAL,
+        parser_type: Optional[type],
+        location: SaveLocation,
     ):
         self.config_group = config_group
         self.name = name
         self.default = default
+        self.parser_type = parser_type
         self.location = location
         self._on_change_callbacks: List[Callable[[], None]] = []
 

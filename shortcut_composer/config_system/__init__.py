@@ -13,6 +13,5 @@ configuration concept.
 
 from .field import Field
 from .field_group import FieldGroup
-from .save_location import SaveLocation
 
-__all__ = ["Field", "FieldGroup", "SaveLocation"]
+__all__ = ["Field", "FieldGroup"]
