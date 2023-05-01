@@ -17,6 +17,9 @@ class DualField(Field, Generic[T]):
     Implementation uses two identical fields, but with different save
     location. Each time DualField is red or written, correct field is
     picked from the determiner field.
+
+    NOTE: Callbacks are always stored in the global field, as they
+    wouldn't run in local one when switching between documents.
     """
     def __new__(cls, *args, **kwargs) -> 'DualField[T]':
         obj = object.__new__(cls)
@@ -40,9 +43,13 @@ class DualField(Field, Generic[T]):
         self._glob = group.field(field_name, default, parser_type, local=False)
 
     def write(self, value: T) -> None:
-        """Write to local or global field, based on determiner."""
+        """
+        Write to correct internal fields, based on determiner.
+
+        Global field must always be written to activate callbacks.
+        """
         if self._is_local_determiner.read():
-            return self._loc.write(value)
+            self._loc.write(value)
         self._glob.write(value)
 
     def read(self) -> T:
@@ -53,7 +60,6 @@ class DualField(Field, Generic[T]):
 
     def register_callback(self, callback: Callable[[], None]) -> None:
         """Subscribe callback to both fields, as only one changes on write."""
-        self._loc.register_callback(callback)
         self._glob.register_callback(callback)
 
     def reset_default(self) -> None:
