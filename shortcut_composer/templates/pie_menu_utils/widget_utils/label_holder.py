@@ -37,6 +37,7 @@ class LabelHolder:
         # in config as holder was not their cause
         self._config.register_callback(partial(self.reset, notify=False))
         self._owner = owner
+        self.locked = False
 
         self.widget_holder = WidgetHolder()
         self.reset(notify=False)
@@ -86,6 +87,8 @@ class LabelHolder:
         HACK: Small changes in container should not result in complete
         widget recreation.
         """
+        if self.locked:
+            return
         for child in self.widget_holder:
             child.setParent(None)  # type: ignore
         self.widget_holder.clear()
@@ -108,6 +111,8 @@ class LabelHolder:
             child.draggable = True
             self.widget_holder.add(child)
 
+        self.locked = True
         if notify:
             values = [label.value for label in self._labels]
             self._config.set_values(values)
+        self.locked = False
