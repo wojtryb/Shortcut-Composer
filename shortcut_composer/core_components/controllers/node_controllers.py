@@ -12,8 +12,15 @@ class NodeBasedController:
 
     def refresh(self):
         """Refresh currently stored active node."""
-        self.active_document = Krita.get_active_document()
-        self.active_node = self.active_document.active_node
+        active_document = Krita.get_active_document()
+        if active_document is None:
+            raise ValueError("Controller refreshed during initialization")
+        active_node = active_document.active_node
+        if active_node is None:
+            raise ValueError("Controller refreshed during initialization")
+
+        self.active_document = active_document
+        self.active_node = active_node
 
 
 class LayerOpacityController(NodeBasedController, Controller[int]):

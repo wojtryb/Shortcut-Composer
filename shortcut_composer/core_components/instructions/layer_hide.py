@@ -10,7 +10,11 @@ class ToggleLayerVisibility(Instruction):
 
     def on_key_press(self) -> None:
         """Change the active layer visibility."""
-        self.document = Krita.get_active_document()
+        document = Krita.get_active_document()
+        if document is None:
+            raise ValueError("Controller refreshed during initialization")
+
+        self.document = document
         self.affected_node = self.document.active_node
         self.affected_node.toggle_visility()
         self.document.refresh()
@@ -26,7 +30,11 @@ class ToggleVisibilityAbove(Instruction):
 
     def on_key_press(self) -> None:
         """Remember visibility of layers above, and turn them off."""
-        self.document = Krita.get_active_document()
+        document = Krita.get_active_document()
+        if document is None:
+            raise ValueError("Controller refreshed during initialization")
+
+        self.document = document
         all_nodes = self.document.get_all_nodes()
 
         top_nodes = all_nodes[all_nodes.index(self.document.active_node)+1:]

@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from typing import Optional
 from api_krita import Krita
 from api_krita.wrappers import Node
 from api_krita.pyqt import Text
@@ -12,7 +13,10 @@ class DocumentBasedController:
 
     def refresh(self):
         """Refresh currently stored active document."""
-        self.document = Krita.get_active_document()
+        document = Krita.get_active_document()
+        if document is None:
+            raise ValueError("Controller refreshed during initialization")
+        self.document = document
 
 
 class ActiveLayerController(DocumentBasedController, Controller[Node]):
@@ -26,7 +30,7 @@ class ActiveLayerController(DocumentBasedController, Controller[Node]):
 
     TYPE = Node
 
-    def get_value(self) -> Node:
+    def get_value(self) -> Optional[Node]:
         """Get current node."""
         return self.document.active_node
 
