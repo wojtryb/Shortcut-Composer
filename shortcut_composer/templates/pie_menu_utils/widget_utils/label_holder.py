@@ -113,5 +113,5 @@ class LabelHolder:
 
         self.locked = True
         if notify:
-            self._config.set_values([label.value for label in self._labels])
+            self._config.ORDER.write([label.value for label in self._labels])
         self.locked = False

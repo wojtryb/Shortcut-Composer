@@ -98,8 +98,8 @@ class PieConfig(FieldGroup, Generic[T], ABC):
         ...
 
     @abstractmethod
-    def set_values(self, values: List[T]) -> None:
-        """Set values. Needs to be run when active document changes."""
+    def refresh_order(self) -> None:
+        """Refresh the values in case the active document changed."""
         ...
 
 
@@ -143,7 +143,7 @@ class PresetPieConfig(PieConfig[str]):
         return not self.TAG_MODE.read()
 
     def values(self) -> List[str]:
-        """Return all presets from the tag. Respect order from kritarc."""
+        """Return all presets based on mode and stored order."""
         if not self.TAG_MODE.read():
             return self.ORDER.read()
         saved_order = self.ORDER.read()
@@ -153,15 +153,11 @@ class PresetPieConfig(PieConfig[str]):
         missing = [p for p in tag_values if p not in saved_order]
         return preset_order + missing
 
-    def set_values(self, values: List[str]) -> None:
-        """Set values. Needs to be run when active document changes."""
+    def refresh_order(self) -> None:
+        """Refresh the values in case the active document changed."""
         self.TAG_MODE.refresh()
         self.TAG_NAME.refresh()
-        self.ORDER.write(values)
-
-    def refresh_order(self) -> None:
-        """Write current list of values to order field."""
-        self.set_values(self.values())
+        self.ORDER.write(self.values())
 
 
 class NonPresetPieConfig(PieConfig[T], Generic[T]):
@@ -190,9 +186,9 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
         self.allow_value_edit = True
 
     def values(self) -> List[T]:
-        """Return values to display as icons as defined be the user."""
+        """Return values defined be the user to display as icons."""
         return self.ORDER.read()
 
-    def set_values(self, values: List[T]):
-        """Set values. Needs to be run when active document changes."""
-        self.ORDER.write(values)
+    def refresh_order(self) -> None:
+        """Refresh the values in case the active document changed."""
+        self.ORDER.write(self.values())

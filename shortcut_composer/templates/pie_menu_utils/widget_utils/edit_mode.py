@@ -25,9 +25,6 @@ class EditMode:
 
     def set(self, mode_to_set: bool) -> None:
         """Update the mode and change Pie's content accordingly."""
-        if not mode_to_set and self._edit_mode:
-            self._write_settings()
-
         if not self._edit_mode ^ mode_to_set:
             return
 
@@ -59,13 +56,3 @@ class EditMode:
     def swap_mode(self):
         """Change the edit mode to the other one."""
         self.set(not self._edit_mode)
-
-    def _write_settings(self) -> None:
-        """If values were not hardcoded, but from config, write them back."""
-        widget = self._obj.pie_widget
-
-        if not widget.label_holder or widget.config is None:
-            return
-
-        values = [label.value for label in widget.label_holder]
-        widget.config.set_values(values)
