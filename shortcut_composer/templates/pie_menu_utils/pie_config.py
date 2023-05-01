@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from abc import ABC, abstractmethod
-from typing import List, Generic, TypeVar, Optional
+from typing import List, Generic, TypeVar, Optional, Union
 from PyQt5.QtGui import QColor
-from config_system import Field, FieldGroup
+from config_system import Field, FieldGroup, SaveLocation
 from data_components import Tag
 
 T = TypeVar("T")
@@ -43,7 +43,7 @@ class PresetPieConfig(PieConfig[str]):
     def __init__(
         self,
         name: str,
-        values: Tag,
+        values: Union[Tag, List[str]],
         pie_radius_scale: float,
         icon_radius_scale: float,
         background_color: Optional[QColor],
@@ -54,9 +54,13 @@ class PresetPieConfig(PieConfig[str]):
 
         self.PIE_RADIUS_SCALE = self.field("Pie scale", pie_radius_scale)
         self.ICON_RADIUS_SCALE = self.field("Icon scale", icon_radius_scale)
-        self.TAG_NAME = self.field("Tag", values.tag_name)
-        self.ORDER = self.field("Values", [], parser_type=str)
-        self.TAG_MODE = self.field("Is tag mode", is_tag_mode)
+        tag_name = "" if not isinstance(values, Tag) else values.tag_name
+        self.TAG_NAME = self.field("Tag", tag_name,
+                                   location=SaveLocation.LOCAL)
+        self.ORDER = self.field("Values", [], parser_type=str,
+                                location=SaveLocation.LOCAL)
+        self.TAG_MODE = self.field("Is tag mode", is_tag_mode,
+                                   location=SaveLocation.LOCAL)
 
         self.background_color = background_color
         self.active_color = active_color

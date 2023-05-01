@@ -115,6 +115,10 @@
         <icon>config-popup-palette</icon>
         </Action>
 
+        <Action name="Pick brush presets (yellow)">
+        <activationFlags>1</activationFlags>
+        </Action>
+
         <Action name="Create painting layer with blending mode">
         <activationFlags>1</activationFlags>
         <icon>addlayer</icon>
