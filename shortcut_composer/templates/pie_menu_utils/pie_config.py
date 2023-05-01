@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from abc import ABC, abstractmethod
-from typing import List, Generic, TypeVar, Optional, Union
+from typing import List, Generic, TypeVar, Optional, Union, Callable
 from PyQt5.QtGui import QColor
 from config_system import Field, FieldGroup
 from data_components import Tag
@@ -31,6 +31,44 @@ class PieConfig(FieldGroup, Generic[T], ABC):
         """Return values to display as icons on the pie."""
         ...
 
+    @abstractmethod
+    def set_values(self, values: List[T]) -> None:
+        ...
+
+
+class DualField(Generic[T]):
+    def __init__(
+        self,
+        group: PieConfig,
+        is_local_determiner: Field[bool],
+        field_name: str,
+        default: T,
+        parser_type: Optional[type] = None
+    ) -> None:
+        self.name = field_name
+        self.config_group = group.name
+        self.default = default
+        self._is_local_determiner = is_local_determiner
+        self._loc = group.field(field_name, default, parser_type, local=True)
+        self._glob = group.field(field_name, default, parser_type, local=False)
+
+    def write(self, value: T):
+        if self._is_local_determiner.read():
+            self._loc.write(value)
+        self._glob.write(value)
+
+    def read(self) -> T:
+        if self._is_local_determiner.read():
+            return self._loc.read()
+        return self._glob.read()
+
+    def register_callback(self, callback: Callable[[], None]):
+        self._glob.register_callback(callback)
+
+    def reset_default(self) -> None:
+        self._glob.reset_default()
+        self._loc.reset_default()
+
 
 class PresetPieConfig(PieConfig[str]):
     """
@@ -48,16 +86,19 @@ class PresetPieConfig(PieConfig[str]):
         icon_radius_scale: float,
         background_color: Optional[QColor],
         active_color: QColor,
-        is_tag_mode: bool,
+        tag_mode: bool,
     ) -> None:
         super().__init__(name)
         tag_name = values.tag_name if isinstance(values, Tag) else ""
 
         self.PIE_RADIUS_SCALE = self.field("Pie scale", pie_radius_scale)
         self.ICON_RADIUS_SCALE = self.field("Icon scale", icon_radius_scale)
-        self.TAG_NAME = self.field("Tag", tag_name, local=True)
-        self.ORDER = self.field("Values", [], parser_type=str, local=True)
-        self.TAG_MODE = self.field("Is tag mode", is_tag_mode, local=True)
+
+        self.IS_LOCAL = self.field("Is local", True)
+
+        self.TAG_NAME = DualField(self, self.IS_LOCAL, "Tag", tag_name)
+        self.ORDER = DualField(self, self.IS_LOCAL, "Values", [], str)
+        self.TAG_MODE = DualField(self, self.IS_LOCAL, "Is tag mode", tag_mode)
 
         self.background_color = background_color
         self.active_color = active_color
@@ -78,9 +119,14 @@ class PresetPieConfig(PieConfig[str]):
         missing = [p for p in tag_values if p not in saved_order]
         return preset_order + missing
 
+    def set_values(self, values: List[str]):
+        self.TAG_MODE.write(self.TAG_MODE.read())
+        self.TAG_NAME.write(self.TAG_NAME.read())
+        self.ORDER.write(values)
+
     def refresh_order(self):
         """Write current list of values to order field."""
-        self.ORDER.write(self.values())
+        self.set_values(self.values())
 
 
 class NonPresetPieConfig(PieConfig[T], Generic[T]):
@@ -108,3 +154,6 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
     def values(self) -> List[T]:
         """Return values to display as icons as defined be the user."""
         return self.ORDER.read()
+
+    def set_values(self, values: List[T]):
+        self.ORDER.write(values)

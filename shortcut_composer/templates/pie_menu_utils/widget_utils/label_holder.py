@@ -110,4 +110,4 @@ class LabelHolder:
 
         if notify:
             values = [label.value for label in self._labels]
-            self._config.ORDER.write(values)
+            self._config.set_values(values)

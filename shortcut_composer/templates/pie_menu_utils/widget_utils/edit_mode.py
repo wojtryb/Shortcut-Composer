@@ -68,4 +68,4 @@ class EditMode:
             return
 
         values = [label.value for label in widget.label_holder]
-        widget.config.ORDER.write(values)
+        widget.config.set_values(values)

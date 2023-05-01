@@ -124,6 +124,7 @@ class PresetPieSettings(PieSettings):
 
         def refresh_draggable():
             """Mark which pies are currently used in the pie."""
+            print("mark used")
             preset_scroll_area.mark_used_values(self._config.values())
 
         self._config.ORDER.register_callback(refresh_draggable)
