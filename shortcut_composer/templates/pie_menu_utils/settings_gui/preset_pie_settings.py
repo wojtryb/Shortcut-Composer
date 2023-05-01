@@ -36,6 +36,8 @@ class TagComboBox(ConfigComboBox):
     ) -> None:
         self._allow_all = allow_all
         super().__init__(config_field, parent, pretty_name)
+        self.config_field.register_callback(
+            lambda: self.set(self.config_field.read()))
 
     def reset(self):
         """Replace list of available tags with those red from database."""
