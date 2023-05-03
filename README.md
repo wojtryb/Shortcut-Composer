@@ -50,11 +50,17 @@ OS support state:
 - [ ] MacOS (Known bug of canvas losing focus after using PieMenu)
 - [ ] Android (Does not support python plugins yet)
 
+> **Note**
+> On **Linux** the only oficially supported version of Krita is **.appimage**, which ships with all required dependencies. Running the plugin on Krita installed from Snap or distribution repositories is not recommended as it may not work out of the box and may require extra dependency-related work.  
+
 ## How to install or update the plugin:
 1. on [github project page](https://github.com/wojtryb/Shortcut-Composer), click the green button <kbd>code</kbd> and pick the <kbd>download zip</kbd> option. Do not extract it.
 2. in krita's topbar, open **Tools > Scripts > Import Python Plugin From File** and pick the downloaded .zip file
 3. restart krita.
 4. set custom shortcuts in **Settings > Configure Krita > Keyboard Shortcuts** under **Scripts > Shortcut Composer: Complex Actions** section. By intention, there are no default bindings.
+
+> **Warning**
+> Some keyboard buttons like **Space, R, Y, V, 1, 2, 3, 4, 5, 6** are reserved for Krita's Canvas Inputs. Assigning those keys to actions (including those from the plugin) may result in conflicts and abnormal behaviour different for each OS. Either avoid those keys, or remove their bindings in **Settings > Configure Krita > Canvas Input Settings**.
 
 ## Pre-made actions
 While Shortcut-Composer is highly configurable and extendable, the add-on comes with pre-made, plug-and-play actions.
