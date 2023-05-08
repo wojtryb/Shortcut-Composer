@@ -114,7 +114,7 @@ class PresetPieSettings(PieSettings):
         self.set_tag_mode(self._config.TAG_MODE.read())
         action_values = self._init_action_values()
         self._tab_holder.addTab(action_values, "Action values")
-        location_tab = LocationTab(self._config.SAVE_LOCAL)
+        location_tab = LocationTab(self._config)
         self._tab_holder.addTab(location_tab, "Location")
         self._tab_holder.setCurrentIndex(1)
 

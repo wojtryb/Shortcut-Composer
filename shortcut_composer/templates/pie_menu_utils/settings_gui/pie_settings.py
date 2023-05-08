@@ -8,11 +8,10 @@ from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import QWidget, QTabWidget, QVBoxLayout
 
 from api_krita.pyqt import AnimatedWidget, BaseWidget, SafeConfirmButton
-from config_system import Field
 from config_system.ui import ConfigFormWidget, ConfigSpinBox
 from composer_utils import Config
 from ..pie_style import PieStyle
-from ..pie_config import PieConfig
+from ..pie_config import PieConfig, PresetPieConfig
 
 
 class PieSettings(AnimatedWidget, BaseWidget):
@@ -79,38 +78,45 @@ class PieSettings(AnimatedWidget, BaseWidget):
 class LocationTab(QWidget):
     def __init__(
         self,
-        location_field: Field,
+        config: PresetPieConfig,
         parent: Optional[QWidget] = None
     ) -> None:
         super().__init__(parent)
-        self.location_field = location_field
+        self._config = config
 
         self.location_button = self._init_location_button()
+        self.reset_default_button = self._init_reset_button()
 
         layout = QVBoxLayout()
-        layout.addWidget(self.location_button, 1)
+        layout.addWidget(self.location_button)
+        layout.addWidget(self.reset_default_button)
         layout.addStretch()
         self.setLayout(layout)
 
-        self.location_mode = self.location_field.read()
+        self.location_mode = self._config.SAVE_LOCAL.read()
 
     def _init_location_button(self):
         def switch_mode():
-            new_value = not self.location_mode
-            self.location_field.write(new_value)
-            self.location_mode = new_value
+            self.location_mode = not self.location_mode
 
         location_button = SafeConfirmButton(confirm_text="Change?")
         location_button.clicked.connect(switch_mode)
         location_button.setFixedHeight(location_button.sizeHint().height()*2)
         return location_button
 
+    def _init_reset_button(self):
+        reset_button = SafeConfirmButton(text="Set current as default.")
+        reset_button.clicked.connect(self._config.set_current_as_default)
+        reset_button.setFixedHeight(reset_button.sizeHint().height()*2)
+        return reset_button
+
     @property
     def location_mode(self):
-        return self.location_field.read()
+        return self._config.SAVE_LOCAL.read()
 
     @location_mode.setter
     def location_mode(self, value: bool):
+        self._config.SAVE_LOCAL.write(value)
         if value:
             self.location_button.main_text = "Local mode"
         else:

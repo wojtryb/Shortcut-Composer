@@ -38,11 +38,19 @@ class DualField(Field, Generic[T]):
     ) -> None:
         self.name = field_name
         self.config_group = group.name
-        self.default = default
         self._is_local_determiner = is_local_determiner
         self._is_local_determiner.register_callback(self.refresh)
         self._loc = group.field(field_name, default, parser_type, local=True)
         self._glob = group.field(field_name, default, parser_type, local=False)
+
+    @property
+    def default(self):
+        return self._glob.default
+
+    @default.setter
+    def default(self, value: T):
+        self._loc.default = value
+        self._glob.default = value
 
     def write(self, value: T) -> None:
         """
@@ -203,6 +211,11 @@ class PresetPieConfig(PieConfig[str]):
         preset_order = [p for p in saved_order if p in tag_values]
         missing = [p for p in tag_values if p not in saved_order]
         return preset_order + missing
+
+    def set_current_as_default(self):
+        self.TAG_MODE.default = self.TAG_MODE.read()
+        self.TAG_NAME.default = self.TAG_NAME.read()
+        self.ORDER.default = self.ORDER.read()
 
     def refresh_order(self) -> None:
         """Refresh the values in case the active document changed."""
