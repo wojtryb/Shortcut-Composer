@@ -8,6 +8,8 @@ from config_system import Field, FieldGroup
 from data_components import Tag
 
 T = TypeVar("T")
+F = TypeVar("F", bound=Field)
+U = TypeVar("U")
 
 
 class DualField(Field, Generic[T]):
@@ -28,7 +30,7 @@ class DualField(Field, Generic[T]):
 
     def __init__(
         self,
-        group: 'PieConfig',
+        group: FieldGroup,
         is_local_determiner: Field[bool],
         field_name: str,
         default: T,
@@ -75,6 +77,45 @@ class DualField(Field, Generic[T]):
         not run callbacks.
         """
         self.write(self.read())
+
+
+class FieldWithEditableDefault(Field, Generic[T, F]):
+    def __new__(cls, *args, **kwargs) -> 'FieldWithEditableDefault[T, F]':
+        obj = object.__new__(cls)
+        obj.__init__(*args, **kwargs)
+        return obj
+
+    def __init__(self, field: F, field_with_default: Field[T]):
+        self.field = field
+        self._default_field = field_with_default
+
+        def handle_change_of_default():
+            self.field.default = self._default_field.read()
+        self._default_field.register_callback(handle_change_of_default)
+        handle_change_of_default()
+
+        self.config_group = self.field.config_group
+        self.name = self.field.name
+
+    @property
+    def default(self) -> T:
+        return self.field.default
+
+    @default.setter
+    def default(self, value: T) -> None:
+        self._default_field.write(value)
+
+    def write(self, value: T) -> None:
+        self.field.write(value)
+
+    def read(self) -> T:
+        return self.field.read()
+
+    def register_callback(self, callback: Callable[[], None]) -> None:
+        self.field.register_callback(callback)
+
+    def reset_default(self) -> None:
+        self.field.reset_default()
 
 
 class PieConfig(FieldGroup, Generic[T], ABC):
@@ -130,12 +171,22 @@ class PresetPieConfig(PieConfig[str]):
 
         tag_mode = isinstance(values, Tag)
         tag_name = values.tag_name if isinstance(values, Tag) else ""
-        self.TAG_MODE = DualField(self, self.SAVE_LOCAL, "Tag mode", tag_mode)
-        self.TAG_NAME = DualField(self, self.SAVE_LOCAL, "Tag", tag_name)
-        self.ORDER = DualField(self, self.SAVE_LOCAL, "Values", [], str)
+        self.TAG_MODE = self._create_editable_dual_field("Tag mode", tag_mode)
+        self.TAG_NAME = self._create_editable_dual_field("Tag", tag_name)
+        self.ORDER = self._create_editable_dual_field("Values", [], str)
 
         self.background_color = background_color
         self.active_color = active_color
+
+    def _create_editable_dual_field(
+        self,
+        field_name: str,
+        default: U,
+        parser_type: Optional[type] = None
+    ) -> FieldWithEditableDefault[U, DualField[U]]:
+        return FieldWithEditableDefault(
+            DualField(self, self.SAVE_LOCAL, field_name, default, parser_type),
+            self.field(f"{field_name} default", default, parser_type))
 
     @property
     def allow_value_edit(self) -> bool:
@@ -155,8 +206,8 @@ class PresetPieConfig(PieConfig[str]):
 
     def refresh_order(self) -> None:
         """Refresh the values in case the active document changed."""
-        self.TAG_MODE.refresh()
-        self.TAG_NAME.refresh()
+        self.TAG_MODE.field.refresh()
+        self.TAG_NAME.field.refresh()
         self.ORDER.write(self.values())
 
 
