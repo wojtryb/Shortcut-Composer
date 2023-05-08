@@ -116,8 +116,10 @@ class LocationTab(QWidget):
 
     @location_mode.setter
     def location_mode(self, value: bool):
-        self._config.SAVE_LOCAL.write(value)
         if value:
             self.location_button.main_text = "Local mode"
+            self._config.refresh_order()
+            self._config.set_current_as_default()
         else:
             self.location_button.main_text = "Global mode"
+        self._config.SAVE_LOCAL.write(value)
