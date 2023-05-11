@@ -42,6 +42,10 @@ class PieConfig(FieldGroup, Generic[T], ABC):
     def set_current_as_default(self) -> None:
         ...
 
+    @abstractmethod
+    def reset_the_default(self) -> None:
+        ...
+
     def _create_editable_dual_field(
         self,
         field_name: str,
@@ -114,6 +118,11 @@ class PresetPieConfig(PieConfig[str]):
         self.TAG_NAME.default = self.TAG_NAME.read()
         self.ORDER.default = self.ORDER.read()
 
+    def reset_the_default(self) -> None:
+        self.TAG_MODE.default = False
+        self.TAG_NAME.default = ""
+        self.ORDER.default = []
+
 
 class NonPresetPieConfig(PieConfig[T], Generic[T]):
     """FieldGroup representing config of PieMenu of non-preset values."""
@@ -150,3 +159,6 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
 
     def set_current_as_default(self):
         self.ORDER.default = self.ORDER.read()
+
+    def reset_the_default(self) -> None:
+        self.ORDER.default = []

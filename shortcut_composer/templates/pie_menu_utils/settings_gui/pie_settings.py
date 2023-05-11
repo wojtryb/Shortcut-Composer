@@ -94,7 +94,10 @@ class LocationTab(QWidget):
         layout.addStretch()
         self.setLayout(layout)
 
-        self.location_mode = self._config.SAVE_LOCAL.read()
+        if self._config.SAVE_LOCAL.read():
+            self.location_button.main_text = "Local mode"
+        else:
+            self.location_button.main_text = "Global mode"
 
     def _init_location_button(self):
         def switch_mode():
@@ -117,10 +120,13 @@ class LocationTab(QWidget):
 
     @location_mode.setter
     def location_mode(self, value: bool):
+        values = self._config.ORDER.read()
+
         if value:
             self.location_button.main_text = "Local mode"
-            self._config.refresh_order()  # check if it is needed
-            self._config.set_current_as_default()
+            self._config.reset_the_default()
         else:
             self.location_button.main_text = "Global mode"
+
         self._config.SAVE_LOCAL.write(value)
+        self._config.ORDER.write(values)  # make sure the icons stay the same
