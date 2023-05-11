@@ -23,6 +23,7 @@ class PieConfig(FieldGroup, Generic[T], ABC):
     background_color: Optional[QColor]
     active_color: QColor
 
+    SAVE_LOCAL: Field[bool]
     ORDER: Field[List[T]]
     PIE_RADIUS_SCALE: Field[float]
     ICON_RADIUS_SCALE: Field[float]
@@ -36,6 +37,20 @@ class PieConfig(FieldGroup, Generic[T], ABC):
     def refresh_order(self) -> None:
         """Refresh the values in case the active document changed."""
         ...
+
+    @abstractmethod
+    def set_current_as_default(self) -> None:
+        ...
+
+    def _create_editable_dual_field(
+        self,
+        field_name: str,
+        default: U,
+        parser_type: Optional[type] = None
+    ) -> FieldWithEditableDefault[U, DualField[U]]:
+        return FieldWithEditableDefault(
+            DualField(self, self.SAVE_LOCAL, field_name, default, parser_type),
+            self.field(f"{field_name} default", default, parser_type))
 
 
 class PresetPieConfig(PieConfig[str]):
@@ -72,16 +87,6 @@ class PresetPieConfig(PieConfig[str]):
         self.background_color = background_color
         self.active_color = active_color
 
-    def _create_editable_dual_field(
-        self,
-        field_name: str,
-        default: U,
-        parser_type: Optional[type] = None
-    ) -> FieldWithEditableDefault[U, DualField[U]]:
-        return FieldWithEditableDefault(
-            DualField(self, self.SAVE_LOCAL, field_name, default, parser_type),
-            self.field(f"{field_name} default", default, parser_type))
-
     @property
     def allow_value_edit(self) -> bool:
         """Return whether user can add and remove items from the pie."""
@@ -98,16 +103,16 @@ class PresetPieConfig(PieConfig[str]):
         missing = [p for p in tag_values if p not in saved_order]
         return preset_order + missing
 
-    def set_current_as_default(self):
-        self.TAG_MODE.default = self.TAG_MODE.read()
-        self.TAG_NAME.default = self.TAG_NAME.read()
-        self.ORDER.default = self.ORDER.read()
-
     def refresh_order(self) -> None:
         """Refresh the values in case the active document changed."""
         self.TAG_MODE.field.refresh()
         self.TAG_NAME.field.refresh()
         self.ORDER.write(self.values())
+
+    def set_current_as_default(self):
+        self.TAG_MODE.default = self.TAG_MODE.read()
+        self.TAG_NAME.default = self.TAG_NAME.read()
+        self.ORDER.default = self.ORDER.read()
 
 
 class NonPresetPieConfig(PieConfig[T], Generic[T]):
@@ -129,7 +134,7 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
         self.ICON_RADIUS_SCALE = self.field("Icon scale", icon_radius_scale)
 
         self.SAVE_LOCAL = self.field("Save local", save_local)
-        self.ORDER = DualField(self, self.SAVE_LOCAL, "Values", values)
+        self.ORDER = self._create_editable_dual_field("Values", values)
 
         self.background_color = background_color
         self.active_color = active_color
@@ -142,3 +147,6 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
     def refresh_order(self) -> None:
         """Refresh the values in case the active document changed."""
         self.ORDER.write(self.values())
+
+    def set_current_as_default(self):
+        self.ORDER.default = self.ORDER.read()

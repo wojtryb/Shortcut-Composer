@@ -11,7 +11,7 @@ from api_krita.pyqt import AnimatedWidget, BaseWidget, SafeConfirmButton
 from config_system.ui import ConfigFormWidget, ConfigSpinBox
 from composer_utils import Config
 from ..pie_style import PieStyle
-from ..pie_config import PieConfig, PresetPieConfig
+from ..pie_config import PieConfig
 
 
 class PieSettings(AnimatedWidget, BaseWidget):
@@ -48,6 +48,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
                           0.05, 4),
         ])
         self._tab_holder.addTab(self._local_settings, "Local settings")
+        self._tab_holder.addTab(LocationTab(self._config), "Location")
 
         layout = QVBoxLayout(self)
         layout.addWidget(self._tab_holder)
@@ -78,7 +79,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
 class LocationTab(QWidget):
     def __init__(
         self,
-        config: PresetPieConfig,
+        config: PieConfig,
         parent: Optional[QWidget] = None
     ) -> None:
         super().__init__(parent)
@@ -118,7 +119,7 @@ class LocationTab(QWidget):
     def location_mode(self, value: bool):
         if value:
             self.location_button.main_text = "Local mode"
-            self._config.refresh_order()
+            self._config.refresh_order()  # check if it is needed
             self._config.set_current_as_default()
         else:
             self.location_button.main_text = "Global mode"
