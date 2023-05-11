@@ -5,8 +5,9 @@ from typing import Optional
 
 from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtGui import QCursor
-from PyQt5.QtWidgets import QWidget, QTabWidget, QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QTabWidget, QVBoxLayout, QHBoxLayout, QLabel
 
+from api_krita import Krita
 from api_krita.pyqt import AnimatedWidget, BaseWidget, SafeConfirmButton
 from config_system.ui import ConfigFormWidget, ConfigSpinBox
 from composer_utils import Config
@@ -18,7 +19,13 @@ class PieSettings(AnimatedWidget, BaseWidget):
     """
     Abstract widget that allows to change values in passed config.
 
-    Meant to be displayed next to pie menu, having the same heigth.
+    Meant to be displayed next to the pie menu.
+
+    Consists of two tabs:
+    - form with field values to set
+    - tab for picking save location
+
+    Subclasses can add additional tabs.
     """
 
     def __init__(
@@ -82,51 +89,71 @@ class LocationTab(QWidget):
         config: PieConfig,
         parent: Optional[QWidget] = None
     ) -> None:
+        """Tab that allows to switch location in which icon order is saved."""
         super().__init__(parent)
         self._config = config
 
-        self.location_button = self._init_location_button()
-        self.reset_default_button = self._init_reset_button()
+        self._location_button = self._init_location_button()
+        self._reset_default_button = self._init_set_default_button()
+        self._mode_description = QLabel()
+        self._mode_description.setWordWrap(True)
+
+        header = QHBoxLayout()
+        header.addWidget(QLabel(text="Save location:"), 2, Qt.AlignCenter)
+        header.addWidget(self._location_button, 1)
 
         layout = QVBoxLayout()
-        layout.addWidget(self.location_button)
-        layout.addWidget(self.reset_default_button)
+        layout.addLayout(header)
+        layout.addWidget(self._mode_description)
         layout.addStretch()
+        layout.addWidget(self._reset_default_button)
         self.setLayout(layout)
 
-        if self._config.SAVE_LOCAL.read():
-            self.location_button.main_text = "Local mode"
-        else:
-            self.location_button.main_text = "Global mode"
+        self.is_local_mode = self._config.SAVE_LOCAL.read()
 
     def _init_location_button(self):
+        """Button that switches between save locations."""
         def switch_mode():
-            self.location_mode = not self.location_mode
+            values = self._config.ORDER.read()
 
-        location_button = SafeConfirmButton(confirm_text="Change?")
+            self.is_local_mode = not self.is_local_mode
+            if self.is_local_mode:
+                self._config.reset_the_default()
+
+            # make sure the icons stay the same
+            self._config.ORDER.write(values)
+
+        location_button = SafeConfirmButton(text="Change mode")
         location_button.clicked.connect(switch_mode)
         location_button.setFixedHeight(location_button.sizeHint().height()*2)
         return location_button
 
-    def _init_reset_button(self):
-        reset_button = SafeConfirmButton(text="Set current as default.")
-        reset_button.clicked.connect(self._config.set_current_as_default)
-        reset_button.setFixedHeight(reset_button.sizeHint().height()*2)
-        return reset_button
+    def _init_set_default_button(self):
+        default_button = SafeConfirmButton(text="Set current as default")
+        default_button.clicked.connect(self._config.set_current_as_default)
+        default_button.setFixedHeight(default_button.sizeHint().height()*2)
+        return default_button
 
     @property
-    def location_mode(self):
+    def is_local_mode(self):
         return self._config.SAVE_LOCAL.read()
 
-    @location_mode.setter
-    def location_mode(self, value: bool):
-        values = self._config.ORDER.read()
-
+    @is_local_mode.setter
+    def is_local_mode(self, value: bool):
         if value:
-            self.location_button.main_text = "Local mode"
-            self._config.reset_the_default()
+            self._location_button.main_text = "Local"
+            self._location_button.icon = Krita.get_icon("folder-documents")
+            self._mode_description.setText(
+                "LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum"
+                "LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum"
+                "LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum"
+            )
         else:
-            self.location_button.main_text = "Global mode"
-
+            self._location_button.main_text = "Global"
+            self._location_button.icon = Krita.get_icon("properties")
+            self._mode_description.setText(
+                "IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem"
+                "IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem"
+                "IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem"
+            )
         self._config.SAVE_LOCAL.write(value)
-        self._config.ORDER.write(values)  # make sure the icons stay the same
