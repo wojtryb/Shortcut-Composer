@@ -68,7 +68,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
         layout.addWidget(self._tab_holder)
         self.setLayout(layout)
 
-    def show(self):
+    def show(self) -> None:
         """Show the window after its settings are refreshed."""
         self._local_settings.refresh()
         super().show()
@@ -78,14 +78,14 @@ class PieSettings(AnimatedWidget, BaseWidget):
         self._local_settings.apply()
         super().hide()
 
-    def move_to_pie_side(self):
+    def move_to_pie_side(self) -> None:
         """Move the widget on the right side of the pie."""
         offset = self.width()//2 + self._style.widget_radius * 1.05
         point = QPoint(round(offset), 0)
         # HACK Assume the pie center should be at the cursor
         self.move_center(QCursor().pos() + point)  # type: ignore
 
-    def _reset(self):
+    def _reset(self) -> None:
         """React to change in pie size."""
         self.setMinimumHeight(self._style.widget_radius*2)
 
@@ -108,10 +108,10 @@ class LocationTab(QWidget):
         self._set_new_default_button = self._init_set_new_default_button()
         self._reset_to_default_button = self._init_reset_to_default_button()
 
-        self._init_layout()
+        self.setLayout(self._init_layout())
         self.is_local_mode = self._config.SAVE_LOCAL.read()
 
-    def _init_layout(self):
+    def _init_layout(self) -> QVBoxLayout:
         """
         Create and set a layout of the tab.
 
@@ -131,7 +131,7 @@ class LocationTab(QWidget):
         layout.addStretch()
         layout.addWidget(self._set_new_default_button)
         layout.addWidget(self._reset_to_default_button)
-        self.setLayout(layout)
+        return layout
 
     def _init_location_button(self) -> SafeConfirmButton:
         """Return button that switches between save locations."""
@@ -177,7 +177,7 @@ class LocationTab(QWidget):
         button.setFixedHeight(button.sizeHint().height()*2)
         return button
 
-    def _init_reset_to_default_button(self):
+    def _init_reset_to_default_button(self) -> SafeConfirmButton:
         """Return button which resets values in pie to default ones."""
         button = SafeConfirmButton(text="Reset pie to default values")
         button.clicked.connect(self._config.reset_to_default)

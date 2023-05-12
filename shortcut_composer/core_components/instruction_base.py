@@ -30,7 +30,7 @@ class InstructionHolder:
     def __init__(self, instructions: List[Instruction]) -> None:
         self._instructions = instructions
 
-    def append(self, instruction: Instruction):
+    def append(self, instruction: Instruction) -> None:
         """Add new instruction to the list on runtime."""
         self._instructions.append(instruction)
 

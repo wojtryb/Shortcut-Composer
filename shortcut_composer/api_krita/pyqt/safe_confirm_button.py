@@ -40,12 +40,12 @@ class SafeConfirmButton(QPushButton):
         self._confirm_mode = True
 
     @property
-    def _confirm_mode(self):
+    def _confirm_mode(self) -> bool:
         """Return whether in confirmation mode."""
         return self.__confirm_mode
 
     @_confirm_mode.setter
-    def _confirm_mode(self, value: bool):
+    def _confirm_mode(self, value: bool) -> None:
         """Set mode. Confirmation mode requires red border and other text."""
         if value is True:
             self.setText(self.confirm_text)
@@ -62,23 +62,23 @@ class SafeConfirmButton(QPushButton):
         self.__confirm_mode = value
 
     @property
-    def main_text(self):
+    def main_text(self) -> str:
         """Return the text displayed when not in confirmation mode."""
         return self._main_text
 
     @main_text.setter
-    def main_text(self, text: str):
+    def main_text(self, text: str) -> None:
         """Set the text displayed when not in confirmation mode."""
         self._main_text = text
         self.setText(self._main_text)
 
     @property
-    def icon(self):
+    def icon(self) -> QIcon:
         """Return the icon displayed when not in confirmation mode."""
         return self._icon
 
     @icon.setter
-    def icon(self, icon: QIcon):
+    def icon(self, icon: QIcon) -> None:
         """Set the icon displayed when not in confirmation mode."""
         self._icon = icon
         self.setIcon(self._icon)

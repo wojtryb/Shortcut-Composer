@@ -8,11 +8,11 @@ from api_krita.wrappers import Database
 class Tag(List[str]):
     """List representing names of presets in a tag of given name."""
 
-    def __init__(self, tag_name: str):
+    def __init__(self, tag_name: str) -> None:
         self.tag_name = tag_name
         self.refresh()
 
-    def refresh(self):
+    def refresh(self) -> None:
         """Update itself with current list of presets that belong to tag."""
         self.clear()
         self.extend(self._read_presets())

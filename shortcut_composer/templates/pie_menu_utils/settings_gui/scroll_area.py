@@ -87,30 +87,7 @@ class ScrollArea(QWidget):
 
         self.setLayout(self._layout)
 
-    def _init_scroll_area(self):
-        """Create a widget, which scrolls internal widget with grid layout."""
-        internal = QWidget()
-        internal.setLayout(self._grid)
-
-        area = QScrollArea()
-        area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        radius = self._style.unscaled_icon_radius
-        area.setMinimumWidth(round(radius*self._columns*2.3))
-        area.setMinimumHeight(round(radius*9.2))
-        area.setWidgetResizable(True)
-        area.setWidget(internal)
-        return area
-
-    def _init_search_bar(self):
-        """Create search bar which hides icons not matching its text."""
-        search_bar = QLineEdit(self)
-        search_bar.setPlaceholderText("Search")
-        search_bar.setClearButtonEnabled(True)
-        search_bar.textChanged.connect(self._apply_search_bar_filter)
-        return search_bar
-
-    def _init_layout(self):
+    def _init_layout(self) -> QVBoxLayout:
         """
         Create scroll area layout.
 
@@ -128,7 +105,30 @@ class ScrollArea(QWidget):
         layout.addLayout(footer)
         return layout
 
-    def _apply_search_bar_filter(self):
+    def _init_scroll_area(self) -> QScrollArea:
+        """Create a widget, which scrolls internal widget with grid layout."""
+        internal = QWidget()
+        internal.setLayout(self._grid)
+
+        area = QScrollArea()
+        area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        radius = self._style.unscaled_icon_radius
+        area.setMinimumWidth(round(radius*self._columns*2.3))
+        area.setMinimumHeight(round(radius*9.2))
+        area.setWidgetResizable(True)
+        area.setWidget(internal)
+        return area
+
+    def _init_search_bar(self) -> QLineEdit:
+        """Create search bar which hides icons not matching its text."""
+        search_bar = QLineEdit(self)
+        search_bar.setPlaceholderText("Search")
+        search_bar.setClearButtonEnabled(True)
+        search_bar.textChanged.connect(self._apply_search_bar_filter)
+        return search_bar
+
+    def _apply_search_bar_filter(self) -> None:
         """Replace widgets in layout with those thich match the filter."""
         self.setUpdatesEnabled(False)
         pattern = re.escape(self._search_bar.text())
@@ -169,7 +169,7 @@ class ScrollArea(QWidget):
         QTimer.singleShot(10, lambda: self.setUpdatesEnabled(True))
         self.widgets_changed.emit()
 
-    def mark_used_values(self, used_values: list):
+    def mark_used_values(self, used_values: list) -> None:
         """Make all values currently used in pie undraggable and disabled."""
         for widget in self._children_list:
             if widget.label.value in used_values:

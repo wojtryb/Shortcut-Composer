@@ -16,10 +16,10 @@ class Timer:
         self._timer.timeout.connect(target)
         self._interval_ms = interval_ms
 
-    def start(self):
+    def start(self) -> None:
         """Start a timer."""
         self._timer.start(self._interval_ms)
 
-    def stop(self):
+    def stop(self) -> None:
         """Stop a timer."""
         self._timer.stop()

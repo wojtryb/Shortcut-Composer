@@ -32,7 +32,7 @@ class OffsetGridLayout(QGridLayout):
                    When max_columns is 4 will consist of 7 (4+3) widgets
     """
 
-    def __init__(self, max_columns: int, owner: QWidget):
+    def __init__(self, max_columns: int, owner: QWidget) -> None:
         super().__init__()
         self._widgets: List[LabelWidget] = []
         self._max_columns = max_columns
@@ -80,7 +80,7 @@ class OffsetGridLayout(QGridLayout):
             self._internal_insert(len(self), widget)
         self._refresh()
 
-    def replace(self, widgets: List[LabelWidget]):
+    def replace(self, widgets: List[LabelWidget]) -> None:
         """Replace all existing widgets with the ones provided."""
         if widgets == self._widgets:
             return
@@ -95,7 +95,7 @@ class OffsetGridLayout(QGridLayout):
         self.extend(widgets)
         self._refresh()
 
-    def _refresh(self):
+    def _refresh(self) -> None:
         """Refresh the layout by adding all the internal widgets to it."""
         for i, widget in enumerate(self._widgets):
             self.addWidget(widget, *self._get_position(i), 2, 2)

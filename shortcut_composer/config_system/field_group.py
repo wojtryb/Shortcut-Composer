@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import TypeVar, Optional, Callable, List
+from typing import TypeVar, Optional, Callable, Iterator, List
 from .field import Field
 
 T = TypeVar('T')
@@ -39,17 +39,17 @@ class FieldGroup:
             field.register_callback(callback)
         return field
 
-    def reset_default(self):
+    def reset_default(self) -> None:
         """Reset values of all fields stored in this group."""
         for field in self._fields:
             field.reset_default()
 
-    def register_callback(self, callback: Callable[[], None]):
+    def register_callback(self, callback: Callable[[], None]) -> None:
         """Register a callback on every past and future field in group."""
         self._callbacks.append(callback)
         for field in self._fields:
             field.register_callback(callback)
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Field]:
         """Iterate over all fields in the group."""
         return iter(self._fields)

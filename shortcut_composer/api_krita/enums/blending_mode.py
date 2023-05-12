@@ -142,7 +142,7 @@ class BlendingMode(Enum):
     REFLECT_FREEZE = "reflect_freeze"
 
     @property
-    def pretty_name(self):
+    def pretty_name(self) -> str:
         """Format blending mode name like: `Darker Color`."""
         parts = self.name.split("_")
         parts = [f"{part[0]}{part[1:].lower()}" for part in parts]

@@ -27,7 +27,7 @@ class BaseWidget(QWidget):
         """Move the widget by providing a new center point."""
         self.move(new_center-self.center)  # type: ignore
 
-    def setGeometry(self, ax: int, ay: int, aw: int, ah: int):
+    def setGeometry(self, ax: int, ay: int, aw: int, ah: int) -> None:
         center = self.center_global
         super().setGeometry(ax, ay, aw, ah)
         self.move_center(center)
@@ -42,20 +42,20 @@ class AnimatedWidget(QWidget):
         self._animation_interval = self._read_animation_interval()
         self._animation_timer = Timer(self._increase_opacity, 17)
 
-    def show(self):
+    def show(self) -> None:
         """Decrease opacity to 0, and start a timer which animates it."""
         self.setWindowOpacity(0)
         self._animation_timer.start()
         super().show()
 
-    def _increase_opacity(self):
+    def _increase_opacity(self) -> None:
         """Add interval to current opacity, stop the timer when full."""
         current_opacity = self.windowOpacity()
         self.setWindowOpacity(current_opacity+self._animation_interval)
         if current_opacity >= 1:
             self._animation_timer.stop()
 
-    def _read_animation_interval(self):
+    def _read_animation_interval(self) -> float:
         """Return how much opacity (0-1) should be increased on each frame."""
         if time := self._animation_time:
             return 0.0167/time

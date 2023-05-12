@@ -40,11 +40,11 @@ class DualField(Field, Generic[T]):
         self._glob = group.field(field_name, default, parser_type, local=False)
 
     @property
-    def default(self):
+    def default(self) -> T:
         return self._glob.default
 
     @default.setter
-    def default(self, value: T):
+    def default(self, value: T) -> None:
         self._loc.default = value
         self._glob.default = value
 

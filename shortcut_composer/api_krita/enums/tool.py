@@ -68,7 +68,7 @@ class Tool(Enum):
         return Api.instance().icon(icon_name)
 
     @property
-    def pretty_name(self):
+    def pretty_name(self) -> str:
         """Format tool name like: `Shape select tool`."""
         return f"{self.name[0]}{self.name[1:].lower().replace('_', ' ')} tool"
 

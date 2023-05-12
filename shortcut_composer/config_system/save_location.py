@@ -11,7 +11,7 @@ class SupportsReadWrite(Protocol):
 
 
 class GlobalSettings(SupportsReadWrite):
-    """Gives read/write interface for kritarc file. """
+    """Gives read/write interface for kritarc file."""
 
     @staticmethod
     def write(group: str, name: str, value: Any) -> None:
@@ -32,7 +32,7 @@ class LocalSettings(SupportsReadWrite):
     """Gives read/write interface to .kra document annotations. """
 
     @staticmethod
-    def write(group: str, name: str, value: Any):
+    def write(group: str, name: str, value: Any) -> None:
         """Write value to .kra document as its annotation."""
         document = Krita.get_active_document()
         if document is not None:

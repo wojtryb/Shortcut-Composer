@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Optional, Iterable
+from typing import List, Optional, Iterable
 
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 
@@ -39,7 +39,7 @@ class TagComboBox(ConfigComboBox):
         self.config_field.register_callback(
             lambda: self.set(self.config_field.read()))
 
-    def reset(self):
+    def reset(self) -> None:
         """Replace list of available tags with those red from database."""
         self._combo_box.clear()
         if self._allow_all:
@@ -75,7 +75,7 @@ class PresetScrollArea(ScrollArea):
         self._layout.insertWidget(0, self.tag_chooser.widget)
         self._display_tag()
 
-    def _display_tag(self):
+    def _display_tag(self) -> None:
         """Update preset widgets according to tag selected in combobox."""
         picked_tag = self.tag_chooser.widget.currentText()
         if picked_tag == "All":
@@ -87,7 +87,7 @@ class PresetScrollArea(ScrollArea):
         self._apply_search_bar_filter()
         self.tag_chooser.save()
 
-    def _create_labels(self, values: Iterable[str]):
+    def _create_labels(self, values: Iterable[str]) -> List[Label[str]]:
         """Create labels from list of preset names."""
         controller = PresetController()
         labels = [Label.from_value(preset, controller) for preset in values]
@@ -190,11 +190,11 @@ class PresetPieSettings(PieSettings):
         action_values_tab.setLayout(action_layout)
         return action_values_tab
 
-    def get_tag_mode(self):
+    def get_tag_mode(self) -> bool:
         """Return whether pie is in tag mode or not (manual mode)."""
         return self._config.TAG_MODE.read()
 
-    def set_tag_mode(self, value: bool, notify: bool = True):
+    def set_tag_mode(self, value: bool, notify: bool = True) -> None:
         """Set the pie mode to tag (True) or manual (False)."""
         if notify:
             self._config.TAG_MODE.write(value)

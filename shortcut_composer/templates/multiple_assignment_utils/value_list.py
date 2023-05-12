@@ -43,21 +43,21 @@ class ValueList(QListWidget):
         self.clearSelection()
         self.setCurrentRow(position+1)
 
-    def get_all(self):
+    def get_all(self) -> List[str]:
         """Get list of all the strings in the list."""
         items: List[str] = []
         for i in range(self.count()):
             items.append(self.item(i).text())
         return items
 
-    def remove(self, value: str):
+    def remove(self, value: str) -> None:
         """Remove strings by passed value and select the previous one."""
         for item in self.findItems(value, Qt.MatchExactly):
             index = self.row(item)
             self.takeItem(index)
             self.setCurrentRow(index-1)
 
-    def remove_selected(self):
+    def remove_selected(self) -> None:
         """Remove all the selected values."""
         for item in self.selected:
             self.remove(item)
