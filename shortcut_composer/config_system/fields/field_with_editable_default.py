@@ -33,6 +33,7 @@ class FieldWithEditableDefault(Field, Generic[T, F]):
 
     @default.setter
     def default(self, value: T) -> None:
+        self.field.default = value
         self._default_field.write(value)
 
     def write(self, value: T) -> None:
