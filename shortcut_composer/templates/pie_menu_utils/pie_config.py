@@ -24,7 +24,7 @@ class PieConfig(FieldGroup, Generic[T], ABC):
     active_color: QColor
 
     SAVE_LOCAL: Field[bool]
-    ORDER: Field[List[T]]
+    ORDER: FieldWithEditableDefault[List[T], DualField[List[T]]]
     PIE_RADIUS_SCALE: Field[float]
     ICON_RADIUS_SCALE: Field[float]
 
@@ -40,10 +40,17 @@ class PieConfig(FieldGroup, Generic[T], ABC):
 
     @abstractmethod
     def set_current_as_default(self) -> None:
+        """Set current pie values as a new default list of values."""
         ...
 
     @abstractmethod
     def reset_the_default(self) -> None:
+        """Set empty pie as a new default list of values."""
+        ...
+
+    @abstractmethod
+    def reset_to_default(self) -> None:
+        """Replace current list of values in pie with the default list."""
         ...
 
     def _create_editable_dual_field(
@@ -52,6 +59,7 @@ class PieConfig(FieldGroup, Generic[T], ABC):
         default: U,
         parser_type: Optional[type] = None
     ) -> FieldWithEditableDefault[U, DualField[U]]:
+        """Return field which can switch save location and default value."""
         return FieldWithEditableDefault(
             DualField(self, self.SAVE_LOCAL, field_name, default, parser_type),
             self.field(f"{field_name} default", default, parser_type))
@@ -114,14 +122,23 @@ class PresetPieConfig(PieConfig[str]):
         self.ORDER.write(self.values())
 
     def set_current_as_default(self):
+        """Set current pie values as a new default list of values."""
         self.TAG_MODE.default = self.TAG_MODE.read()
         self.TAG_NAME.default = self.TAG_NAME.read()
         self.ORDER.default = self.ORDER.read()
 
     def reset_the_default(self) -> None:
+        """Set empty pie as a new default list of values."""
         self.TAG_MODE.default = False
         self.TAG_NAME.default = ""
         self.ORDER.default = []
+
+    def reset_to_default(self) -> None:
+        """Replace current list of values in pie with the default list."""
+        self.TAG_MODE.reset_default()
+        self.TAG_NAME.reset_default()
+        self.ORDER.reset_default()
+        self.refresh_order()
 
 
 class NonPresetPieConfig(PieConfig[T], Generic[T]):
@@ -158,7 +175,13 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
         self.ORDER.write(self.values())
 
     def set_current_as_default(self):
+        """Set current pie values as a new default list of values."""
         self.ORDER.default = self.ORDER.read()
 
     def reset_the_default(self) -> None:
+        """Set empty pie as a new default list of values."""
         self.ORDER.default = []
+
+    def reset_to_default(self) -> None:
+        self.ORDER.reset_default()
+        self.refresh_order()

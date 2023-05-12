@@ -25,13 +25,14 @@ class PieSettings(AnimatedWidget, BaseWidget):
     """
     Abstract widget that allows to change values in passed config.
 
-    Meant to be displayed next to the pie menu.
+    Meant to be displayed next to the pie menu when it enters edit mode.
 
-    Consists of two tabs:
-    - form with field values to set
-    - tab for picking save location
+    Consists of two obligatory tabs:
+    - form with general configuration values.
+    - tab for switching location in which values are saved.
 
-    Subclasses can add additional tabs.
+    Subclasses can add their own tabs - they should do so with the tab
+    with available values to drag into the pie.
     """
 
     def __init__(
@@ -104,7 +105,8 @@ class LocationTab(QWidget):
         self._location_button = self._init_location_button()
         self._mode_title = self._init_mode_title()
         self._mode_description = self._init_mode_description()
-        self._reset_default_button = self._init_set_default_button()
+        self._set_new_default_button = self._init_set_new_default_button()
+        self._reset_to_default_button = self._init_reset_to_default_button()
 
         self._init_layout()
         self.is_local_mode = self._config.SAVE_LOCAL.read()
@@ -127,7 +129,8 @@ class LocationTab(QWidget):
         layout.addWidget(self._mode_title)
         layout.addWidget(self._mode_description)
         layout.addStretch()
-        layout.addWidget(self._reset_default_button)
+        layout.addWidget(self._set_new_default_button)
+        layout.addWidget(self._reset_to_default_button)
         self.setLayout(layout)
 
     def _init_location_button(self) -> SafeConfirmButton:
@@ -142,37 +145,44 @@ class LocationTab(QWidget):
             # make sure the icons stay the same
             self._config.ORDER.write(values)
 
-        location_button = SafeConfirmButton(text="Change mode")
-        location_button.clicked.connect(switch_mode)
-        location_button.setFixedHeight(location_button.sizeHint().height()*2)
-        return location_button
+        button = SafeConfirmButton(text="Change mode")
+        button.clicked.connect(switch_mode)
+        button.setFixedHeight(button.sizeHint().height()*2)
+        return button
 
     def _init_mode_title(self) -> QLabel:
         """Return QLabel with one-line description of the active mode."""
-        mode_title = QLabel()
-        mode_title.setStyleSheet("font-weight: bold")
-        mode_title.setAlignment(Qt.AlignHCenter)
-        mode_title.setWordWrap(True)
-        mode_title.setSizePolicy(
+        label = QLabel()
+        label.setStyleSheet("font-weight: bold")
+        label.setAlignment(Qt.AlignHCenter)
+        label.setWordWrap(True)
+        label.setSizePolicy(
             QSizePolicy.Ignored,
             QSizePolicy.Ignored)
-        return mode_title
+        return label
 
     def _init_mode_description(self) -> QLabel:
         """Return QLabel with onedetailed description of the active mode."""
-        mode_description = QLabel()
-        mode_description.setSizePolicy(
+        label = QLabel()
+        label.setSizePolicy(
             QSizePolicy.Ignored,
             QSizePolicy.Ignored)
-        mode_description.setWordWrap(True)
-        return mode_description
+        label.setWordWrap(True)
+        return label
 
-    def _init_set_default_button(self) -> SafeConfirmButton:
+    def _init_set_new_default_button(self) -> SafeConfirmButton:
         """Return button saving currently active values as the default ones."""
-        default_button = SafeConfirmButton(text="Set current as default")
-        default_button.clicked.connect(self._config.set_current_as_default)
-        default_button.setFixedHeight(default_button.sizeHint().height()*2)
-        return default_button
+        button = SafeConfirmButton(text="Set pie values as a new default")
+        button.clicked.connect(self._config.set_current_as_default)
+        button.setFixedHeight(button.sizeHint().height()*2)
+        return button
+
+    def _init_reset_to_default_button(self):
+        """Return button which resets values in pie to default ones."""
+        button = SafeConfirmButton(text="Reset pie to default values")
+        button.clicked.connect(self._config.reset_to_default)
+        button.setFixedHeight(button.sizeHint().height()*2)
+        return button
 
     @property
     def is_local_mode(self) -> bool:
@@ -186,7 +196,7 @@ class LocationTab(QWidget):
             self._location_button.main_text = "Local"
             self._location_button.icon = Krita.get_icon("folder-documents")
             self._mode_title.setText(
-                "Pie values are saved in the .kra document\n")
+                "Pie values are saved in the .kra document.\n")
             self._mode_description.setText(
                 "Each new document starts with the default set of "
                 "values which are can to be modified to those used "
@@ -199,7 +209,6 @@ class LocationTab(QWidget):
 
                 "For resources, only resource names are stored. "
                 "Saved value will be lost, when the resource is missing.")
-            self._reset_default_button.setEnabled(True)
         else:
             self._location_button.main_text = "Global"
             self._location_button.icon = Krita.get_icon("properties")
@@ -211,5 +220,4 @@ class LocationTab(QWidget):
                 "Selected values and their order is saved between "
                 "sessions. This mode is meant to be used for values that"
                 "remain useful regardless of which document is edited.")
-            self._reset_default_button.setDisabled(True)
         self._config.SAVE_LOCAL.write(value)
