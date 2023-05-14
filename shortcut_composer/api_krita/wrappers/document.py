@@ -75,11 +75,11 @@ class Document:
         """Return a list of `Nodes` without a parent."""
         return [Node(node) for node in self.document.topLevelNodes()]
 
-    def get_all_nodes(self) -> List[Node]:
+    def get_all_nodes(self, include_collapsed: bool = False) -> List[Node]:
         """Return a list of all `Nodes` in this document bottom to top."""
         def recursive_search(nodes: List[Node], found_so_far: List[Node]):
             for node in nodes:
-                if not node.collapsed:
+                if include_collapsed or not node.collapsed:
                     recursive_search(node.get_child_nodes(), found_so_far)
                 found_so_far.append(node)
             return found_so_far
