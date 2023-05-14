@@ -54,7 +54,7 @@ Installation steps are THE SAME for installing the plugin for the first time and
 1. [Download](https://github.com/wojtryb/Shortcut-Composer/archive/refs/heads/main.zip) the plugin. Do not extract it.
 2. In krita's topbar, open **Tools > Scripts > Import Python Plugin From File** and pick the downloaded .zip file
 3. Restart krita.
-4. Set custom shortcuts in **Settings > Configure Krita > Keyboard Shortcuts** under **Scripts > Shortcut Composer: Complex Actions** section. By intention, there are no default bindings.
+4. Set custom shortcuts in **Settings > Configure Krita > Keyboard Shortcuts** under **Scripts > Shortcut Composer: ...** sections. By intention, there are no default bindings.
 
 > **Warning**
 > Some keyboard buttons like **Space, R, Y, V, 1, 2, 3, 4, 5, 6** are reserved for Krita's Canvas Inputs. Assigning those keys to actions (including those from the plugin) may result in conflicts and abnormal behaviour different for each OS. Either avoid those keys, or remove their bindings in **Settings > Configure Krita > Canvas Input Settings**.
