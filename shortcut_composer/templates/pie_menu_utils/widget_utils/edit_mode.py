@@ -49,9 +49,10 @@ class EditMode:
 
     def _move_settings_next_to_pie(self):
         """Move settings window so that it lies on right side of pie."""
-        settings_offset = (
-            self._obj.pie_widget.width()//2
-            + self._obj.pie_settings.width()*1.05//2)
+        settings_offset = round(0.5*(
+            self._obj.pie_widget.width()
+            + self._obj.pie_settings.width()*1.05
+        ))
         self._obj.pie_settings.move_center(
             self._obj.pie_widget.center_global
             + QPoint(settings_offset, 0))  # type: ignore
