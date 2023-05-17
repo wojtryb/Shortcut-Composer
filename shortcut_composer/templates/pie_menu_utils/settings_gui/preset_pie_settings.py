@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Optional, Iterable
+from typing import List, Dict, Union, Optional, Iterable
 
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 
@@ -60,6 +60,8 @@ class PresetScrollArea(ScrollArea):
     - Manual mode - the presets are manually picked by the user
     """
 
+    known_labels: Dict[str, Union[Label, None]] = {}
+
     def __init__(
         self,
         style: PieStyle,
@@ -91,7 +93,16 @@ class PresetScrollArea(ScrollArea):
     def _create_labels(self, values: Iterable[str]) -> List[Label[str]]:
         """Create labels from list of preset names."""
         controller = PresetController()
-        labels = [Label.from_value(preset, controller) for preset in values]
+        labels: list[Optional[Label]] = []
+
+        for preset in values:
+            if preset in self.known_labels:
+                label = self.known_labels[preset]
+            else:
+                label = Label.from_value(preset, controller)
+                self.known_labels[preset] = label
+            labels.append(label)
+
         return [label for label in labels if label is not None]
 
 
