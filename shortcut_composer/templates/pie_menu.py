@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import List, TypeVar, Generic, Optional
+from functools import cached_property
 
 from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QColor
@@ -96,35 +97,55 @@ class PieMenu(RawInstructions, Generic[T]):
         self._edit_mode = EditMode(self)
         self._style = PieStyle(items=self._labels, pie_config=self._config)
 
-        self.pie_settings = create_pie_settings_window(
+    @cached_property
+    def pie_settings(self):
+        """Qwidget with settings for Pie widget."""
+        return create_pie_settings_window(
             controller=self._controller,
             style=self._style,
             pie_config=self._config)
-        self.pie_widget = PieWidget(
+
+    @cached_property
+    def pie_widget(self):
+        """Qwidget of the Pie for selecting values."""
+        return PieWidget(
             style=self._style,
             labels=self._labels,
             config=self._config)
-        self.pie_manager = PieManager(
+
+    @cached_property
+    def pie_manager(self):
+        """Manager which shows, hides and moves Pie widget and its settings."""
+        return PieManager(
             pie_widget=self.pie_widget,
             pie_settings=self.pie_settings)
 
-        self.settings_button = PieButton(
+    @cached_property
+    def settings_button(self):
+        """Button with which user can enter edit mode."""
+        settings_button = PieButton(
             icon=Krita.get_icon("properties"),
             icon_scale=1.1,
             parent=self.pie_widget,
             radius_callback=lambda: self._style.setting_button_radius,
             style=self._style,
             config=self._config)
-        self.settings_button.clicked.connect(lambda: self._edit_mode.set(True))
-        self.accept_button = PieButton(
+        settings_button.clicked.connect(lambda: self._edit_mode.set(True))
+        return settings_button
+
+    @cached_property
+    def accept_button(self):
+        """Button displayed in edit mode which allows to hide the pie."""
+        accept_button = PieButton(
             icon=Krita.get_icon("dialog-ok"),
             icon_scale=1.5,
             parent=self.pie_widget,
             radius_callback=lambda: self._style.accept_button_radius,
             style=self._style,
             config=self._config)
-        self.accept_button.clicked.connect(lambda: self._edit_mode.set(False))
-        self.accept_button.hide()
+        accept_button.clicked.connect(lambda: self._edit_mode.set(False))
+        accept_button.hide()
+        return accept_button
 
     def _move_buttons(self):
         """Move accept button to center and setting button to bottom-right."""
