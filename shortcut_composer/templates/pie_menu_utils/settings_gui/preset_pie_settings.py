@@ -32,9 +32,9 @@ class TagComboBox(ConfigComboBox):
         config_field: Field[str],
         parent: Optional[QWidget] = None,
         pretty_name: Optional[str] = None,
-        allow_all: bool = False,
+        additional_fields: List[str] = [],
     ) -> None:
-        self._allow_all = allow_all
+        self._additional_fields = additional_fields
         super().__init__(config_field, parent, pretty_name)
         self.config_field.register_callback(
             lambda: self.set(self.config_field.read()))
@@ -42,8 +42,7 @@ class TagComboBox(ConfigComboBox):
     def reset(self) -> None:
         """Replace list of available tags with those red from database."""
         self._combo_box.clear()
-        if self._allow_all:
-            self._combo_box.addItem("All")
+        self._combo_box.addItems(self._additional_fields)
         with Database() as database:
             self._combo_box.addItems(database.get_brush_tags())
         self.set(self.config_field.read())
@@ -70,7 +69,9 @@ class PresetScrollArea(ScrollArea):
     ) -> None:
         super().__init__(style, columns, parent)
         self._field = field
-        self.tag_chooser = TagComboBox(self._field, allow_all=True)
+        self.tag_chooser = TagComboBox(
+            self._field,
+            additional_fields=["---Select tag---", "All"])
         self.tag_chooser.widget.currentTextChanged.connect(self._display_tag)
         self._layout.insertWidget(0, self.tag_chooser.widget)
         self._display_tag()
@@ -121,7 +122,7 @@ class PresetPieSettings(PieSettings):
         preset_scroll_area = PresetScrollArea(
             style=self._style,
             columns=3,
-            field=self._config.field("Last tag selected", "All"))
+            field=self._config.field("Last tag selected", "---Select tag---"))
         policy = preset_scroll_area.sizePolicy()
         policy.setRetainSizeWhenHidden(True)
         preset_scroll_area.setSizePolicy(policy)
@@ -139,11 +140,15 @@ class PresetPieSettings(PieSettings):
         """Create button which switches between tag and manual mode."""
         def switch_mode():
             """Change the is_tag_mode to the opposite state."""
-            new_value = not self.get_tag_mode()
-            self.set_tag_mode(new_value)
-            if new_value:
+            is_tag_mode = not self.get_tag_mode()
+            self.set_tag_mode(is_tag_mode)
+            if is_tag_mode:
                 self._auto_combobox.set(self._manual_combobox.read())
                 self._auto_combobox.save()
+                # Reset hidden combobox to prevent unnecesary icon loading
+                self._manual_combobox.set(
+                    self._manual_combobox.config_field.default)
+                self._manual_combobox.save()
             else:
                 self._manual_combobox.set(self._auto_combobox.read())
                 self._manual_combobox.save()
