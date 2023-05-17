@@ -42,14 +42,19 @@ class EditMode:
         self._obj.pie_widget.is_edit_mode = True
         self._obj.pie_widget.repaint()
         self._obj.pie_settings.show()
+        self._obj.pie_settings.resize(self._obj.pie_settings.sizeHint())
+        self._move_settings_next_to_pie()
+        self._obj.accept_button.show()
+        self._obj.settings_button.hide()
+
+    def _move_settings_next_to_pie(self):
+        """Move settings window so that it lies on right side of pie."""
         settings_offset = (
             self._obj.pie_widget.width()//2
             + self._obj.pie_settings.width()*1.05//2)
         self._obj.pie_settings.move_center(
             self._obj.pie_widget.center_global
             + QPoint(settings_offset, 0))  # type: ignore
-        self._obj.accept_button.show()
-        self._obj.settings_button.hide()
 
     def set_edit_mode_false(self):
         """Set the edit mode off."""
