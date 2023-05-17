@@ -94,7 +94,6 @@ class PieMenu(RawInstructions, Generic[T]):
 
         self._last_values: List[T] = []
         self._labels: List[Label] = []
-        self._reset_labels(self._config.values())
         self._edit_mode = EditMode(self)
         self._style = PieStyle(items=self._labels, pie_config=self._config)
 
