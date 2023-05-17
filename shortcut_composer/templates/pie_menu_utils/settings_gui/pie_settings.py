@@ -212,7 +212,7 @@ class LocationTab(QWidget):
             self._mode_title.setText(
                 "Pie values are saved in krita settings.\n")
             self._mode_description.setText(
-                "Values remain the same until modified by the user.\t\t"
+                "Values remain the same until modified by the user.\n\n"
 
                 "Selected values and their order is saved between "
                 "sessions. This mode is meant to be used for values that"
