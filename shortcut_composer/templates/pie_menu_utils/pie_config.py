@@ -53,6 +53,11 @@ class PieConfig(FieldGroup, Generic[T], ABC):
         """Replace current list of values in pie with the default list."""
         ...
 
+    @abstractmethod
+    def is_order_default(self) -> bool:
+        """Return whether order is the same as default one."""
+        ...
+
     def _create_editable_dual_field(
         self,
         field_name: str,
@@ -140,6 +145,13 @@ class PresetPieConfig(PieConfig[str]):
         self.ORDER.reset_default()
         self.refresh_order()
 
+    def is_order_default(self) -> bool:
+        """Return whether order is the same as default one."""
+        return (
+            self.TAG_MODE.read() == self.TAG_MODE.default
+            and self.TAG_NAME.read() == self.TAG_NAME.default
+            and self.ORDER.read() == self.ORDER.default)
+
 
 class NonPresetPieConfig(PieConfig[T], Generic[T]):
     """FieldGroup representing config of PieMenu of non-preset values."""
@@ -185,3 +197,7 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
     def reset_to_default(self) -> None:
         self.ORDER.reset_default()
         self.refresh_order()
+
+    def is_order_default(self) -> bool:
+        """Return whether order is the same as default one."""
+        return self.ORDER.read() == self.ORDER.default

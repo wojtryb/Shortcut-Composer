@@ -100,6 +100,9 @@ class LocationTab(QWidget):
         self._set_new_default_button = self._init_set_new_default_button()
         self._reset_to_default_button = self._init_reset_to_default_button()
 
+        self._config.ORDER.register_callback(self._update_button_activity)
+        self._update_button_activity()
+
         self.setLayout(self._init_layout())
         self.is_local_mode = self._config.SAVE_LOCAL.read()
 
@@ -166,6 +169,7 @@ class LocationTab(QWidget):
         """Return button saving currently active values as the default ones."""
         button = SafeConfirmButton(text="Set pie values as a new default")
         button.clicked.connect(self._config.set_current_as_default)
+        button.clicked.connect(self._update_button_activity)
         button.setFixedHeight(button.sizeHint().height()*2)
         return button
 
@@ -173,6 +177,7 @@ class LocationTab(QWidget):
         """Return button which resets values in pie to default ones."""
         button = SafeConfirmButton(text="Reset pie to default values")
         button.clicked.connect(self._config.reset_to_default)
+        button.clicked.connect(self._update_button_activity)
         button.setFixedHeight(button.sizeHint().height()*2)
         return button
 
@@ -213,3 +218,12 @@ class LocationTab(QWidget):
                 "sessions. This mode is meant to be used for values that"
                 "remain useful regardless of which document is edited.")
         self._config.SAVE_LOCAL.write(value)
+
+    def _update_button_activity(self):
+        """Disable location action buttons, when they won't do anything."""
+        if not self._config.is_order_default():
+            self._set_new_default_button.setEnabled(True)
+            self._reset_to_default_button.setEnabled(True)
+        else:
+            self._set_new_default_button.setDisabled(True)
+            self._reset_to_default_button.setDisabled(True)
