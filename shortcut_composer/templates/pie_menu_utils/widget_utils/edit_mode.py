@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import TYPE_CHECKING
+from PyQt5.QtCore import QPoint
 
 if TYPE_CHECKING:
     from ...pie_menu import PieMenu
@@ -41,6 +42,12 @@ class EditMode:
         self._obj.pie_widget.is_edit_mode = True
         self._obj.pie_widget.repaint()
         self._obj.pie_settings.show()
+        settings_offset = (
+            self._obj.pie_widget.width()//2
+            + self._obj.pie_settings.width()*1.05//2)
+        self._obj.pie_settings.move_center(
+            self._obj.pie_widget.center_global
+            + QPoint(settings_offset, 0))  # type: ignore
         self._obj.accept_button.show()
         self._obj.settings_button.hide()
 

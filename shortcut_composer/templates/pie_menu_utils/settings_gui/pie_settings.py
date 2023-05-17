@@ -3,8 +3,7 @@
 
 from typing import Optional
 
-from PyQt5.QtCore import QPoint, Qt
-from PyQt5.QtGui import QCursor
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QWidget,
     QTabWidget,
@@ -77,13 +76,6 @@ class PieSettings(AnimatedWidget, BaseWidget):
         """Hide the window after its settings are saved to kritarc."""
         self._local_settings.apply()
         super().hide()
-
-    def move_to_pie_side(self) -> None:
-        """Move the widget on the right side of the pie."""
-        offset = self.width()//2 + self._style.widget_radius * 1.05
-        point = QPoint(round(offset), 0)
-        # HACK Assume the pie center should be at the cursor
-        self.move_center(QCursor().pos() + point)  # type: ignore
 
     def _reset(self) -> None:
         """React to change in pie size."""

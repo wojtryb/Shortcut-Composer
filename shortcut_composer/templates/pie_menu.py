@@ -9,6 +9,7 @@ from PyQt5.QtGui import QColor
 
 from api_krita import Krita
 from core_components import Controller, Instruction
+from .pie_menu_utils.settings_gui import PieSettings
 from .pie_menu_utils import (
     create_pie_settings_window,
     create_local_config,
@@ -98,15 +99,7 @@ class PieMenu(RawInstructions, Generic[T]):
         self._style = PieStyle(items=self._labels, pie_config=self._config)
 
     @cached_property
-    def pie_settings(self):
-        """Qwidget with settings for Pie widget."""
-        return create_pie_settings_window(
-            controller=self._controller,
-            style=self._style,
-            pie_config=self._config)
-
-    @cached_property
-    def pie_widget(self):
+    def pie_widget(self) -> PieWidget:
         """Qwidget of the Pie for selecting values."""
         return PieWidget(
             style=self._style,
@@ -114,11 +107,17 @@ class PieMenu(RawInstructions, Generic[T]):
             config=self._config)
 
     @cached_property
-    def pie_manager(self):
+    def pie_settings(self) -> PieSettings:
+        """Qwidget with settings for Pie widget."""
+        return create_pie_settings_window(
+            controller=self._controller,
+            style=self._style,
+            pie_config=self._config)
+
+    @cached_property
+    def pie_manager(self) -> PieManager:
         """Manager which shows, hides and moves Pie widget and its settings."""
-        return PieManager(
-            pie_widget=self.pie_widget,
-            pie_settings=self.pie_settings)
+        return PieManager(pie_widget=self.pie_widget)
 
     @cached_property
     def settings_button(self):
