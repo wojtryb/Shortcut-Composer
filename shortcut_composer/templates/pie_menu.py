@@ -189,6 +189,9 @@ class PieMenu(RawInstructions, Generic[T]):
 
     def _reset_labels(self, values: List[T]) -> None:
         """Replace list values with newly created labels."""
+        if [label.value for label in self._labels] == values:
+            return
+
         self._labels.clear()
         for value in values:
             label = Label.from_value(value, self._controller)
