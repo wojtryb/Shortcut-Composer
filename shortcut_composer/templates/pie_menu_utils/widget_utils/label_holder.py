@@ -65,14 +65,27 @@ class LabelHolder:
         return self._labels.index(label)
 
     def swap(self, _a: Label, _b: Label):
-        """Swap positions of two labels from the holder."""
-        _a.swap_locations(_b)
+        """
+        Swap positions of two labels from the holder.
+
+        As this operation only changes label order, fully reseting all
+        the widgets is not needed.
+        """
+        if self._locked:
+            return
 
         idx_a, idx_b = self._labels.index(_a), self._labels.index(_b)
         self._labels[idx_b] = _a
         self._labels[idx_a] = _b
 
-        self.reset()
+        widget_a = self.widget_holder.on_label(self._labels[idx_a])
+        widget_b = self.widget_holder.on_label(self._labels[idx_b])
+
+        self.widget_holder.swap(widget_a, widget_b)
+
+        self._locked = True
+        self._config.ORDER.write([label.value for label in self._labels])
+        self._locked = False
 
     def __iter__(self):
         """Iterate over all labels in the holder."""
@@ -83,9 +96,6 @@ class LabelHolder:
         Ensure the icon widgets properly represet this container.
 
         If notify flag is set to True, saves the new order to config.
-
-        HACK: Small changes in container should not result in complete
-        widget recreation.
         """
         if self._locked:
             return
@@ -108,7 +118,6 @@ class LabelHolder:
             child.show()
             child.label.angle = angle
             child.label.center = point
-            child.move_to_label()
             child.draggable = True
             self.widget_holder.add(child)
 
