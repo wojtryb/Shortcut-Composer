@@ -34,6 +34,11 @@ class PieConfig(FieldGroup, Generic[T], ABC):
         ...
 
     @abstractmethod
+    def set_values(self, values: List[T]) -> None:
+        """Change current values to new ones."""
+        ...
+
+    @abstractmethod
     def refresh_order(self) -> None:
         """Refresh the values in case the active document changed."""
         ...
@@ -117,12 +122,16 @@ class PresetPieConfig(PieConfig[str]):
         """Return all presets based on mode and stored order."""
         if not self.TAG_MODE.read():
             return self.ORDER.read()
-        saved_order = self.ORDER.read()
-        tag_values = Tag(self.TAG_NAME.read())
+        return Tag(self.TAG_NAME.read())
 
-        preset_order = [p for p in saved_order if p in tag_values]
-        missing = [p for p in tag_values if p not in saved_order]
-        return preset_order + missing
+    def set_values(self, values: List[str]) -> None:
+        """When in tag mode, remember the tag order. Then write normally."""
+        if self.TAG_MODE.read():
+            group = "ShortcutComposer: Tag order"
+            field = Field(group, self.TAG_NAME.read(), [], str)
+            field.write(values)
+
+        self.ORDER.write(values)
 
     def refresh_order(self) -> None:
         """Refresh the values in case the active document changed."""
@@ -191,6 +200,10 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
     def values(self) -> List[T]:
         """Return values defined be the user to display as icons."""
         return self.ORDER.read()
+
+    def set_values(self, values: List[T]) -> None:
+        """Change current values to new ones."""
+        self.ORDER.write(values)
 
     def refresh_order(self) -> None:
         """Refresh the values in case the active document changed."""

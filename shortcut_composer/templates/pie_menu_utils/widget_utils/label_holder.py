@@ -84,7 +84,7 @@ class LabelHolder:
         self.widget_holder.swap(widget_a, widget_b)
 
         self._locked = True
-        self._config.ORDER.write([label.value for label in self._labels])
+        self._config.set_values([label.value for label in self._labels])
         self._locked = False
 
     def __iter__(self):
@@ -123,5 +123,5 @@ class LabelHolder:
 
         self._locked = True
         if notify:
-            self._config.ORDER.write([label.value for label in self._labels])
+            self._config.set_values([label.value for label in self._labels])
         self._locked = False
