@@ -187,9 +187,18 @@ class PieMenu(RawInstructions, Generic[T]):
         if label := self.pie_widget.active:
             self._controller.set_value(label.value)
 
+    INVALID_VALUES: 'set[T]' = set()
+
     def _reset_labels(self, values: List[T]) -> None:
         """Replace list values with newly created labels."""
-        if [label.value for label in self._labels] == values:
+        # Workaround of krita tags sometimes returning invalid presets
+        # Bad values are remembered in class attribute and filtered out
+        filtered_values = [v for v in values if v not in self.INVALID_VALUES]
+        current_values = [label.value for label in self._labels]
+
+        # Method is expensive, and should not be performed when values
+        # did not in fact change.
+        if filtered_values == current_values:
             return
 
         self._labels.clear()
@@ -197,3 +206,5 @@ class PieMenu(RawInstructions, Generic[T]):
             label = Label.from_value(value, self._controller)
             if label is not None:
                 self._labels.append(label)
+            else:
+                self.INVALID_VALUES.add(value)
