@@ -74,7 +74,9 @@ class LabelHolder:
         if self._locked:
             return
 
-        idx_a, idx_b = self._labels.index(_a), self._labels.index(_b)
+        idx_a = self._labels.index(_a)
+        idx_b = self._labels.index(_b)
+
         self._labels[idx_b] = _a
         self._labels[idx_a] = _b
 

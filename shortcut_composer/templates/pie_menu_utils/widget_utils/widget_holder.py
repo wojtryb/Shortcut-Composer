@@ -18,6 +18,7 @@ class WidgetHolder:
         widget.move_to_label()
 
     def swap(self, w_a: LabelWidget, w_b: LabelWidget) -> None:
+        """Swap position of two widgets."""
         a_angle = w_a.label.angle
         b_angle = w_b.label.angle
 
