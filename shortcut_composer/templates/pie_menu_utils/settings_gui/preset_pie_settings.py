@@ -113,9 +113,8 @@ class PresetPieSettings(PieSettings):
         self,
         config: PresetPieConfig,
         style: PieStyle,
-        parent: Optional[QWidget] = None,
     ) -> None:
-        super().__init__(config, style, parent)
+        super().__init__(config, style)
         self._config: PresetPieConfig
 
         self._preset_scroll_area = self._init_preset_scroll_area()

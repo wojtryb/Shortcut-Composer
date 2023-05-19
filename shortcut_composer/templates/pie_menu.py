@@ -1,19 +1,25 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, TypeVar, Generic, Optional
+from typing import List, Type, TypeVar, Generic, Optional
 from functools import cached_property
+from enum import Enum
 
 from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QColor
 
 from api_krita import Krita
 from core_components import Controller, Instruction
-from .pie_menu_utils.settings_gui import PieSettings
+from .pie_menu_utils.settings_gui import (
+    PieSettings,
+    NumericPieSettings,
+    PresetPieSettings,
+    EnumPieSettings)
 from .pie_menu_utils import (
-    create_pie_settings_window,
-    create_local_config,
+    NonPresetPieConfig,
+    PresetPieConfig,
     PieManager,
+    PieConfig,
     PieWidget,
     PieStyle,
     Label)
@@ -30,20 +36,21 @@ class PieMenu(RawInstructions, Generic[T]):
     - Widget is displayed under the cursor between key press and release
     - Moving mouse in a direction of a value activates in on key release
     - When the mouse was not moved past deadzone, value is not changed
-    - Edit button activates mode in pie does not hide and can be changed
+    - Edit button activates mode in which pie does not hide on key
+      release and can be configured
 
     ### Arguments:
 
     - `name`          -- unique name of action. Must match the
                          definition in shortcut_composer.action file
     - `controller`    -- defines which krita property will be modified
-    - `values`        -- list of values compatibile with controller to cycle
+    - `values`        -- default list of values to display in pie
     - `instructions`  -- (optional) list of additional instructions to
                          perform on key press and release
-    - `pie_radius_scale`  -- (optional) widget size multiplier
-    - `icon_radius_scale` -- (optional) icons size multiplier
-    - `background_color`  -- (optional) rgba color of background
-    - `active_color`      -- (optional) rgba color of active pie
+    - `pie_radius_scale`  -- (optional) default widget size multiplier
+    - `icon_radius_scale` -- (optional) default icons size multiplier
+    - `background_color`  -- (optional) default rgba color of background
+    - `active_color`      -- (optional) default rgba color of active pie
     - `short_vs_long_press_time` -- (optional) time [s] that specifies
                                     if key press is short or long
 
@@ -80,15 +87,21 @@ class PieMenu(RawInstructions, Generic[T]):
     ) -> None:
         super().__init__(name, instructions, short_vs_long_press_time)
         self._controller = controller
-        self._config = create_local_config(
-            name=name,
-            values=values,
-            controller_type=self._controller.TYPE,
-            pie_radius_scale=pie_radius_scale,
-            icon_radius_scale=icon_radius_scale,
-            save_local=save_local,
-            background_color=background_color,
-            active_color=active_color)
+
+        def _dispatch_config_type() -> Type[PieConfig[T]]:
+            if issubclass(self._controller.TYPE, str):
+                return PresetPieConfig   # type: ignore
+            return NonPresetPieConfig
+
+        self._config = _dispatch_config_type()(**{
+            "name": f"ShortcutComposer: {name}",
+            "values": values,
+            "pie_radius_scale": pie_radius_scale,
+            "icon_radius_scale": icon_radius_scale,
+            "save_local": save_local,
+            "background_color": background_color,
+            "active_color": active_color})
+
         self._config.ORDER.register_callback(
             lambda: self._reset_labels(self._config.values()))
 
@@ -107,11 +120,15 @@ class PieMenu(RawInstructions, Generic[T]):
 
     @cached_property
     def pie_settings(self) -> PieSettings:
-        """Qwidget with settings for Pie widget."""
-        return create_pie_settings_window(
-            controller=self._controller,
-            style=self._style,
-            pie_config=self._config)
+        """Create and return the right settings based on labels type."""
+        if issubclass(self._controller.TYPE, str):
+            return PresetPieSettings(self._config, self._style)  # type: ignore
+        elif issubclass(self._controller.TYPE, float):
+            return NumericPieSettings(self._config, self._style)
+        elif issubclass(self._controller.TYPE, Enum):
+            return EnumPieSettings(
+                self._controller, self._config, self._style)  # type: ignore
+        raise ValueError(f"Unknown pie config {self._config}")
 
     @cached_property
     def pie_manager(self) -> PieManager:

@@ -1,10 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Optional
 from enum import Enum
-
-from PyQt5.QtWidgets import QWidget
 
 from core_components import Controller
 from ..label import Label
@@ -28,9 +25,8 @@ class EnumPieSettings(PieSettings):
         controller: Controller[Enum],
         config: NonPresetPieConfig,
         style: PieStyle,
-        parent: Optional[QWidget] = None,
     ) -> None:
-        super().__init__(config, style, parent)
+        super().__init__(config, style)
 
         names = controller.TYPE._member_names_
         values = [controller.TYPE[name] for name in names]
