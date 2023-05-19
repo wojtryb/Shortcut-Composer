@@ -52,7 +52,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
 
         self._style = style
         self._config = config
-        self._config.register_callback(self._reset)
+        self._config.register_to_order_related(self._reset)
 
         self._tab_holder = QTabWidget()
         self._local_settings = ConfigFormWidget([
@@ -100,7 +100,7 @@ class LocationTab(QWidget):
         self._set_new_default_button = self._init_set_new_default_button()
         self._reset_to_default_button = self._init_reset_to_default_button()
 
-        self._config.ORDER.register_callback(self._update_button_activity)
+        self._config.register_callback(self._update_button_activity)
         self._update_button_activity()
 
         self.setLayout(self._init_layout())

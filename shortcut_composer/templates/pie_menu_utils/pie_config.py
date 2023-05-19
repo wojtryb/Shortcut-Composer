@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from abc import ABC, abstractmethod
-from typing import List, Generic, TypeVar, Optional, Union
+from typing import List, Callable, Generic, TypeVar, Optional, Union
 from PyQt5.QtGui import QColor
 from config_system import Field, FieldGroup
 from config_system.fields import DualField, FieldWithEditableDefault
@@ -56,6 +56,10 @@ class PieConfig(FieldGroup, Generic[T], ABC):
     @abstractmethod
     def is_order_default(self) -> bool:
         """Return whether order is the same as default one."""
+        ...
+
+    def register_to_order_related(self, callback: Callable[[], None]) -> None:
+        """Register callback to all fields related to value order."""
         ...
 
     def _create_editable_dual_field(
@@ -152,6 +156,12 @@ class PresetPieConfig(PieConfig[str]):
             and self.TAG_NAME.read() == self.TAG_NAME.default
             and self.ORDER.read() == self.ORDER.default)
 
+    def register_to_order_related(self, callback: Callable[[], None]) -> None:
+        """Register callback to all fields related to value order."""
+        self.TAG_MODE.register_callback(callback)
+        self.TAG_NAME.register_callback(callback)
+        self.ORDER.register_callback(callback)
+
 
 class NonPresetPieConfig(PieConfig[T], Generic[T]):
     """FieldGroup representing config of PieMenu of non-preset values."""
@@ -201,3 +211,7 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
     def is_order_default(self) -> bool:
         """Return whether order is the same as default one."""
         return self.ORDER.read() == self.ORDER.default
+
+    def register_to_order_related(self, callback: Callable[[], None]) -> None:
+        """Register callback to all fields related to value order."""
+        self.ORDER.register_callback(callback)
