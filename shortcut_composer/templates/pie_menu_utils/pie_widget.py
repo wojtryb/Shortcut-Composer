@@ -78,7 +78,6 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             style=self._style,
             config=self.config,
             owner=self)
-        self._circle_points: CirclePoints
 
         self.set_draggable(False)
         self._reset()
@@ -87,9 +86,6 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         """Set widget geometry according to style and refresh CirclePoints."""
         widget_diameter = self._style.widget_radius*2
         self.setGeometry(0, 0, widget_diameter, widget_diameter)
-        self._circle_points = CirclePoints(
-            center=self.center,
-            radius=self._style.pie_radius)
 
     @property
     def deadzone(self) -> float:
@@ -112,7 +108,10 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         e.accept()
         source_widget = e.source()
         pos = e.pos()
-        distance = self._circle_points.distance(pos)
+        circle_points = CirclePoints(
+            center=self.center,
+            radius=self._style.pie_radius)
+        distance = circle_points.distance(pos)
 
         if not isinstance(source_widget, LabelWidget):
             # Drag incoming from outside the PieWidget ecosystem
@@ -135,7 +134,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             # Do nothing in deadzone
             return
 
-        angle = self._circle_points.angle_from_point(pos)
+        angle = circle_points.angle_from_point(pos)
         _a = self._widget_holder.on_angle(angle)
 
         if source_widget.label not in self.label_holder or not self._labels:

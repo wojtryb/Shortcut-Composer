@@ -168,7 +168,8 @@ class PieMenu(RawInstructions, Generic[T]):
             self.pie_widget.height()-self.settings_button.height()))
 
     def on_key_press(self) -> None:
-        """Reload labels, start GUI manager and run instructions."""
+        super().on_key_press()
+
         if self.pie_widget.isVisible():
             return
 
@@ -178,7 +179,6 @@ class PieMenu(RawInstructions, Generic[T]):
         self._move_buttons()
 
         self.pie_manager.start()
-        super().on_key_press()
 
     def on_every_key_release(self) -> None:
         """

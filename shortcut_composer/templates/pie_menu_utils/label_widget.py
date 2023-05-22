@@ -34,12 +34,13 @@ class LabelWidget(BaseWidget):
     ) -> None:
         super().__init__(parent)
         self.setGeometry(0, 0, style.icon_radius*2, style.icon_radius*2)
+        self.setCursor(Qt.ArrowCursor)
+
         self.label = label
         self._style = style
         self._is_unscaled = is_unscaled
 
-        self.draggable = self._draggable = True
-
+        self._draggable = True
         self._enabled = True
         self._hovered = False
 
@@ -57,6 +58,8 @@ class LabelWidget(BaseWidget):
     @draggable.setter
     def draggable(self, value: bool) -> None:
         """Make the widget accept dragging or not."""
+        if self._draggable == value:
+            return
         self._draggable = value
         if value:
             return self.setCursor(Qt.ArrowCursor)
@@ -70,6 +73,8 @@ class LabelWidget(BaseWidget):
     @enabled.setter
     def enabled(self, value: bool) -> None:
         """Make the widget interact with mouse or not."""
+        if self._enabled == value:
+            return
         self._enabled = value
         if not value:
             self.draggable = False

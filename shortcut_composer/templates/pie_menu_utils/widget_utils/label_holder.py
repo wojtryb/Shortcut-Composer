@@ -101,6 +101,9 @@ class LabelHolder:
         """
         if self._locked:
             return
+        current_labels = [widget.label for widget in self.widget_holder]
+        if current_labels == self._labels:
+            return
 
         for child in self.widget_holder:
             child.setParent(None)  # type: ignore

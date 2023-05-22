@@ -25,14 +25,11 @@ class PieManager:
         self._timer = Timer(self._handle_cursor, Config.get_sleep_time())
         self._animator = LabelAnimator(pie_widget)
 
-        self._circle: CirclePoints
-
     def start(self) -> None:
         """Show widget under the mouse and start the mouse tracking loop."""
         self._pie_widget.move_center(QCursor().pos())
         self._pie_widget.show()
 
-        self._circle = CirclePoints(self._pie_widget.center_global, 0)
         self._timer.start()
 
         # Make sure the pie widget is not draggable. It could have been
@@ -56,10 +53,11 @@ class PieManager:
             return self.stop()
 
         cursor = QCursor().pos()
-        if self._circle.distance(cursor) < self._pie_widget.deadzone:
+        circle = CirclePoints(self._pie_widget.center_global, 0)
+        if circle.distance(cursor) < self._pie_widget.deadzone:
             return self._set_active_label(None)
 
-        angle = self._circle.angle_from_point(cursor)
+        angle = circle.angle_from_point(cursor)
         holder = self._pie_widget.label_holder.widget_holder
         self._set_active_label(holder.on_angle(angle).label)
 
