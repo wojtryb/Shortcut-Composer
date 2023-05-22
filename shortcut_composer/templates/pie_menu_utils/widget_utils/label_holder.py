@@ -95,7 +95,7 @@ class LabelHolder:
 
     def reset(self, notify: bool = True) -> None:
         """
-        Ensure the icon widgets properly represet this container.
+        Ensure the icon widgets properly represents this container.
 
         If notify flag is set to True, saves the new order to config.
         """

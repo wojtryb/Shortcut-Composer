@@ -101,7 +101,6 @@ class PieMenu(RawInstructions, Generic[T]):
             "save_local": save_local,
             "background_color": background_color,
             "active_color": active_color})
-
         self._config.ORDER.register_callback(self._reset_labels)
 
         self._labels: List[Label] = []
@@ -135,7 +134,7 @@ class PieMenu(RawInstructions, Generic[T]):
 
     @cached_property
     def settings_button(self):
-        """Button with which user can enter edit mode."""
+        """Button with which user can enter the edit mode."""
         settings_button = PieButton(
             icon=Krita.get_icon("properties"),
             icon_scale=1.1,
@@ -148,7 +147,7 @@ class PieMenu(RawInstructions, Generic[T]):
 
     @cached_property
     def accept_button(self):
-        """Button displayed in edit mode which allows to hide the pie."""
+        """Button displayed in edit mode, which allows to hide the pie."""
         accept_button = PieButton(
             icon=Krita.get_icon("dialog-ok"),
             icon_scale=1.5,
@@ -161,13 +160,14 @@ class PieMenu(RawInstructions, Generic[T]):
         return accept_button
 
     def _move_buttons(self):
-        """Move accept button to center and setting button to bottom-right."""
+        """Move accept and setting buttons to their correct positions."""
         self.accept_button.move_center(self.pie_widget.center)
         self.settings_button.move(QPoint(
             self.pie_widget.width()-self.settings_button.width(),
             self.pie_widget.height()-self.settings_button.height()))
 
     def on_key_press(self) -> None:
+        """Handle the event of user pressing the action key."""
         super().on_key_press()
 
         if self.pie_widget.isVisible():

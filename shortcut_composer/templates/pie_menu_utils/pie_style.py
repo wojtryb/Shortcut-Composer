@@ -171,6 +171,5 @@ class PieStyle:
         "Linux": 0.175,
         "Windows": 0.11,
         "Darwin": 0.265,
-        "": 0.125,
-    }
+        "": 0.125}
     """Scale to fix different font sizes each OS.."""

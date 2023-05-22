@@ -20,5 +20,4 @@ class IconLabelWidget(ImageLabelWidget):
         size = round(self.icon_radius*1.1)
         return PixmapTransform.scale_pixmap(
             pixmap=to_display.pixmap(size, size),
-            size_px=size
-        )
+            size_px=size)
