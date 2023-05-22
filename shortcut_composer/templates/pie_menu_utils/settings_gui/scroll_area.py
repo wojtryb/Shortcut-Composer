@@ -8,6 +8,7 @@ from PyQt5.QtCore import Qt, QTimer, pyqtSignal
 from PyQt5.QtWidgets import (
     QWidget,
     QScrollArea,
+    QScroller,
     QLabel,
     QLineEdit,
     QVBoxLayout,
@@ -118,6 +119,9 @@ class ScrollArea(QWidget):
         area.setMinimumHeight(round(radius*9.2))
         area.setWidgetResizable(True)
         area.setWidget(internal)
+        QScroller.grabGesture(
+            area.viewport(), QScroller.MiddleMouseButtonGesture)
+
         return area
 
     def _init_search_bar(self) -> QLineEdit:
