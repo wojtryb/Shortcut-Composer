@@ -102,10 +102,8 @@ class PieMenu(RawInstructions, Generic[T]):
             "background_color": background_color,
             "active_color": active_color})
 
-        self._config.ORDER.register_callback(
-            lambda: self._reset_labels(self._config.values()))
+        self._config.ORDER.register_callback(self._reset_labels)
 
-        self._last_values: List[T] = []
         self._labels: List[Label] = []
         self._edit_mode = EditMode(self)
         self._style = PieStyle(items=self._labels, pie_config=self._config)
@@ -175,13 +173,7 @@ class PieMenu(RawInstructions, Generic[T]):
             return
 
         self._controller.refresh()
-
-        new_values = self._config.values()
-        if self._last_values != new_values:
-            self._reset_labels(new_values)
-            self._last_values = new_values
-            self._config.refresh_order()
-
+        self._reset_labels()
         self.pie_widget.label_holder.reset()  # HACK: should be automatic
         self._move_buttons()
 
@@ -206,8 +198,10 @@ class PieMenu(RawInstructions, Generic[T]):
 
     INVALID_VALUES: 'set[T]' = set()
 
-    def _reset_labels(self, values: List[T]) -> None:
+    def _reset_labels(self) -> None:
         """Replace list values with newly created labels."""
+        values = self._config.values()
+
         # Workaround of krita tags sometimes returning invalid presets
         # Bad values are remembered in class attribute and filtered out
         filtered_values = [v for v in values if v not in self.INVALID_VALUES]
@@ -225,3 +219,5 @@ class PieMenu(RawInstructions, Generic[T]):
                 self._labels.append(label)
             else:
                 self.INVALID_VALUES.add(value)
+
+        self._config.refresh_order()
