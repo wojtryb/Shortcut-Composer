@@ -59,8 +59,8 @@ class PieSettings(AnimatedWidget, BaseWidget):
             ConfigSpinBox(config.ICON_RADIUS_SCALE, self, "Icon max scale",
                           0.05, 4),
         ])
-        self._tab_holder.addTab(self._local_settings, "Local settings")
-        self._tab_holder.addTab(LocationTab(self._config), "Location")
+        self._tab_holder.addTab(self._local_settings, "Preferences")
+        self._tab_holder.addTab(LocationTab(self._config), "Save location")
 
         layout = QVBoxLayout(self)
         layout.addWidget(self._tab_holder)
@@ -115,7 +115,8 @@ class LocationTab(QWidget):
           actions.
         """
         header = QHBoxLayout()
-        header.addWidget(QLabel(text="Save location:"), 2, Qt.AlignCenter)
+        header_label = QLabel(text="Change save location:")
+        header.addWidget(header_label, 2, Qt.AlignCenter)
         header.addWidget(self._location_button, 1)
 
         layout = QVBoxLayout()
@@ -166,7 +167,9 @@ class LocationTab(QWidget):
 
     def _init_set_new_default_button(self) -> SafeConfirmButton:
         """Return button saving currently active values as the default ones."""
-        button = SafeConfirmButton(text="Set pie values as a new default")
+        button = SafeConfirmButton(
+            text="Set pie values as a new default",
+            icon=Krita.get_icon("document-save"))
         button.clicked.connect(self._config.set_current_as_default)
         button.clicked.connect(self._update_button_activity)
         button.setFixedHeight(button.sizeHint().height()*2)
@@ -174,7 +177,9 @@ class LocationTab(QWidget):
 
     def _init_reset_to_default_button(self) -> SafeConfirmButton:
         """Return button which resets values in pie to default ones."""
-        button = SafeConfirmButton(text="Reset pie to default values")
+        button = SafeConfirmButton(
+            text="Reset pie values to default",
+            icon=Krita.get_icon("edit-delete"))
         button.clicked.connect(self._config.reset_to_default)
         button.clicked.connect(self._update_button_activity)
         button.setFixedHeight(button.sizeHint().height()*2)
