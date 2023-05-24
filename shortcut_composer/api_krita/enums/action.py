@@ -4,42 +4,79 @@
 from krita import Krita as Api
 from enum import Enum
 
+from PyQt5.QtGui import QIcon
+
 
 class Action(Enum):
     """
-    Contains all known actions of Krita.
+    Contains actions of Krita exposed to the plugin.
 
-    Example usage: `Tool.FREEHAND_BRUSH`
+    Example usage: `Action.UNDO`
     """
+
+    # File
+    NEW = "file_new"
+    OPEN = "file_open"
+    QUIT = "file_quit"
+    OPEN_RECENT = "file_open_recent"
+    SAVE = "file_save"
+    SAVE_AS = "file_save_as"
+    UNDO = "edit_undo"
+    REDO = "edit_redo"
+    FULL_SCREEN_MODE = "fullscreen"
+    IMPORT_ANIMATION_FRAMES = "file_import_animation"
+    IMPORT_VIDEO_ANIMATION = "file_import_video_animation"
+    RENDER_ANIMATION = "render_animation"
+    RENDER_ANIMATION_AGAIN = "render_animation_again"
+    CLOSE_ALL = "file_close_all"
+    OPEN_EXISTING_DOCUMENT_AS_UNTITLED_DOCUMENT = "file_import_file"
+    EXPORT = "file_export_file"
+    EXPORT_ADVANCED = "file_export_advanced"
+    DOCUMENT_INFORMATION = "file_documentinfo"
 
     SAVE_INCREMENTAL_VERSION = "save_incremental_version"
     SAVE_INCREMENTAL_BACKUP = "save_incremental_backup"
-    TOGGLE_TABLET_DEBUGGER = "tablet_debugger"
     CREATE_TEMPLATE_FROM_IMAGE = "create_template"
     CREATE_COPY_FROM_CURRENT_IMAGE = "create_copy"
     OPEN_RESOURCES_FOLDER = "open_resources_directory"
+
+    # Canvas navigation
     ROTATE_CANVAS_RIGHT = "rotate_canvas_right"
     ROTATE_CANVAS_LEFT = "rotate_canvas_left"
     RESET_CANVAS_ROTATION = "reset_canvas_rotation"
     WRAP_AROUND_MODE = "wrap_around_mode"
     INSTANT_PREVIEW_MODE = "level_of_detail_mode"
-    OUT_OF_GAMUT_WARNINGS = "gamutCheck"
     SHOW_STATUS_BAR = "showStatusBar"
     SHOW_CANVAS_ONLY = "view_show_canvas_only"
-    USE_MULTIPLE_OF_2_FOR_PIXEL_SCALE = "ruler_pixel_multiple2"
     RULERS_TRACK_POINTER = "rulers_track_mouse"
     RESET_ZOOM = "zoom_to_100pct"
     ZOOM_IN = "view_zoom_in"
     ZOOM_OUT = "view_zoom_out"
     TOGGLE_ZOOM_FIT_TO_PAGE = "toggle_zoom_to_fit"
-    ACTIVE_AUTHOR_PROFILE = "settings_active_author"
-    SHOW_PIXEL_GRID = "view_pixel_grid"
+    MIRROR_VIEW_AROUND_CURSOR = "mirror_canvas_around_cursor"
+
     SWAP_FOREGROUND_AND_BACKGROUND_COLOURS = "toggle_fg_bg"
     SET_FOREGROUND_AND_BACKGROUND_COLOURS_TO_BLACK_AND_WHITE = "reset_fg_bg"
+
+    # Canvas toggles
     TOGGLE_BRUSH_OUTLINE = "toggle_brush_outline"
+    SHOW_GUIDES = "view_show_guides"
+    LOCK_GUIDES = "view_lock_guides"
+    SHOW_PIXEL_GRID = "view_pixel_grid"
+    SNAP_TO_GUIDES = "view_snap_to_guides"
+    SNAP_ORTHOGONAL = "view_snap_orthogonal"
+    SNAP_NODE = "view_snap_node"
+    SNAP_EXTENSION = "view_snap_extension"
+    SNAP_INTERSECTION = "view_snap_intersection"
+    SNAP_BOUNDING_BOX = "view_snap_bounding_box"
+    SNAP_IMAGE_BOUNDS = "view_snap_image_bounds"
+    SNAP_IMAGE_CENTRE = "view_snap_image_center"
+    SNAP_PIXEL = "view_snap_to_pixel"
+
+    # Filters shortcuts
     APPLY_FILTER_AGAIN = "filter_apply_again"
     APPLY_FILTER_AGAIN_REPROMPT = "filter_apply_reprompt"
-    SLOPE, _OFFSET, _POWER = "krita_filter_asc-cdl"
+    FILTER_ASC_CDL = "krita_filter_asc-cdl"
     AUTO_CONTRAST = "krita_filter_autocontrast"
     BLUR = "krita_filter_blur"
     BURN = "krita_filter_burn"
@@ -62,7 +99,7 @@ class Action(Enum):
     GRADIENT_MAP = "krita_filter_gradientmap"
     HALFTONE = "krita_filter_halftone"
     HEIGHT_TO_NORMAL_MAP = "krita_filter_height to normal"
-    H_S_V_ADJUSTMENT = "krita_filter_hsvadjustment"
+    HSV_ADJUSTMENT = "krita_filter_hsvadjustment"
     INDEX_COLOURS = "krita_filter_indexcolors"
     INVERT = "krita_filter_invert"
     LENS_BLUR = "krita_filter_lens blur"
@@ -88,6 +125,8 @@ class Action(Enum):
     UNSHARP_MASK = "krita_filter_unsharp"
     WAVE = "krita_filter_wave"
     WAVELET_NOISE_REDUCER = "krita_filter_waveletnoisereducer"
+
+    # Edit document
     CUT = "edit_cut"
     COPY = "edit_copy"
     PASTE = "edit_paste"
@@ -99,13 +138,11 @@ class Action(Enum):
     PASTE_AS_REFERENCE_IMAGE = "paste_as_reference"
     PASTE_SHAPE_STYLE = "paste_shape_style"
     COPY_MERGED = "copy_merged"
-    SELECT_ALL = "select_all"
-    DESELECT = "deselect"
-    CLEAR = "clear"
-    RESELECT = "reselect"
-    INVERT_SELECTION = "invert_selection"
-    COPY_SELECTION_TO_NEW_LAYER = "copy_selection_to_new_layer"
-    CUT_SELECTION_TO_NEW_LAYER = "cut_selection_to_new_layer"
+    FLATTEN_IMAGE = "flatten_image"
+    MERGE_WITH_LAYER_BELOW = "merge_layer"
+    FLATTEN_LAYER = "flatten_layer"
+
+    # Filling
     FILL_WITH_FOREGROUND_COLOUR = "fill_selection_foreground_color"
     FILL_WITH_BACKGROUND_COLOUR = "fill_selection_background_color"
     FILL_WITH_PATTERN = "fill_selection_pattern"
@@ -115,6 +152,17 @@ class Action(Enum):
         "fill_selection_background_color_opacity"
     FILL_WITH_PATTERN_OPACITY = "fill_selection_pattern_opacity"
     STROKE_SELECTED_SHAPES = "stroke_shapes"
+
+    # Selection
+    SELECT_ALL = "select_all"
+    DESELECT = "deselect"
+    CLEAR = "clear"
+    RESELECT = "reselect"
+    INVERT_SELECTION = "invert_selection"
+    SELECTION_MODE_ADD = "selection_tool_mode_add"
+    SELECTION_MODE_REPLACE = "selection_tool_mode_replace"
+    SELECTION_MODE_SUBTRACT = "selection_tool_mode_subtract"
+    SELECTION_MODE_INTERSECT = "selection_tool_mode_intersect"
     DISPLAY_SELECTION = "toggle_display_selection"
     TRIM_TO_SELECTION = "resizeimagetoselection"
     EDIT_SELECTION = "edit_selection"
@@ -124,21 +172,10 @@ class Action(Enum):
     CONVERT_TO_SHAPE = "convert_selection_to_shape"
     TOGGLE_SELECTION_DISPLAY_MODE = "toggle-selection-overlay-mode"
     STROKE_SELECTION = "stroke_selection"
-    SHOW_GUIDES = "view_show_guides"
-    LOCK_GUIDES = "view_lock_guides"
-    SNAP_TO_GUIDES = "view_snap_to_guides"
-    SHOW_SNAP_OPTIONS_POPUP = "show_snap_options_popup"
-    SNAP_ORTHOGONAL = "view_snap_orthogonal"
-    SNAP_NODE = "view_snap_node"
-    SNAP_EXTENSION = "view_snap_extension"
-    SNAP_INTERSECTION = "view_snap_intersection"
-    SNAP_BOUNDING_BOX = "view_snap_bounding_box"
-    SNAP_IMAGE_BOUNDS = "view_snap_image_bounds"
-    SNAP_IMAGE_CENTRE = "view_snap_image_center"
-    SNAP_PIXEL = "view_snap_to_pixel"
-    FLATTEN_IMAGE = "flatten_image"
-    MERGE_WITH_LAYER_BELOW = "merge_layer"
-    FLATTEN_LAYER = "flatten_layer"
+    COPY_SELECTION_TO_NEW_LAYER = "copy_selection_to_new_layer"
+    CUT_SELECTION_TO_NEW_LAYER = "cut_selection_to_new_layer"
+
+    # Edit layers
     SAVE_GROUP_LAYERS = "save_groups_as_images"
     CONVERT_GROUP_TO_ANIMATED_LAYER = "convert_group_to_animated"
     TRIM_TO_CURRENT_LAYER = "resizeimagetolayer"
@@ -150,15 +187,9 @@ class Action(Enum):
     MIRROR_LAYER_VERTICALLY = "mirrorNodeY"
     MIRROR_ALL_LAYERS_HORIZONTALLY = "mirrorAllNodesX"
     MIRROR_ALL_LAYERS_VERTICALLY = "mirrorAllNodesY"
-    ACTIVATE_NEXT_LAYER = "activateNextLayer"
-    ACTIVATE_NEXT_SIBLING_LAYER, _SKIPPING_OVER_GROUPS = \
-        "activateNextSiblingLayer"
-    ACTIVATE_PREVIOUS_LAYER = "activatePreviousLayer"
-    ACTIVATE_PREVIOUS_SIBLING_LAYER, _SKIPPING_OVER_GROUPS = \
-        "activatePreviousSiblingLayer"
     ACTIVATE_PREVIOUSLY_SELECTED_LAYER = "switchToPreviouslyActiveNode"
     SAVE_LAYER_MASK = "save_node_as_image"
-    SAVE_VECTOR_LAYER_AS_S_V_G = "save_vector_node_to_svg"
+    SAVE_VECTOR_LAYER_AS_SVG = "save_vector_node_to_svg"
     DUPLICATE_LAYER_OR_MASK = "duplicatelayer"
     COPY_LAYER = "copy_layer_clipboard"
     CUT_LAYER = "cut_layer_clipboard"
@@ -166,13 +197,22 @@ class Action(Enum):
     QUICK_GROUP = "create_quick_group"
     QUICK_CLIPPING_GROUP = "create_quick_clipping_group"
     QUICK_UNGROUP = "quick_ungroup"
-    ALL_LAYERS = "select_all_layers"
-    VISIBLE_LAYERS = "select_visible_layers"
-    LOCKED_LAYERS = "select_locked_layers"
-    INVISIBLE_LAYERS = "select_invisible_layers"
-    UNLOCKED_LAYERS = "select_unlocked_layers"
-    NEW_LAYER_FROM_VISIBLE = "new_from_visible"
     PIN_TO_TIMELINE = "pin_to_timeline"
+
+    # Layer stack
+    SELECT_ALL_LAYERS = "select_all_layers"
+    SELECT_VISIBLE_LAYERS = "select_visible_layers"
+    SELECT_LOCKED_LAYERS = "select_locked_layers"
+    SELECT_INVISIBLE_LAYERS = "select_invisible_layers"
+    SELECT_UNLOCKED_LAYERS = "select_unlocked_layers"
+    ACTIVATE_NEXT_LAYER = "activateNextLayer"
+    ACTIVATE_NEXT_SIBLING_LAYER = \
+        "activateNextSiblingLayer"
+    ACTIVATE_PREVIOUS_LAYER = "activatePreviousLayer"
+    ACTIVATE_PREVIOUS_SIBLING_LAYER = \
+        "activatePreviousSiblingLayer"
+
+    # Layer creation
     ADD_PAINT_LAYER = "add_new_paint_layer"
     ADD_GROUP_LAYER = "add_new_group_layer"
     ADD_CLONE_LAYER = "add_new_clone_layer"
@@ -191,6 +231,10 @@ class Action(Enum):
     CONVERT_TO_TRANSPARENCY_MASK = "convert_to_transparency_mask"
     CONVERT_TO_ANIMATED_LAYER = "convert_to_animated"
     TO_FILE_LAYER = "convert_to_file_layer"
+    IMPORT_LAYER = "import_layer_from_file"
+    NEW_LAYER_FROM_VISIBLE = "new_from_visible"
+
+    # Layer handling
     ISOLATE_ACTIVE_GROUP = "isolate_active_group"
     TOGGLE_LAYER_VISIBILITY = "toggle_layer_visibility"
     TOGGLE_LAYER_LOCK = "toggle_layer_lock"
@@ -199,13 +243,21 @@ class Action(Enum):
     ALPHA_INTO_MASK = "split_alpha_into_mask"
     WRITE_AS_ALPHA = "split_alpha_write"
     SAVE_MERGED = "split_alpha_save_merged"
-    IMPORT_LAYER = "import_layer_from_file"
-    PROPERTIES = "image_properties"
+
+    # Importing layers
     AS_PAINT_LAYER = "import_layer_as_paint_layer"
     AS_TRANSPARENCY_MASK = "import_layer_as_transparency_mask"
     AS_FILTER_MASK = "import_layer_as_filter_mask"
     AS_SELECTION_MASK = "import_layer_as_selection_mask"
     IMAGE_BACKGROUND_COLOUR_AND_TRANSPARENCY = "image_color"
+
+    # Brush property editing
+    NEXT_FAVOURITE_PRESET = "next_favorite_preset"
+    PREVIOUS_FAVOURITE_PRESET = "previous_favorite_preset"
+    SWITCH_TO_PREVIOUS_PRESET = "previous_preset"
+    RELOAD_ORIGINAL_PRESET = "reload_preset_action"
+    INCREASE_BRUSH_SIZE = "increase_brush_size"
+    DECREASE_BRUSH_SIZE = "decrease_brush_size"
     MAKE_BRUSH_COLOUR_LIGHTER = "make_brush_color_lighter"
     MAKE_BRUSH_COLOUR_DARKER = "make_brush_color_darker"
     MAKE_BRUSH_COLOUR_MORE_SATURATED = "make_brush_color_saturated"
@@ -225,11 +277,24 @@ class Action(Enum):
     DECREASE_FADE = "decrease_fade"
     INCREASE_SCATTER = "increase_scatter"
     DECREASE_SCATTER = "decrease_scatter"
-    MIRROR_VIEW_AROUND_CURSOR = "mirror_canvas_around_cursor"
+    BRUSH_SMOOTHING_DISABLED = "set_no_brush_smoothing"
+    BRUSH_SMOOTHING_BASIC = "set_simple_brush_smoothing"
+    BRUSH_SMOOTHING_WEIGHTED = "set_weighted_brush_smoothing"
+    BRUSH_SMOOTHING_STABILISER = "set_stabilizer_brush_smoothing"
+    # Opening menus
+    CONFIGURE_KRITA = "options_configure"
+    CONFIGURE_TOOLBARS = "options_configure_toolbars"
+    CONFIGURE_SHORTCUT_COMPOSER = "Configure Shortcut Composer"
+    THEMES = "theme_menu"
+    SHOW_DOCKERS = "view_toggledockers"
+    RESET_ALL_SETTINGS = "reset_configurations"
     PATTERNS = "patterns"
     GRADIENTS = "gradients"
     CHOOSE_FOREGROUND_AND_BACKGROUND_COLOURS = "dual"
-    RELOAD_ORIGINAL_PRESET = "reload_preset_action"
+    PROPERTIES = "image_properties"
+    SHOW_SNAP_OPTIONS_POPUP = "show_snap_options_popup"
+    SHOW_BRUSH_PRESETS = "show_brush_presets"
+
     HIDE_MIRROR_X_LINE = "mirrorX-hideDecorations"
     LOCK_X_LINE = "mirrorX-lock"
     MOVE_TO_CANVAS_CENTRE_X = "mirrorX-moveToCenter"
@@ -245,10 +310,7 @@ class Action(Enum):
     BRUSH_OPTION_SLIDER_2 = "brushslider2"
     BRUSH_OPTION_SLIDER_3 = "brushslider3"
     BRUSH_OPTION_SLIDER_4 = "brushslider4"
-    NEXT_FAVOURITE_PRESET = "next_favorite_preset"
-    PREVIOUS_FAVOURITE_PRESET = "previous_favorite_preset"
-    SWITCH_TO_PREVIOUS_PRESET = "previous_preset"
-    SHOW_BRUSH_PRESETS = "show_brush_presets"
+
     MIRROR = "mirror_actions"
     WORKSPACES = "workspaces"
     SHOW_BRUSH_EDITOR = "show_brush_editor"
@@ -284,16 +346,18 @@ class Action(Enum):
     SMOOTH = "smoothselection"
     OFFSET_IMAGE = "offsetimage"
     OFFSET_LAYER = "offsetlayer"
-    START_G_M_I_C_QT = "QMic"
-    RE_APPLY_THE_LAST_G_M_I_C_FILTER = "QMicAgain"
+    START_GMIC_QT = "QMic"
+    REAPPLY_THE_LAST_GMIC_FILTER = "QMicAgain"
     MANAGE_RESOURCE_LIBRARIES = "manage_bundles"
     MANAGE_RESOURCES = "manage_resources"
+
     ROTATE_IMAGE = "rotateimage"
     ROTATE_IMAGE_90_TO_THE_RIGHT = "rotateImageCW90"
     ROTATE_IMAGE_180 = "rotateImage180"
     ROTATE_IMAGE_90_TO_THE_LEFT = "rotateImageCCW90"
     MIRROR_IMAGE_HORIZONTALLY = "mirrorImageHorizontal"
     MIRROR_IMAGE_VERTICALLY = "mirrorImageVertical"
+
     ROTATE_LAYER = "rotatelayer"
     ROTATE_LAYER_180 = "rotateLayer180"
     ROTATE_LAYER_90_TO_THE_RIGHT = "rotateLayerCW90"
@@ -302,17 +366,14 @@ class Action(Enum):
     ROTATE_ALL_LAYERS_90_TO_THE_RIGHT = "rotateAllLayersCW90"
     ROTATE_ALL_LAYERS_90_TO_THE_LEFT = "rotateAllLayersCCW90"
     ROTATE_ALL_LAYERS_180 = "rotateAllLayers180"
+
     SEPARATE_IMAGE = "separate"
     SHEAR_IMAGE = "shearimage"
     SHEAR_LAYER = "shearlayer"
     SHEAR_ALL_LAYERS = "shearAllLayers"
+
     WAVELET_DECOMPOSE = "waveletdecompose"
-    INCREASE_BRUSH_SIZE = "increase_brush_size"
-    DECREASE_BRUSH_SIZE = "decrease_brush_size"
-    SELECTION_MODE_ADD = "selection_tool_mode_add"
-    SELECTION_MODE_REPLACE = "selection_tool_mode_replace"
-    SELECTION_MODE_SUBTRACT = "selection_tool_mode_subtract"
-    SELECTION_MODE_INTERSECT = "selection_tool_mode_intersect"
+
     UNDO_POLYGON_SELECTION_POINTS = "undo_polygon_selection"
     CORNER_POINT = "pathpoint-corner"
     SMOOTH_POINT = "pathpoint-smooth"
@@ -358,10 +419,7 @@ class Action(Enum):
     INTERSECT = "object_intersect"
     SUBTRACT = "object_subtract"
     SPLIT = "object_split"
-    BRUSH_SMOOTHING_DISABLED = "set_no_brush_smoothing"
-    BRUSH_SMOOTHING_BASIC = "set_simple_brush_smoothing"
-    BRUSH_SMOOTHING_WEIGHTED = "set_weighted_brush_smoothing"
-    BRUSH_SMOOTHING_STABILISER = "set_stabilizer_brush_smoothing"
+
     MOVE_UP = "movetool-move-up"
     MOVE_DOWN = "movetool-move-down"
     MOVE_LEFT = "movetool-move-left"
@@ -442,28 +500,7 @@ class Action(Enum):
     PREVIOUS_UNFILTERED_KEYFRAME = "previous_unfiltered_keyframe"
     NEXT_UNFILTERED_KEYFRAME = "next_unfiltered_keyframe"
     AUTO_FRAME_MODE = "auto_key"
-    NEW = "file_new"
-    OPEN = "file_open"
-    QUIT = "file_quit"
-    CONFIGURE_TOOLBARS = "options_configure_toolbars"
-    FULL_SCREEN_MODE = "fullscreen"
-    OPEN_RECENT = "file_open_recent"
-    SAVE = "file_save"
-    SAVE_AS = "file_save_as"
-    UNDO = "edit_undo"
-    REDO = "edit_redo"
-    IMPORT_ANIMATION_FRAMES = "file_import_animation"
-    IMPORT_VIDEO_ANIMATION = "file_import_video_animation"
-    RENDER_ANIMATION = "render_animation"
-    RENDER_ANIMATION_AGAIN = "render_animation_again"
-    CLOSE_ALL = "file_close_all"
-    OPEN_EXISTING_DOCUMENT_AS_UNTITLED_DOCUMENT = "file_import_file"
-    EXPORT = "file_export_file"
-    EXPORT_ADVANCED = "file_export_advanced"
-    DOCUMENT_INFORMATION = "file_documentinfo"
-    THEMES = "theme_menu"
-    SHOW_DOCKERS = "view_toggledockers"
-    RESET_ALL_SETTINGS = "reset_configurations"
+
     DETACH_CANVAS = "view_detached_canvas"
     SHOW_DOCKER_TITLEBARS = "view_toggledockertitlebars"
     DOCKERS = "settings_dockers_menu"
@@ -477,43 +514,21 @@ class Action(Enum):
     CLOSE = "file_close"
     SESSIONS = "file_sessions"
     SEARCH_ACTIONS = "command_bar_open"
-    CONFIGURE_KRITA = "options_configure"
     KRITA_HANDBOOK = "help_contents"
     REPORT_BUG = "help_report_bug"
     SWITCH_APPLICATION_LANGUAGE = "switch_application_language"
     ABOUT_KRITA = "help_about_app"
     ABOUT_K_D_E = "help_about_kde"
-    TRANSFORM_TOOL_FREE = "Transform tool: free"
-    TRANSFORM_TOOL_PERSPECTIVE = "Transform tool: perspective"
-    TRANSFORM_TOOL_WARP = "Transform tool: warp"
-    TRANSFORM_TOOL_CAGE = "Transform tool: cage"
-    TRANSFORM_TOOL_LIQUIFY = "Transform tool: liquify"
-    TRANSFORM_TOOL_MESH = "Transform tool: mesh"
-    TEMPORARY_MOVE_TOOL = "Temporary move tool"
-    TEMPORARY_ERASER = "Temporary eraser"
-    TEMPORARY_PRESERVE_ALPHA = "Temporary preserve alpha"
     PREVIEW_CURRENT_LAYER_VISIBILITY = "Preview current layer visibility"
     PREVIEW_PROJECTION_BELOW = "Preview projection below"
     CYCLE_PAINTING_OPACITY = "Cycle painting opacity"
     CYCLE_SELECTION_TOOLS = "Cycle selection tools"
-    SCROLL_UNDO_STACK = "Scroll undo stack"
-    SCROLL_ISOLATED_LAYERS = "Scroll isolated layers"
-    SCROLL_TIMELINE_OR_ANIMATED_LAYERS = "Scroll timeline or animated layers"
-    SCROLL_BRUSH_SIZE_OR_OPACITY = "Scroll brush size or opacity"
-    SCROLL_CANVAS_ZOOM_OR_ROTATION = "Scroll canvas zoom or rotation"
-    PICK_MISC_TOOLS = "Pick misc tools"
-    PICK_PAINTING_BLENDING_MODES = "Pick painting blending modes"
-    CREATE_PAINTING_LAYER_WITH_BLENDING_MODE = \
-        "Create painting layer with blending mode"
-    PICK_TRANSFORM_TOOL_MODES = "Pick transform tool modes"
-    PICK_BRUSH_PRESETS_RED = "Pick brush presets (red)"
-    PICK_BRUSH_PRESETS_GREEN = "Pick brush presets (green)"
-    PICK_BRUSH_PRESETS_BLUE = "Pick brush presets (blue)"
-    PICK_COLOR_SAMPLER_BLEND = "Pick Color Sampler Blend"
     COLOUR_SPACE = "color_space"
     DOCUMENT_TOOLS = "document_tools"
     EXPORT_LAYERS = "export_layers"
     FILTER_MANAGER = "filter_manager"
+
+    # Python Scripts
     IMPORT_PYTHON_PLUGIN_FROM_FILE = "plugin_importer_file"
     IMPORT_PYTHON_PLUGIN_FROM_WEB = "plugin_importer_web"
     SCRIPTER = "python_scripter"
@@ -528,6 +543,12 @@ class Action(Enum):
     EXECUTE_SCRIPT_8 = "execute_script_8"
     EXECUTE_SCRIPT_9 = "execute_script_9"
     EXECUTE_SCRIPT_10 = "execute_script_10"
+    TRANSFORM_TOOL_FREE = "Transform tool: free"
+    TRANSFORM_TOOL_PERSPECTIVE = "Transform tool: perspective"
+    TRANSFORM_TOOL_WARP = "Transform tool: warp"
+    TRANSFORM_TOOL_CAGE = "Transform tool: cage"
+    TRANSFORM_TOOL_LIQUIFY = "Transform tool: liquify"
+    TRANSFORM_TOOL_MESH = "Transform tool: mesh"
     RECORD_TIMELAPSE = "recorder_record_toggle"
     EXPORT_TIMELAPSE = "recorder_export"
     HIDE_FILE_TOOLBAR = "mainToolBar"
@@ -540,10 +561,27 @@ class Action(Enum):
     SHOW_COMMON_COLOURS = "show_common_colors"
     UPDATE_COMPOSITION = "update_composition"
     RENAME_COMPOSITION = "rename_composition"
-
-    # ShortcutComposer actions (The ones that make sense to use this way)
-    CONFIGURE_SHORTCUT_COMPOSER = "Configure Shortcut Composer"
     RELOAD_SHORTCUT_COMPOSER = "Reload Shortcut Composer"
 
     def activate(self):
-        Api.instance().action(self.value).trigger()
+        """Activate the action."""
+        try:
+            Api.instance().action(self.value).trigger()
+        except AttributeError:
+            print(self.value)
+
+    @property
+    def icon(self) -> QIcon:
+        """Return the icon of this action."""
+        try:
+            return Api.instance().action(self.value).icon()
+        except AttributeError:
+            return QIcon()
+
+    @property
+    def pretty_name(self) -> str:
+        """Return the name of this action."""
+        try:
+            return Api.instance().action(self.value).text()
+        except AttributeError:
+            return "---"

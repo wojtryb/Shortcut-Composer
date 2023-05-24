@@ -82,7 +82,7 @@ class ScrollArea(QWidget):
         self._children_list: List[LabelWidget] = []
 
         self._grid = OffsetGridLayout(self._columns, self)
-        self._active_label_display = QLabel(self)
+        self._active_label_display = self._init_active_label_display()
         self._search_bar = self._init_search_bar()
         self._layout = self._init_layout()
 
@@ -105,6 +105,14 @@ class ScrollArea(QWidget):
         layout.addWidget(self._init_scroll_area())
         layout.addLayout(footer)
         return layout
+
+    def _init_active_label_display(self):
+        class RestrictedLabel(QLabel):
+            def setText(self, text: str) -> None:
+                if len(text) >= 30:
+                    text = f"{text[:27]}..."
+                return super().setText(text)
+        return RestrictedLabel(self)
 
     def _init_scroll_area(self) -> QScrollArea:
         """Create a widget, which scrolls internal widget with grid layout."""

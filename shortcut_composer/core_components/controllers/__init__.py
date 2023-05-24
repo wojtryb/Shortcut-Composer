@@ -5,6 +5,7 @@
 Components that allow to get and set a specific property of krita.
 
 Available controllers:
+    - `ActionController`
     - `ToolController`
     - `BrushSizeController`
     - `BlendingModeController`
@@ -46,6 +47,7 @@ from .node_controllers import (
 from .core_controllers import (
     TransformModeController,
     ToggleController,
+    ActionController,
     ToolController,
     UndoController,
 )
@@ -63,6 +65,7 @@ __all__ = [
     "OpacityController",
     "ToggleController",
     "PresetController",
+    "ActionController",
     "TimeController",
     "ToolController",
     "UndoController",

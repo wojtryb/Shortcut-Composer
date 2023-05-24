@@ -69,7 +69,7 @@ class Tool(Enum):
     @property
     def pretty_name(self) -> str:
         """Format tool name like: `Shape select tool`."""
-        return f"{self.name[0]}{self.name[1:].lower().replace('_', ' ')} tool"
+        return f"{self.name.replace('_', ' ').title()} tool"
 
 
 _PAINTABLE = {

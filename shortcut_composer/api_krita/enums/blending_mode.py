@@ -145,5 +145,5 @@ class BlendingMode(Enum):
     def pretty_name(self) -> str:
         """Format blending mode name like: `Darker Color`."""
         parts = self.name.split("_")
-        parts = [f"{part[0]}{part[1:].lower()}" for part in parts]
+        parts = [f"{part.title()}" for part in parts]
         return " ".join(parts)

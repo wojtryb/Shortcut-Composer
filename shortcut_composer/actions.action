@@ -90,6 +90,11 @@
         <icon>krita_tool_grid</icon>
         </Action>
 
+        <Action name="Activate krita action">
+        <activationFlags>1</activationFlags>
+        <!-- <icon></icon> -->
+        </Action>
+
         <Action name="Pick painting blending modes">
         <activationFlags>1</activationFlags>
         <icon>format-text-bold</icon>
