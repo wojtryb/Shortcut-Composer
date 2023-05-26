@@ -12,7 +12,8 @@ from PyQt5.QtWidgets import (
     QLabel,
     QLineEdit,
     QVBoxLayout,
-    QHBoxLayout)
+    QHBoxLayout,
+    QSizePolicy)
 
 from ..label import Label
 from ..label_widget import LabelWidget
@@ -82,7 +83,7 @@ class ScrollArea(QWidget):
         self._children_list: List[LabelWidget] = []
 
         self._grid = OffsetGridLayout(self._columns, self)
-        self._active_label_display = QLabel(self)
+        self._active_label_display = self._init_active_label_display()
         self._search_bar = self._init_search_bar()
         self._layout = self._init_layout()
 
@@ -105,6 +106,15 @@ class ScrollArea(QWidget):
         layout.addWidget(self._init_scroll_area())
         layout.addLayout(footer)
         return layout
+
+    def _init_active_label_display(self):
+        """Return a label displaying hovered label."""
+        label = QLabel(self)
+        label.setSizePolicy(
+            QSizePolicy.Ignored,
+            QSizePolicy.Expanding)
+        label.setWordWrap(True)
+        return label
 
     def _init_scroll_area(self) -> QScrollArea:
         """Create a widget, which scrolls internal widget with grid layout."""
