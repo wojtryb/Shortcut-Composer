@@ -1,13 +1,12 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Dict, Union, Optional, Iterable
+from typing import Dict, Union
 
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 
 from config_system import Field
 from core_components.controllers import PresetController
-from data_components import Tag
 from api_krita import Krita
 from api_krita.pyqt import SafeConfirmButton
 from ..label import Label
@@ -41,9 +40,10 @@ class PresetScrollArea(ScrollArea):
     ) -> None:
         super().__init__(style, columns, parent)
         self._field = field
+        self._fetcher = PresetGroupFetcher()
         self.group_chooser = GroupComboBox(
             config_field=self._field,
-            group_fetcher=PresetGroupFetcher(),
+            group_fetcher=self._fetcher,
             additional_fields=["---Select tag---", "All"])
         self.group_chooser.widget.currentTextChanged.connect(
             self._display_group)
@@ -53,29 +53,10 @@ class PresetScrollArea(ScrollArea):
     def _display_group(self) -> None:
         """Update preset widgets according to tag selected in combobox."""
         picked_tag = self.group_chooser.widget.currentText()
-        if picked_tag == "All":
-            presets = Krita.get_presets().keys()
-        else:
-            presets = Tag(picked_tag)
-
-        self.replace_handled_labels(self._create_labels(presets))
+        values = self._fetcher.get_values(picked_tag)
+        self.replace_handled_labels(self._fetcher.create_labels(values))
         self._apply_search_bar_filter()
         self.group_chooser.save()
-
-    def _create_labels(self, values: Iterable[str]) -> List[Label[str]]:
-        """Create labels from list of preset names."""
-        controller = PresetController()
-        labels: list[Optional[Label]] = []
-
-        for preset in values:
-            if preset in self.known_labels:
-                label = self.known_labels[preset]
-            else:
-                label = Label.from_value(preset, controller)
-                self.known_labels[preset] = label
-            labels.append(label)
-
-        return [label for label in labels if label is not None]
 
 
 class PresetPieSettings(PieSettings):
@@ -88,6 +69,8 @@ class PresetPieSettings(PieSettings):
     ) -> None:
         super().__init__(config, style)
         self._config: PresetPieConfig
+
+        self._fetcher = PresetGroupFetcher()
 
         self._preset_scroll_area = self._init_preset_scroll_area()
         self._mode_button = self._init_mode_button()
@@ -151,7 +134,7 @@ class PresetPieSettings(PieSettings):
 
         auto_combobox = GroupComboBox(
             config_field=self._config.TAG_NAME,
-            group_fetcher=PresetGroupFetcher(),
+            group_fetcher=self._fetcher,
             pretty_name="Tag name")
 
         auto_combobox.widget.currentTextChanged.connect(handle_picked_tag)
