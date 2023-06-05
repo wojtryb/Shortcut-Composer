@@ -16,7 +16,7 @@ from .pie_style import PieStyle
 from .label import Label
 from .label_widget import LabelWidget
 from .pie_config import PieConfig
-from .widget_utils import (
+from .pie_widget_utils import (
     WidgetHolder,
     CirclePoints,
     LabelHolder,

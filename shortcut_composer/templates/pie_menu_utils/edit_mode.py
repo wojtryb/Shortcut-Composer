@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from PyQt5.QtCore import QPoint
 
 if TYPE_CHECKING:
-    from ...pie_menu import PieMenu
+    from ..pie_menu import PieMenu
 
 
 class EditMode:

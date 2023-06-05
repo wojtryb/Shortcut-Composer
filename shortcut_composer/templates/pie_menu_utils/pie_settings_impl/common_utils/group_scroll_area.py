@@ -5,7 +5,7 @@ from typing import List
 
 from config_system import Field
 from templates.pie_menu_utils import PieStyle
-from templates.pie_menu_utils.settings_gui.components import (
+from templates.pie_menu_utils.pie_settings_impl.common_utils import (
     GroupComboBox,
     GroupManager)
 from .scroll_area import ScrollArea

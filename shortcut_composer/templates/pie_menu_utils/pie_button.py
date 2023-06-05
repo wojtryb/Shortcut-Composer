@@ -7,8 +7,8 @@ from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QIcon
 
 from api_krita.pyqt import RoundButton
-from ..pie_style import PieStyle
-from ..pie_config import PieConfig
+from .pie_style import PieStyle
+from .pie_config import PieConfig
 
 
 class PieButton(RoundButton):

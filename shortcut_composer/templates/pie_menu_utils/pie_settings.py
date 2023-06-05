@@ -16,7 +16,8 @@ from api_krita import Krita
 from api_krita.pyqt import AnimatedWidget, BaseWidget, SafeConfirmButton
 from config_system.ui import ConfigFormWidget, ConfigSpinBox
 from composer_utils import Config
-from templates.pie_menu_utils import PieStyle, PieConfig
+from .pie_style import PieStyle
+from .pie_config import PieConfig
 
 
 class PieSettings(AnimatedWidget, BaseWidget):

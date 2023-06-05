@@ -11,21 +11,22 @@ from PyQt5.QtGui import QColor
 from api_krita import Krita
 from api_krita.enums.helpers import EnumGroup
 from core_components import Controller, Instruction
-from .pie_menu_utils.settings_gui import (
-    PieSettings,
+from .pie_menu_utils.pie_settings_impl import (
+    EnumGroupPieSettings,
     NumericPieSettings,
     PresetPieSettings,
-    EnumPieSettings,
-    EnumGroupPieSettings)
+    EnumPieSettings)
 from .pie_menu_utils import (
     NonPresetPieConfig,
     PresetPieConfig,
+    PieSettings,
     PieManager,
     PieConfig,
     PieWidget,
+    PieButton,
+    EditMode,
     PieStyle,
     Label)
-from .pie_menu_utils.widget_utils import EditMode, PieButton
 from .raw_instructions import RawInstructions
 
 T = TypeVar('T')

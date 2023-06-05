@@ -8,7 +8,7 @@ from api_krita.pyqt import BaseWidget
 from ..pie_style import PieStyle
 from ..label import Label
 from ..label_widget import LabelWidget
-from ..label_widget_utils import create_label_widget
+from ..label_widget_impl import create_label_widget
 from ..pie_config import PieConfig
 from .widget_holder import WidgetHolder
 from .circle_points import CirclePoints

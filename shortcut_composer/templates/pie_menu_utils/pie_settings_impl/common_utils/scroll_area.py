@@ -16,7 +16,7 @@ from PyQt5.QtWidgets import (
     QSizePolicy)
 
 from templates.pie_menu_utils import Label, LabelWidget, PieStyle
-from templates.pie_menu_utils.label_widget_utils import create_label_widget
+from templates.pie_menu_utils.label_widget_impl import create_label_widget
 from .offset_grid_layout import OffsetGridLayout
 
 
