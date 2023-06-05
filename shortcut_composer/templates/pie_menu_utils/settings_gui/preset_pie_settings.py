@@ -1,62 +1,15 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Dict, Union
-
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 
-from config_system import Field
 from core_components.controllers import PresetController
 from api_krita import Krita
 from api_krita.pyqt import SafeConfirmButton
-from ..label import Label
 from ..pie_style import PieStyle
 from ..pie_config import PresetPieConfig
 from .pie_settings import PieSettings
-from .scroll_area import ScrollArea
-from .components import GroupComboBox, PresetGroupFetcher
-
-
-class PresetScrollArea(ScrollArea):
-    """
-    Scroll area for holding preset pies.
-
-    Extends usual scroll area with the combobox over the area for
-    picking displayed tag. The picked tag is saved to given field.
-
-    Operates in two modes:
-    - Tag mode - the presets are determined by tracking krita tag
-    - Manual mode - the presets are manually picked by the user
-    """
-
-    known_labels: Dict[str, Union[Label, None]] = {}
-
-    def __init__(
-        self,
-        style: PieStyle,
-        columns: int,
-        field: Field,
-        parent=None
-    ) -> None:
-        super().__init__(style, columns, parent)
-        self._field = field
-        self._fetcher = PresetGroupFetcher()
-        self.group_chooser = GroupComboBox(
-            config_field=self._field,
-            group_fetcher=self._fetcher,
-            additional_fields=["---Select tag---", "All"])
-        self.group_chooser.widget.currentTextChanged.connect(
-            self._display_group)
-        self._layout.insertWidget(0, self.group_chooser.widget)
-        self._display_group()
-
-    def _display_group(self) -> None:
-        """Update preset widgets according to tag selected in combobox."""
-        picked_tag = self.group_chooser.widget.currentText()
-        values = self._fetcher.get_values(picked_tag)
-        self.replace_handled_labels(self._fetcher.create_labels(values))
-        self._apply_search_bar_filter()
-        self.group_chooser.save()
+from .components import GroupComboBox, PresetGroupFetcher, GroupScrollArea
 
 
 class PresetPieSettings(PieSettings):
@@ -82,12 +35,15 @@ class PresetPieSettings(PieSettings):
         self._tab_holder.insertTab(1, action_values, "Values")
         self._tab_holder.setCurrentIndex(1)
 
-    def _init_preset_scroll_area(self) -> PresetScrollArea:
+    def _init_preset_scroll_area(self) -> GroupScrollArea:
         """Create preset scroll area which tracks which ones are used."""
-        preset_scroll_area = PresetScrollArea(
+        preset_scroll_area = GroupScrollArea(
+            controller=PresetController(),
+            fetcher=self._fetcher,
             style=self._style,
             columns=3,
-            field=self._config.field("Last tag selected", "---Select tag---"))
+            field=self._config.field("Last tag selected", "---Select tag---"),
+            additional_fields=["---Select tag---", "All"])
         policy = preset_scroll_area.sizePolicy()
         policy.setRetainSizeWhenHidden(True)
         preset_scroll_area.setSizePolicy(policy)
