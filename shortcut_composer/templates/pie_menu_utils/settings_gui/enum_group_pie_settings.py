@@ -1,43 +1,19 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Optional, Type
+from typing import List
 from enum import Enum
 
-from PyQt5.QtWidgets import QWidget
 
 from api_krita.enums.helpers import EnumGroup
 from core_components import Controller
 from config_system import Field
-from config_system.ui import ConfigComboBox
 from ..label import Label
 from ..pie_style import PieStyle
 from ..pie_config import NonPresetPieConfig
 from .pie_settings import PieSettings
 from .scroll_area import ScrollArea
-
-
-class GroupComboBox(ConfigComboBox):
-    def __init__(
-        self,
-        config_field: Field[str],
-        enum_type: Type[EnumGroup],
-        parent: Optional[QWidget] = None,
-        pretty_name: Optional[str] = None,
-        additional_fields: List[str] = [],
-    ) -> None:
-        self._additional_fields = additional_fields
-        self._enum_type = enum_type
-        super().__init__(config_field, parent, pretty_name)
-        self.config_field.register_callback(
-            lambda: self.set(self.config_field.read()))
-
-    def reset(self) -> None:
-        """Replace list of available tags with those red from database."""
-        self._combo_box.clear()
-        self._combo_box.addItems(self._additional_fields)
-        self._combo_box.addItems(self._enum_type._groups_.keys())
-        self.set(self.config_field.read())
+from .components import GroupComboBox, EnumGroupFetcher
 
 
 class GroupScrollArea(ScrollArea):
@@ -53,8 +29,8 @@ class GroupScrollArea(ScrollArea):
         self._controller = controller
         self._field = field
         self.group_chooser = GroupComboBox(
-            self._field,
-            enum_type=self._controller.TYPE,
+            config_field=self._field,
+            group_fetcher=EnumGroupFetcher(self._controller.TYPE),
             additional_fields=["All"])
         self.group_chooser.widget.currentTextChanged.connect(
             self._display_group)

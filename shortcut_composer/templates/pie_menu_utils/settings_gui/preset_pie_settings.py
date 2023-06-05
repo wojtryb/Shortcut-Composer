@@ -6,46 +6,16 @@ from typing import List, Dict, Union, Optional, Iterable
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 
 from config_system import Field
-from config_system.ui import ConfigComboBox
 from core_components.controllers import PresetController
 from data_components import Tag
 from api_krita import Krita
-from api_krita.wrappers import Database
 from api_krita.pyqt import SafeConfirmButton
 from ..label import Label
 from ..pie_style import PieStyle
 from ..pie_config import PresetPieConfig
 from .pie_settings import PieSettings
 from .scroll_area import ScrollArea
-
-
-class TagComboBox(ConfigComboBox):
-    """
-    Combobox for picking preset tags, which can be saved in config.
-
-    When `allow_all` flag is True, the combobox will contain "All" item
-    will be added above the actual tags.
-    """
-
-    def __init__(
-        self,
-        config_field: Field[str],
-        parent: Optional[QWidget] = None,
-        pretty_name: Optional[str] = None,
-        additional_fields: List[str] = [],
-    ) -> None:
-        self._additional_fields = additional_fields
-        super().__init__(config_field, parent, pretty_name)
-        self.config_field.register_callback(
-            lambda: self.set(self.config_field.read()))
-
-    def reset(self) -> None:
-        """Replace list of available tags with those red from database."""
-        self._combo_box.clear()
-        self._combo_box.addItems(self._additional_fields)
-        with Database() as database:
-            self._combo_box.addItems(database.get_brush_tags())
-        self.set(self.config_field.read())
+from .components import GroupComboBox, PresetGroupFetcher
 
 
 class PresetScrollArea(ScrollArea):
@@ -71,16 +41,18 @@ class PresetScrollArea(ScrollArea):
     ) -> None:
         super().__init__(style, columns, parent)
         self._field = field
-        self.tag_chooser = TagComboBox(
-            self._field,
+        self.group_chooser = GroupComboBox(
+            config_field=self._field,
+            group_fetcher=PresetGroupFetcher(),
             additional_fields=["---Select tag---", "All"])
-        self.tag_chooser.widget.currentTextChanged.connect(self._display_tag)
-        self._layout.insertWidget(0, self.tag_chooser.widget)
-        self._display_tag()
+        self.group_chooser.widget.currentTextChanged.connect(
+            self._display_group)
+        self._layout.insertWidget(0, self.group_chooser.widget)
+        self._display_group()
 
-    def _display_tag(self) -> None:
+    def _display_group(self) -> None:
         """Update preset widgets according to tag selected in combobox."""
-        picked_tag = self.tag_chooser.widget.currentText()
+        picked_tag = self.group_chooser.widget.currentText()
         if picked_tag == "All":
             presets = Krita.get_presets().keys()
         else:
@@ -88,7 +60,7 @@ class PresetScrollArea(ScrollArea):
 
         self.replace_handled_labels(self._create_labels(presets))
         self._apply_search_bar_filter()
-        self.tag_chooser.save()
+        self.group_chooser.save()
 
     def _create_labels(self, values: Iterable[str]) -> List[Label[str]]:
         """Create labels from list of preset names."""
@@ -120,7 +92,7 @@ class PresetPieSettings(PieSettings):
         self._preset_scroll_area = self._init_preset_scroll_area()
         self._mode_button = self._init_mode_button()
         self._auto_combobox = self._init_auto_combobox()
-        self._manual_combobox = self._preset_scroll_area.tag_chooser
+        self._manual_combobox = self._preset_scroll_area.group_chooser
 
         self.set_tag_mode(self._config.TAG_MODE.read())
         action_values = self._init_action_values()
@@ -170,14 +142,18 @@ class PresetPieSettings(PieSettings):
             lambda: self.set_tag_mode(self._config.TAG_MODE.read(), False))
         return mode_button
 
-    def _init_auto_combobox(self) -> TagComboBox:
+    def _init_auto_combobox(self) -> GroupComboBox:
         """Create tag modecombobox, which sets tag presets to the pie."""
         def handle_picked_tag():
             """Save used tag in config and report the values changed."""
             auto_combobox.save()
             self._config.refresh_order()
 
-        auto_combobox = TagComboBox(self._config.TAG_NAME, self, "Tag name")
+        auto_combobox = GroupComboBox(
+            config_field=self._config.TAG_NAME,
+            group_fetcher=PresetGroupFetcher(),
+            pretty_name="Tag name")
+
         auto_combobox.widget.currentTextChanged.connect(handle_picked_tag)
         return auto_combobox
 
