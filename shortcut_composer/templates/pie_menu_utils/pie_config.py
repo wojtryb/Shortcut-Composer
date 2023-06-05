@@ -14,6 +14,9 @@ U = TypeVar("U")
 class PieConfig(FieldGroup, Generic[T], ABC):
     """Abstract FieldGroup representing config of PieMenu."""
 
+    def __init__(self, name, *args, **kwargs) -> None:
+        super().__init__(name)
+
     allow_value_edit: bool
     """Is it allowed to remove elements in runtime. """
 

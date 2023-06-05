@@ -83,14 +83,14 @@ class PieMenu(RawInstructions, Generic[T]):
         super().__init__(name, instructions, short_vs_long_press_time)
         self._controller = controller
 
-        self._config = dispatch_pie_config(self._controller)(**{
-            "name": f"ShortcutComposer: {name}",
-            "values": values,
-            "pie_radius_scale": pie_radius_scale,
-            "icon_radius_scale": icon_radius_scale,
-            "save_local": save_local,
-            "background_color": background_color,
-            "active_color": active_color})
+        self._config = dispatch_pie_config(self._controller)(
+            name=f"ShortcutComposer: {name}",
+            values=values,
+            pie_radius_scale=pie_radius_scale,
+            icon_radius_scale=icon_radius_scale,
+            save_local=save_local,
+            background_color=background_color,
+            active_color=active_color)
         self._config.ORDER.register_callback(self._reset_labels)
 
         self._labels: List[Label] = []
