@@ -1,53 +1,13 @@
-from typing import Dict, List, Tuple, TypeVar, Callable
+from typing import Dict, List, Tuple, TypeVar, Optional
 from enum import Enum, EnumMeta
 T = TypeVar("T", bound=Enum)
 
 
 class EnumGroupMeta(EnumMeta):
-    """
-    TODO: rewrite documentation
-    Metaclass for creating enum groups.
-
-    Intended use is to place enum definitions inside a class definition:
-    ```
-    class EnumGroup(metaclass=EnumGroupMeta[Enum]):
-        class EnumA(Enum):
-            ASD = "asd"
-            QWE = "qwe"
-
-        class EnumB(Enum):
-            Z = "z"
-            X = "x"
-    ```
-    Metaclass makes its instance act as a composite of all the grouped
-    enums. Although the instance technically is not an Enum subclass,
-    it provides the following Enum class attributes:
-    - `_member_map_`
-    - `_value2member_map_`
-
-    Enum members can be fetched in multiple ways:
-        - Using the original, grouped Enum class:
-            - EnumGroup.EnumA.ASD
-            - EnumGroup.EnumA["ASD"]
-            - EnumGroup.EnumA("asd")
-
-        - Using the composite class directly:
-            - EnumGroup.ASD
-            - EnumGroup["ASD"]
-            - EnumGroup("asd")
-
-    Grouped enum types must follow those rules:
-    - All passed enum types must inherit directly from the same Enum.
-    - Grouped enums cannot define the same names.
-
-    Breaking those rules will result in exception during class creation.
-
-    Grouped enums do not need to directly inherit from Enum.
-    Metaclass is a Generic - for typing purposes, base class of grouped
-    enum types should also be passed to the metaclass.
-    """
+    """Metaclass for creating enum groups. See EnumGroup documentation."""
 
     _groups_: Dict[str, 'Group']
+    """Maps enum groups to their pretty names."""
 
     def __new__(
         cls,
@@ -55,65 +15,113 @@ class EnumGroupMeta(EnumMeta):
         bases: Tuple[type, ...],
         attrs
     ) -> 'EnumGroupMeta':
-        active_separator = None
-        groups: Dict[str, Group] = {}
-        for key, value in attrs.copy().items():
+        # Filter out class attributes provided by Python.
+        items: List[Tuple[str, Group]]
+        items = [i for i in attrs.items() if not i[0].startswith("__")]
+
+        # Add keys (which will become enum members) to correct groups
+        current_group: Optional[Group] = None
+        for key, value in items:
             if isinstance(value, Group):
-                attrs._member_names.remove(key)
-                active_separator = value
-                groups[active_separator.name] = active_separator
-            elif not isinstance(value, Callable):
-                if active_separator is not None:
-                    active_separator.keys.add(key)
+                current_group = value
 
+            elif isinstance(value, (int, str)):
+                if current_group is None:
+                    raise RuntimeError("Enum defined before first group")
+                current_group.keys.append(key)
+
+        # Remove groups from attrs, so they won't become Enum members
+        group_var_names = [k for k, v in items if isinstance(v, Group)]
+        for group_variable_name in group_var_names:
+            attrs._member_names.remove(group_variable_name)
+
+        # Create Enum class. attrs emtpies itself in a process
         new_class = super().__new__(cls, name, bases, attrs)
-        new_class._groups_ = groups
-        for group in groups.values():
-            setattr(new_class, group.name, group)
-        return new_class
+        # List of all groups
+        group_list = [v for _, v in items if isinstance(v, Group)]
 
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        for group in self._groups_.values():
+        # Replace keys with their Enum objects, as they exist now
+        for group in group_list:
             for key in group.keys:
-                group.append(self[key])  # type: ignore
+                group.append(new_class[key])  # type: ignore
+
+        # Store dict mapping groups to their pretty names to use by user
+        new_class._groups_ = {group.name: group for group in group_list}
+
+        # Store groups in their respective fields
+        for group in group_list:
+            setattr(new_class, group.name, group)
+
+        return new_class
 
 
 class Group(List[Enum]):
+    """List of enum members belonging to one Enum."""
+
     def __init__(self, name: str) -> None:
         self.name = name
-        self.keys = set()
+        self.keys = []
 
 
 class EnumGroup(Enum, metaclass=EnumGroupMeta):
-    pass
+    """
+    Base class for `Enums` with specified groups.
+
+    Groups are defined by placing separators between the members. Groups
+    are lists that will be filled with with the members belonging to it:
+
+    ```python
+    class Edible(EnumGroup):
+        _fruit = Group("Fruit")
+        APPLE = 0
+        ORANGE = 1
+
+        _vegetable = Group("Vegetable")
+        TOMATO = 2
+        POTATO = 3
+
+        def format_member(self):
+            return f"{self.name}_{self.value}"
+    ```
+
+    Groups can be obtained as attributes, or with `_groups_` dictionary:
+
+    ```python
+    assert Edible.APPLE in Edible._fruit
+    assert Edible.TOMATO in Edible._groups_["Vegetable"]
+    ```
+
+    Groups are class attributes, but they are not Enum members - they
+    will not be part of `_member_map_`.
+
+    Every `Enum` member belongs to exactly one group. Every subclass must
+    start with a group separator. Otherwise, exception will be raised
+    during class creation.
+    """
 
 
-# class MyEnum(EnumGroup):
-#     _fruit = Group("Fruit")
-#     QWE = 0
-#     ASD = 1
+class Edible(EnumGroup):
+    _fruit = Group("Fruit")
+    APPLE = 0
+    ORANGE = 1
 
-#     _vegetable = Group("Vegetable")
-#     Z = 2
+    _vegetable = Group("Vegetable")
+    TOMATO = 2
+    POTATO = 3
 
-#     _other = Group("Other")
-#     X = 3
-
-#     def foo(self):
-#         return f"{self.name}_{self.value}"
+    def format_member(self):
+        return f"{self.name}_{self.value}"
 
 
-# print(MyEnum.QWE)
-# print(MyEnum.QWE.foo())
-# print(MyEnum["QWE"])
-# print(MyEnum(0))
-# print(MyEnum._fruit)
-# print(MyEnum._vegetable)
-# print(MyEnum._other)
-# print(MyEnum._member_map_)
-# print(MyEnum._value2member_map_)
-# print(MyEnum.QWE in MyEnum._fruit)  # type: ignore
+# print(Edible.APPLE)
+# print(Edible.APPLE.format_member())
+# print(Edible["APPLE"])
+# print(Edible(0))
+# print(Edible._fruit)
+# print(Edible._vegetable)
+# print(Edible._member_map_)
+# print(Edible._value2member_map_)
+# print(Edible.APPLE in Edible._fruit)  # type: ignore
 # print()
-# for name, group in MyEnum._groups_.items():
+# for name, group in Edible._groups_.items():
 #     print(name, group)
