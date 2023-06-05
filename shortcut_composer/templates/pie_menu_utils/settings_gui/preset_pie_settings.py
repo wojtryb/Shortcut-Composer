@@ -3,7 +3,6 @@
 
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 
-from core_components.controllers import PresetController
 from api_krita import Krita
 from api_krita.pyqt import SafeConfirmButton
 from ..pie_style import PieStyle
@@ -13,7 +12,13 @@ from .components import GroupComboBox, PresetGroupFetcher, GroupScrollArea
 
 
 class PresetPieSettings(PieSettings):
-    """Pie setting window for pie values being brush presets."""
+    """
+    Pie setting window for pie values being brush presets.
+
+    Its `Values` tab operates in two modes:
+    - Tag mode - the presets are determined by tracking krita tag
+    - Manual mode - the presets are manually picked by the user
+    """
 
     def __init__(
         self,
@@ -23,12 +28,10 @@ class PresetPieSettings(PieSettings):
         super().__init__(config, style)
         self._config: PresetPieConfig
 
-        self._fetcher = PresetGroupFetcher()
-
         self._preset_scroll_area = self._init_preset_scroll_area()
         self._mode_button = self._init_mode_button()
         self._auto_combobox = self._init_auto_combobox()
-        self._manual_combobox = self._preset_scroll_area.group_chooser
+        self._manual_combobox = self._preset_scroll_area._chooser
 
         self.set_tag_mode(self._config.TAG_MODE.read())
         action_values = self._init_action_values()
@@ -38,8 +41,7 @@ class PresetPieSettings(PieSettings):
     def _init_preset_scroll_area(self) -> GroupScrollArea:
         """Create preset scroll area which tracks which ones are used."""
         preset_scroll_area = GroupScrollArea(
-            controller=PresetController(),
-            fetcher=self._fetcher,
+            fetcher=PresetGroupFetcher(),
             style=self._style,
             columns=3,
             field=self._config.field("Last tag selected", "---Select tag---"),
@@ -90,7 +92,7 @@ class PresetPieSettings(PieSettings):
 
         auto_combobox = GroupComboBox(
             config_field=self._config.TAG_NAME,
-            group_fetcher=self._fetcher,
+            group_fetcher=PresetGroupFetcher(),
             pretty_name="Tag name")
 
         auto_combobox.widget.currentTextChanged.connect(handle_picked_tag)
