@@ -9,12 +9,14 @@ from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QColor
 
 from api_krita import Krita
+from api_krita.enums.helpers import EnumGroup
 from core_components import Controller, Instruction
 from .pie_menu_utils.settings_gui import (
     PieSettings,
     NumericPieSettings,
     PresetPieSettings,
-    EnumPieSettings)
+    EnumPieSettings,
+    EnumGroupPieSettings)
 from .pie_menu_utils import (
     NonPresetPieConfig,
     PresetPieConfig,
@@ -122,6 +124,9 @@ class PieMenu(RawInstructions, Generic[T]):
             return PresetPieSettings(self._config, self._style)  # type: ignore
         elif issubclass(self._controller.TYPE, float):
             return NumericPieSettings(self._config, self._style)
+        elif issubclass(self._controller.TYPE, EnumGroup):
+            return EnumGroupPieSettings(
+                self._controller, self._config, self._style)  # type: ignore
         elif issubclass(self._controller.TYPE, Enum):
             return EnumPieSettings(
                 self._controller, self._config, self._style)  # type: ignore

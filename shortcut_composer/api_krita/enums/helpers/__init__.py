@@ -1,3 +1,3 @@
-from .enum_group import EnumGroup
+from .enum_group import EnumGroup, Group
 
-__all__ = ["EnumGroup"]
+__all__ = ["EnumGroup", "Group"]
