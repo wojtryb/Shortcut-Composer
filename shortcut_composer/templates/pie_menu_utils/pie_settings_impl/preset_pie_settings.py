@@ -31,6 +31,7 @@ class PresetPieSettings(PieSettings):
         self,
         config: PresetPieConfig,
         style: PieStyle,
+        *args, **kwargs
     ) -> None:
         super().__init__(config, style)
         self._config: PresetPieConfig

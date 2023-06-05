@@ -38,6 +38,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
         self,
         config: PieConfig,
         style: PieStyle,
+        *args, **kwargs
     ) -> None:
         AnimatedWidget.__init__(self, None, Config.PIE_ANIMATION_TIME.read())
         self.setMinimumHeight(round(style.widget_radius*2))

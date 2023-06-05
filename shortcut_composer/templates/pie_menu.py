@@ -3,19 +3,13 @@
 
 from typing import List, Type, TypeVar, Generic, Optional
 from functools import cached_property
-from enum import Enum
 
 from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QColor
 
 from api_krita import Krita
-from api_krita.enums.helpers import EnumGroup
 from core_components import Controller, Instruction
-from .pie_menu_utils.pie_settings_impl import (
-    EnumGroupPieSettings,
-    NumericPieSettings,
-    PresetPieSettings,
-    EnumPieSettings)
+from .pie_menu_utils.pie_settings_impl import dispatch_pie_settings
 from .pie_menu_utils import (
     NonPresetPieConfig,
     PresetPieConfig,
@@ -121,17 +115,10 @@ class PieMenu(RawInstructions, Generic[T]):
     @cached_property
     def pie_settings(self) -> PieSettings:
         """Create and return the right settings based on labels type."""
-        if issubclass(self._controller.TYPE, str):
-            return PresetPieSettings(self._config, self._style)  # type: ignore
-        elif issubclass(self._controller.TYPE, float):
-            return NumericPieSettings(self._config, self._style)
-        elif issubclass(self._controller.TYPE, EnumGroup):
-            return EnumGroupPieSettings(
-                self._controller, self._config, self._style)  # type: ignore
-        elif issubclass(self._controller.TYPE, Enum):
-            return EnumPieSettings(
-                self._controller, self._config, self._style)  # type: ignore
-        raise ValueError(f"Unknown pie config {self._config}")
+        return dispatch_pie_settings(self._controller)(
+            config=self._config,
+            style=self._style,
+            controller=self._controller)
 
     @cached_property
     def pie_manager(self) -> PieManager:

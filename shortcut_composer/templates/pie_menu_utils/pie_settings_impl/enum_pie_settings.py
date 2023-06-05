@@ -26,6 +26,7 @@ class EnumPieSettings(PieSettings):
         controller: Controller[Enum],
         config: NonPresetPieConfig,
         style: PieStyle,
+        *args, **kwargs
     ) -> None:
         super().__init__(config, style)
 

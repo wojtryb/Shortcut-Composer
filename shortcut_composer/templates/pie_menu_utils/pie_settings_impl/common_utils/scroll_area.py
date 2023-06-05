@@ -16,7 +16,7 @@ from PyQt5.QtWidgets import (
     QSizePolicy)
 
 from templates.pie_menu_utils import Label, LabelWidget, PieStyle
-from templates.pie_menu_utils.label_widget_impl import create_label_widget
+from templates.pie_menu_utils.label_widget_impl import dispatch_label_widget
 from .offset_grid_layout import OffsetGridLayout
 
 
@@ -139,7 +139,7 @@ class ScrollArea(QWidget):
 
     def _create_child(self, label: Label) -> LabelWidget:
         """Create LabelWidget that represent the label."""
-        child = create_label_widget(
+        child = dispatch_label_widget(label)(
             label=label,
             style=self._style,
             parent=self,

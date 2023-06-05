@@ -20,6 +20,7 @@ class EnumGroupPieSettings(PieSettings):
         controller: Controller[EnumGroup],
         config: NonPresetPieConfig,
         style: PieStyle,
+        *args, **kwargs
     ) -> None:
         super().__init__(config, style)
 
