@@ -1,10 +1,11 @@
-from typing import Any, Dict, Set, Iterable, Tuple, Type, Generic, TypeVar
-from enum import Enum
+from typing import Dict, List, Tuple, TypeVar, Callable
+from enum import Enum, EnumMeta
 T = TypeVar("T", bound=Enum)
 
 
-class EnumGroupMeta(type, Generic[T]):
+class EnumGroupMeta(EnumMeta):
     """
+    TODO: rewrite documentation
     Metaclass for creating enum groups.
 
     Intended use is to place enum definitions inside a class definition:
@@ -46,89 +47,73 @@ class EnumGroupMeta(type, Generic[T]):
     enum types should also be passed to the metaclass.
     """
 
-    def __init__(
-        self,
+    _groups_: Dict[str, 'Group']
+
+    def __new__(
+        cls,
         name: str,
         bases: Tuple[type, ...],
-        attrs: Dict[str, Any]
-    ) -> None:
-        super().__init__(name, bases, attrs)
+        attrs
+    ) -> 'EnumGroupMeta':
+        active_separator = None
+        groups: Dict[str, Group] = {}
+        for key, value in attrs.copy().items():
+            if isinstance(value, Group):
+                attrs._member_names.remove(key)
+                active_separator = value
+                groups[active_separator.name] = active_separator
+            elif not isinstance(value, Callable):
+                if active_separator is not None:
+                    active_separator.keys.add(key)
 
-        self._grouped_enums_ = MetaInit.get_enum_types(attrs)
-        """Dictionary mapping grouped enum types to their names."""
-        MetaInit.ensure_common_base(self._grouped_enums_.values())
+        new_class = super().__new__(cls, name, bases, attrs)
+        new_class._groups_ = groups
+        for group in groups.values():
+            setattr(new_class, group.name, group)
+        return new_class
 
-        self._member_map_ = MetaInit.init_member_map(self._grouped_enums_)
-        """Dictionary mapping enum members to their names."""
-
-        self._value2member_map_ = MetaInit.init_reverse_map(self._member_map_)
-        """Dictionary mapping enum members to their values."""
-
-    def __getattr__(self, name: str) -> T:
-        """Return enum member as attribute of the composite."""
-        return self._member_map_[name]
-
-    def __getitem__(self, name: str) -> T:
-        """Return enum member by its name."""
-        return self._member_map_[name]
-
-    def __call__(self, value: str) -> T:
-        """Return enum member by its value."""
-        return self._value2member_map_[value]
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        for group in self._groups_.values():
+            for key in group.keys:
+                group.append(self[key])  # type: ignore
 
 
-class MetaInit:
-    """Organizes methods used by EnumGroupMeta."""
+class Group(List[Enum]):
+    def __init__(self, name: str) -> None:
+        self.name = name
+        self.keys = set()
 
-    @staticmethod
-    def get_enum_types(attrs: Dict[str, Any]) -> Dict[str, Type[Enum]]:
-        """Filter attribute dict leaving only enum types."""
-        def is_enum_type(value: Any) -> bool:
-            """Return True when value is a class and inherits Enum."""
-            return isinstance(value, type) and issubclass(value, Enum)
 
-        return {name: val for name, val in attrs.items() if is_enum_type(val)}
+class EnumGroup(Enum, metaclass=EnumGroupMeta):
+    pass
 
-    @classmethod
-    def init_member_map(cls, enum_types: Dict[str, Type[Enum]]):
-        """Return dict mapping enum members to their names."""
-        # maps enum values to their names from all the passed types
-        member_map = {}
-        for enum in enum_types.values():
 
-            # raise an error when two enum types define the same name
-            if common := cls.common_keys(member_map, enum._member_map_):
-                raise RuntimeError(f"Enums have repeated keys: {common}")
+# class MyEnum(EnumGroup):
+#     _fruit = Group("Fruit")
+#     QWE = 0
+#     ASD = 1
 
-            # update dictionary
-            args = {name: val for name, val in enum._member_map_.items()}
-            member_map.update(args)
+#     _vegetable = Group("Vegetable")
+#     Z = 2
 
-        return member_map
+#     _other = Group("Other")
+#     X = 3
 
-    @staticmethod
-    def init_reverse_map(member_map: dict):
-        """Return dict mapping enum members to their values."""
-        reverse_map = {}
-        for value in member_map.values():
-            if value not in reverse_map.values():
-                reverse_map[value.value] = value
-        return reverse_map
+#     def foo(self):
+#         return f"{self.name}_{self.value}"
 
-    @staticmethod
-    def common_keys(dict_1: dict, dict_2: dict) -> Set:
-        """Return the set of common keys of two dictionaries."""
-        keys_1 = set(dict_1.keys())
-        keys_2 = set(dict_2.keys())
-        return keys_1.intersection(keys_2)
 
-    @staticmethod
-    def ensure_common_base(enum_types: Iterable[Type[Enum]]) -> None:
-        """
-        Return common base class of given enum types.
-
-        Raise exception when their bases are not exactly the same.
-        """
-        enum_bases = [enum.__base__ for enum in enum_types]
-        if not enum_bases[:-1] == enum_bases[1:]:
-            raise RuntimeError("All enums must have the same base.")
+# print(MyEnum.QWE)
+# print(MyEnum.QWE.foo())
+# print(MyEnum["QWE"])
+# print(MyEnum(0))
+# print(MyEnum._fruit)
+# print(MyEnum._vegetable)
+# print(MyEnum._other)
+# print(MyEnum._member_map_)
+# print(MyEnum._value2member_map_)
+# print(MyEnum.QWE in MyEnum._fruit)  # type: ignore
+# print()
+# for name, group in MyEnum._groups_.items():
+#     print(name, group)
