@@ -29,6 +29,7 @@ class EnumGroupPieSettings(PieSettings):
         self._tab_holder.insertTab(1, self._action_values, "Values")
         self._tab_holder.setCurrentIndex(1)
 
+        self._action_values.widgets_changed.connect(self._refresh_draggable)
         self._config.ORDER.register_callback(self._refresh_draggable)
         self._refresh_draggable()
 
