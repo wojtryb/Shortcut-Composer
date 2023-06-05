@@ -12,7 +12,7 @@ from core_components.controllers import PresetController
 from data_components import Tag
 from templates.pie_menu_utils import Label, PieStyle, PresetPieConfig
 from .pie_settings import PieSettings
-from .components import GroupComboBox, GroupScrollArea, GroupFetcher
+from .components import GroupComboBox, GroupScrollArea, GroupManager
 
 
 class PresetPieSettings(PieSettings):
@@ -45,7 +45,7 @@ class PresetPieSettings(PieSettings):
     def _init_preset_scroll_area(self) -> GroupScrollArea:
         """Create preset scroll area which tracks which ones are used."""
         preset_scroll_area = GroupScrollArea(
-            fetcher=PresetGroupFetcher(),
+            fetcher=PresetGroupManager(),
             style=self._style,
             columns=3,
             field=self._config.field("Last tag selected", "---Select tag---"),
@@ -96,7 +96,7 @@ class PresetPieSettings(PieSettings):
 
         auto_combobox = GroupComboBox(
             config_field=self._config.TAG_NAME,
-            group_fetcher=PresetGroupFetcher(),
+            group_fetcher=PresetGroupManager(),
             pretty_name="Tag name")
 
         auto_combobox.widget.currentTextChanged.connect(handle_picked_tag)
@@ -151,7 +151,7 @@ class PresetPieSettings(PieSettings):
             self._auto_combobox.widget.hide()
 
 
-class PresetGroupFetcher(GroupFetcher):
+class PresetGroupManager(GroupManager):
 
     known_labels: Dict[str, Union[Label, None]] = {}
 

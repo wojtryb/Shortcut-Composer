@@ -4,15 +4,17 @@
 from typing import List
 
 from config_system import Field
-from ...pie_style import PieStyle
+from templates.pie_menu_utils import PieStyle
+from templates.pie_menu_utils.settings_gui.components import (
+    GroupComboBox,
+    GroupManager)
 from .scroll_area import ScrollArea
-from ..components import GroupComboBox, GroupFetcher
 
 
 class GroupScrollArea(ScrollArea):
     def __init__(
         self,
-        fetcher: GroupFetcher,
+        fetcher: GroupManager,
         style: PieStyle,
         columns: int,
         field: Field,

@@ -6,8 +6,8 @@ from typing import List, Optional
 from api_krita import Krita
 from api_krita.pyqt import Timer
 from core_components import Instruction
+from templates.raw_instructions import RawInstructions
 from .slider_handler import SliderHandler
-from ..raw_instructions import RawInstructions
 
 
 class SingleAxisTracker(RawInstructions):

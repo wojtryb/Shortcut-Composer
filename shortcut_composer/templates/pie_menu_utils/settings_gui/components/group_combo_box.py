@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QWidget
 
 from config_system import Field
 from config_system.ui import ConfigComboBox
-from .group_fetcher import GroupFetcher
+from .group_manager import GroupManager
 
 
 class GroupComboBox(ConfigComboBox):
@@ -15,7 +15,7 @@ class GroupComboBox(ConfigComboBox):
     def __init__(
         self,
         config_field: Field[str],
-        group_fetcher: GroupFetcher,
+        group_fetcher: GroupManager,
         parent: Optional[QWidget] = None,
         pretty_name: Optional[str] = None,
         additional_fields: List[str] = [],

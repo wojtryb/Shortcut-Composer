@@ -15,26 +15,9 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QSizePolicy)
 
-from ...label import Label
-from ...label_widget import LabelWidget
-from ...label_widget_utils import create_label_widget
-from ...pie_style import PieStyle
+from templates.pie_menu_utils import Label, LabelWidget, PieStyle
+from templates.pie_menu_utils.label_widget_utils import create_label_widget
 from .offset_grid_layout import OffsetGridLayout
-
-
-class ChildInstruction:
-    """Logic of displaying widget text in passed QLabel."""
-
-    def __init__(self, display_label: QLabel) -> None:
-        self._display_label = display_label
-
-    def on_enter(self, label: Label) -> None:
-        """Set text of label which was entered with mouse."""
-        self._display_label.setText(str(label.pretty_name))
-
-    def on_leave(self, label: Label) -> None:
-        """Reset text after mouse leaves the widget."""
-        self._display_label.setText("")
 
 
 class EmptySignal(Protocol):
@@ -192,3 +175,18 @@ class ScrollArea(QWidget):
             else:
                 widget.enabled = True
                 widget.draggable = True
+
+
+class ChildInstruction:
+    """Logic of displaying widget text in passed QLabel."""
+
+    def __init__(self, display_label: QLabel) -> None:
+        self._display_label = display_label
+
+    def on_enter(self, label: Label) -> None:
+        """Set text of label which was entered with mouse."""
+        self._display_label.setText(str(label.pretty_name))
+
+    def on_leave(self, label: Label) -> None:
+        """Reset text after mouse leaves the widget."""
+        self._display_label.setText("")
