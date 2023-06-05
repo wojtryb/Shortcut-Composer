@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Type, TypeVar, Generic, Optional
+from typing import List, TypeVar, Generic, Optional
 from functools import cached_property
 
 from PyQt5.QtCore import QPoint
@@ -10,12 +10,10 @@ from PyQt5.QtGui import QColor
 from api_krita import Krita
 from core_components import Controller, Instruction
 from .pie_menu_utils.pie_settings_impl import dispatch_pie_settings
+from .pie_menu_utils.pie_config_impl import dispatch_pie_config
 from .pie_menu_utils import (
-    NonPresetPieConfig,
-    PresetPieConfig,
     PieSettings,
     PieManager,
-    PieConfig,
     PieWidget,
     PieButton,
     EditMode,
@@ -85,12 +83,7 @@ class PieMenu(RawInstructions, Generic[T]):
         super().__init__(name, instructions, short_vs_long_press_time)
         self._controller = controller
 
-        def _dispatch_config_type() -> Type[PieConfig[T]]:
-            if issubclass(self._controller.TYPE, str):
-                return PresetPieConfig   # type: ignore
-            return NonPresetPieConfig
-
-        self._config = _dispatch_config_type()(**{
+        self._config = dispatch_pie_config(self._controller)(**{
             "name": f"ShortcutComposer: {name}",
             "values": values,
             "pie_radius_scale": pie_radius_scale,

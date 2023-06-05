@@ -10,11 +10,8 @@ from api_krita.wrappers import Database
 from api_krita.pyqt import SafeConfirmButton
 from core_components.controllers import PresetController
 from data_components import Tag
-from templates.pie_menu_utils import (
-    Label,
-    PieStyle,
-    PieSettings,
-    PresetPieConfig)
+from templates.pie_menu_utils.pie_config_impl import PresetPieConfig
+from templates.pie_menu_utils import Label, PieStyle, PieSettings
 from .common_utils import GroupComboBox, GroupScrollArea, GroupManager
 
 
