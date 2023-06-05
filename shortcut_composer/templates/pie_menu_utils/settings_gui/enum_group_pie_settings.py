@@ -1,12 +1,14 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from typing import List
+from enum import Enum
+
 from api_krita.enums.helpers import EnumGroup
 from core_components import Controller
-from ..pie_style import PieStyle
-from ..pie_config import NonPresetPieConfig
+from templates.pie_menu_utils import Label, PieStyle, NonPresetPieConfig
 from .pie_settings import PieSettings
-from .components import EnumGroupFetcher, GroupScrollArea
+from .components import GroupScrollArea, GroupFetcher
 
 
 class EnumGroupPieSettings(PieSettings):
@@ -33,3 +35,22 @@ class EnumGroupPieSettings(PieSettings):
     def _refresh_draggable(self) -> None:
         """Make all values currently used in pie undraggable and disabled."""
         self._action_values.mark_used_values(self._config.values())
+
+
+class EnumGroupFetcher(GroupFetcher):
+    def __init__(self, controller: Controller) -> None:
+        self._controller = controller
+        self._enum_type = self._controller.TYPE
+
+    def fetch_groups(self) -> List[str]:
+        return list(self._enum_type._groups_.keys())
+
+    def get_values(self, group: str) -> List[Enum]:
+        if group == "All":
+            return list(self._enum_type._member_map_.values())
+        return self._enum_type._groups_[group]
+
+    def create_labels(self, values: List[Enum]) -> List[Label[Enum]]:
+        """Create labels from list of preset names."""
+        labels = [Label.from_value(v, self._controller) for v in values]
+        return [label for label in labels if label is not None]

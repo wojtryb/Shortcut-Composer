@@ -4,11 +4,10 @@
 from enum import Enum
 
 from core_components import Controller
-from ..label import Label
-from ..pie_style import PieStyle
-from ..pie_config import NonPresetPieConfig
+from templates.pie_menu_utils import Label, PieStyle, NonPresetPieConfig
+
 from .pie_settings import PieSettings
-from .scroll_area import ScrollArea
+from .components import ScrollArea
 
 
 class EnumPieSettings(PieSettings):

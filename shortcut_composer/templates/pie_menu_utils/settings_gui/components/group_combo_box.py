@@ -11,12 +11,6 @@ from .group_fetcher import GroupFetcher
 
 
 class GroupComboBox(ConfigComboBox):
-    """
-    Combobox for picking preset tags, which can be saved in config.
-
-    When `allow_all` flag is True, the combobox will contain "All" item
-    will be added above the actual tags.
-    """
 
     def __init__(
         self,

@@ -1,14 +1,18 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from typing import List, Dict, Union, Iterable, Optional
+
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 
 from api_krita import Krita
+from api_krita.wrappers import Database
 from api_krita.pyqt import SafeConfirmButton
-from ..pie_style import PieStyle
-from ..pie_config import PresetPieConfig
+from core_components.controllers import PresetController
+from data_components import Tag
+from templates.pie_menu_utils import Label, PieStyle, PresetPieConfig
 from .pie_settings import PieSettings
-from .components import GroupComboBox, PresetGroupFetcher, GroupScrollArea
+from .components import GroupComboBox, GroupScrollArea, GroupFetcher
 
 
 class PresetPieSettings(PieSettings):
@@ -145,3 +149,34 @@ class PresetPieSettings(PieSettings):
             self._preset_scroll_area.show()
             self._manual_combobox.widget.show()
             self._auto_combobox.widget.hide()
+
+
+class PresetGroupFetcher(GroupFetcher):
+
+    known_labels: Dict[str, Union[Label, None]] = {}
+
+    def __init__(self) -> None:
+        self._controller = PresetController()
+
+    def fetch_groups(self) -> List[str]:
+        with Database() as database:
+            return database.get_brush_tags()
+
+    def get_values(self, group: str) -> List[str]:
+        if group == "All":
+            return list(Krita.get_presets().keys())
+        return Tag(group)
+
+    def create_labels(self, values: Iterable[str]) -> List[Label[str]]:
+        """Create labels from list of preset names."""
+        labels: list[Optional[Label]] = []
+
+        for preset in values:
+            if preset in self.known_labels:
+                label = self.known_labels[preset]
+            else:
+                label = Label.from_value(preset, self._controller)
+                self.known_labels[preset] = label
+            labels.append(label)
+
+        return [label for label in labels if label is not None]

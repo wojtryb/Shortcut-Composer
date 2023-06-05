@@ -6,7 +6,7 @@ from typing import List, NamedTuple
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QGridLayout
 
-from ..label_widget import LabelWidget
+from ...label_widget import LabelWidget
 
 
 class GridPosition(NamedTuple):

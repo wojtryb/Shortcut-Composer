@@ -15,10 +15,10 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QSizePolicy)
 
-from ..label import Label
-from ..label_widget import LabelWidget
-from ..label_widget_utils import create_label_widget
-from ..pie_style import PieStyle
+from ...label import Label
+from ...label_widget import LabelWidget
+from ...label_widget_utils import create_label_widget
+from ...pie_style import PieStyle
 from .offset_grid_layout import OffsetGridLayout
 
 

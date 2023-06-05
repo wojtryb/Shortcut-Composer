@@ -5,7 +5,7 @@ from typing import List
 
 from config_system import Field
 from ...pie_style import PieStyle
-from ..scroll_area import ScrollArea
+from .scroll_area import ScrollArea
 from ..components import GroupComboBox, GroupFetcher
 
 
