@@ -2,13 +2,14 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from api_krita.pyqt import Text
-from typing import Union, Generic, TypeVar
+from typing import Union, Generic, TypeVar, Final, Optional
 from dataclasses import dataclass
 
 from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QPixmap, QIcon
 
 from composer_utils import Config
+from core_components import Controller
 
 T = TypeVar("T")
 
@@ -27,7 +28,7 @@ class Label(Generic[T]):
     - `activation_progress` -- state of animation in range <0-1>
     """
 
-    value: T
+    value: Final[T]
     center: QPoint = QPoint(0, 0)
     angle: int = 0
     display_value: Union[QPixmap, QIcon, Text, None] = None
@@ -46,6 +47,22 @@ class Label(Generic[T]):
         if not isinstance(other, Label):
             return False
         return self.value == other.value
+
+    def __hash__(self) -> int:
+        """Use value for hashing, as it should not change over time."""
+        return hash(self.value)
+
+    @staticmethod
+    def from_value(value: T, controller: Controller) -> 'Optional[Label[T]]':
+        """Use provided controller to create a label holding passed value."""
+        label = controller.get_label(value)
+        if label is None:
+            return None
+
+        return Label(
+            value=value,
+            display_value=label,
+            pretty_name=controller.get_pretty_name(value))
 
 
 class AnimationProgress:

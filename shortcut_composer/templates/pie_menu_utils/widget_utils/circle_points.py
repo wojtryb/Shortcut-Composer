@@ -36,8 +36,7 @@ class CirclePoints:
         rad_angle = math.radians(angle)
         return QPoint(
             round(self._center.x() + self._radius*math.sin(rad_angle)),
-            round(self._center.y() - self._radius*math.cos(rad_angle)),
-        )
+            round(self._center.y() - self._radius*math.cos(rad_angle)))
 
     def angle_from_point(self, point: QPoint) -> float:
         """Count clockwise angle of cursor in relation to pie center."""

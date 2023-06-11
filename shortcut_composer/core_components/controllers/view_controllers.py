@@ -27,6 +27,8 @@ class PresetController(ViewBasedController, Controller[str]):
     Example preset name: `"b) Basic-5 Size Opacity"`
     """
 
+    TYPE = str
+
     def get_value(self) -> str:
         """Get currently active preset."""
         return self.view.brush_preset
@@ -53,7 +55,8 @@ class BrushSizeController(ViewBasedController, Controller[int]):
     - Defaults to `100`
     """
 
-    default_value: float = 100
+    TYPE = int
+    DEFAULT_VALUE: float = 100
 
     def get_value(self) -> float:
         """Get current brush size."""
@@ -80,7 +83,8 @@ class BlendingModeController(ViewBasedController, Controller[BlendingMode]):
     - Defaults to `BlendingMode.NORMAL`
     """
 
-    default_value = BlendingMode.NORMAL
+    TYPE = BlendingMode
+    DEFAULT_VALUE = BlendingMode.NORMAL
 
     def get_value(self) -> BlendingMode:
         """Get currently active blending mode."""
@@ -107,7 +111,8 @@ class OpacityController(ViewBasedController, Controller[int]):
     - Defaults to `100`
     """
 
-    default_value: int = 100
+    TYPE = int
+    DEFAULT_VALUE: int = 100
 
     def get_value(self) -> int:
         """Get current brush opacity."""
@@ -134,7 +139,8 @@ class FlowController(ViewBasedController, Controller[int]):
     - Defaults to `100`
     """
 
-    default_value: int = 100
+    TYPE = int
+    DEFAULT_VALUE: int = 100
 
     def get_value(self) -> int:
         """Get current brush flow."""

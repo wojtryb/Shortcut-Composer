@@ -80,16 +80,14 @@ class CursorTracker(Generic[T, U]):
                 instructions=instructions,
                 slider_handler=SliderHandler(
                     slider=horizontal_slider,
-                    is_horizontal=True)
-            )
+                    is_horizontal=True))
         if not horizontal_slider and vertical_slider:
             return SingleAxisTracker(
                 name=name,
                 instructions=instructions,
                 slider_handler=SliderHandler(
                     slider=vertical_slider,
-                    is_horizontal=False)
-            )
+                    is_horizontal=False))
         if horizontal_slider and vertical_slider:
             return DoubleAxisTracker(
                 name=name,
@@ -99,6 +97,5 @@ class CursorTracker(Generic[T, U]):
                     is_horizontal=True),
                 vertical_handler=SliderHandler(
                     slider=vertical_slider,
-                    is_horizontal=False)
-            )
+                    is_horizontal=False))
         raise ValueError("At least one slider needed.")

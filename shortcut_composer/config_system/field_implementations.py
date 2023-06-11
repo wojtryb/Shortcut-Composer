@@ -1,13 +1,8 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import (
-    TypeVar,
-    Generic,
-    Optional,
-    List)
+from typing import TypeVar, Generic, Optional, List
 
-from .api_krita import Krita
 from .parsers import Parser
 from .field_base import FieldBase
 
@@ -23,13 +18,14 @@ class NonListField(FieldBase, Generic[T]):
         name: str,
         default: T,
         parser_type: Optional[type] = None,
+        local: bool = False,
     ) -> None:
-        super().__init__(config_group, name, default)
+        super().__init__(config_group, name, default, parser_type, local)
         self._parser: Parser[T] = self._get_parser(type(self.default))
 
     def read(self) -> T:
         """Return value from kritarc parsed to field type."""
-        raw = Krita.read_setting(self.config_group, self.name)
+        raw = self.location.read(self.config_group, self.name)
         if raw is None:
             return self.default
         return self._parser.parse_to(raw)
@@ -48,15 +44,17 @@ class ListField(FieldBase, Generic[T]):
         name: str,
         default: List[T],
         parser_type: Optional[type] = None,
+        local: bool = False,
     ) -> None:
-        super().__init__(config_group, name, default)
-        self._parser: Parser[T] = self._get_parser(self._get_type(parser_type))
+        super().__init__(config_group, name, default, parser_type, local)
+        self._parser: Parser[T] = self._get_parser(
+            self._get_type(self.parser_type))
 
-    def write(self, value: List[T]):
+    def write(self, value: List[T]) -> None:
         for element in value:
             if not isinstance(element, self._parser.type):
                 raise ValueError(f"{value} not of type {type(self.default)}")
-        return super().write(value)
+        super().write(value)
 
     def _get_type(self, passed_type: Optional[type]) -> type:
         """
@@ -77,9 +75,12 @@ class ListField(FieldBase, Generic[T]):
 
         Each list element requires parsing.
         """
-        raw = Krita.read_setting(self.config_group, self.name)
+        raw = self.location.read(self.config_group, self.name)
         if raw is None:
             return self.default
+
+        if raw == "":
+            return []
 
         values_list = raw.split("\t")
         return [self._parser.parse_to(value) for value in values_list]

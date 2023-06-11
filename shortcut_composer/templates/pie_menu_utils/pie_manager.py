@@ -7,7 +7,6 @@ from PyQt5.QtGui import QCursor
 
 from api_krita.pyqt import Timer
 from composer_utils import Config
-from .settings_gui import PieSettings
 from .pie_widget import PieWidget
 from .label import Label
 from .widget_utils import CirclePoints
@@ -21,25 +20,16 @@ class PieManager:
     - Starts a thread loop which checks for changes of active label.
     """
 
-    def __init__(self, pie_widget: PieWidget, pie_settings: PieSettings):
+    def __init__(self, pie_widget: PieWidget):
         self._pie_widget = pie_widget
-        self._pie_settings = pie_settings
         self._timer = Timer(self._handle_cursor, Config.get_sleep_time())
         self._animator = LabelAnimator(pie_widget)
-
-        self._circle: CirclePoints
 
     def start(self) -> None:
         """Show widget under the mouse and start the mouse tracking loop."""
         self._pie_widget.move_center(QCursor().pos())
         self._pie_widget.show()
 
-        # Qt bug workaround. Settings does not move right when hidden.
-        self._pie_settings.show()
-        self._pie_settings.move_to_pie_side()
-        self._pie_settings.hide()
-
-        self._circle = CirclePoints(self._pie_widget.center_global, 0)
         self._timer.start()
 
         # Make sure the pie widget is not draggable. It could have been
@@ -63,10 +53,11 @@ class PieManager:
             return self.stop()
 
         cursor = QCursor().pos()
-        if self._circle.distance(cursor) < self._pie_widget.deadzone:
+        circle = CirclePoints(self._pie_widget.center_global, 0)
+        if circle.distance(cursor) < self._pie_widget.deadzone:
             return self._set_active_label(None)
 
-        angle = self._circle.angle_from_point(cursor)
+        angle = circle.angle_from_point(cursor)
         holder = self._pie_widget.label_holder.widget_holder
         self._set_active_label(holder.on_angle(angle).label)
 

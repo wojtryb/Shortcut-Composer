@@ -68,7 +68,8 @@ class Database:
                 t.active = 1
                 AND t.resource_type_id = 5
         '''
-        return self._single_column_query(sql_query, "tag")
+        presets = self._single_column_query(sql_query, "tag")
+        return sorted(presets, key=str.lower)
 
     def close(self) -> None:
         """Close the connection with the database."""

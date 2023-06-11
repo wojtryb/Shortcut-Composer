@@ -27,7 +27,7 @@ class Toggle(Enum):
     SNAP_TO_GRID = "view_snap_to_grid"
 
     @property
-    def pretty_name(self):
+    def pretty_name(self) -> str:
         """Format toggle name like: `Preserve alpha`."""
         return f"{self.name[0]}{self.name[1:].lower().replace('_', ' ')}"
 

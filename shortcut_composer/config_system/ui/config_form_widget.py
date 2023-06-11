@@ -50,7 +50,7 @@ class ConfigFormWidget(QWidget):
         self._widgets.append(element)
         self._layout.addRow(f"{element.pretty_name}:", element.widget)
 
-    def add_title(self, text: str):
+    def add_title(self, text: str) -> None:
         """Add a label with given text."""
         label = QLabel(text)
         label.setAlignment(Qt.AlignCenter)

@@ -1,20 +1,24 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, NamedTuple
+import re
+from typing import List, Protocol, Callable
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer, pyqtSignal
 from PyQt5.QtWidgets import (
     QWidget,
     QScrollArea,
+    QScroller,
     QLabel,
-    QGridLayout,
-    QVBoxLayout)
+    QLineEdit,
+    QVBoxLayout,
+    QHBoxLayout)
 
 from ..label import Label
 from ..label_widget import LabelWidget
 from ..label_widget_utils import create_label_widget
 from ..pie_style import PieStyle
+from .offset_grid_layout import OffsetGridLayout
 
 
 class ChildInstruction:
@@ -32,134 +36,149 @@ class ChildInstruction:
         self._display_label.setText("")
 
 
+class EmptySignal(Protocol):
+    """Protocol fixing the wrong PyQt typing."""
+
+    def emit(self) -> None: ...
+    def connect(self, method: Callable[[], None]) -> None: ...
+
+
 class ScrollArea(QWidget):
     """
     Widget containing a scrollable list of PieWidgets.
 
-    Widgets are created based on the passed labels and then made
-    publically available in `children_list` attribute, so that the owner
-    of the class can change their state (draggable, enabled).
+    Widgets are defined with replace_handled_labels method which
+    creates the widgets representing them if needed. Using the method
+    again will replace handled widgets with new ones representing newer
+    passed labels.
+
+    All the created widgets are stored in case they may need to be
+    reused when labels change again.
+
+    Currently handled widgets are publically available, so that the
+    class owner can change their state (draggable, enabled).
 
     ScrollArea comes with embedded QLabel showing the name of the
-    children widget over which mouse was hovered.
+    children widget over which mouse was hovered, and a filter bar.
+
+    Writing something to the filter results in widgets which do not
+    match the phrase to not be displayed. Hidden widgets, are still
+    available under children_list.
     """
+
+    widgets_changed: EmptySignal = pyqtSignal()  # type: ignore
 
     def __init__(
         self,
-        labels: List[Label],
         style: PieStyle,
         columns: int,
         parent=None
     ) -> None:
         super().__init__(parent)
         self._style = style
-        self._labels = labels
+        self._columns = columns
 
-        self._scroll_area_layout = OffsetGridLayout(columns, self)
-        scroll_widget = QWidget()
-        scroll_widget.setLayout(self._scroll_area_layout)
+        self._known_children: dict[Label, LabelWidget] = {}
+        self._children_list: List[LabelWidget] = []
+
+        self._grid = OffsetGridLayout(self._columns, self)
+        self._active_label_display = QLabel(self)
+        self._search_bar = self._init_search_bar()
+        self._layout = self._init_layout()
+
+        self.setLayout(self._layout)
+
+    def _init_layout(self) -> QVBoxLayout:
+        """
+        Create scroll area layout.
+
+        - most part is taken by the scrollable widget with icons
+        - below there is a footer which consists of:
+            - label displaying hovered icon name
+            - search bar which filters icons
+        """
+        footer = QHBoxLayout()
+        footer.addWidget(self._active_label_display, 1)
+        footer.addWidget(self._search_bar, 1)
+
+        layout = QVBoxLayout()
+        layout.addWidget(self._init_scroll_area())
+        layout.addLayout(footer)
+        return layout
+
+    def _init_scroll_area(self) -> QScrollArea:
+        """Create a widget, which scrolls internal widget with grid layout."""
+        internal = QWidget()
+        internal.setLayout(self._grid)
+
         area = QScrollArea()
         area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        radius = self._style.unscaled_icon_radius
+        area.setMinimumWidth(round(radius*self._columns*2.3))
+        area.setMinimumHeight(round(radius*9.2))
         area.setWidgetResizable(True)
-        area.setWidget(scroll_widget)
+        area.setWidget(internal)
+        QScroller.grabGesture(
+            area.viewport(), QScroller.MiddleMouseButtonGesture)
 
-        layout = QVBoxLayout()
-        layout.addWidget(area)
-        self._active_label_display = QLabel(self)
-        layout.addWidget(self._active_label_display)
-        self.setLayout(layout)
+        return area
 
-        self.children_list = self._create_children()
+    def _init_search_bar(self) -> QLineEdit:
+        """Create search bar which hides icons not matching its text."""
+        search_bar = QLineEdit(self)
+        search_bar.setPlaceholderText("Search")
+        search_bar.setClearButtonEnabled(True)
+        search_bar.textChanged.connect(self._apply_search_bar_filter)
+        return search_bar
 
-    def _create_children(self) -> List[LabelWidget]:
-        """Create LabelWidgets that represent the labels."""
-        children: List[LabelWidget] = []
+    def _apply_search_bar_filter(self) -> None:
+        """Replace widgets in layout with those thich match the filter."""
+        self.setUpdatesEnabled(False)
+        pattern = re.escape(self._search_bar.text())
+        regex = re.compile(pattern, flags=re.IGNORECASE)
 
-        for label in self._labels:
-            child = create_label_widget(
-                label=label,
-                style=self._style,
-                parent=self,
-                is_unscaled=True)
-            child.setFixedSize(child.icon_radius*2, child.icon_radius*2)
-            child.draggable = True
-            child.add_instruction(ChildInstruction(self._active_label_display))
-            children.append(child)
+        children = [child for child in self._children_list
+                    if regex.search(child.label.pretty_name)]
 
-        self._scroll_area_layout.extend(children)
-        return children
+        self._grid.replace(children)
+        QTimer.singleShot(10, lambda: self.setUpdatesEnabled(True))
 
+    def _create_child(self, label: Label) -> LabelWidget:
+        """Create LabelWidget that represent the label."""
+        child = create_label_widget(
+            label=label,
+            style=self._style,
+            parent=self,
+            is_unscaled=True)
+        child.setFixedSize(child.icon_radius*2, child.icon_radius*2)
+        child.draggable = True
+        child.add_instruction(ChildInstruction(self._active_label_display))
 
-class GridPosition(NamedTuple):
-    gridrow: int
-    gridcol: int
+        self._known_children[label] = child
+        return child
 
+    def replace_handled_labels(self, labels: List[Label]) -> None:
+        """Replace current list of widgets with new ones."""
+        self.setUpdatesEnabled(False)
+        self._children_list.clear()
 
-class OffsetGridLayout(QGridLayout):
-    """
-    Layout displaying widgets, as the grid in which even rows have offset.
+        for label in labels:
+            if label in self._known_children:
+                self._children_list.append(self._known_children[label])
+            else:
+                self._children_list.append(self._create_child(label))
 
-    Even rows have one item less than uneven rows, and are moved half
-    the widget width to make them overlap with each other.
+        self._grid.extend(self._children_list)
+        QTimer.singleShot(10, lambda: self.setUpdatesEnabled(True))
+        self.widgets_changed.emit()
 
-    The layout acts like list of widgets it's responsibility is to
-    automatically refresh, when changes are being made to it.
-
-    Implemented using QGridLayout in which every widget uses 2x2 fields.
-
-    max_columns -- Amount of widgets in uneven rows.
-                   When set to 4, rows will cycle: (4, 3, 4, 3, 4...)
-    group       -- Two consecutive rows of widgets.
-                   When max_columns is 4 will consist of 7 (4+3) widgets
-    """
-
-    def __init__(self, max_columns: int, owner: QWidget):
-        super().__init__()
-        self._widgets: List[QWidget] = []
-        self._max_columns = max_columns
-        self._items_in_group = 2*max_columns - 1
-        self._owner = owner
-
-    def __len__(self) -> int:
-        """Amount of held LabelWidgets."""
-        return len(self._widgets)
-
-    def _get_position(self, index: int) -> GridPosition:
-        """Return a GridPosition (row, col) of it's widget."""
-        group, item = divmod(index, self._items_in_group)
-
-        if item < self._max_columns:
-            return GridPosition(gridrow=group*4, gridcol=item*2)
-
-        col = item-self._max_columns
-        return GridPosition(gridrow=group*4+2, gridcol=col*2+1)
-
-    def _internal_insert(self, index: int, widget: LabelWidget) -> None:
-        """Insert widget at given index if not stored already."""
-        if widget in self._widgets:
-            return
-        widget.setParent(self._owner)
-        widget.show()
-        self._widgets.insert(index, widget)
-
-    def insert(self, index: int, widget: LabelWidget) -> None:
-        """Insert the widget at given index and refresh the layout."""
-        self._internal_insert(index, widget)
-        self._refresh()
-
-    def append(self, widget: LabelWidget) -> None:
-        """Append the widget at the end and refresh the layout."""
-        self._internal_insert(len(self), widget)
-        self._refresh()
-
-    def extend(self, widgets: List[LabelWidget]) -> None:
-        """Extend layout with the given widgets and refresh the layout."""
-        for widget in widgets:
-            self._internal_insert(len(self), widget)
-        self._refresh()
-
-    def _refresh(self):
-        """Refresh the layout by adding all the internal widgets to it."""
-        for i, widget in enumerate(self._widgets):
-            self.addWidget(widget, *self._get_position(i), 2, 2)
+    def mark_used_values(self, used_values: list) -> None:
+        """Make all values currently used in pie undraggable and disabled."""
+        for widget in self._children_list:
+            if widget.label.value in used_values:
+                widget.enabled = False
+                widget.draggable = False
+            else:
+                widget.enabled = True
+                widget.draggable = True

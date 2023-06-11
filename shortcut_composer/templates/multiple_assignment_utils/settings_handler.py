@@ -49,7 +49,7 @@ class SettingsHandler:
 
         instructions.append(HandlerInstruction(self._settings, self._button))
 
-    def _on_button_click(self):
+    def _on_button_click(self) -> None:
         """Show the settings and hide the button after it was clicked."""
         self._settings.show()
         self._button.hide()
@@ -67,7 +67,7 @@ class HandlerInstruction(Instruction):
         """Start a timer which soon will run a callback once."""
         self._timer.start()
 
-    def timer_callback(self):
+    def timer_callback(self) -> None:
         """Show a button in top left corner of painting area."""
         if not self._settings.isVisible():
             mdiArea = Krita.get_active_mdi_area()

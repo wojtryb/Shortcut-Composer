@@ -1,13 +1,13 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import TypeVar, Generic, Callable, List
+from typing import TypeVar, Generic, Callable, List, Optional
 from abc import ABC, abstractmethod
 from enum import Enum
 
-from .api_krita import Krita
 from .parsers import Parser, BoolParser, EnumParser, BasicParser
 from .field import Field
+from .save_location import SaveLocation
 
 T = TypeVar('T')
 E = TypeVar('E', bound=Enum)
@@ -27,17 +27,21 @@ class FieldBase(ABC, Field, Generic[T]):
         config_group: str,
         name: str,
         default: T,
-    ):
+        parser_type: Optional[type] = None,
+        local: bool = False,
+    ) -> None:
         self.config_group = config_group
         self.name = name
         self.default = default
+        self.parser_type = parser_type
+        self.location = SaveLocation.LOCAL if local else SaveLocation.GLOBAL
         self._on_change_callbacks: List[Callable[[], None]] = []
 
-    def register_callback(self, callback: Callable[[], None]):
+    def register_callback(self, callback: Callable[[], None]) -> None:
         """Store callback in internal list."""
         self._on_change_callbacks.append(callback)
 
-    def write(self, value: T):
+    def write(self, value: T) -> None:
         """Write value to file and run callbacks if it was not redundant."""
         if not isinstance(value, type(self.default)):
             raise TypeError(f"{value} not of type {type(self.default)}")
@@ -45,7 +49,7 @@ class FieldBase(ABC, Field, Generic[T]):
         if self._is_write_redundant(value):
             return
 
-        Krita.write_setting(
+        self.location.write(
             group=self.config_group,
             name=self.name,
             value=self._to_string(value))
@@ -72,7 +76,7 @@ class FieldBase(ABC, Field, Generic[T]):
         """
         if self.read() == value:
             return True
-        raw = Krita.read_setting(self.config_group, self.name)
+        raw = self.location.read(self.config_group, self.name)
         return raw is None and value == self.default
 
     def reset_default(self) -> None:

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from krita import Krita as Api, Extension, qApp
-from typing import Callable, Protocol, Any, Optional
+from typing import Callable, Protocol, Any, Dict, Optional
 
 from PyQt5.QtWidgets import (
     QMainWindow,
@@ -36,9 +36,12 @@ class KritaInstance:
         """Return wrapper of krita `View`."""
         return View(self.instance.activeWindow().activeView())
 
-    def get_active_document(self) -> Document:
+    def get_active_document(self) -> Optional[Document]:
         """Return wrapper of krita `Document`."""
-        return Document(self.instance.activeDocument())
+        document = self.instance.activeDocument()
+        if document is None:
+            return None
+        return Document(document)
 
     def get_active_canvas(self) -> Canvas:
         """Return wrapper of krita `Canvas`."""
@@ -57,7 +60,7 @@ class KritaInstance:
         """Return shortcut of krita action called `action_name`."""
         return self.instance.action(action_name).shortcut()
 
-    def get_presets(self) -> dict:
+    def get_presets(self) -> Dict[str, Any]:
         """Return a list of unwrapped preset objects"""
         return self.instance.resources('preset')
 

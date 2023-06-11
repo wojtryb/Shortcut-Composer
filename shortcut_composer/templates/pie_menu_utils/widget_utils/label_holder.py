@@ -37,25 +37,26 @@ class LabelHolder:
         # in config as holder was not their cause
         self._config.register_callback(partial(self.reset, notify=False))
         self._owner = owner
+        self._locked = False
 
         self.widget_holder = WidgetHolder()
         self.reset(notify=False)
 
     def append(self, label: Label):
         """Append the new label to the holder."""
-        self._labels.append(label)
-        self.reset()
+        if (self._config.allow_value_edit):
+            self._labels.append(label)
+            self.reset()
 
     def insert(self, index: int, label: Label):
         """Insert the new label to the holder at given index."""
-        self._labels.insert(index, label)
-        self.reset()
+        if (self._config.allow_value_edit):
+            self._labels.insert(index, label)
+            self.reset()
 
     def remove(self, label: Label):
         """Remove the label from the holder."""
-        if (label in self._labels
-                and len(self._labels) > 1
-                and self._config.ALLOW_REMOVE):
+        if (label in self._labels and self._config.allow_value_edit):
             self._labels.remove(label)
             self.reset()
 
@@ -64,14 +65,29 @@ class LabelHolder:
         return self._labels.index(label)
 
     def swap(self, _a: Label, _b: Label):
-        """Swap positions of two labels from the holder."""
-        _a.swap_locations(_b)
+        """
+        Swap positions of two labels from the holder.
 
-        idx_a, idx_b = self._labels.index(_a), self._labels.index(_b)
+        As this operation only changes label order, fully reseting all
+        the widgets is not needed.
+        """
+        if self._locked:
+            return
+
+        idx_a = self._labels.index(_a)
+        idx_b = self._labels.index(_b)
+
         self._labels[idx_b] = _a
         self._labels[idx_a] = _b
 
-        self.reset()
+        widget_a = self.widget_holder.on_label(self._labels[idx_a])
+        widget_b = self.widget_holder.on_label(self._labels[idx_b])
+
+        self.widget_holder.swap(widget_a, widget_b)
+
+        self._locked = True
+        self._config.set_values([label.value for label in self._labels])
+        self._locked = False
 
     def __iter__(self):
         """Iterate over all labels in the holder."""
@@ -79,13 +95,16 @@ class LabelHolder:
 
     def reset(self, notify: bool = True) -> None:
         """
-        Ensure the icon widgets properly represet this container.
+        Ensure the icon widgets properly represents this container.
 
         If notify flag is set to True, saves the new order to config.
-
-        HACK: Small changes in container should not result in complete
-        widget recreation.
         """
+        if self._locked:
+            return
+        current_labels = [widget.label for widget in self.widget_holder]
+        if current_labels == self._labels:
+            return
+
         for child in self.widget_holder:
             child.setParent(None)  # type: ignore
         self.widget_holder.clear()
@@ -104,10 +123,10 @@ class LabelHolder:
             child.show()
             child.label.angle = angle
             child.label.center = point
-            child.move_to_label()
             child.draggable = True
             self.widget_holder.add(child)
 
+        self._locked = True
         if notify:
-            values = [label.value for label in self._labels]
-            self._config.ORDER.write(values)
+            self._config.set_values([label.value for label in self._labels])
+        self._locked = False

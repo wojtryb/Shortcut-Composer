@@ -27,7 +27,7 @@ class MultipleAssignment(RawInstructions, Generic[T]):
     - `name`          -- unique name of action. Must match the
                          definition in shortcut_composer.action file
     - `controller`    -- defines which krita property will be modified
-    - `values`        -- list of values compatibile with controller to cycle
+    - `values`        -- list of values to cycle compatibile with controller
     - `default_value` -- (optional*) value to switch to after long press.
                          Does not have to belong to the list. If not
                          given, taken from a controller.
@@ -122,7 +122,7 @@ class MultipleAssignment(RawInstructions, Generic[T]):
 
     def _read_default_value(self, value: Optional[T]) -> T:
         """Read value from controller if it was not given."""
-        if (default := self._controller.default_value) is None:
+        if (default := self._controller.DEFAULT_VALUE) is None:
             raise ValueError(
                 f"{self._controller} can't be used with MultipleAssignment.")
         return value if value is not None else default

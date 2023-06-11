@@ -3,16 +3,33 @@
 
 from typing import List
 from api_krita.wrappers import Database
+from config_system import Field
 
 
 class Tag(List[str]):
     """List representing names of presets in a tag of given name."""
 
-    def __init__(self, tag_name: str):
+    def __init__(self, tag_name: str) -> None:
         self.tag_name = tag_name
+        self.refresh()
+
+    def refresh(self) -> None:
+        """Update itself with current list of presets that belong to tag."""
+        self.clear()
         self.extend(self._read_presets())
 
     def _read_presets(self) -> List[str]:
-        """Read the brush presets from the database using tag name."""
+        """
+        Read the brush presets from the database using tag name.
+
+        Take into consideration order stored in config.
+        """
         with Database() as database:
-            return database.get_preset_names_from_tag(self.tag_name)
+            from_krita = database.get_preset_names_from_tag(self.tag_name)
+
+        field = Field("ShortcutComposer: Tag order", self.tag_name, [], str)
+        from_config = field.read()
+
+        preset_order = [p for p in from_config if p in from_krita]
+        missing = [p for p in from_krita if p not in from_config]
+        return preset_order + missing

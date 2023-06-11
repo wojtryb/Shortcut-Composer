@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, TypeVar, Generic, Optional
+from typing import List, Type, TypeVar, Generic, Optional
+from functools import cached_property
 from enum import Enum
 
 from PyQt5.QtCore import QPoint
@@ -9,10 +10,16 @@ from PyQt5.QtGui import QColor
 
 from api_krita import Krita
 from core_components import Controller, Instruction
+from .pie_menu_utils.settings_gui import (
+    PieSettings,
+    NumericPieSettings,
+    PresetPieSettings,
+    EnumPieSettings)
 from .pie_menu_utils import (
-    create_pie_settings_window,
-    create_local_config,
+    NonPresetPieConfig,
+    PresetPieConfig,
     PieManager,
+    PieConfig,
     PieWidget,
     PieStyle,
     Label)
@@ -29,20 +36,21 @@ class PieMenu(RawInstructions, Generic[T]):
     - Widget is displayed under the cursor between key press and release
     - Moving mouse in a direction of a value activates in on key release
     - When the mouse was not moved past deadzone, value is not changed
-    - Edit button activates mode in pie does not hide and can be changed
+    - Edit button activates mode in which pie does not hide on key
+      release and can be configured
 
     ### Arguments:
 
     - `name`          -- unique name of action. Must match the
                          definition in shortcut_composer.action file
     - `controller`    -- defines which krita property will be modified
-    - `values`        -- list of values compatibile with controller to cycle
+    - `values`        -- default list of values to display in pie
     - `instructions`  -- (optional) list of additional instructions to
                          perform on key press and release
-    - `pie_radius_scale`  -- (optional) widget size multiplier
-    - `icon_radius_scale` -- (optional) icons size multiplier
-    - `background_color`  -- (optional) rgba color of background
-    - `active_color`      -- (optional) rgba color of active pie
+    - `pie_radius_scale`  -- (optional) default widget size multiplier
+    - `icon_radius_scale` -- (optional) default icons size multiplier
+    - `background_color`  -- (optional) default rgba color of background
+    - `active_color`      -- (optional) default rgba color of active pie
     - `short_vs_long_press_time` -- (optional) time [s] that specifies
                                     if key press is short or long
 
@@ -74,81 +82,103 @@ class PieMenu(RawInstructions, Generic[T]):
         icon_radius_scale: float = 1.0,
         background_color: Optional[QColor] = None,
         active_color: QColor = QColor(100, 150, 230, 255),
+        save_local: bool = False,
         short_vs_long_press_time: Optional[float] = None
     ) -> None:
         super().__init__(name, instructions, short_vs_long_press_time)
         self._controller = controller
-        self._config = create_local_config(
-            name=name,
-            values=values,
-            pie_radius_scale=pie_radius_scale,
-            icon_radius_scale=icon_radius_scale,
-            background_color=background_color,
-            active_color=active_color)
 
-        self._last_values: List[T] = []
+        def _dispatch_config_type() -> Type[PieConfig[T]]:
+            if issubclass(self._controller.TYPE, str):
+                return PresetPieConfig   # type: ignore
+            return NonPresetPieConfig
+
+        self._config = _dispatch_config_type()(**{
+            "name": f"ShortcutComposer: {name}",
+            "values": values,
+            "pie_radius_scale": pie_radius_scale,
+            "icon_radius_scale": icon_radius_scale,
+            "save_local": save_local,
+            "background_color": background_color,
+            "active_color": active_color})
+        self._config.ORDER.register_callback(self._reset_labels)
+
         self._labels: List[Label] = []
-        self._reset_labels(self._labels, self._config.values())
-        self._all_labels: List[Label] = []
-        self._reset_labels(self._all_labels, self._get_all_values(values))
         self._edit_mode = EditMode(self)
         self._style = PieStyle(items=self._labels, pie_config=self._config)
 
-        self.pie_settings = create_pie_settings_window(
-            style=self._style,
-            values=self._all_labels,
-            used_values=self._labels,
-            pie_config=self._config)
-        self.pie_widget = PieWidget(
+    @cached_property
+    def pie_widget(self) -> PieWidget:
+        """Qwidget of the Pie for selecting values."""
+        return PieWidget(
             style=self._style,
             labels=self._labels,
             config=self._config)
-        self.pie_manager = PieManager(
-            pie_widget=self.pie_widget,
-            pie_settings=self.pie_settings)
 
-        self.settings_button = PieButton(
+    @cached_property
+    def pie_settings(self) -> PieSettings:
+        """Create and return the right settings based on labels type."""
+        if issubclass(self._controller.TYPE, str):
+            return PresetPieSettings(self._config, self._style)  # type: ignore
+        elif issubclass(self._controller.TYPE, float):
+            return NumericPieSettings(self._config, self._style)
+        elif issubclass(self._controller.TYPE, Enum):
+            return EnumPieSettings(
+                self._controller, self._config, self._style)  # type: ignore
+        raise ValueError(f"Unknown pie config {self._config}")
+
+    @cached_property
+    def pie_manager(self) -> PieManager:
+        """Manager which shows, hides and moves Pie widget and its settings."""
+        return PieManager(pie_widget=self.pie_widget)
+
+    @cached_property
+    def settings_button(self):
+        """Button with which user can enter the edit mode."""
+        settings_button = PieButton(
             icon=Krita.get_icon("properties"),
             icon_scale=1.1,
             parent=self.pie_widget,
             radius_callback=lambda: self._style.setting_button_radius,
             style=self._style,
             config=self._config)
-        self.settings_button.clicked.connect(lambda: self._edit_mode.set(True))
-        self.accept_button = PieButton(
+        settings_button.clicked.connect(lambda: self._edit_mode.set(True))
+        return settings_button
+
+    @cached_property
+    def accept_button(self):
+        """Button displayed in edit mode, which allows to hide the pie."""
+        accept_button = PieButton(
             icon=Krita.get_icon("dialog-ok"),
             icon_scale=1.5,
             parent=self.pie_widget,
             radius_callback=lambda: self._style.accept_button_radius,
             style=self._style,
             config=self._config)
-        self.accept_button.clicked.connect(lambda: self._edit_mode.set(False))
-        self.accept_button.hide()
+        accept_button.clicked.connect(lambda: self._edit_mode.set(False))
+        accept_button.hide()
+        return accept_button
 
     def _move_buttons(self):
-        """Move accept button to center and setting button to bottom-right."""
+        """Move accept and setting buttons to their correct positions."""
         self.accept_button.move_center(self.pie_widget.center)
         self.settings_button.move(QPoint(
             self.pie_widget.width()-self.settings_button.width(),
             self.pie_widget.height()-self.settings_button.height()))
 
     def on_key_press(self) -> None:
-        """Reload labels, start GUI manager and run instructions."""
+        """Handle the event of user pressing the action key."""
+        super().on_key_press()
+
         if self.pie_widget.isVisible():
             return
 
         self._controller.refresh()
-
-        new_values = self._config.values()
-        if self._last_values != new_values:
-            self._reset_labels(self._labels, new_values)
-            self._last_values = new_values
-            self.pie_widget.label_holder.reset()  # HACK: should be automatic
-
+        self._reset_labels()
+        self.pie_widget.label_holder.reset()  # HACK: should be automatic
         self._move_buttons()
 
         self.pie_manager.start()
-        super().on_key_press()
 
     def on_every_key_release(self) -> None:
         """
@@ -166,30 +196,28 @@ class PieMenu(RawInstructions, Generic[T]):
         if label := self.pie_widget.active:
             self._controller.set_value(label.value)
 
-    def _reset_labels(
-        self,
-        label_list: List[Label[T]],
-        values: List[T]
-    ) -> None:
+    INVALID_VALUES: 'set[T]' = set()
+
+    def _reset_labels(self) -> None:
         """Replace list values with newly created labels."""
-        label_list.clear()
+        values = self._config.values()
+
+        # Workaround of krita tags sometimes returning invalid presets
+        # Bad values are remembered in class attribute and filtered out
+        filtered_values = [v for v in values if v not in self.INVALID_VALUES]
+        current_values = [label.value for label in self._labels]
+
+        # Method is expensive, and should not be performed when values
+        # did not in fact change.
+        if filtered_values == current_values:
+            return
+
+        self._labels.clear()
         for value in values:
-            label = self._controller.get_label(value)
+            label = Label.from_value(value, self._controller)
             if label is not None:
-                label_list.append(Label(
-                    value=value,
-                    display_value=label,
-                    pretty_name=self._controller.get_pretty_name(value)))
+                self._labels.append(label)
+            else:
+                self.INVALID_VALUES.add(value)
 
-    @staticmethod
-    def _get_all_values(values: List[T]) -> List[T]:
-        """Return list of available enum values. HACK"""
-        if not values:
-            return []
-
-        value_type = values[0]
-        if not isinstance(value_type, Enum):
-            return []
-
-        names = type(value_type)._member_names_
-        return [type(value_type)[name] for name in names]
+        self._config.refresh_order()

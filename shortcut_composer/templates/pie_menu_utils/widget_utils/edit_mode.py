@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import TYPE_CHECKING
+from PyQt5.QtCore import QPoint
 
 if TYPE_CHECKING:
     from ...pie_menu import PieMenu
@@ -25,9 +26,6 @@ class EditMode:
 
     def set(self, mode_to_set: bool) -> None:
         """Update the mode and change Pie's content accordingly."""
-        if not mode_to_set and self._edit_mode:
-            self._write_settings()
-
         if not self._edit_mode ^ mode_to_set:
             return
 
@@ -44,8 +42,20 @@ class EditMode:
         self._obj.pie_widget.is_edit_mode = True
         self._obj.pie_widget.repaint()
         self._obj.pie_settings.show()
+        self._obj.pie_settings.resize(self._obj.pie_settings.sizeHint())
+        self._move_settings_next_to_pie()
         self._obj.accept_button.show()
         self._obj.settings_button.hide()
+
+    def _move_settings_next_to_pie(self):
+        """Move settings window so that it lies on right side of pie."""
+        settings_offset = round(0.5*(
+            self._obj.pie_widget.width()
+            + self._obj.pie_settings.width()*1.05
+        ))
+        self._obj.pie_settings.move_center(
+            self._obj.pie_widget.center_global
+            + QPoint(settings_offset, 0))  # type: ignore
 
     def set_edit_mode_false(self):
         """Set the edit mode off."""
@@ -59,13 +69,3 @@ class EditMode:
     def swap_mode(self):
         """Change the edit mode to the other one."""
         self.set(not self._edit_mode)
-
-    def _write_settings(self) -> None:
-        """If values were not hardcoded, but from config, write them back."""
-        widget = self._obj.pie_widget
-
-        if not widget.label_holder or widget.config is None:
-            return
-
-        values = [label.value for label in widget.label_holder]
-        widget.config.ORDER.write(values)

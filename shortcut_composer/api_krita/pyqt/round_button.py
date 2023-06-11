@@ -41,7 +41,7 @@ class RoundButton(QPushButton, BaseWidget):
         self.resize(initial_radius)
         self.show()
 
-    def resize(self, radius: int):
+    def resize(self, radius: int) -> None:
         """Change the size and repaint the button."""
         self.setGeometry(0, 0, radius*2, radius*2)
 
@@ -64,7 +64,7 @@ class RoundButton(QPushButton, BaseWidget):
         {color.red()}, {color.green()}, {color.blue()}, {color.alpha()})'''
 
     @property
-    def _border_color(self):
+    def _border_color(self) -> QColor:
         """Color of button border."""
         return QColor(
             min(self._background_color.red()+15, 255),

@@ -3,8 +3,8 @@
 
 from dataclasses import dataclass
 from typing import List, Protocol
+from PyQt5.QtCore import QByteArray
 from ..enums import NodeType
-
 from .node import Node, KritaNode
 
 
@@ -19,6 +19,14 @@ class KritaDocument(Protocol):
     def currentTime(self) -> int: ...
     def setCurrentTime(self, time: int) -> None: ...
     def refreshProjection(self) -> None: ...
+    def annotation(self, type: str) -> QByteArray: ...
+    def annotationTypes(self) -> List[str]: ...
+
+    def setAnnotation(
+        self,
+        type: str,
+        description: str,
+        annotation: bytes) -> None: ...
 
 
 @dataclass
@@ -41,14 +49,15 @@ class Document:
         """
         Create a Node.
 
-        IMPORTANT: Created node must be then added to node tree to be usable from Krita.
-        For example with add_child_node() method of Node Class.
+        IMPORTANT: Created node must be then added to node tree to be
+        usable from Krita. For example with add_child_node() method of
+        Node Class.
 
-        When relevant, the new Node will have the colorspace of the image by default;
-        that can be changed with Node::setColorSpace.
+        When relevant, the new Node will have the colorspace of the
+        image by default; that can be changed with Node::setColorSpace.
 
-        The settings and selections for relevant layer and mask types can also be set
-        after the Node has been created.
+        The settings and selections for relevant layer and mask types
+        can also be set after the Node has been created.
         """
         return Node(self.document.createNode(name, node_type.value))
 
@@ -66,11 +75,11 @@ class Document:
         """Return a list of `Nodes` without a parent."""
         return [Node(node) for node in self.document.topLevelNodes()]
 
-    def get_all_nodes(self) -> List[Node]:
+    def get_all_nodes(self, include_collapsed: bool = False) -> List[Node]:
         """Return a list of all `Nodes` in this document bottom to top."""
         def recursive_search(nodes: List[Node], found_so_far: List[Node]):
             for node in nodes:
-                if not node.collapsed:
+                if include_collapsed or not node.collapsed:
                     recursive_search(node.get_child_nodes(), found_so_far)
                 found_so_far.append(node)
             return found_so_far
@@ -85,6 +94,17 @@ class Document:
         """Refresh OpenGL projection of this document."""
         self.document.refreshProjection()
 
-    def __bool__(self) -> bool:
-        """Return true if the wrapped document exists."""
-        return bool(self.document)
+    def read_annotation(self, name: str) -> str:
+        """Read annotation from .kra document parsed as string."""
+        return self.document.annotation(name).data().decode(encoding="utf-8")
+
+    def write_annotation(self, name: str, description: str, value: str):
+        """Write annotation to .kra document."""
+        self.document.setAnnotation(
+            name,
+            description,
+            value.encode(encoding="utf-8"))
+
+    def contains_annotation(self, name: str) -> bool:
+        """Return if annotation of given name is stored in .kra."""
+        return name in self.document.annotationTypes()
