@@ -124,7 +124,7 @@ class PresetPieSettings(PieSettings):
 
         self.set_tag_mode(self._config.TAG_MODE.read())
         action_values = self._init_action_values()
-        self._tab_holder.insertTab(1, action_values, "Action values")
+        self._tab_holder.insertTab(1, action_values, "Values")
         self._tab_holder.setCurrentIndex(1)
 
     def _init_preset_scroll_area(self) -> PresetScrollArea:
