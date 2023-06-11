@@ -1,4 +1,4 @@
-# Shortcut composer **v1.2.2**
+# Shortcut composer **v1.3.0**
 
 [![python](https://img.shields.io/badge/Python-3.8-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
 [![Code style: black](https://img.shields.io/badge/code%20style-autopep8-333333.svg)](https://pypi.org/project/autopep8/)
@@ -33,7 +33,7 @@ The plugin adds new shortcuts of the following types:
 
 Watch the video below, or read the [changelog](https://github.com/wojtryb/Shortcut-Composer/releases).
 
-[![PIE MENUS - introducing Shortcut Composer](https://github-production-user-asset-6210df.s3.amazonaws.com/51094047/238015603-3143fc2d-0fa7-4da1-868d-2ec054ccaeb3.png)](https://www.youtube.com/watch?v=Tkf2-U0OyG4 "PIE MENUS - introducing Shortcut Composer")
+[![PIE MENUS - introducing Shortcut Composer](https://user-images.githubusercontent.com/51094047/244950488-83bd44ff-87f6-4b95-82c7-0f5031bb1b8e.png)](https://www.youtube.com/watch?v=eHK5LBMNiU0 "Managing BRUSHES with Shortcut Composer 1.3")
 
 ## Requirements
 - Version of krita on plugin release: **5.1.5**
