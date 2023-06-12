@@ -19,7 +19,7 @@ The plugin adds new shortcuts of the following types:
 - [**`Temporary key`**](https://github.com/wojtryb/Shortcut-Composer/wiki/Plugin-actions#temporary-keys) - temporarily activates a krita property with long press or toggles it on/off with short press.
 
 ## Important links
-> Download the [**`latest version`**](https://github.com/wojtryb/Shortcut-Composer/archive/refs/heads/main.zip) of the plugin, or visit its [**`github page`**](https://github.com/wojtryb/Shortcut-Composer/archive/refs/heads/main.zip).
+> Download the [**`latest version`**](https://github.com/wojtryb/Shortcut-Composer/archive/refs/heads/main.zip) of the plugin, or visit its [**`github page`**](https://github.com/wojtryb/Shortcut-Composer).
 
 ---
 
@@ -53,7 +53,7 @@ Installation steps are THE SAME for installing the plugin for the first time and
 
 1. Download the plugin:
     - Use the direct link for [stable](https://github.com/wojtryb/Shortcut-Composer/archive/refs/heads/main.zip) or [development](https://github.com/wojtryb/Shortcut-Composer/archive/refs/heads/development.zip) release.
-    - Alternatively, on [github page](https://github.com/wojtryb/Shortcut-Composer/archive/refs/heads/main.zip) switch from `main` to any of the unstable versions, click the green button `code` and pick the `download zip` option.
+    - Alternatively, on [github page](https://github.com/wojtryb/Shortcut-Composer) switch from `main` to any of the unstable versions, click the green button `code` and pick the `download zip` option.
 2. In krita's topbar, open **Tools > Scripts > Import Python Plugin From File** and pick the downloaded .zip file
 3. Restart krita.
 4. Set custom shortcuts in **Settings > Configure Krita > Keyboard Shortcuts** under **Scripts > Shortcut Composer: ...** sections. By intention, there are no default bindings.
