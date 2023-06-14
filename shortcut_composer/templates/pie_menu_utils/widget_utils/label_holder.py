@@ -101,6 +101,7 @@ class LabelHolder:
         """
         if self._locked:
             return
+        # Reset is not needed when labels did not change from last reset
         current_labels = [widget.label for widget in self.widget_holder]
         if current_labels == self._labels:
             return
