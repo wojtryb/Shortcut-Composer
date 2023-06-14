@@ -103,7 +103,9 @@ class LabelHolder:
             return
         # Reset is not needed when labels did not change from last reset
         current_labels = [widget.label for widget in self.widget_holder]
-        if current_labels == self._labels:
+        # HACK: Labels need to be reset after config was changed, even
+        # when the values are still the same
+        if current_labels == self._labels and notify:
             return
 
         for child in self.widget_holder:
