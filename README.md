@@ -1,4 +1,4 @@
-# Shortcut composer **v1.3.0**
+# Shortcut composer **v1.3.1**
 
 [![python](https://img.shields.io/badge/Python-3.8-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
 [![Code style: black](https://img.shields.io/badge/code%20style-autopep8-333333.svg)](https://pypi.org/project/autopep8/)
