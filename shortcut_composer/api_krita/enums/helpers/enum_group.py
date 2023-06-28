@@ -98,30 +98,3 @@ class EnumGroup(Enum, metaclass=EnumGroupMeta):
     start with a group separator. Otherwise, exception will be raised
     during class creation.
     """
-
-
-class Edible(EnumGroup):
-    _fruit = Group("Fruit")
-    APPLE = 0
-    ORANGE = 1
-
-    _vegetable = Group("Vegetable")
-    TOMATO = 2
-    POTATO = 3
-
-    def format_member(self):
-        return f"{self.name}_{self.value}"
-
-
-# print(Edible.APPLE)
-# print(Edible.APPLE.format_member())
-# print(Edible["APPLE"])
-# print(Edible(0))
-# print(Edible._fruit)
-# print(Edible._vegetable)
-# print(Edible._member_map_)
-# print(Edible._value2member_map_)
-# print(Edible.APPLE in Edible._fruit)  # type: ignore
-# print()
-# for name, group in Edible._groups_.items():
-#     print(name, group)
