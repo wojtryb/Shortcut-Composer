@@ -29,10 +29,10 @@ class PieMenu(RawInstructions, Generic[T]):
     Pick value by hovering over a pie menu widget.
 
     - Widget is displayed under the cursor between key press and release
-    - Moving mouse in a direction of a value activates in on key release
+    - Moving mouse in a direction of a value activates it on key release
     - When the mouse was not moved past deadzone, value is not changed
     - Edit button activates mode in which pie does not hide on key
-      release and can be configured
+      release and can be configured (see PieSettings)
 
     ### Arguments:
 
@@ -99,15 +99,16 @@ class PieMenu(RawInstructions, Generic[T]):
 
     @cached_property
     def pie_widget(self) -> PieWidget:
-        """Qwidget of the Pie for selecting values."""
+        """Create Qwidget of the Pie for selecting values."""
         return PieWidget(
             style=self._style,
             labels=self._labels,
+            edit_mode=self._edit_mode,
             config=self._config)
 
     @cached_property
     def pie_settings(self) -> PieSettings:
-        """Create and return the right settings based on labels type."""
+        """Create QWidget with pie settings right for given type of labels."""
         return dispatch_pie_settings(self._controller)(
             config=self._config,
             style=self._style,
@@ -115,12 +116,12 @@ class PieMenu(RawInstructions, Generic[T]):
 
     @cached_property
     def pie_manager(self) -> PieManager:
-        """Manager which shows, hides and moves Pie widget and its settings."""
+        """Create Manager which shows, hides and moves the Pie."""
         return PieManager(pie_widget=self.pie_widget)
 
     @cached_property
     def settings_button(self):
-        """Button with which user can enter the edit mode."""
+        """Create button with which user can enter the edit mode."""
         settings_button = PieButton(
             icon=Krita.get_icon("properties"),
             icon_scale=1.1,
@@ -133,7 +134,7 @@ class PieMenu(RawInstructions, Generic[T]):
 
     @cached_property
     def accept_button(self):
-        """Button displayed in edit mode, which allows to hide the pie."""
+        """Create button displayed in edit mode, for hiding the pie."""
         accept_button = PieButton(
             icon=Krita.get_icon("dialog-ok"),
             icon_scale=1.5,
@@ -166,22 +167,6 @@ class PieMenu(RawInstructions, Generic[T]):
 
         self.pie_manager.start()
 
-    def on_every_key_release(self) -> None:
-        """
-        Handle the key release event.
-
-        Ignore if in edit mode. Otherwise, stop the manager and set the
-        selected value if deadzone was reached.
-        """
-        super().on_every_key_release()
-
-        if self._edit_mode.get():
-            return
-
-        self.pie_manager.stop()
-        if label := self.pie_widget.active:
-            self._controller.set_value(label.value)
-
     INVALID_VALUES: 'set[T]' = set()
 
     def _reset_labels(self) -> None:
@@ -207,3 +192,22 @@ class PieMenu(RawInstructions, Generic[T]):
                 self.INVALID_VALUES.add(value)
 
         self._config.refresh_order()
+
+    def on_every_key_release(self) -> None:
+        """
+        Handle the key release event.
+
+        In normal mode:
+            close pie, and set selected value if deadzone was reached
+        In edit mode:
+            ignore input
+
+        """
+        super().on_every_key_release()
+
+        if self._edit_mode.get():
+            return
+
+        self.pie_manager.stop()
+        if label := self.pie_widget.active:
+            self._controller.set_value(label.value)

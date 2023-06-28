@@ -19,7 +19,7 @@ class MultipleAssignment(RawInstructions, Generic[T]):
     Action cycles the values in `values_to_cycle` list:
     - short key press moves to next value in list.
     - if current value does not belong to the list, start from beginning
-    - when the list is exhausted, start again
+    - when the list is exhausted, start from beginning
     - end of long press ensures `default value`
 
     ### Arguments:
@@ -72,53 +72,56 @@ class MultipleAssignment(RawInstructions, Generic[T]):
         super().__init__(name, instructions, short_vs_long_press_time)
 
         self._controller = controller
-        self._default_value = self._read_default_value(default_value)
 
-        self.config = Field(
+        self._config = Field(
             config_group=f"ShortcutComposer: {self.name}",
             name="Values",
             default=values)
+        self._config.register_callback(self._reset)
 
         self._settings = SettingsHandler(
             self.name,
-            self.config,
+            self._config,
             self._instructions)
-        self._values_to_cycle = self.config.read()
 
-        def reset() -> None:
-            self._values_to_cycle = self.config.read()
-            self._reset_iterator()
-
-        self.config.register_callback(reset)
-
+        self._default_value = self._read_default_value(default_value)
+        self._values_to_cycle = self._config.read()
+        self._iterator = self._reset_iterator()
         self._last_value: Optional[T] = None
-        self._iterator: Iterator[T]
 
     def on_key_press(self) -> None:
-        """Use key press event only for switching to first value."""
-        self._controller.refresh()
+        """Switch to the next value when values are being cycled."""
         super().on_key_press()
-        if self._controller.get_value() != self._last_value:
-            self._reset_iterator()
 
         # NOTE: When there are no values to cycle, iterator is invalid
-        if self._values_to_cycle:
-            self._set_value(next(self._iterator))
+        if not self._values_to_cycle:
+            return
+
+        self._controller.refresh()
+        if self._controller.get_value() != self._last_value:
+            self._iterator = self._reset_iterator()
+
+        self._set_value(next(self._iterator))
 
     def on_long_key_release(self) -> None:
-        """Long releases set default value."""
+        """Set default value."""
         super().on_long_key_release()
         self._set_value(self._default_value)
-        self._reset_iterator()
+        self._iterator = self._reset_iterator()
 
     def _set_value(self, value: T) -> None:
         """Set the value using the controller, and remember it."""
         self._last_value = value
         self._controller.set_value(value)
 
-    def _reset_iterator(self) -> None:
-        """Replace the iterator with new cyclic iterator over cycled values."""
-        self._iterator = cycle(self._values_to_cycle)
+    def _reset(self) -> None:
+        """Reload values from config and start cycling from beginning."""
+        self._values_to_cycle = self._config.read()
+        self._iterator = self._reset_iterator()
+
+    def _reset_iterator(self) -> Iterator[T]:
+        """Return a new cyclic iterator for values to cycle."""
+        return cycle(self._values_to_cycle)
 
     def _read_default_value(self, value: Optional[T]) -> T:
         """Read value from controller if it was not given."""

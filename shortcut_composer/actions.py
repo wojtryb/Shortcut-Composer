@@ -124,7 +124,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
 
     # Scroll timeline by sliding the cursor horizontally or
     # animated layers by sliding it vertically
-
+    #
     # Use TemporaryOn instruction to temporarily isolate active layer
     templates.CursorTracker(
         name="Scroll timeline or animated layers",
@@ -141,7 +141,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
 
     # Scroll brush sizes by sliding the cursor horizontally or
     # brush opacity layers by sliding it vertically
-
+    #
     # Opacity is contiguous from 10% to 100%, sizes come from a list
     # Switch 1% of opacity every 5 px (instead of default 50 px)
     templates.CursorTracker(
@@ -179,7 +179,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         ),
     ),
 
-    # Use pie menu to pick one of the sporadically used tools.
+    # Use pie menu to pick one of the tools.
     templates.PieMenu(
         name="Pick misc tools",
         controller=controllers.ToolController(),
@@ -242,7 +242,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         ]
     ),
 
-    # Use pie menu to pick one of presets from tag specified in settings.
+    # Use pie menu to pick one of stored presets.
     # Set tool to FREEHAND BRUSH if current tool does not allow to paint
     templates.PieMenu(
         name="Pick brush presets (red)",
@@ -253,7 +253,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         active_color=QColor(200, 70, 70),
     ),
 
-    # Use pie menu to pick one of presets from tag specified in settings.
+    # Use pie menu to pick one of stored presets.
     # Set tool to FREEHAND BRUSH if current tool does not allow to paint
     templates.PieMenu(
         name="Pick brush presets (green)",
@@ -264,7 +264,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         active_color=QColor(70, 200, 70),
     ),
 
-    # Use pie menu to pick one of presets from tag specified in settings.
+    # Use pie menu to pick one of stored presets.
     # Set tool to FREEHAND BRUSH if current tool does not allow to paint
     templates.PieMenu(
         name="Pick brush presets (blue)",
@@ -275,6 +275,9 @@ def create_actions() -> List[templates.RawInstructions]: return [
         active_color=QColor(110, 160, 235),
     ),
 
+    # Use pie menu to pick one of stored presets.
+    # By default, preset names are stored in .kra document.
+    # Set tool to FREEHAND BRUSH if current tool does not allow to paint
     templates.PieMenu(
         name="Pick local brush presets",
         controller=controllers.PresetController(),

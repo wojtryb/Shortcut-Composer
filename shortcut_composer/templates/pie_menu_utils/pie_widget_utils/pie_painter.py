@@ -19,7 +19,6 @@ class PiePainter:
     painter: Painter
     labels: List[Label]
     style: PieStyle
-    edit_mode: bool
 
     def __post_init__(self):
         """Paint the widget which created the passed painter."""

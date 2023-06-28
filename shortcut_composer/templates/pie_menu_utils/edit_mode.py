@@ -39,7 +39,6 @@ class EditMode:
         """Set the edit mode on."""
         self._obj.pie_manager.stop(hide=False)
         self._obj.pie_widget.set_draggable(True)
-        self._obj.pie_widget.is_edit_mode = True
         self._obj.pie_widget.repaint()
         self._obj.pie_settings.show()
         self._obj.pie_settings.resize(self._obj.pie_settings.sizeHint())
@@ -61,7 +60,6 @@ class EditMode:
         """Set the edit mode off."""
         self._obj.pie_widget.hide()
         self._obj.pie_widget.set_draggable(False)
-        self._obj.pie_widget.is_edit_mode = False
         self._obj.pie_settings.hide()
         self._obj.accept_button.hide()
         self._obj.settings_button.show()
@@ -69,3 +67,6 @@ class EditMode:
     def swap_mode(self):
         """Change the edit mode to the other one."""
         self.set(not self._edit_mode)
+
+    def __bool__(self) -> bool:
+        return self.get()
