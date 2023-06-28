@@ -2,19 +2,19 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from krita import Krita as Api
-from enum import Enum
 
 from PyQt5.QtGui import QIcon
+from .helpers import EnumGroup, Group
 
 
-class Action(Enum):
+class Action(EnumGroup):
     """
     Contains actions of Krita exposed to the plugin.
 
     Example usage: `Action.UNDO`
     """
 
-    # File
+    _file = Group("File")
     NEW = "file_new"
     OPEN = "file_open"
     QUIT = "file_quit"
@@ -34,17 +34,17 @@ class Action(Enum):
     EXPORT_ADVANCED = "file_export_advanced"
     DOCUMENT_INFORMATION = "file_documentinfo"
 
+    _saving = Group("Saving")
     SAVE_INCREMENTAL_VERSION = "save_incremental_version"
     SAVE_INCREMENTAL_BACKUP = "save_incremental_backup"
     CREATE_TEMPLATE_FROM_IMAGE = "create_template"
     CREATE_COPY_FROM_CURRENT_IMAGE = "create_copy"
     OPEN_RESOURCES_FOLDER = "open_resources_directory"
 
-    # Canvas navigation
+    _canvas_navigation = Group("Canvas navigation")
     ROTATE_CANVAS_RIGHT = "rotate_canvas_right"
     ROTATE_CANVAS_LEFT = "rotate_canvas_left"
     RESET_CANVAS_ROTATION = "reset_canvas_rotation"
-    WRAP_AROUND_MODE = "wrap_around_mode"
     INSTANT_PREVIEW_MODE = "level_of_detail_mode"
     SHOW_STATUS_BAR = "showStatusBar"
     SHOW_CANVAS_ONLY = "view_show_canvas_only"
@@ -55,10 +55,7 @@ class Action(Enum):
     TOGGLE_ZOOM_FIT_TO_PAGE = "toggle_zoom_to_fit"
     MIRROR_VIEW_AROUND_CURSOR = "mirror_canvas_around_cursor"
 
-    SWAP_FOREGROUND_AND_BACKGROUND_COLOURS = "toggle_fg_bg"
-    SET_FOREGROUND_AND_BACKGROUND_COLOURS_TO_BLACK_AND_WHITE = "reset_fg_bg"
-
-    # Canvas toggles
+    _canvas_toggles = Group("Canvas toggles")
     TOGGLE_BRUSH_OUTLINE = "toggle_brush_outline"
     SHOW_GUIDES = "view_show_guides"
     LOCK_GUIDES = "view_lock_guides"
@@ -73,7 +70,7 @@ class Action(Enum):
     SNAP_IMAGE_CENTRE = "view_snap_image_center"
     SNAP_PIXEL = "view_snap_to_pixel"
 
-    # Filters shortcuts
+    _filters_shortcuts = Group("Filters shortcuts")
     APPLY_FILTER_AGAIN = "filter_apply_again"
     APPLY_FILTER_AGAIN_REPROMPT = "filter_apply_reprompt"
     FILTER_ASC_CDL = "krita_filter_asc-cdl"
@@ -126,7 +123,7 @@ class Action(Enum):
     WAVE = "krita_filter_wave"
     WAVELET_NOISE_REDUCER = "krita_filter_waveletnoisereducer"
 
-    # Edit document
+    _edit_document = Group("Edit document")
     CUT = "edit_cut"
     COPY = "edit_copy"
     PASTE = "edit_paste"
@@ -142,7 +139,7 @@ class Action(Enum):
     MERGE_WITH_LAYER_BELOW = "merge_layer"
     FLATTEN_LAYER = "flatten_layer"
 
-    # Filling
+    _filling = Group("Filling")
     FILL_WITH_FOREGROUND_COLOUR = "fill_selection_foreground_color"
     FILL_WITH_BACKGROUND_COLOUR = "fill_selection_background_color"
     FILL_WITH_PATTERN = "fill_selection_pattern"
@@ -153,7 +150,7 @@ class Action(Enum):
     FILL_WITH_PATTERN_OPACITY = "fill_selection_pattern_opacity"
     STROKE_SELECTED_SHAPES = "stroke_shapes"
 
-    # Selection
+    _selection = Group("Selection")
     SELECT_ALL = "select_all"
     DESELECT = "deselect"
     CLEAR = "clear"
@@ -175,7 +172,7 @@ class Action(Enum):
     COPY_SELECTION_TO_NEW_LAYER = "copy_selection_to_new_layer"
     CUT_SELECTION_TO_NEW_LAYER = "cut_selection_to_new_layer"
 
-    # Edit layers
+    _edit_layers = Group("Edit layers")
     SAVE_GROUP_LAYERS = "save_groups_as_images"
     CONVERT_GROUP_TO_ANIMATED_LAYER = "convert_group_to_animated"
     TRIM_TO_CURRENT_LAYER = "resizeimagetolayer"
@@ -199,7 +196,13 @@ class Action(Enum):
     QUICK_UNGROUP = "quick_ungroup"
     PIN_TO_TIMELINE = "pin_to_timeline"
 
-    # Layer stack
+    _layer_stack = Group("Layer stack")
+    LAYER_PROPERTIES = "layer_properties"
+    RENAME_CURRENT_LAYER = "RenameCurrentLayer"
+    REMOVE_LAYER = "remove_layer"
+    MOVE_LAYER_OR_MASK_UP = "move_layer_up"
+    MOVE_LAYER_OR_MASK_DOWN = "move_layer_down"
+    TOGGLE_LAYER_SOLOING = "toggle_layer_soloing"
     SELECT_ALL_LAYERS = "select_all_layers"
     SELECT_VISIBLE_LAYERS = "select_visible_layers"
     SELECT_LOCKED_LAYERS = "select_locked_layers"
@@ -212,7 +215,7 @@ class Action(Enum):
     ACTIVATE_PREVIOUS_SIBLING_LAYER = \
         "activatePreviousSiblingLayer"
 
-    # Layer creation
+    _layer_creation = Group("Layer creation")
     ADD_PAINT_LAYER = "add_new_paint_layer"
     ADD_GROUP_LAYER = "add_new_group_layer"
     ADD_CLONE_LAYER = "add_new_clone_layer"
@@ -234,7 +237,7 @@ class Action(Enum):
     IMPORT_LAYER = "import_layer_from_file"
     NEW_LAYER_FROM_VISIBLE = "new_from_visible"
 
-    # Layer handling
+    _layer_handling = Group("Layer handling")
     ISOLATE_ACTIVE_GROUP = "isolate_active_group"
     TOGGLE_LAYER_VISIBILITY = "toggle_layer_visibility"
     TOGGLE_LAYER_LOCK = "toggle_layer_lock"
@@ -244,14 +247,14 @@ class Action(Enum):
     WRITE_AS_ALPHA = "split_alpha_write"
     SAVE_MERGED = "split_alpha_save_merged"
 
-    # Importing layers
+    _importing_layers = Group("Importing layers")
     AS_PAINT_LAYER = "import_layer_as_paint_layer"
     AS_TRANSPARENCY_MASK = "import_layer_as_transparency_mask"
     AS_FILTER_MASK = "import_layer_as_filter_mask"
     AS_SELECTION_MASK = "import_layer_as_selection_mask"
     IMAGE_BACKGROUND_COLOUR_AND_TRANSPARENCY = "image_color"
 
-    # Brush property editing
+    _brush_property_editing = Group("Brush property editing")
     NEXT_FAVOURITE_PRESET = "next_favorite_preset"
     PREVIOUS_FAVOURITE_PRESET = "previous_favorite_preset"
     SWITCH_TO_PREVIOUS_PRESET = "previous_preset"
@@ -281,10 +284,16 @@ class Action(Enum):
     BRUSH_SMOOTHING_BASIC = "set_simple_brush_smoothing"
     BRUSH_SMOOTHING_WEIGHTED = "set_weighted_brush_smoothing"
     BRUSH_SMOOTHING_STABILISER = "set_stabilizer_brush_smoothing"
-    # Opening menus
+
+    _opening_menus = Group("Opening menus")
     CONFIGURE_KRITA = "options_configure"
+    SHOW_BRUSH_EDITOR = "show_brush_editor"
     CONFIGURE_TOOLBARS = "options_configure_toolbars"
     CONFIGURE_SHORTCUT_COMPOSER = "Configure Shortcut Composer"
+    MANAGE_RESOURCE_LIBRARIES = "manage_bundles"
+    MANAGE_RESOURCES = "manage_resources"
+    START_GMIC_QT = "QMic"
+    REAPPLY_THE_LAST_GMIC_FILTER = "QMicAgain"
     THEMES = "theme_menu"
     SHOW_DOCKERS = "view_toggledockers"
     RESET_ALL_SETTINGS = "reset_configurations"
@@ -295,6 +304,7 @@ class Action(Enum):
     SHOW_SNAP_OPTIONS_POPUP = "show_snap_options_popup"
     SHOW_BRUSH_PRESETS = "show_brush_presets"
 
+    _tool_bars = Group("Tool bars")
     HIDE_MIRROR_X_LINE = "mirrorX-hideDecorations"
     LOCK_X_LINE = "mirrorX-lock"
     MOVE_TO_CANVAS_CENTRE_X = "mirrorX-moveToCenter"
@@ -310,47 +320,28 @@ class Action(Enum):
     BRUSH_OPTION_SLIDER_2 = "brushslider2"
     BRUSH_OPTION_SLIDER_3 = "brushslider3"
     BRUSH_OPTION_SLIDER_4 = "brushslider4"
-
+    SHOW_GLOBAL_SELECTION_MASK = "show-global-selection-mask"
+    WRAP_AROUND_MODE = "wrap_around_mode"
     MIRROR = "mirror_actions"
     WORKSPACES = "workspaces"
-    SHOW_BRUSH_EDITOR = "show_brush_editor"
     USE_PEN_PRESSURE = "disable_pressure"
     OPEN_FOREGROUND_COLOUR_SELECTOR = "chooseForegroundColor"
     OPEN_BACKGROUND_COLOUR_SELECTOR = "chooseBackgroundColor"
+    SWAP_FOREGROUND_AND_BACKGROUND_COLOURS = "toggle_fg_bg"
+    SET_FOREGROUND_AND_BACKGROUND_COLOURS_TO_BLACK_AND_WHITE = "reset_fg_bg"
+
+    _canvas_operations = Group("Canvas operations")
     SCALE_IMAGE_TO_NEW_SIZE = "imagesize"
     RESIZE_CANVAS = "canvassize"
     SCALE_LAYER_TO_NEW_SIZE = "layersize"
     SCALE_ALL_LAYERS_TO_NEW_SIZE = "scaleAllLayers"
     SCALE = "selectionscale"
-    SHOW_KRITA_LOG_FOR_BUG_REPORTS = "buginfo"
-    SHOW_SYSTEM_INFORMATION_FOR_BUG_REPORTS = "sysinfo"
-    SHOW_CRASH_LOG_FOR_BUG_REPORTS = "crashlog"
-    CLONES_ARRAY = "clones_array"
-    SELECT_FROM_COLOUR_RANGE = "colorrange"
-    SELECT_OPAQUE_REPLACE = "selectopaque"
-    SELECT_OPAQUE_ADD = "selectopaque_add"
-    SELECT_OPAQUE_SUBTRACT = "selectopaque_subtract"
-    SELECT_OPAQUE_INTERSECT = "selectopaque_intersect"
-    CONVERT_IMAGE_COLOUR_SPACE = "imagecolorspaceconversion"
-    CONVERT_LAYER_COLOUR_SPACE = "layercolorspaceconversion"
-    EXPLORE_RESOURCES_CACHE_DATABASE = "dbexplorer"
-    IMAGE_SPLIT = "imagesplit"
-    MOVE_INTO_PREVIOUS_GROUP = "LayerGroupSwitcher/previous"
-    MOVE_INTO_NEXT_GROUP = "LayerGroupSwitcher/next"
-    SPLIT_LAYER = "layersplit"
-    EDIT_METADATA = "EditLayerMetaData"
-    GROW_SELECTION = "growselection"
-    SHRINK_SELECTION = "shrinkselection"
-    BORDER_SELECTION = "borderselection"
-    FEATHER_SELECTION = "featherselection"
-    SMOOTH = "smoothselection"
-    OFFSET_IMAGE = "offsetimage"
-    OFFSET_LAYER = "offsetlayer"
-    START_GMIC_QT = "QMic"
-    REAPPLY_THE_LAST_GMIC_FILTER = "QMicAgain"
-    MANAGE_RESOURCE_LIBRARIES = "manage_bundles"
-    MANAGE_RESOURCES = "manage_resources"
+    SEPARATE_IMAGE = "separate"
+    SHEAR_IMAGE = "shearimage"
+    SHEAR_LAYER = "shearlayer"
+    SHEAR_ALL_LAYERS = "shearAllLayers"
 
+    _image_rotation = Group("Image rotation")
     ROTATE_IMAGE = "rotateimage"
     ROTATE_IMAGE_90_TO_THE_RIGHT = "rotateImageCW90"
     ROTATE_IMAGE_180 = "rotateImage180"
@@ -358,6 +349,7 @@ class Action(Enum):
     MIRROR_IMAGE_HORIZONTALLY = "mirrorImageHorizontal"
     MIRROR_IMAGE_VERTICALLY = "mirrorImageVertical"
 
+    _layer_rotation = Group("Layer rotation")
     ROTATE_LAYER = "rotatelayer"
     ROTATE_LAYER_180 = "rotateLayer180"
     ROTATE_LAYER_90_TO_THE_RIGHT = "rotateLayerCW90"
@@ -367,13 +359,22 @@ class Action(Enum):
     ROTATE_ALL_LAYERS_90_TO_THE_LEFT = "rotateAllLayersCCW90"
     ROTATE_ALL_LAYERS_180 = "rotateAllLayers180"
 
-    SEPARATE_IMAGE = "separate"
-    SHEAR_IMAGE = "shearimage"
-    SHEAR_LAYER = "shearlayer"
-    SHEAR_ALL_LAYERS = "shearAllLayers"
-
+    _tool_specific_actions = Group("Tool specific actions")
+    MOVE_UP = "movetool-move-up"
+    MOVE_DOWN = "movetool-move-down"
+    MOVE_LEFT = "movetool-move-left"
+    MOVE_RIGHT = "movetool-move-right"
+    MOVE_UP_MORE = "movetool-move-up-more"
+    MOVE_DOWN_MORE = "movetool-move-down-more"
+    MOVE_LEFT_MORE = "movetool-move-left-more"
+    MOVE_RIGHT_MORE = "movetool-move-right-more"
+    SHOW_COORDINATES = "movetool-show-coordinates"
+    CALLIGRAPHY = "KarbonCalligraphyTool"
+    CALLIGRAPHY_INCREASE_WIDTH = "calligraphy_increase_width"
+    CALLIGRAPHY_DECREASE_WIDTH = "calligraphy_decrease_width"
+    CALLIGRAPHY_INCREASE_ANGLE = "calligraphy_increase_angle"
+    CALLIGRAPHY_DECREASE_ANGLE = "calligraphy_decrease_angle"
     WAVELET_DECOMPOSE = "waveletdecompose"
-
     UNDO_POLYGON_SELECTION_POINTS = "undo_polygon_selection"
     CORNER_POINT = "pathpoint-corner"
     SMOOTH_POINT = "pathpoint-smooth"
@@ -420,55 +421,7 @@ class Action(Enum):
     SUBTRACT = "object_subtract"
     SPLIT = "object_split"
 
-    MOVE_UP = "movetool-move-up"
-    MOVE_DOWN = "movetool-move-down"
-    MOVE_LEFT = "movetool-move-left"
-    MOVE_RIGHT = "movetool-move-right"
-    MOVE_UP_MORE = "movetool-move-up-more"
-    MOVE_DOWN_MORE = "movetool-move-down-more"
-    MOVE_LEFT_MORE = "movetool-move-left-more"
-    MOVE_RIGHT_MORE = "movetool-move-right-more"
-    SHOW_COORDINATES = "movetool-show-coordinates"
-    CALLIGRAPHY = "KarbonCalligraphyTool"
-    CALLIGRAPHY_INCREASE_WIDTH = "calligraphy_increase_width"
-    CALLIGRAPHY_DECREASE_WIDTH = "calligraphy_decrease_width"
-    CALLIGRAPHY_INCREASE_ANGLE = "calligraphy_increase_angle"
-    CALLIGRAPHY_DECREASE_ANGLE = "calligraphy_decrease_angle"
-    ADD_SCALAR_KEYFRAMES = "add_scalar_keyframes"
-    REMOVE_SCALAR_KEYFRAME = "remove_scalar_keyframe"
-    HOLD_CONSTANT_VALUE_NO_INTERPOLATION = "interpolation_constant"
-    LINEAR_INTERPOLATION = "interpolation_linear"
-    BEZIER_CURVE_INTERPOLATION = "interpolation_bezier"
-    SHARP_INTERPOLATION_TANGENTS = "tangents_sharp"
-    SMOOTH_INTERPOLATION_TANGENTS = "tangents_smooth"
-    ZOOM_VIEW_TO_FIT_CHANNEL_RANGE = "zoom_to_fit_range"
-    ZOOM_VIEW_TO_FIT_CURVE = "zoom_to_fit_curve"
-    DROP_FRAMES = "drop_frames"
-    SHOW_GLOBAL_SELECTION_MASK = "show-global-selection-mask"
-    RENAME_CURRENT_LAYER = "RenameCurrentLayer"
-    LAYER_PROPERTIES = "layer_properties"
-    REMOVE_LAYER = "remove_layer"
-    MOVE_LAYER_OR_MASK_UP = "move_layer_up"
-    MOVE_LAYER_OR_MASK_DOWN = "move_layer_down"
-    SET_COPY_FROM = "set-copy-from"
-    TOGGLE_LAYER_SOLOING = "toggle_layer_soloing"
-    CREATE_SNAPSHOT = "create_snapshot"
-    SWITCH_TO_SELECTED_SNAPSHOT = "switchto_snapshot"
-    REMOVE_SELECTED_SNAPSHOT = "remove_snapshot"
-    INSERT_COLUMN_LEFT = "insert_column_left"
-    INSERT_COLUMN_RIGHT = "insert_column_right"
-    INSERT_MULTIPLE_COLUMNS = "insert_multiple_columns"
-    REMOVE_COLUMN_AND_PULL = "remove_columns_and_pull"
-    REMOVE_COLUMN = "remove_columns"
-    INSERT_HOLD_COLUMN = "insert_hold_column"
-    INSERT_MULTIPLE_HOLD_COLUMNS = "insert_multiple_hold_columns"
-    REMOVE_HOLD_COLUMN = "remove_hold_column"
-    REMOVE_MULTIPLE_HOLD_COLUMNS = "remove_multiple_hold_columns"
-    MIRROR_COLUMNS = "mirror_columns"
-    CLEAR_CACHE = "clear_animation_cache"
-    COPY_COLUMNS = "copy_columns_to_clipboard"
-    CUT_COLUMNS = "cut_columns_to_clipboard"
-    PASTE_COLUMNS = "paste_columns_from_clipboard"
+    _animation = Group("Animation")
     CREATE_BLANK_FRAME = "add_blank_frame"
     CREATE_DUPLICATE_FRAME = "add_duplicate_frame"
     INSERT_KEYFRAME_LEFT = "insert_keyframe_left"
@@ -501,6 +454,7 @@ class Action(Enum):
     NEXT_UNFILTERED_KEYFRAME = "next_unfiltered_keyframe"
     AUTO_FRAME_MODE = "auto_key"
 
+    _krita_window = Group("Krita window")
     DETACH_CANVAS = "view_detached_canvas"
     SHOW_DOCKER_TITLEBARS = "view_toggledockertitlebars"
     DOCKERS = "settings_dockers_menu"
@@ -514,21 +468,18 @@ class Action(Enum):
     CLOSE = "file_close"
     SESSIONS = "file_sessions"
     SEARCH_ACTIONS = "command_bar_open"
+
+    _krita_misc = Group("Krita misc")
     KRITA_HANDBOOK = "help_contents"
     REPORT_BUG = "help_report_bug"
     SWITCH_APPLICATION_LANGUAGE = "switch_application_language"
     ABOUT_KRITA = "help_about_app"
     ABOUT_K_D_E = "help_about_kde"
-    PREVIEW_CURRENT_LAYER_VISIBILITY = "Preview current layer visibility"
-    PREVIEW_PROJECTION_BELOW = "Preview projection below"
-    CYCLE_PAINTING_OPACITY = "Cycle painting opacity"
-    CYCLE_SELECTION_TOOLS = "Cycle selection tools"
     COLOUR_SPACE = "color_space"
     DOCUMENT_TOOLS = "document_tools"
-    EXPORT_LAYERS = "export_layers"
     FILTER_MANAGER = "filter_manager"
 
-    # Python Scripts
+    _python_scripts = Group("Python scripts")
     IMPORT_PYTHON_PLUGIN_FROM_FILE = "plugin_importer_file"
     IMPORT_PYTHON_PLUGIN_FROM_WEB = "plugin_importer_web"
     SCRIPTER = "python_scripter"
@@ -543,12 +494,7 @@ class Action(Enum):
     EXECUTE_SCRIPT_8 = "execute_script_8"
     EXECUTE_SCRIPT_9 = "execute_script_9"
     EXECUTE_SCRIPT_10 = "execute_script_10"
-    TRANSFORM_TOOL_FREE = "Transform tool: free"
-    TRANSFORM_TOOL_PERSPECTIVE = "Transform tool: perspective"
-    TRANSFORM_TOOL_WARP = "Transform tool: warp"
-    TRANSFORM_TOOL_CAGE = "Transform tool: cage"
-    TRANSFORM_TOOL_LIQUIFY = "Transform tool: liquify"
-    TRANSFORM_TOOL_MESH = "Transform tool: mesh"
+    EXPORT_LAYERS = "export_layers"
     RECORD_TIMELAPSE = "recorder_record_toggle"
     EXPORT_TIMELAPSE = "recorder_export"
     HIDE_FILE_TOOLBAR = "mainToolBar"
@@ -561,7 +507,70 @@ class Action(Enum):
     SHOW_COMMON_COLOURS = "show_common_colors"
     UPDATE_COMPOSITION = "update_composition"
     RENAME_COMPOSITION = "rename_composition"
+    TRANSFORM_TOOL_FREE = "Transform tool: free"
+    TRANSFORM_TOOL_PERSPECTIVE = "Transform tool: perspective"
+    TRANSFORM_TOOL_WARP = "Transform tool: warp"
+    TRANSFORM_TOOL_CAGE = "Transform tool: cage"
+    TRANSFORM_TOOL_LIQUIFY = "Transform tool: liquify"
+    TRANSFORM_TOOL_MESH = "Transform tool: mesh"
     RELOAD_SHORTCUT_COMPOSER = "Reload Shortcut Composer"
+
+    _other = Group("Other")
+    SHOW_KRITA_LOG_FOR_BUG_REPORTS = "buginfo"
+    SHOW_SYSTEM_INFORMATION_FOR_BUG_REPORTS = "sysinfo"
+    SHOW_CRASH_LOG_FOR_BUG_REPORTS = "crashlog"
+    CLONES_ARRAY = "clones_array"
+    SELECT_FROM_COLOUR_RANGE = "colorrange"
+    SELECT_OPAQUE_REPLACE = "selectopaque"
+    SELECT_OPAQUE_ADD = "selectopaque_add"
+    SELECT_OPAQUE_SUBTRACT = "selectopaque_subtract"
+    SELECT_OPAQUE_INTERSECT = "selectopaque_intersect"
+    CONVERT_IMAGE_COLOUR_SPACE = "imagecolorspaceconversion"
+    CONVERT_LAYER_COLOUR_SPACE = "layercolorspaceconversion"
+    EXPLORE_RESOURCES_CACHE_DATABASE = "dbexplorer"
+    IMAGE_SPLIT = "imagesplit"
+    MOVE_INTO_PREVIOUS_GROUP = "LayerGroupSwitcher/previous"
+    MOVE_INTO_NEXT_GROUP = "LayerGroupSwitcher/next"
+    SPLIT_LAYER = "layersplit"
+    EDIT_METADATA = "EditLayerMetaData"
+    GROW_SELECTION = "growselection"
+    SHRINK_SELECTION = "shrinkselection"
+    BORDER_SELECTION = "borderselection"
+    FEATHER_SELECTION = "featherselection"
+    SMOOTH = "smoothselection"
+    OFFSET_IMAGE = "offsetimage"
+    OFFSET_LAYER = "offsetlayer"
+    # --- #
+    ADD_SCALAR_KEYFRAMES = "add_scalar_keyframes"
+    REMOVE_SCALAR_KEYFRAME = "remove_scalar_keyframe"
+    # --- #
+    HOLD_CONSTANT_VALUE_NO_INTERPOLATION = "interpolation_constant"
+    LINEAR_INTERPOLATION = "interpolation_linear"
+    BEZIER_CURVE_INTERPOLATION = "interpolation_bezier"
+    SHARP_INTERPOLATION_TANGENTS = "tangents_sharp"
+    SMOOTH_INTERPOLATION_TANGENTS = "tangents_smooth"
+    ZOOM_VIEW_TO_FIT_CHANNEL_RANGE = "zoom_to_fit_range"
+    ZOOM_VIEW_TO_FIT_CURVE = "zoom_to_fit_curve"
+    DROP_FRAMES = "drop_frames"
+    # --- #
+    SET_COPY_FROM = "set-copy-from"
+    CREATE_SNAPSHOT = "create_snapshot"
+    SWITCH_TO_SELECTED_SNAPSHOT = "switchto_snapshot"
+    REMOVE_SELECTED_SNAPSHOT = "remove_snapshot"
+    INSERT_COLUMN_LEFT = "insert_column_left"
+    INSERT_COLUMN_RIGHT = "insert_column_right"
+    INSERT_MULTIPLE_COLUMNS = "insert_multiple_columns"
+    REMOVE_COLUMN_AND_PULL = "remove_columns_and_pull"
+    REMOVE_COLUMN = "remove_columns"
+    INSERT_HOLD_COLUMN = "insert_hold_column"
+    INSERT_MULTIPLE_HOLD_COLUMNS = "insert_multiple_hold_columns"
+    REMOVE_HOLD_COLUMN = "remove_hold_column"
+    REMOVE_MULTIPLE_HOLD_COLUMNS = "remove_multiple_hold_columns"
+    MIRROR_COLUMNS = "mirror_columns"
+    CLEAR_CACHE = "clear_animation_cache"
+    COPY_COLUMNS = "copy_columns_to_clipboard"
+    CUT_COLUMNS = "cut_columns_to_clipboard"
+    PASTE_COLUMNS = "paste_columns_from_clipboard"
 
     def activate(self):
         """Activate the action."""
