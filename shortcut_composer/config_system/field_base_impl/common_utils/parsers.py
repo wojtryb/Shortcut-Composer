@@ -3,6 +3,7 @@
 
 from typing import Generic, TypeVar, Type, Protocol
 from enum import Enum
+from PyQt5.QtGui import QColor
 
 T = TypeVar("T")
 Basic = TypeVar("Basic", str, int, float)
@@ -18,7 +19,8 @@ def dispatch_parser(parser_type: type) -> 'Parser':
         int: BasicParser(int),
         float: BasicParser(float),
         str: BasicParser(str),
-        bool: BoolParser()
+        bool: BoolParser(),
+        QColor: ColorParser()
     }[parser_type]
 
 
@@ -80,3 +82,18 @@ class EnumParser(Parser[EnumT]):
     def parse_from(self, value: EnumT) -> str:
         """Parse from enum to string."""
         return str(value.name)
+
+
+class ColorParser(Parser[QColor]):
+    """Parses from string to QColor and vice-versa."""
+
+    type = QColor
+
+    def parse_to(self, value: str) -> QColor:
+        """Parses from string to QColor."""
+        element_list = value.split(",")
+        return QColor(*map(int, element_list))
+
+    def parse_from(self, value: QColor) -> str:
+        """Parses from QColor to string."""
+        return f"{value.red()},{value.green()},{value.blue()},{value.alpha()}"

@@ -127,16 +127,16 @@ class PieStyle:
     @property
     def active_color(self) -> QColor:
         """Color of active element."""
-        if self._pie_config.active_color is not None:
-            return self._pie_config.active_color
+        if self._pie_config.ACTIVE_COLOR is not None:
+            return self._pie_config.ACTIVE_COLOR.read()
         else:
             return Krita.get_active_color_from_theme()
 
     @property
     def background_color(self) -> QColor:
         """Color of base area. Depends on the app theme lightness"""
-        if self._pie_config.background_color is not None:
-            return self._pie_config.background_color
+        if self._pie_config.BACKGROUND_COLOR is not None:
+            return self._pie_config.BACKGROUND_COLOR.read()
         bg_color = Krita.get_main_color_from_theme()
         bg_color.setAlpha(190)
         return bg_color
@@ -175,4 +175,4 @@ class PieStyle:
         "Windows": 0.11,
         "Darwin": 0.265,
         "": 0.125}
-    """Scale to fix different font sizes each OS.."""
+    """Scale to fix different font sizes each OS."""

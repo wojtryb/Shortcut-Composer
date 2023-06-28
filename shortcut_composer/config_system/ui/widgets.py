@@ -3,7 +3,14 @@
 
 from enum import Enum
 from typing import Any, List, Final, Optional, TypeVar, Generic, Protocol, Type
-from PyQt5.QtWidgets import QDoubleSpinBox, QComboBox, QSpinBox, QWidget
+from PyQt5.QtWidgets import (
+    QDoubleSpinBox,
+    QComboBox,
+    QSpinBox,
+    QWidget,
+    QPushButton,
+    QColorDialog)
+from PyQt5.QtGui import QColor
 
 from ..field import Field
 from .config_based_widget import ConfigBasedWidget
@@ -46,7 +53,7 @@ class ConfigSpinBox(ConfigBasedWidget[F]):
         """Return the current value of the spinbox widget."""
         return self._spin_box.value()
 
-    def set(self, value: F):
+    def set(self, value: F) -> None:
         """Replace the value of the spinbox widget with passed one."""
         self._spin_box.setValue(value)
 
@@ -93,9 +100,9 @@ class ConfigComboBox(ConfigBasedWidget[str]):
         """Return the current value of the ComboBox."""
         return self._combo_box.currentText()
 
-    def set(self, value: str):
+    def set(self, value: str) -> None:
         """Replace the value of the ComboBox with passed one."""
-        return self._combo_box.setCurrentText(value)
+        self._combo_box.setCurrentText(value)
 
     def _init_combo_box(self) -> QComboBox:
         """Return the combobox widget."""
@@ -133,12 +140,43 @@ class EnumComboBox(ConfigBasedWidget[E]):
         text = self._combo_box.currentText()
         return self._enum_type(text)
 
-    def set(self, value: E):
+    def set(self, value: E) -> None:
         """Set the combobox to given Enum member."""
-        return self._combo_box.setCurrentText(value.value)
+        self._combo_box.setCurrentText(value.value)
 
     def _init_combo_box(self) -> QComboBox:
         """Return the combobox widget."""
         combo_box = QComboBox()
         combo_box.setObjectName(self.config_field.name)
         return combo_box
+
+
+class ColorButton(ConfigBasedWidget[QColor]):
+    def __init__(
+        self,
+        config_field: Field[QColor],
+        parent: Optional[QWidget] = None,
+        pretty_name: Optional[str] = None,
+    ) -> None:
+        super().__init__(config_field, parent, pretty_name)
+        self._button = self._init_button()
+        self._color = self.config_field.read()
+        self.widget: Final[QPushButton] = self._button
+
+        self.reset()
+
+    def read(self) -> QColor:
+        return self._color
+
+    def set(self, value: QColor) -> None:
+        self._color = value
+        self._button.setStyleSheet(
+            f"background-color: {self._color.name()}; border: none")
+
+    def _init_button(self) -> QPushButton:
+        def on_click():
+            self.set(QColorDialog.getColor(self._color))
+
+        button = QPushButton("")
+        button.clicked.connect(on_click)
+        return button

@@ -14,7 +14,11 @@ from PyQt5.QtWidgets import (
 
 from api_krita import Krita
 from api_krita.pyqt import AnimatedWidget, BaseWidget, SafeConfirmButton
-from config_system.ui import ConfigFormWidget, ConfigSpinBox, EnumComboBox
+from config_system.ui import (
+    ConfigFormWidget,
+    ConfigSpinBox,
+    EnumComboBox,
+    ColorButton)
 from composer_utils import Config
 from data_components import DeadzoneStrategy
 from .pie_style import PieStyle
@@ -74,6 +78,14 @@ class PieSettings(AnimatedWidget, BaseWidget):
                 pretty_name="Icon max scale",
                 step=0.05,
                 max_value=4),
+            ColorButton(
+                config_field=config.BACKGROUND_COLOR,
+                parent=self,
+                pretty_name="Background color"),
+            ColorButton(
+                config_field=config.ACTIVE_COLOR,
+                parent=self,
+                pretty_name="Active color"),
         ])
         self._tab_holder.addTab(self._local_settings, "Preferences")
         self._tab_holder.addTab(LocationTab(self._config), "Save location")

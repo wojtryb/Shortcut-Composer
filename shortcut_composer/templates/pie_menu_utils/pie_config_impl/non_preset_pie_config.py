@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Callable, Generic, TypeVar, Optional
+from typing import List, Callable, Generic, TypeVar
 from PyQt5.QtGui import QColor
 from data_components import DeadzoneStrategy
 from ..pie_config import PieConfig
@@ -19,7 +19,7 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
         pie_radius_scale: float,
         icon_radius_scale: float,
         save_local: bool,
-        background_color: Optional[QColor],
+        background_color: QColor,
         active_color: QColor,
         deadzone_strategy: DeadzoneStrategy
     ) -> None:
@@ -32,8 +32,8 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
         self.DEADZONE_STRATEGY = self.field("deadzone", deadzone_strategy)
         self.ORDER = self._create_editable_dual_field("Values", values)
 
-        self.background_color = background_color
-        self.active_color = active_color
+        self.BACKGROUND_COLOR = self.field("Bg color", background_color)
+        self.ACTIVE_COLOR = self.field("Active color", active_color)
         self.allow_value_edit = True
 
     def values(self) -> List[T]:
