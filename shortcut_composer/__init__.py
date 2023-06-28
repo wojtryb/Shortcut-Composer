@@ -14,10 +14,8 @@ import os
 
 sys.path.append(directory := os.path.dirname(__file__))
 
-from .shortcut_composer import ShortcutComposer
-from .api_krita import Krita
-from .composer_utils.compatibility_fix import fix_config
-fix_config()
+from .shortcut_composer import ShortcutComposer  # noqa
+from .api_krita import Krita  # noqa
 Krita.add_extension(ShortcutComposer)
 
 sys.path.remove(directory)
