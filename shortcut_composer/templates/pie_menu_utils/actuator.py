@@ -37,5 +37,5 @@ class Actuator:
             pass
         elif self._current_strategy == DeadzoneStrategy.ACTIVATE_TOP:
             self._controller.set_value(self._labels[0].value)
-        elif self._current_strategy == DeadzoneStrategy.ACTIVATE_LAST:
+        elif self._current_strategy == DeadzoneStrategy.ACTIVATE_PREVIOUS:
             self._controller.set_value(self._last_label.value)  # type: ignore

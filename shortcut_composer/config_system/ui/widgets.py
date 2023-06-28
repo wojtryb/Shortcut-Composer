@@ -1,13 +1,15 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Any, List, Final, Optional, TypeVar, Generic, Protocol
+from enum import Enum
+from typing import Any, List, Final, Optional, TypeVar, Generic, Protocol, Type
 from PyQt5.QtWidgets import QDoubleSpinBox, QComboBox, QSpinBox, QWidget
 
 from ..field import Field
 from .config_based_widget import ConfigBasedWidget
 
 F = TypeVar("F", bound=float)
+E = TypeVar("E", bound=Enum)
 
 
 class SpinBox(Protocol, Generic[F]):
@@ -96,7 +98,47 @@ class ConfigComboBox(ConfigBasedWidget[str]):
         return self._combo_box.setCurrentText(value)
 
     def _init_combo_box(self) -> QComboBox:
-        """Return the spinbox widget."""
+        """Return the combobox widget."""
+        combo_box = QComboBox()
+        combo_box.setObjectName(self.config_field.name)
+        return combo_box
+
+
+class EnumComboBox(ConfigBasedWidget[E]):
+    """
+    Wrapper of Combobox linked to a Enum configutation field.
+
+    Allows to pick one of enum members.
+    """
+
+    def __init__(
+        self,
+        config_field: Field[E],
+        enum_type: Type[E],
+        parent: Optional[QWidget] = None,
+        pretty_name: Optional[str] = None,
+    ) -> None:
+        super().__init__(config_field, parent, pretty_name)
+        self._enum_type = enum_type
+        self._combo_box = self._init_combo_box()
+        self.widget: Final[QComboBox] = self._combo_box
+
+        keys = list(self._enum_type._value2member_map_.keys())
+        self._combo_box.addItems(keys)
+
+        self.reset()
+
+    def read(self) -> E:
+        """Return Enum member selected with the combobox."""
+        text = self._combo_box.currentText()
+        return self._enum_type(text)
+
+    def set(self, value: E):
+        """Set the combobox to given Enum member."""
+        return self._combo_box.setCurrentText(value.value)
+
+    def _init_combo_box(self) -> QComboBox:
+        """Return the combobox widget."""
         combo_box = QComboBox()
         combo_box.setObjectName(self.config_field.name)
         return combo_box

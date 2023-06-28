@@ -14,8 +14,9 @@ from PyQt5.QtWidgets import (
 
 from api_krita import Krita
 from api_krita.pyqt import AnimatedWidget, BaseWidget, SafeConfirmButton
-from config_system.ui import ConfigFormWidget, ConfigSpinBox
+from config_system.ui import ConfigFormWidget, ConfigSpinBox, EnumComboBox
 from composer_utils import Config
+from data_components import DeadzoneStrategy
 from .pie_style import PieStyle
 from .pie_config import PieConfig
 
@@ -56,9 +57,23 @@ class PieSettings(AnimatedWidget, BaseWidget):
 
         self._tab_holder = QTabWidget()
         self._local_settings = ConfigFormWidget([
-            ConfigSpinBox(config.PIE_RADIUS_SCALE, self, "Pie scale", 0.05, 4),
-            ConfigSpinBox(config.ICON_RADIUS_SCALE, self, "Icon max scale",
-                          0.05, 4),
+            EnumComboBox(
+                config_field=config.DEADZONE_STRATEGY,
+                parent=self,
+                pretty_name="On deadzone",
+                enum_type=DeadzoneStrategy),
+            ConfigSpinBox(
+                config_field=config.PIE_RADIUS_SCALE,
+                parent=self,
+                pretty_name="Pie scale",
+                step=0.05,
+                max_value=4),
+            ConfigSpinBox(
+                config_field=config.ICON_RADIUS_SCALE,
+                parent=self,
+                pretty_name="Icon max scale",
+                step=0.05,
+                max_value=4),
         ])
         self._tab_holder.addTab(self._local_settings, "Preferences")
         self._tab_holder.addTab(LocationTab(self._config), "Save location")
