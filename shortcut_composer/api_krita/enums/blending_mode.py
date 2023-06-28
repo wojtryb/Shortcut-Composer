@@ -1,33 +1,24 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from enum import Enum
+from .helpers import EnumGroup, Group
 
 
-class BlendingMode(Enum):
+class BlendingMode(EnumGroup):
     """
     Contains all known blending modes in krita.
 
     Example usage: `BlendingMode.NORMAL`
     """
 
-    NORMAL = "normal"
+    _arithmetic = Group("Arithmetic")
     ADD = "add"
-    BURN = "burn"
-    COLOR = "color"
-    DODGE = "dodge"
-    DARKEN = "darken"
     DIVIDE = "divide"
-    ERASE = "erase"
-    LIGHTEN = "lighten"
-    LUMINIZE = "luminize"
-    MULTIPLY = "multiply"
-    OVERLAY = "overlay"
-    SATURATION = "saturation"
-    SCREEN = "screen"
-    SOFT_LIGHT_SVG = "soft_light_svg"
     INVERSE_SUBTRACT = "inverse_subtract"
+    MULTIPLY = "multiply"
     SUBTRACT = "subtract"
+
+    _binary = Group("Binary")
     AND = "and"
     CONVERSE = "converse"
     IMPLICATION = "implication"
@@ -38,12 +29,18 @@ class BlendingMode(Enum):
     OR = "or"
     XNOR = "xnor"
     XOR = "xor"
+
+    _darken = Group("Darken")
+    BURN = "burn"
+    DARKEN = "darken"
     DARKER_COLOR = "darker color"
     EASY_BURN = "easy burn"
     FOG_DARKEN_IFS_ILLUSIONS = "fog_darken_ifs_illusions"
     GAMMA_DARK = "gamma_dark"
-    SHADE_IFS_ILLUSIONS = "shade_ifs_illusions"
     LINEAR_BURN = "linear_burn"
+    SHADE_IFS_ILLUSIONS = "shade_ifs_illusions"
+
+    _hsi = Group("HSI")
     COLOR_HSI = "color_hsi"
     DEC_INTENSITY = "dec_intensity"
     DEC_SATURATION_HSI = "dec_saturation_hsi"
@@ -52,14 +49,18 @@ class BlendingMode(Enum):
     INC_SATURATION_HSI = "inc_saturation_hsi"
     INTENSITY = "intensity"
     SATURATION_HSI = "saturation_hsi"
-    DEC_LIGHTNESS = "dec_lightness"
+
+    _hsl = Group("HSL")
     COLOR_HSL = "color_hsl"
+    DEC_LIGHTNESS = "dec_lightness"
     DEC_SATURATION_HSL = "dec_saturation_hsl"
     HUE_HSL = "hue_hsl"
     INC_LIGHTNESS = "inc_lightness"
     INC_SATURATION_HSL = "inc_saturation_hsl"
     LIGHTNESS = "lightness"
     SATURATION_HSL = "saturation_hsl"
+
+    _hsv = Group("HSV")
     COLOR_HSV = "color_hsv"
     DEC_SATURATION_HSV = "dec_saturation_hsv"
     DEC_VALUE = "dec_value"
@@ -68,17 +69,26 @@ class BlendingMode(Enum):
     INC_VALUE = "inc_value"
     SATURATION_HSV = "saturation_hsv"
     VALUE = "value"
-    DEC_SATURATION = "dec_saturation"
+
+    _hsy = Group("HSY")
+    COLOR = "color"
     DEC_LUMINOSITY = "dec_luminosity"
+    DEC_SATURATION = "dec_saturation"
     HUE = "hue"
     INC_LUMINOSITY = "inc_luminosity"
     INC_SATURATION = "inc_saturation"
+    LUMINIZE = "luminize"
+    SATURATION = "saturation"
+
+    _lighten = Group("Lighten")
+    DODGE = "dodge"
     EASY_DODGE = "easy dodge"
     FLAT_LIGHT = "flat_light"
-    GAMMA_ILLUMINATION = "gamma_illumination"
     FOG_LIGHTEN_IFS_ILLUSIONS = "fog_lighten_ifs_illusions"
+    GAMMA_ILLUMINATION = "gamma_illumination"
     GAMMA_LIGHT = "gamma_light"
     HARD_LIGHT = "hard_light"
+    LIGHTEN = "lighten"
     LIGHTER_COLOR = "lighter color"
     LINEAR_DODGE = "linear_dodge"
     LINEAR_LIGHT = "linear light"
@@ -89,9 +99,13 @@ class BlendingMode(Enum):
     SOFT_LIGHT_IFS_ILLUSIONS = "soft_light_ifs_illusions"
     SOFT_LIGHT_PEGTOP_DELPHI = "soft_light_pegtop_delphi"
     SOFT_LIGHT = "soft_light"
+    SOFT_LIGHT_SVG = "soft_light_svg"
+    SCREEN = "screen"
     SUPER_LIGHT = "super_light"
     TINT_IFS_ILLUSIONS = "tint_ifs_illusions"
     VIVID_LIGHT = "vivid_light"
+
+    _misc = Group("Misc")
     BUMPMAP = "bumpmap"
     COMBINE_NORMAL = "combine_normal"
     COPY = "copy"
@@ -100,11 +114,14 @@ class BlendingMode(Enum):
     COPY_RED = "copy_red"
     DISSOLVE = "dissolve"
     TANGENT_NORMALMAP = "tangent_normalmap"
+
+    _mix = Group("Mix")
     ALLANON = "allanon"
     ALPHADARKEN = "alphadarken"
     BEHIND = "behind"
     DESTINATION_ATOP = "destination-atop"
     DESTINATION_IN = "destination-in"
+    ERASE = "erase"
     GEOMETRIC_MEAN = "geometric_mean"
     GRAIN_EXTRACT = "grain_extract"
     GRAIN_MERGE = "grain_merge"
@@ -115,22 +132,30 @@ class BlendingMode(Enum):
     HARD_OVERLAY = "hard overlay"
     INTERPOLATION = "interpolation"
     INTERPOLATION_2X = "interpolation 2x"
+    NORMAL = "normal"
+    OVERLAY = "overlay"
     PARALLEL = "parallel"
     PENUMBRA_A = "penumbra a"
     PENUMBRA_B = "penumbra b"
     PENUMBRA_C = "penumbra c"
     PENUMBRA_D = "penumbra d"
+
+    _modulo = Group("Modulo")
     DIVISIVE_MODULO = "divisive_modulo"
     DIVISIVE_MODULO_CONTINUOUS = "divisive_modulo_continuous"
     MODULO_CONTINUOUS = "modulo_continuous"
     MODULO_SHIFT = "modulo_shift"
     MODULO_SHIFT_CONTINUOUS = "modulo_shift_continuous"
+
+    _negative = Group("Negative")
     ADDITIVE_SUBTRACTIVE = "additive_subtractive"
     ARC_TANGENT = "arc_tangent"
     DIFF = "diff"
     EQUIVALENCE = "equivalence"
     EXCLUSION = "exclusion"
     NEGATION = "negation"
+
+    _quadratic = Group("Quadratic")
     FREEZE = "freeze"
     FREEZE_REFLECT = "freeze_reflect"
     GLOW = "glow"
