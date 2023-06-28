@@ -233,7 +233,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
     templates.PieMenu(
         name="Pick transform tool modes",
         controller=controllers.TransformModeController(),
-        deadzone_strategy=DeadzoneStrategy.ACTIVATE_TOP,
+        deadzone_strategy=DeadzoneStrategy.PICK_TOP,
         values=[
             TransformMode.FREE,
             TransformMode.PERSPECTIVE,

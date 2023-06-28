@@ -43,6 +43,7 @@ class LabelWidget(BaseWidget):
         self._draggable = True
         self._enabled = True
         self._hovered = False
+        self._forced = False
 
         self._instructions: list[WidgetInstructions] = []
 
@@ -78,6 +79,19 @@ class LabelWidget(BaseWidget):
         self._enabled = value
         if not value:
             self.draggable = False
+        self.repaint()
+
+    @property
+    def forced(self):
+        """Return whether the widget has forced active color."""
+        return self._forced
+
+    @forced.setter
+    def forced(self, value: bool) -> None:
+        """Make the widget look as it is active even if it is not."""
+        if self._forced == value:
+            return
+        self._forced = value
         self.repaint()
 
     def move_to_label(self) -> None:
@@ -117,6 +131,8 @@ class LabelWidget(BaseWidget):
     @property
     def _border_color(self):
         """Return border color which differs when enabled or hovered."""
+        if self.forced:
+            return self._style.active_color
         if not self.enabled:
             return self._style.active_color_dark
         if self._hovered and self.draggable:

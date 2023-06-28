@@ -132,14 +132,14 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             return
 
         angle = circle_points.angle_from_point(e.pos())
-        _a = self._widget_holder.on_angle(angle)
+        _a = self.widget_holder.on_angle(angle)
 
         if label not in self.label_holder or not self._labels:
             # Dragged with unknown label
             index = self.label_holder.index(_a.label)
             return self.label_holder.insert(index, label)
 
-        _b = self._widget_holder.on_label(label)
+        _b = self.widget_holder.on_label(label)
         if _a == _b:
             # Dragged over the same widget
             return
@@ -160,7 +160,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             widget.draggable = draggable
 
     @property
-    def _widget_holder(self) -> WidgetHolder:
+    def widget_holder(self) -> WidgetHolder:
         """Return the holder with child widgets."""
         return self.label_holder.widget_holder
 

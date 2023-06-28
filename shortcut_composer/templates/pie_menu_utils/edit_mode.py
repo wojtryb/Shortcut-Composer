@@ -39,6 +39,7 @@ class EditMode:
         """Set the edit mode on."""
         self._obj.pie_manager.stop(hide=False)
         self._obj.pie_widget.set_draggable(True)
+        self._obj.pie_widget.widget_holder.clear_forced_widgets()
         self._obj.pie_widget.repaint()
         self._obj.pie_settings.show()
         self._obj.pie_settings.resize(self._obj.pie_settings.sizeHint())

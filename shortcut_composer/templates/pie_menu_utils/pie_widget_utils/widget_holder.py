@@ -69,3 +69,8 @@ class WidgetHolder:
     def __len__(self) -> int:
         """Return amount of held LabelWidgets."""
         return len(self._widgets)
+
+    def clear_forced_widgets(self):
+        """Clear the forced colors of all held widgets. Helper method."""
+        for widget in self._widgets.values():
+            widget.forced = False

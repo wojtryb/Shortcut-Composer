@@ -100,7 +100,7 @@ class PieMenu(RawInstructions, Generic[T]):
         self._labels: List[Label] = []
         self._edit_mode = EditMode(self)
         self._style = PieStyle(items=self._labels, pie_config=self._config)
-        self._actuator = Actuator(
+        self.actuator = Actuator(
             controller=self._controller,
             strategy_field=self._config.DEADZONE_STRATEGY,
             labels=self._labels)
@@ -172,6 +172,7 @@ class PieMenu(RawInstructions, Generic[T]):
         self._reset_labels()
         self.pie_widget.label_holder.reset()  # HACK: should be automatic
         self._move_buttons()
+        self.actuator.mark_selected_widget(self.pie_widget.widget_holder)
 
         self.pie_manager.start()
 
@@ -217,4 +218,4 @@ class PieMenu(RawInstructions, Generic[T]):
             return
         self.pie_manager.stop()
 
-        self._actuator.activate(self.pie_widget.active)
+        self.actuator.activate(self.pie_widget.active)
