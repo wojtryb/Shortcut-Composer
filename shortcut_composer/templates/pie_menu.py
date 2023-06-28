@@ -78,7 +78,7 @@ class PieMenu(RawInstructions, Generic[T]):
         pie_radius_scale: float = 1.0,
         icon_radius_scale: float = 1.0,
         background_color: Optional[QColor] = None,
-        active_color: QColor = QColor(100, 150, 230, 255),
+        active_color: Optional[QColor] = QColor(100, 150, 230, 255),
         save_local: bool = False,
         deadzone_strategy: DeadzoneStrategy = DeadzoneStrategy.DO_NOTHING,
         short_vs_long_press_time: Optional[float] = None

@@ -125,18 +125,21 @@ class PieStyle:
             * Config.PIE_DEADZONE_GLOBAL_SCALE.read())
 
     @property
-    def active_color(self):
+    def active_color(self) -> QColor:
         """Color of active element."""
-        return self._pie_config.active_color
+        if self._pie_config.active_color is not None:
+            return self._pie_config.active_color
+        else:
+            return Krita.get_active_color_from_theme()
 
     @property
     def background_color(self) -> QColor:
         """Color of base area. Depends on the app theme lightness"""
         if self._pie_config.background_color is not None:
             return self._pie_config.background_color
-        if Krita.is_light_theme_active:
-            return QColor(210, 210, 210, 190)
-        return QColor(75, 75, 75, 190)
+        bg_color = Krita.get_main_color_from_theme()
+        bg_color.setAlpha(190)
+        return bg_color
 
     @property
     def active_color_dark(self):
