@@ -9,6 +9,19 @@ Basic = TypeVar("Basic", str, int, float)
 EnumT = TypeVar("EnumT", bound=Enum)
 
 
+def dispatch_parser(parser_type: type) -> 'Parser':
+    """Return a proper field parser based on given type."""
+    if issubclass(parser_type, Enum):
+        return EnumParser(parser_type)
+
+    return {
+        int: BasicParser(int),
+        float: BasicParser(float),
+        str: BasicParser(str),
+        bool: BoolParser()
+    }[parser_type]
+
+
 class Parser(Generic[T], Protocol):
     """Parses from string to specific type and vice-versa."""
 

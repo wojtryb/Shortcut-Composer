@@ -1,10 +1,9 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from typing import Callable, Generic, Optional, TypeVar
 from ..field import Field
 from ..field_group import FieldGroup
-
-from typing import Callable, Generic, Optional, TypeVar
 
 T = TypeVar("T")
 F = TypeVar("F", bound=Field)
@@ -13,9 +12,11 @@ F = TypeVar("F", bound=Field)
 class DualField(Field, Generic[T]):
     """
     Field switching save location based on passed field.
+
     Implementation uses two identical fields, but with different save
     location. Each time DualField is red or written, correct field is
     picked from the determiner field.
+
     NOTE: Callbacks are always stored in the global field, as they
     wouldn't run in local one when switching between documents.
     """

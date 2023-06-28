@@ -5,9 +5,8 @@ from typing import TypeVar, Generic, Callable, List, Optional
 from abc import ABC, abstractmethod
 from enum import Enum
 
-from .parsers import Parser, BoolParser, EnumParser, BasicParser
+from .common_utils import SaveLocation
 from .field import Field
-from .save_location import SaveLocation
 
 T = TypeVar('T')
 E = TypeVar('E', bound=Enum)
@@ -82,16 +81,3 @@ class FieldBase(ABC, Field, Generic[T]):
     def reset_default(self) -> None:
         """Write a default value to kritarc file."""
         self.write(self.default)
-
-    @staticmethod
-    def _get_parser(parser_type: type) -> Parser[T]:
-        """Return field parser."""
-        if issubclass(parser_type, Enum):
-            return EnumParser(parser_type)  # type: ignore
-
-        return {
-            int: BasicParser(int),
-            float: BasicParser(float),
-            str: BasicParser(str),
-            bool: BoolParser()
-        }[parser_type]  # type: ignore

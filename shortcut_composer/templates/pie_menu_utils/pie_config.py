@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 from typing import List, Callable, Generic, TypeVar, Optional
 from PyQt5.QtGui import QColor
 from config_system import Field, FieldGroup
-from config_system.fields import DualField, FieldWithEditableDefault
+from config_system.field_base_impl import DualField, FieldWithEditableDefault
 
 T = TypeVar("T")
 U = TypeVar("U")

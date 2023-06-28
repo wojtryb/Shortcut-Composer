@@ -1,9 +1,8 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from ..field import Field
-
 from typing import Callable, Generic, TypeVar
+from ..field import Field
 
 T = TypeVar("T")
 F = TypeVar("F", bound=Field)

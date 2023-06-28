@@ -44,7 +44,7 @@ class Field(Generic[T]):
         parser_type: Optional[type] = None,
         local: bool = False,
     ) -> 'Field[T]':
-        from .field_implementations import ListField, NonListField
+        from .field_base_impl import ListField, NonListField
 
         cls.original = super().__new__
         if not isinstance(default, list):
