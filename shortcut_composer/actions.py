@@ -18,6 +18,7 @@ from api_krita.enums import Tool, Toggle, BlendingMode, TransformMode
 from core_components import instructions, controllers
 from data_components import (
     CurrentLayerStack,
+    DeadzoneStrategy,
     PickStrategy,
     Slider,
     Range,
@@ -232,6 +233,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
     templates.PieMenu(
         name="Pick transform tool modes",
         controller=controllers.TransformModeController(),
+        deadzone_strategy=DeadzoneStrategy.ACTIVATE_TOP,
         values=[
             TransformMode.FREE,
             TransformMode.PERSPECTIVE,

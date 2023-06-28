@@ -6,6 +6,7 @@ from typing import List, Callable, Generic, TypeVar, Optional
 from PyQt5.QtGui import QColor
 from config_system import Field, FieldGroup
 from config_system.field_base_impl import DualField, FieldWithEditableDefault
+from data_components import DeadzoneStrategy
 
 T = TypeVar("T")
 U = TypeVar("U")
@@ -26,6 +27,7 @@ class PieConfig(FieldGroup, Generic[T], ABC):
     active_color: QColor
 
     SAVE_LOCAL: Field[bool]
+    DEADZONE_STRATEGY: Field[DeadzoneStrategy]
     ORDER: FieldWithEditableDefault[List[T], DualField[List[T]]]
     PIE_RADIUS_SCALE: Field[float]
     ICON_RADIUS_SCALE: Field[float]

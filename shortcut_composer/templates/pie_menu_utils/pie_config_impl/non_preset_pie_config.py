@@ -3,6 +3,7 @@
 
 from typing import List, Callable, Generic, TypeVar, Optional
 from PyQt5.QtGui import QColor
+from data_components import DeadzoneStrategy
 from ..pie_config import PieConfig
 
 T = TypeVar("T")
@@ -20,6 +21,7 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
         save_local: bool,
         background_color: Optional[QColor],
         active_color: QColor,
+        deadzone_strategy: DeadzoneStrategy
     ) -> None:
         super().__init__(name)
 
@@ -27,6 +29,7 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
         self.ICON_RADIUS_SCALE = self.field("Icon scale", icon_radius_scale)
 
         self.SAVE_LOCAL = self.field("Save local", save_local)
+        self.DEADZONE_STRATEGY = self.field("deadzone", deadzone_strategy)
         self.ORDER = self._create_editable_dual_field("Values", values)
 
         self.background_color = background_color

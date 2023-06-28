@@ -8,6 +8,7 @@ from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QColor
 
 from api_krita import Krita
+from data_components import DeadzoneStrategy
 from core_components import Controller, Instruction
 from .pie_menu_utils.pie_settings_impl import dispatch_pie_settings
 from .pie_menu_utils.pie_config_impl import dispatch_pie_config
@@ -16,6 +17,7 @@ from .pie_menu_utils import (
     PieManager,
     PieWidget,
     PieButton,
+    Actuator,
     EditMode,
     PieStyle,
     Label)
@@ -78,6 +80,7 @@ class PieMenu(RawInstructions, Generic[T]):
         background_color: Optional[QColor] = None,
         active_color: QColor = QColor(100, 150, 230, 255),
         save_local: bool = False,
+        deadzone_strategy: DeadzoneStrategy = DeadzoneStrategy.DO_NOTHING,
         short_vs_long_press_time: Optional[float] = None
     ) -> None:
         super().__init__(name, instructions, short_vs_long_press_time)
@@ -90,12 +93,17 @@ class PieMenu(RawInstructions, Generic[T]):
             icon_radius_scale=icon_radius_scale,
             save_local=save_local,
             background_color=background_color,
-            active_color=active_color)
+            active_color=active_color,
+            deadzone_strategy=deadzone_strategy)
         self._config.ORDER.register_callback(self._reset_labels)
 
         self._labels: List[Label] = []
         self._edit_mode = EditMode(self)
         self._style = PieStyle(items=self._labels, pie_config=self._config)
+        self._actuator = Actuator(
+            controller=self._controller,
+            strategy_field=self._config.DEADZONE_STRATEGY,
+            labels=self._labels)
 
     @cached_property
     def pie_widget(self) -> PieWidget:
@@ -205,9 +213,8 @@ class PieMenu(RawInstructions, Generic[T]):
         """
         super().on_every_key_release()
 
-        if self._edit_mode.get():
+        if self._edit_mode:
             return
-
         self.pie_manager.stop()
-        if label := self.pie_widget.active:
-            self._controller.set_value(label.value)
+
+        self._actuator.activate(self.pie_widget.active)

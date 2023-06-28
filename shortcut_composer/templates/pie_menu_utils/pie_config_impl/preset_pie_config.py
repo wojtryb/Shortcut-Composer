@@ -4,7 +4,7 @@
 from typing import List, Callable, Optional, Union
 from PyQt5.QtGui import QColor
 from config_system import Field
-from data_components import Tag
+from data_components import Tag, DeadzoneStrategy
 from ..pie_config import PieConfig
 
 
@@ -25,6 +25,7 @@ class PresetPieConfig(PieConfig[str]):
         save_local: bool,
         background_color: Optional[QColor],
         active_color: QColor,
+        deadzone_strategy: DeadzoneStrategy
     ) -> None:
         super().__init__(name)
 
@@ -32,6 +33,7 @@ class PresetPieConfig(PieConfig[str]):
         self.ICON_RADIUS_SCALE = self.field("Icon scale", icon_radius_scale)
 
         self.SAVE_LOCAL = self.field("Save local", save_local)
+        self.DEADZONE_STRATEGY = self.field("deadzone", deadzone_strategy)
 
         tag_mode = isinstance(values, Tag)
         tag_name = values.tag_name if isinstance(values, Tag) else ""
