@@ -14,7 +14,7 @@ from typing import List
 
 from PyQt5.QtGui import QColor
 
-from api_krita.enums import Tool, Toggle, BlendingMode, TransformMode
+from api_krita.enums import Action, Tool, Toggle, BlendingMode, TransformMode
 from core_components import instructions, controllers
 from data_components import (
     CurrentLayerStack,
@@ -192,6 +192,18 @@ def create_actions() -> List[templates.RawInstructions]: return [
             Tool.ASSISTANTS,
         ],
         pie_radius_scale=0.9
+    ),
+
+    # Use pie menu to pick one of the actions
+    templates.PieMenu(
+        name="Activate krita action",
+        controller=controllers.ActionController(),
+        values=[
+            Action.BLUR,
+            Action.SAVE,
+            Action.UNDO,
+            Action.TOGGLE_LAYER_ALPHA
+        ],
     ),
 
     # Use pie menu to pick one of the brush blending modes.

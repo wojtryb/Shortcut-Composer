@@ -27,6 +27,7 @@ from .node_controllers import (
 from .core_controllers import (
     TransformModeController,
     ToggleController,
+    ActionController,
     ToolController,
     UndoController,
 )
@@ -44,6 +45,7 @@ __all__ = [
     "OpacityController",
     "ToggleController",
     "PresetController",
+    "ActionController",
     "TimeController",
     "ToolController",
     "UndoController",
