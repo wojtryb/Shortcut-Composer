@@ -2,24 +2,20 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from krita import Krita as Api
-from enum import Enum
 
 from PyQt5.QtGui import QIcon
+from .helpers import EnumGroup, Group
 
 
-class Tool(Enum):
-    """
-    Contains all known tools from krita toolbox.
+class Tool(EnumGroup):
 
-    Extended with modes of the transform tool.
-
-    Example usage: `Tool.FREEHAND_BRUSH`
-    """
-
+    _vectors = Group("Vectors")
     SHAPE_SELECT = "InteractionTool"
     TEXT = "SvgTextTool"
     EDIT_SHAPES = "PathTool"
     CALLIGRAPHY = "KarbonCalligraphyTool"
+
+    _painting = Group("Painting")
     FREEHAND_BRUSH = "KritaShape/KisToolBrush"
     LINE = "KritaShape/KisToolLine"
     RECTANGLE = "KritaShape/KisToolRectangle"
@@ -30,6 +26,8 @@ class Tool(Enum):
     FREEHAND_PATH = "KisToolPencil"
     DYNAMIC_BRUSH = "KritaShape/KisToolDyna"
     MULTI_BRUSH = "KritaShape/KisToolMultiBrush"
+
+    _editing = Group("Editing")
     TRANSFORM = "KisToolTransform"
     MOVE = "KritaTransform/KisToolMove"
     CROP = "KisToolCrop"
@@ -39,9 +37,13 @@ class Tool(Enum):
     SMART_PATCH = "KritaShape/KisToolSmartPatch"
     FILL = "KritaFill/KisToolFill"
     ENCLOSE_AND_FILL = "KisToolEncloseAndFill"
+
+    _utility = Group("Utility")
     ASSISTANTS = "KisAssistantTool"
     MEASUREMENT = "KritaShape/KisToolMeasure"
     REFERENCE = "ToolReferenceImages"
+
+    _selection = Group("Selection")
     RECTANGULAR_SELECTION = "KisToolSelectRectangular"
     ELIPTICAL_SELECTION = "KisToolSelectElliptical"
     POLYGONAL_SELECTION = "KisToolSelectPolygonal"
@@ -50,6 +52,8 @@ class Tool(Enum):
     SIMILAR_COLOR_SELECTION = "KisToolSelectSimilar"
     BEZIER_SELECTION = "KisToolSelectPath"
     MAGNETIC_SELECTION = "KisToolSelectMagnetic"
+
+    _canvas_navigation = Group("Canvas navigation")
     ZOOM = "ZoomTool"
     PAN = "PanTool"
 
