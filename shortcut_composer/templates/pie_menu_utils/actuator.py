@@ -44,14 +44,10 @@ class Actuator:
 
     def activate(self, active: Optional[Label]) -> None:
         """Activate the correct label"""
-
         if active is not None:
             # Out of deadzone, label picked
             self._controller.set_value(active.value)
             self._last_label = active
-            return
-
-        if self._last_label is None:
             return
 
         # In deadzone
