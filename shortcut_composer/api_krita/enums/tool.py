@@ -60,10 +60,10 @@ class Tool(EnumGroup):
     def activate(self):
         Api.instance().action(self.value).trigger()
 
-    @staticmethod
-    def is_paintable(tool: 'Tool') -> bool:
+    @classmethod
+    def is_paintable(cls, tool: 'Tool') -> bool:
         """Is the user able to paint when the given tool is activated."""
-        return tool in _PAINTABLE
+        return tool in cls._painting  # type: ignore
 
     @property
     def icon(self) -> QIcon:
@@ -74,15 +74,3 @@ class Tool(EnumGroup):
     def pretty_name(self) -> str:
         """Format tool name like: `Shape select tool`."""
         return f"{self.name.replace('_', ' ').capitalize()} tool"
-
-
-_PAINTABLE = {
-    Tool.FREEHAND_BRUSH,
-    Tool.LINE,
-    Tool.ELLIPSE,
-    Tool.DYNAMIC_BRUSH,
-    Tool.RECTANGLE,
-    Tool.MULTI_BRUSH,
-    Tool.POLYLINE,
-}
-"""Set of tools that are used to paint on the canvas."""

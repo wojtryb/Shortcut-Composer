@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""Implementation of PieMenu main elements."""
+"""Components used by PieMenu action."""
 
 from .pie_config import PieConfig
 from .pie_settings import PieSettings

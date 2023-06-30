@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 from typing import Dict, List, Tuple, TypeVar, Optional
 from enum import Enum, EnumMeta
 T = TypeVar("T", bound=Enum)

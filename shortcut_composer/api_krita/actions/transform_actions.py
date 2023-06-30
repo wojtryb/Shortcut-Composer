@@ -38,15 +38,13 @@ class TransformModeActions:
             TransformMode.WARP: self.set_warp,
             TransformMode.CAGE: self.set_cage,
             TransformMode.LIQUIFY: self.set_liquify,
-            TransformMode.MESH: self.set_mesh,
-        }
+            TransformMode.MESH: self.set_mesh}
 
         for action, implementation in _ACTION_MAP.items():
             self._actions[action] = Krita.create_action(
                 window=window,
                 name=action.value,
-                callback=implementation
-            )
+                callback=implementation)
 
     def _set_mode(self, mode: TransformMode) -> None:
         """Set a passed mode. Implementation of the new krita tool."""
@@ -59,6 +57,7 @@ class TransformModeActions:
         self._delayed_click(mode)
 
     def _delayed_click(self, mode: TransformMode) -> None:
+        """Trigger an mode after short period of time to workaround a bug."""
         method = partial(self._finder.activate_mode, mode=mode, apply=False)
         QTimer.singleShot(40, method)
 
