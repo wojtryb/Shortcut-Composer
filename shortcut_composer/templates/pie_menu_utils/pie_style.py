@@ -131,7 +131,7 @@ class PieStyle:
 
         If custom one is not specified, use the default one.
         """
-        if not self._pie_config.USE_DEFAULT_THEME.read():
+        if self._pie_config.OVERRIDE_DEFAULT_THEME.read():
             return self._pie_config.ACTIVE_COLOR.read()
         else:
             return Config.default_active_color
@@ -144,7 +144,7 @@ class PieStyle:
         If custom one is not specified, use the default one.
         Opacity is stored in a separate field in <0-100> range
         """
-        if self._pie_config.USE_DEFAULT_THEME.read():
+        if not self._pie_config.OVERRIDE_DEFAULT_THEME.read():
             return Config.default_background_color
 
         background_color = self._pie_config.BACKGROUND_COLOR.read()

@@ -37,12 +37,13 @@ class PieConfig(FieldGroup, Generic[T], ABC):
         self.SAVE_LOCAL = self.field("Save local", save_local)
         self.DEADZONE_STRATEGY = self.field("deadzone", deadzone_strategy)
 
-        use_default = active_color is None and background_color is None
+        override_default = bool(active_color or background_color)
         if background_color is None:
             background_color = Krita.get_main_color_from_theme()
         if active_color is None:
             active_color = Krita.get_active_color_from_theme()
-        self.USE_DEFAULT_THEME = self.field("Use default theme", use_default)
+        self.OVERRIDE_DEFAULT_THEME = self.field(
+            "Override default theme", override_default)
         self.BACKGROUND_COLOR = self.field("Bg color", background_color)
         self.ACTIVE_COLOR = self.field("Active color", active_color)
         self.PIE_OPACITY = self.field("Pie opacity", pie_opacity)

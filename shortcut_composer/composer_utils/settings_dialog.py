@@ -73,15 +73,15 @@ class SettingsDialog(QDialog):
                 max_value=4),
 
             "Pie menu style",
-            Checkbox(
-                config_field=Config.USE_KRITA_THEME,
+            theme_checkbox := Checkbox(
+                config_field=Config.OVERRIDE_KRITA_THEME,
                 parent=self,
-                pretty_name="Use krita theme"),
-            ColorButton(
+                pretty_name="Override krita theme"),
+            bg_button := ColorButton(
                 config_field=Config.DEFAULT_BACKGROUND_COLOR,
                 parent=self,
                 pretty_name="Default background color"),
-            ColorButton(
+            active_button := ColorButton(
                 config_field=Config.DEFAULT_ACTIVE_COLOR,
                 parent=self,
                 pretty_name="Default active color"),
@@ -102,6 +102,14 @@ class SettingsDialog(QDialog):
             f"Maintainer: {__author__}\n"
             f"License: {__license__}",
         ])
+
+        def update_theme_state():
+            """Hide color buttons when not taken into consideration."""
+            enable_state = theme_checkbox.widget.isChecked()
+            bg_button.widget.setVisible(enable_state)
+            active_button.widget.setVisible(enable_state)
+        theme_checkbox.widget.stateChanged.connect(update_theme_state)
+        update_theme_state()
 
         full_layout = QVBoxLayout(self)
         full_layout.addWidget(self._general_tab)

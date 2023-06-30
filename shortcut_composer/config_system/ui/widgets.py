@@ -25,6 +25,7 @@ class SpinBoxInterface(Protocol, Generic[F]):
 
     def value(self) -> F: ...
     def setValue(self, val: F) -> None: ...
+    def setEnabled(self, a0: bool) -> None: ...
 
 
 class SpinBox(ConfigBasedWidget[F]):
@@ -191,6 +192,7 @@ class ColorButton(ConfigBasedWidget[QColor]):
 
 class Checkbox(ConfigBasedWidget[bool]):
     """Wrapper of QCheckBox linked to a `bool` configutation field."""
+
     def __init__(
         self,
         config_field: Field[bool],

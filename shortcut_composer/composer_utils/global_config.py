@@ -41,7 +41,7 @@ class GlobalConfig(FieldGroup):
             default_bg_color = QColor(75, 75, 75)
         else:
             default_bg_color = QColor(210, 210, 210)
-        self.USE_KRITA_THEME = self.field("Use krita theme", False)
+        self.OVERRIDE_KRITA_THEME = self.field("Override krita theme", True)
         self.DEFAULT_BACKGROUND_COLOR = self.field(
             "Global bg color", default_bg_color)
         self.DEFAULT_ACTIVE_COLOR = self.field(
@@ -56,10 +56,10 @@ class GlobalConfig(FieldGroup):
     @property
     def default_background_color(self) -> QColor:
         """Color of pies, when the pie does not specify a custom one."""
-        if self.USE_KRITA_THEME.read():
-            bg_color = Krita.get_main_color_from_theme()
-        else:
+        if self.OVERRIDE_KRITA_THEME.read():
             bg_color = self.DEFAULT_BACKGROUND_COLOR.read()
+        else:
+            bg_color = Krita.get_main_color_from_theme()
         opacity = self.DEFAULT_PIE_OPACITY.read() * 255 / 100
         bg_color.setAlpha(round(opacity))
         return bg_color
@@ -67,9 +67,9 @@ class GlobalConfig(FieldGroup):
     @property
     def default_active_color(self) -> QColor:
         """Pie highlight color, when the pie does not specify a custom one."""
-        if self.USE_KRITA_THEME.read():
-            return Krita.get_active_color_from_theme()
-        return self.DEFAULT_ACTIVE_COLOR.read()
+        if self.OVERRIDE_KRITA_THEME.read():
+            return self.DEFAULT_ACTIVE_COLOR.read()
+        return Krita.get_active_color_from_theme()
 
 
 Config = GlobalConfig("ShortcutComposer")

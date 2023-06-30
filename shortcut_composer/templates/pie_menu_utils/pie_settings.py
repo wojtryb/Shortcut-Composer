@@ -84,25 +84,35 @@ class PieSettings(AnimatedWidget, BaseWidget):
                 max_value=4),
 
             "Style",
-            Checkbox(
-                config_field=config.USE_DEFAULT_THEME,
+            theme_checkbox := Checkbox(
+                config_field=config.OVERRIDE_DEFAULT_THEME,
                 parent=self,
-                pretty_name="Use default theme"),
-            ColorButton(
+                pretty_name="Override default theme"),
+            bg_button := ColorButton(
                 config_field=config.BACKGROUND_COLOR,
                 parent=self,
                 pretty_name="Background color"),
-            ColorButton(
+            active_button := ColorButton(
                 config_field=config.ACTIVE_COLOR,
                 parent=self,
                 pretty_name="Active color"),
-            SpinBox(
+            opacity_picker := SpinBox(
                 config_field=config.PIE_OPACITY,
                 parent=self,
                 pretty_name="Pie opacity",
                 step=1,
                 max_value=100),
         ])
+
+        def update_theme_state():
+            """Hide color buttons when not taken into consideration."""
+            enable_state = theme_checkbox.widget.isChecked()
+            bg_button.widget.setVisible(enable_state)
+            active_button.widget.setVisible(enable_state)
+            opacity_picker.widget.setEnabled(enable_state)
+        theme_checkbox.widget.stateChanged.connect(update_theme_state)
+        update_theme_state()
+
         self._tab_holder.addTab(self._local_settings, "Preferences")
         self._tab_holder.addTab(LocationTab(self._config), "Save location")
 
