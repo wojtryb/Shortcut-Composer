@@ -31,21 +31,23 @@ class GlobalConfig(FieldGroup):
             "Tracker sensitivity scale", 1.0)
         self.TRACKER_DEADZONE = self.field("Tracker deadzone", 0)
         self.FPS_LIMIT = self.field("FPS limit", 60)
+
         self.PIE_GLOBAL_SCALE = self.field("Pie global scale", 1.0)
         self.PIE_ICON_GLOBAL_SCALE = self.field("Pie icon global scale", 1.0)
         self.PIE_DEADZONE_GLOBAL_SCALE = self.field(
             "Pie deadzone global scale", 1.0)
         self.PIE_ANIMATION_TIME = self.field("Pie animation time", 0.2)
 
-        if not Krita.is_light_theme_active:
-            default_bg_color = QColor(75, 75, 75)
-        else:
-            default_bg_color = QColor(210, 210, 210)
-        self.OVERRIDE_KRITA_THEME = self.field("Override krita theme", True)
+        self.OVERRIDE_BACKGROUND_THEME_COLOR = self.field(
+            "Override background theme color", False)
         self.DEFAULT_BACKGROUND_COLOR = self.field(
-            "Global bg color", default_bg_color)
+            "Global bg color", Krita.get_main_color_from_theme())
+
+        self.OVERRIDE_ACTIVE_THEME_COLOR = self.field(
+            "Override active theme color", True)
         self.DEFAULT_ACTIVE_COLOR = self.field(
             "Global active color", QColor(100, 150, 230))
+
         self.DEFAULT_PIE_OPACITY = self.field("Global pie opacity", 75)
 
     def get_sleep_time(self) -> int:
@@ -56,7 +58,7 @@ class GlobalConfig(FieldGroup):
     @property
     def default_background_color(self) -> QColor:
         """Color of pies, when the pie does not specify a custom one."""
-        if self.OVERRIDE_KRITA_THEME.read():
+        if self.OVERRIDE_BACKGROUND_THEME_COLOR.read():
             bg_color = self.DEFAULT_BACKGROUND_COLOR.read()
         else:
             bg_color = Krita.get_main_color_from_theme()
@@ -67,7 +69,7 @@ class GlobalConfig(FieldGroup):
     @property
     def default_active_color(self) -> QColor:
         """Pie highlight color, when the pie does not specify a custom one."""
-        if self.OVERRIDE_KRITA_THEME.read():
+        if self.OVERRIDE_ACTIVE_THEME_COLOR.read():
             return self.DEFAULT_ACTIVE_COLOR.read()
         return Krita.get_active_color_from_theme()
 
