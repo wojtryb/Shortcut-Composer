@@ -23,8 +23,11 @@ class PieConfig(FieldGroup, Generic[T], ABC):
 
     name: str
     """Name of field group."""
+
+    USE_DEFAULT_THEME: Field[bool]
     BACKGROUND_COLOR: Field[QColor]
     ACTIVE_COLOR: Field[QColor]
+    PIE_OPACITY: Field[float]
 
     SAVE_LOCAL: Field[bool]
     DEADZONE_STRATEGY: Field[DeadzoneStrategy]

@@ -1,10 +1,12 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Callable, Union
+from typing import List, Callable, Union, Optional
 from PyQt5.QtGui import QColor
+
 from config_system import Field
 from data_components import Tag, DeadzoneStrategy
+from api_krita import Krita
 from ..pie_config import PieConfig
 
 
@@ -23,8 +25,9 @@ class PresetPieConfig(PieConfig[str]):
         pie_radius_scale: float,
         icon_radius_scale: float,
         save_local: bool,
-        background_color: QColor,
-        active_color: QColor,
+        background_color: Optional[QColor],
+        active_color: Optional[QColor],
+        pie_opacity: int,
         deadzone_strategy: DeadzoneStrategy
     ) -> None:
         super().__init__(name)
@@ -41,8 +44,15 @@ class PresetPieConfig(PieConfig[str]):
         self.TAG_NAME = self._create_editable_dual_field("Tag", tag_name)
         self.ORDER = self._create_editable_dual_field("Values", [], str)
 
+        use_default = active_color is None and background_color is None
+        if background_color is None:
+            background_color = Krita.get_main_color_from_theme()
+        if active_color is None:
+            active_color = Krita.get_active_color_from_theme()
+        self.USE_DEFAULT_THEME = self.field("Use default theme", use_default)
         self.BACKGROUND_COLOR = self.field("Bg color", background_color)
         self.ACTIVE_COLOR = self.field("Active color", active_color)
+        self.PIE_OPACITY = self.field("Pie opacity", pie_opacity)
 
     @property
     def allow_value_edit(self) -> bool:

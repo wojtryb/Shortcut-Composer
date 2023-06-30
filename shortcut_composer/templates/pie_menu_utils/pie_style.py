@@ -126,20 +126,31 @@ class PieStyle:
 
     @property
     def active_color(self) -> QColor:
-        """Color of active element."""
-        if self._pie_config.ACTIVE_COLOR is not None:
+        """
+        Color of highlight, when label is active.
+
+        If custom one is not specified, use the default one.
+        """
+        if not self._pie_config.USE_DEFAULT_THEME.read():
             return self._pie_config.ACTIVE_COLOR.read()
         else:
-            return Krita.get_active_color_from_theme()
+            return Config.default_active_color
 
     @property
     def background_color(self) -> QColor:
-        """Color of base area. Depends on the app theme lightness"""
-        if self._pie_config.BACKGROUND_COLOR is not None:
-            return self._pie_config.BACKGROUND_COLOR.read()
-        bg_color = Krita.get_main_color_from_theme()
-        bg_color.setAlpha(190)
-        return bg_color
+        """
+        Color of pie background area.
+
+        If custom one is not specified, use the default one.
+        Opacity is stored in a separate field in <0-100> range
+        """
+        if self._pie_config.USE_DEFAULT_THEME.read():
+            return Config.default_background_color
+
+        background_color = self._pie_config.BACKGROUND_COLOR.read()
+        opacity = self._pie_config.PIE_OPACITY.read() * 255 / 100
+        background_color.setAlpha(round(opacity))
+        return background_color
 
     @property
     def active_color_dark(self):

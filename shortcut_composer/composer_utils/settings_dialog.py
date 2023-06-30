@@ -7,7 +7,7 @@ from PyQt5.QtGui import QCursor
 
 from INFO import __version__, __author__, __license__
 from api_krita import Krita
-from config_system.ui import ConfigFormWidget, ConfigSpinBox
+from config_system.ui import ConfigFormWidget, SpinBox, ColorButton, Checkbox
 from .global_config import Config
 from .buttons_layout import ButtonsLayout
 
@@ -25,19 +25,79 @@ class SettingsDialog(QDialog):
 
         self._general_tab = ConfigFormWidget([
             "Common settings",
-            ConfigSpinBox(
-                Config.SHORT_VS_LONG_PRESS_TIME, self, None, 0.05, 4),
-            ConfigSpinBox(Config.FPS_LIMIT, self, None, 5, 500),
+            SpinBox(
+                config_field=Config.SHORT_VS_LONG_PRESS_TIME,
+                parent=self,
+                pretty_name="Short vs long press time",
+                step=0.05,
+                max_value=4),
+            SpinBox(
+                config_field=Config.FPS_LIMIT,
+                parent=self,
+                pretty_name="FPS limit",
+                step=5,
+                max_value=50),
+
             "Cursor trackers",
-            ConfigSpinBox(
-                Config.TRACKER_SENSITIVITY_SCALE, self, None, 0.05, 400),
-            ConfigSpinBox(Config.TRACKER_DEADZONE, self, None, 1, 200),
-            "Pie menus display",
-            ConfigSpinBox(Config.PIE_GLOBAL_SCALE, self, None, 0.05, 4),
-            ConfigSpinBox(Config.PIE_ICON_GLOBAL_SCALE, self, None, 0.05, 4),
-            ConfigSpinBox(
-                Config.PIE_DEADZONE_GLOBAL_SCALE, self, None, 0.05, 4),
-            ConfigSpinBox(Config.PIE_ANIMATION_TIME, self, None, 0.01, 1),
+            SpinBox(
+                Config.TRACKER_SENSITIVITY_SCALE,
+                parent=self,
+                pretty_name="Tracker sensitivity scale",
+                step=0.05,
+                max_value=400),
+            SpinBox(
+                Config.TRACKER_DEADZONE,
+                parent=self,
+                pretty_name="Tracker deadzone",
+                step=1,
+                max_value=20),
+
+            "Pie menu size",
+            SpinBox(
+                Config.PIE_GLOBAL_SCALE,
+                parent=self,
+                pretty_name="Pie global scale",
+                step=0.05,
+                max_value=4),
+            SpinBox(
+                Config.PIE_ICON_GLOBAL_SCALE,
+                parent=self,
+                pretty_name="Pie icon global scale",
+                step=0.05,
+                max_value=4),
+            SpinBox(
+                Config.PIE_DEADZONE_GLOBAL_SCALE,
+                parent=self,
+                pretty_name="Pie deadzone global scale",
+                step=0.05,
+                max_value=4),
+
+            "Pie menu style",
+            Checkbox(
+                config_field=Config.USE_KRITA_THEME,
+                parent=self,
+                pretty_name="Use krita theme"),
+            ColorButton(
+                config_field=Config.DEFAULT_BACKGROUND_COLOR,
+                parent=self,
+                pretty_name="Default background color"),
+            ColorButton(
+                config_field=Config.DEFAULT_ACTIVE_COLOR,
+                parent=self,
+                pretty_name="Default active color"),
+            SpinBox(
+                config_field=Config.DEFAULT_PIE_OPACITY,
+                parent=self,
+                pretty_name="Default pie opacity",
+                step=1,
+                max_value=100),
+            SpinBox(
+                config_field=Config.PIE_ANIMATION_TIME,
+                parent=self,
+                pretty_name="Pie anumation time",
+                step=0.01,
+                max_value=1),
+
             f"Shortcut Composer v{__version__}\n"
             f"Maintainer: {__author__}\n"
             f"License: {__license__}",

@@ -3,7 +3,9 @@
 
 from typing import List, Callable, Generic, TypeVar
 from PyQt5.QtGui import QColor
+
 from data_components import DeadzoneStrategy
+from api_krita import Krita
 from ..pie_config import PieConfig
 
 T = TypeVar("T")
@@ -21,6 +23,7 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
         save_local: bool,
         background_color: QColor,
         active_color: QColor,
+        pie_opacity: int,
         deadzone_strategy: DeadzoneStrategy
     ) -> None:
         super().__init__(name)
@@ -32,8 +35,15 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
         self.DEADZONE_STRATEGY = self.field("deadzone", deadzone_strategy)
         self.ORDER = self._create_editable_dual_field("Values", values)
 
+        use_default = active_color is None and background_color is None
+        if background_color is None:
+            background_color = Krita.get_main_color_from_theme()
+        if active_color is None:
+            active_color = Krita.get_active_color_from_theme()
+        self.USE_DEFAULT_THEME = self.field("Use default theme", use_default)
         self.BACKGROUND_COLOR = self.field("Bg color", background_color)
         self.ACTIVE_COLOR = self.field("Active color", active_color)
+        self.PIE_OPACITY = self.field("Pie opacity", pie_opacity)
         self.allow_value_edit = True
 
     def values(self) -> List[T]:

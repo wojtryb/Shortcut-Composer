@@ -16,9 +16,10 @@ from api_krita import Krita
 from api_krita.pyqt import AnimatedWidget, BaseWidget, SafeConfirmButton
 from config_system.ui import (
     ConfigFormWidget,
-    ConfigSpinBox,
+    SpinBox,
     EnumComboBox,
-    ColorButton)
+    ColorButton,
+    Checkbox)
 from composer_utils import Config
 from data_components import DeadzoneStrategy
 from .pie_style import PieStyle
@@ -61,23 +62,32 @@ class PieSettings(AnimatedWidget, BaseWidget):
 
         self._tab_holder = QTabWidget()
         self._local_settings = ConfigFormWidget([
+            "Behaviour",
             EnumComboBox(
                 config_field=config.DEADZONE_STRATEGY,
                 parent=self,
                 pretty_name="On deadzone",
                 enum_type=DeadzoneStrategy),
-            ConfigSpinBox(
+
+            "Size",
+            SpinBox(
                 config_field=config.PIE_RADIUS_SCALE,
                 parent=self,
                 pretty_name="Pie scale",
                 step=0.05,
                 max_value=4),
-            ConfigSpinBox(
+            SpinBox(
                 config_field=config.ICON_RADIUS_SCALE,
                 parent=self,
                 pretty_name="Icon max scale",
                 step=0.05,
                 max_value=4),
+
+            "Style",
+            Checkbox(
+                config_field=config.USE_DEFAULT_THEME,
+                parent=self,
+                pretty_name="Use default theme"),
             ColorButton(
                 config_field=config.BACKGROUND_COLOR,
                 parent=self,
@@ -86,6 +96,12 @@ class PieSettings(AnimatedWidget, BaseWidget):
                 config_field=config.ACTIVE_COLOR,
                 parent=self,
                 pretty_name="Active color"),
+            SpinBox(
+                config_field=config.PIE_OPACITY,
+                parent=self,
+                pretty_name="Pie opacity",
+                step=1,
+                max_value=100),
         ])
         self._tab_holder.addTab(self._local_settings, "Preferences")
         self._tab_holder.addTab(LocationTab(self._config), "Save location")

@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from config_system import FieldGroup
+from PyQt5.QtGui import QColor
+from api_krita import Krita
 
 
 class GlobalConfig(FieldGroup):
@@ -35,10 +37,39 @@ class GlobalConfig(FieldGroup):
             "Pie deadzone global scale", 1.0)
         self.PIE_ANIMATION_TIME = self.field("Pie animation time", 0.2)
 
+        if not Krita.is_light_theme_active:
+            default_bg_color = QColor(75, 75, 75)
+        else:
+            default_bg_color = QColor(210, 210, 210)
+        self.USE_KRITA_THEME = self.field("Use krita theme", False)
+        self.DEFAULT_BACKGROUND_COLOR = self.field(
+            "Global bg color", default_bg_color)
+        self.DEFAULT_ACTIVE_COLOR = self.field(
+            "Global active color", QColor(100, 150, 230))
+        self.DEFAULT_PIE_OPACITY = self.field("Global pie opacity", 75)
+
     def get_sleep_time(self) -> int:
         """Read sleep time from FPS_LIMIT config field."""
         fps_limit = self.FPS_LIMIT.read()
         return round(1000/fps_limit) if fps_limit else 1
+
+    @property
+    def default_background_color(self) -> QColor:
+        """Color of pies, when the pie does not specify a custom one."""
+        if self.USE_KRITA_THEME.read():
+            bg_color = Krita.get_main_color_from_theme()
+        else:
+            bg_color = self.DEFAULT_BACKGROUND_COLOR.read()
+        opacity = self.DEFAULT_PIE_OPACITY.read() * 255 / 100
+        bg_color.setAlpha(round(opacity))
+        return bg_color
+
+    @property
+    def default_active_color(self) -> QColor:
+        """Pie highlight color, when the pie does not specify a custom one."""
+        if self.USE_KRITA_THEME.read():
+            return Krita.get_active_color_from_theme()
+        return self.DEFAULT_ACTIVE_COLOR.read()
 
 
 Config = GlobalConfig("ShortcutComposer")

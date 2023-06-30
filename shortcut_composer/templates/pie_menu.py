@@ -48,6 +48,10 @@ class PieMenu(RawInstructions, Generic[T]):
     - `icon_radius_scale` -- (optional) default icons size multiplier
     - `background_color`  -- (optional) default rgba color of background
     - `active_color`      -- (optional) default rgba color of active pie
+    - `pie opacity`       -- (optional) default opacity of the pie
+    - `save local`        -- (optional) default save location
+    - `deadzone strategy` -- (optional) default strategy what to do,
+                              when mouse does not leave deadzone
     - `short_vs_long_press_time` -- (optional) time [s] that specifies
                                     if key press is short or long
 
@@ -77,8 +81,9 @@ class PieMenu(RawInstructions, Generic[T]):
         instructions: Optional[List[Instruction]] = None,
         pie_radius_scale: float = 1.0,
         icon_radius_scale: float = 1.0,
-        background_color: QColor = QColor(70, 70, 70, 190),
-        active_color: QColor = QColor(100, 150, 230, 255),
+        background_color: Optional[QColor] = None,
+        active_color: Optional[QColor] = None,
+        pie_opacity: int = 75,
         save_local: bool = False,
         deadzone_strategy: DeadzoneStrategy = DeadzoneStrategy.DO_NOTHING,
         short_vs_long_press_time: Optional[float] = None
@@ -94,6 +99,7 @@ class PieMenu(RawInstructions, Generic[T]):
             save_local=save_local,
             background_color=background_color,
             active_color=active_color,
+            pie_opacity=pie_opacity,
             deadzone_strategy=deadzone_strategy)
         self._config.ORDER.register_callback(self._reset_labels)
 

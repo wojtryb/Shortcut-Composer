@@ -6,11 +6,11 @@ from typing import List, Optional
 from PyQt5.QtWidgets import QWidget
 
 from config_system import Field
-from config_system.ui import ConfigComboBox
+from config_system.ui import StringComboBox
 from .group_manager import GroupManager
 
 
-class GroupComboBox(ConfigComboBox):
+class GroupComboBox(StringComboBox):
 
     def __init__(
         self,
