@@ -113,12 +113,27 @@ class PieSettings(AnimatedWidget, BaseWidget):
         theme_checkbox.widget.stateChanged.connect(update_theme_state)
         update_theme_state()
 
-        self._tab_holder.addTab(self._local_settings, "Preferences")
+        preferences_widget = QWidget()
+        preferences = QVBoxLayout(self)
+        preferences.addWidget(self._local_settings)
+        preferences.addStretch()
+        preferences.addWidget(self._init_full_reset_button())
+        preferences_widget.setLayout(preferences)
+
+        self._tab_holder.addTab(preferences_widget, "Preferences")
         self._tab_holder.addTab(LocationTab(self._config), "Save location")
 
         layout = QVBoxLayout(self)
         layout.addWidget(self._tab_holder)
         self.setLayout(layout)
+
+    def _init_full_reset_button(self) -> SafeConfirmButton:
+        button = SafeConfirmButton(
+            text="Reset pie preferences",
+            icon=Krita.get_icon("edit-delete"))
+        button.clicked.connect(self._reset_config_to_default)
+        button.setFixedHeight(button.sizeHint().height()*2)
+        return button
 
     def show(self) -> None:
         """Show the window after its settings are refreshed."""
@@ -133,6 +148,15 @@ class PieSettings(AnimatedWidget, BaseWidget):
     def _reset(self) -> None:
         """React to change in pie size."""
         self.setMinimumHeight(self._style.widget_radius*2)
+
+    def _reset_config_to_default(self):
+        """
+        Reset widgets from preferences layout to default values.
+
+        Does not write to config yet, to prevent artifacts on pie.
+        """
+        for widget in self._local_settings.widgets:
+            widget.set(widget.config_field.default)
 
 
 class LocationTab(QWidget):
