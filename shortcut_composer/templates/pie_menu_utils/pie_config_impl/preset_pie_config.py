@@ -6,7 +6,6 @@ from PyQt5.QtGui import QColor
 
 from config_system import Field
 from data_components import Tag, DeadzoneStrategy
-from api_krita import Krita
 from ..pie_config import PieConfig
 
 
@@ -30,29 +29,22 @@ class PresetPieConfig(PieConfig[str]):
         pie_opacity: int,
         deadzone_strategy: DeadzoneStrategy
     ) -> None:
-        super().__init__(name)
-
-        self.PIE_RADIUS_SCALE = self.field("Pie scale", pie_radius_scale)
-        self.ICON_RADIUS_SCALE = self.field("Icon scale", icon_radius_scale)
-
-        self.SAVE_LOCAL = self.field("Save local", save_local)
-        self.DEADZONE_STRATEGY = self.field("deadzone", deadzone_strategy)
+        super().__init__(
+            name=name,
+            values=values,
+            pie_radius_scale=pie_radius_scale,
+            icon_radius_scale=icon_radius_scale,
+            save_local=save_local,
+            background_color=background_color,
+            active_color=active_color,
+            pie_opacity=pie_opacity,
+            deadzone_strategy=deadzone_strategy)
 
         tag_mode = isinstance(values, Tag)
         tag_name = values.tag_name if isinstance(values, Tag) else ""
         self.TAG_MODE = self._create_editable_dual_field("Tag mode", tag_mode)
         self.TAG_NAME = self._create_editable_dual_field("Tag", tag_name)
         self.ORDER = self._create_editable_dual_field("Values", [], str)
-
-        use_default = active_color is None and background_color is None
-        if background_color is None:
-            background_color = Krita.get_main_color_from_theme()
-        if active_color is None:
-            active_color = Krita.get_active_color_from_theme()
-        self.USE_DEFAULT_THEME = self.field("Use default theme", use_default)
-        self.BACKGROUND_COLOR = self.field("Bg color", background_color)
-        self.ACTIVE_COLOR = self.field("Active color", active_color)
-        self.PIE_OPACITY = self.field("Pie opacity", pie_opacity)
 
     @property
     def allow_value_edit(self) -> bool:

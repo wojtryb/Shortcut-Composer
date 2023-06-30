@@ -1,11 +1,10 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Callable, Generic, TypeVar
+from typing import List, Callable, Generic, TypeVar, Optional
 from PyQt5.QtGui import QColor
 
 from data_components import DeadzoneStrategy
-from api_krita import Krita
 from ..pie_config import PieConfig
 
 T = TypeVar("T")
@@ -21,29 +20,23 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
         pie_radius_scale: float,
         icon_radius_scale: float,
         save_local: bool,
-        background_color: QColor,
-        active_color: QColor,
+        background_color: Optional[QColor],
+        active_color: Optional[QColor],
         pie_opacity: int,
         deadzone_strategy: DeadzoneStrategy
     ) -> None:
-        super().__init__(name)
+        super().__init__(
+            name=name,
+            values=values,
+            pie_radius_scale=pie_radius_scale,
+            icon_radius_scale=icon_radius_scale,
+            save_local=save_local,
+            background_color=background_color,
+            active_color=active_color,
+            pie_opacity=pie_opacity,
+            deadzone_strategy=deadzone_strategy)
 
-        self.PIE_RADIUS_SCALE = self.field("Pie scale", pie_radius_scale)
-        self.ICON_RADIUS_SCALE = self.field("Icon scale", icon_radius_scale)
-
-        self.SAVE_LOCAL = self.field("Save local", save_local)
-        self.DEADZONE_STRATEGY = self.field("deadzone", deadzone_strategy)
-        self.ORDER = self._create_editable_dual_field("Values", values)
-
-        use_default = active_color is None and background_color is None
-        if background_color is None:
-            background_color = Krita.get_main_color_from_theme()
-        if active_color is None:
-            active_color = Krita.get_active_color_from_theme()
-        self.USE_DEFAULT_THEME = self.field("Use default theme", use_default)
-        self.BACKGROUND_COLOR = self.field("Bg color", background_color)
-        self.ACTIVE_COLOR = self.field("Active color", active_color)
-        self.PIE_OPACITY = self.field("Pie opacity", pie_opacity)
+        self.ORDER = self._create_editable_dual_field("Values", self._values)
         self.allow_value_edit = True
 
     def values(self) -> List[T]:
