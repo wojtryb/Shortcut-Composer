@@ -28,6 +28,10 @@ class PieButton(RoundButton):
         config: PieConfig,
         parent: Optional[QWidget] = None,
     ) -> None:
+        self._radius_callback = radius_callback
+        self._style = style
+        config.register_callback(self.refresh)
+
         super().__init__(
             icon=icon,
             icon_scale=icon_scale,
@@ -36,4 +40,8 @@ class PieButton(RoundButton):
             active_color=style.active_color,
             parent=parent)
 
-        config.register_callback(lambda: self.resize(radius_callback()))
+    def refresh(self) -> None:
+        self._radius = self._radius_callback()
+        self._background_color = self._style.background_color
+        self._active_color = self._style.active_color
+        super().refresh()
