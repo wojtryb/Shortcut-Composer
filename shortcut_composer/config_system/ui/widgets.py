@@ -188,6 +188,9 @@ class ColorButton(ConfigBasedWidget[QColor]):
                 self.set(fetched_color)
 
         button = QPushButton("")
+        policy = button.sizePolicy()
+        policy.setRetainSizeWhenHidden(True)
+        button.setSizePolicy(policy)
         button.clicked.connect(on_click)
         return button
 
