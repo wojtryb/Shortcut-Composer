@@ -42,9 +42,16 @@ class PresetPieConfig(PieConfig[str]):
 
         tag_mode = isinstance(values, Tag)
         tag_name = values.tag_name if isinstance(values, Tag) else ""
-        self.TAG_MODE = self._create_editable_dual_field("Tag mode", tag_mode)
-        self.TAG_NAME = self._create_editable_dual_field("Tag", tag_name)
-        self.ORDER = self._create_editable_dual_field("Values", [], str)
+        self.TAG_MODE = self._create_editable_dual_field(
+            field_name="Tag mode",
+            default=tag_mode)
+        self.TAG_NAME = self._create_editable_dual_field(
+            field_name="Tag",
+            default=tag_name)
+        self.ORDER = self._create_editable_dual_field(
+            field_name="Values",
+            default=[],
+            parser_type=str)
 
     @property
     def allow_value_edit(self) -> bool:

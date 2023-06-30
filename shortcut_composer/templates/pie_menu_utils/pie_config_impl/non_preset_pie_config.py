@@ -36,7 +36,9 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
             pie_opacity=pie_opacity,
             deadzone_strategy=deadzone_strategy)
 
-        self.ORDER = self._create_editable_dual_field("Values", self._values)
+        self.ORDER = self._create_editable_dual_field(
+            field_name="Values",
+            default=self._values)
         self.allow_value_edit = True
 
     def values(self) -> List[T]:

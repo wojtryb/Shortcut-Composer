@@ -31,22 +31,38 @@ class PieConfig(FieldGroup, Generic[T], ABC):
         super().__init__(name)
         self._values = values
 
-        self.PIE_RADIUS_SCALE = self.field("Pie scale", pie_radius_scale)
-        self.ICON_RADIUS_SCALE = self.field("Icon scale", icon_radius_scale)
+        self.PIE_RADIUS_SCALE = self.field(
+            name="Pie scale",
+            default=pie_radius_scale)
+        self.ICON_RADIUS_SCALE = self.field(
+            name="Icon scale",
+            default=icon_radius_scale)
 
-        self.SAVE_LOCAL = self.field("Save local", save_local)
-        self.DEADZONE_STRATEGY = self.field("deadzone", deadzone_strategy)
+        self.SAVE_LOCAL = self.field(
+            name="Save local",
+            default=save_local)
+        self.DEADZONE_STRATEGY = self.field(
+            name="deadzone",
+            default=deadzone_strategy)
 
         override_default = bool(active_color or background_color)
         if background_color is None:
             background_color = Krita.get_main_color_from_theme()
         if active_color is None:
             active_color = Krita.get_active_color_from_theme()
+
         self.OVERRIDE_DEFAULT_THEME = self.field(
-            "Override default theme", override_default)
-        self.BACKGROUND_COLOR = self.field("Bg color", background_color)
-        self.ACTIVE_COLOR = self.field("Active color", active_color)
-        self.PIE_OPACITY = self.field("Pie opacity", pie_opacity)
+            name="Override default theme",
+            default=override_default)
+        self.BACKGROUND_COLOR = self.field(
+            name="Background color",
+            default=background_color)
+        self.ACTIVE_COLOR = self.field(
+            name="Active color",
+            default=active_color)
+        self.PIE_OPACITY = self.field(
+            name="Pie opacity",
+            default=pie_opacity)
 
     allow_value_edit: bool
     """Is it allowed to remove elements in runtime. """
