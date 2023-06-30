@@ -177,13 +177,15 @@ class ColorButton(ConfigBasedWidget[QColor]):
     def set(self, value: QColor) -> None:
         """Remember given color, and replace current button color with it."""
         self._color = value
-        self._button.setStyleSheet(
-            f"background-color: {self._color.name()}; border: none")
+        self._button.setStyleSheet(f"background-color: {self._color.name()}")
 
     def _init_button(self) -> QPushButton:
         """Return the QPushButton widget."""
         def on_click():
-            self.set(QColorDialog.getColor(self._color))
+            """Set the selected color, if the dialog was not cancelled."""
+            fetched_color = QColorDialog.getColor(self._color)
+            if fetched_color.isValid():
+                self.set(fetched_color)
 
         button = QPushButton("")
         button.clicked.connect(on_click)
