@@ -98,7 +98,7 @@ class SettingsDialog(QDialog):
             SpinBox(
                 config_field=Config.PIE_ANIMATION_TIME,
                 parent=self,
-                pretty_name="Pie anumation time",
+                pretty_name="Pie animation time",
                 step=0.01,
                 max_value=1),
 
