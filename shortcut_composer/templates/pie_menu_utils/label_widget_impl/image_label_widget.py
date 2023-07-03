@@ -38,12 +38,16 @@ class ImageLabelWidget(LabelWidget):
                 outer_radius=self.icon_radius,
                 color=self._style.icon_color)
 
+            if self._is_unscaled:
+                thickness = self._style.unscaled_border_thickness
+            else:
+                thickness = self._style.border_thickness
             painter.paint_wheel(
                 center=self.center,
                 outer_radius=(
-                    self.icon_radius-self._style.border_thickness//2),
+                    self.icon_radius-thickness//3),
                 color=self._border_color,
-                thickness=self._style.border_thickness)
+                thickness=thickness)
             painter.paint_pixmap(self.center, self.ready_image)
 
     def _prepare_image(self) -> QPixmap:
@@ -56,4 +60,4 @@ class ImageLabelWidget(LabelWidget):
         rounded_image = PixmapTransform.make_pixmap_round(to_display)
         return PixmapTransform.scale_pixmap(
             pixmap=rounded_image,
-            size_px=round(self.icon_radius*1.8))
+            size_px=round(self.icon_radius*1.725))

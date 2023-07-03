@@ -72,6 +72,13 @@ class PiePainter:
             color=self.style.border_color,
             thickness=self.style.border_thickness)
 
+        thickness = self.style.border_thickness
+        self.painter.paint_wheel(
+            center=self._center,
+            outer_radius=self.style.inner_edge_radius + thickness,
+            color=self.style.pie_border_color,
+            thickness=thickness)
+
     def _paint_active_pie(self) -> None:
         """Paint a pie behind a label which is active or during animation."""
         for label in self.labels:

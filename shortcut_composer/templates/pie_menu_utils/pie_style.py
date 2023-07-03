@@ -95,7 +95,12 @@ class PieStyle:
     @property
     def border_thickness(self):
         """Thickness of border around icons."""
-        return round(self.unscaled_icon_radius*0.06)
+        return round(self.icon_radius*0.09)
+
+    @property
+    def unscaled_border_thickness(self):
+        """Thickness of border of the pie."""
+        return round(self.unscaled_icon_radius*0.09)
 
     @property
     def area_thickness(self):
@@ -175,6 +180,13 @@ class PieStyle:
             min(self.icon_color.green()+15, 255),
             min(self.icon_color.blue()+15, 255),
             255)
+
+    @property
+    def pie_border_color(self):
+        """Color of dark border of the pie."""
+        color = self.icon_color
+        color = QColor(color.red()-5, color.green()-5, color.blue()-5, 120)
+        return color
 
     @property
     def font_multiplier(self):
