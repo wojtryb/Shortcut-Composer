@@ -96,6 +96,7 @@ class ScrollArea(QWidget):
         label.setSizePolicy(
             QSizePolicy.Ignored,
             QSizePolicy.Expanding)
+        label.setMaximumHeight(label.sizeHint().height()*2)
         label.setWordWrap(True)
         return label
 
