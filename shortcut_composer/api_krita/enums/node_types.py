@@ -35,4 +35,4 @@ class NodeType(Enum):
     @property
     def pretty_name(self) -> str:
         """Format node type name like: `Paint layer`."""
-        return f"{self.name[0]}{self.name[1:].lower().replace('_', ' ')}"
+        return f"{self.name.replace('_', ' ').capitalize()}"

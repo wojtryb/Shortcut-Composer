@@ -3,6 +3,7 @@
 
 from krita import Krita as Api
 
+from typing import Optional
 from PyQt5.QtGui import QIcon
 from .helpers import EnumGroup, Group
 
@@ -10,10 +11,10 @@ from .helpers import EnumGroup, Group
 class Tool(EnumGroup):
 
     _vectors = Group("Vectors")
-    SHAPE_SELECT = "InteractionTool"
+    SHAPE_SELECT = "InteractionTool", "Select Shapes Tool"
     TEXT = "SvgTextTool"
     EDIT_SHAPES = "PathTool"
-    CALLIGRAPHY = "KarbonCalligraphyTool"
+    CALLIGRAPHY = "KarbonCalligraphyTool", "Calligraphy"
 
     _painting = Group("Painting")
     FREEHAND_BRUSH = "KritaShape/KisToolBrush"
@@ -32,16 +33,16 @@ class Tool(EnumGroup):
     MOVE = "KritaTransform/KisToolMove"
     CROP = "KisToolCrop"
     GRADIENT = "KritaFill/KisToolGradient"
-    COLOR_SAMPLER = "KritaSelected/KisToolColorSampler"
+    COLOR_SAMPLER = "KritaSelected/KisToolColorSampler", "Color Sampler"
     COLORIZE_MASK = "KritaShape/KisToolLazyBrush"
     SMART_PATCH = "KritaShape/KisToolSmartPatch"
     FILL = "KritaFill/KisToolFill"
-    ENCLOSE_AND_FILL = "KisToolEncloseAndFill"
+    ENCLOSE_AND_FILL = "KisToolEncloseAndFill", "Enclose and Fill Tool"
 
     _utility = Group("Utility")
-    ASSISTANTS = "KisAssistantTool"
+    ASSISTANTS = "KisAssistantTool", "Assistant Tool"
     MEASUREMENT = "KritaShape/KisToolMeasure"
-    REFERENCE = "ToolReferenceImages"
+    REFERENCE = "ToolReferenceImages", "Reference Images Tool"
 
     _selection = Group("Selection")
     RECTANGULAR_SELECTION = "KisToolSelectRectangular"
@@ -57,6 +58,17 @@ class Tool(EnumGroup):
     ZOOM = "ZoomTool"
     PAN = "PanTool"
 
+    def __init__(self, value: str, pretty_name: Optional[str] = None):
+        self._value_ = value
+        self._custom_pretty_name = pretty_name
+
+    @property
+    def pretty_name(self) -> str:
+        """Format tool name as in Krita Blending Mode combobox."""
+        if self._custom_pretty_name is not None:
+            return self._custom_pretty_name
+        return f"{self.name.replace('_', ' ').title()} Tool"
+
     def activate(self):
         Api.instance().action(self.value).trigger()
 
@@ -69,8 +81,3 @@ class Tool(EnumGroup):
     def icon(self) -> QIcon:
         """Return the icon of this tool."""
         return Api.instance().action(self.value).icon()
-
-    @property
-    def pretty_name(self) -> str:
-        """Format tool name like: `Shape select tool`."""
-        return f"{self.name.replace('_', ' ').capitalize()} tool"

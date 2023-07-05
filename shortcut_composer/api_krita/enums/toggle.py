@@ -29,7 +29,7 @@ class Toggle(Enum):
     @property
     def pretty_name(self) -> str:
         """Format toggle name like: `Preserve alpha`."""
-        return f"{self.name[0]}{self.name[1:].lower().replace('_', ' ')}"
+        return f"{self.name.replace('_', ' ').capitalize()}"
 
     @property
     def state(self) -> bool:
