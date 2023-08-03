@@ -37,4 +37,7 @@ class ImageLabelWidget(LabelWidget):
         rounded_image = PixmapTransform.make_pixmap_round(to_display)
         return PixmapTransform.scale_pixmap(
             pixmap=rounded_image,
-            size_px=round((self.icon_radius-self._thickness)*2))
+            size_px=round((
+                self.icon_radius
+                - self._thin_border_thickness
+                - self._active_indicator_thickness)*2))

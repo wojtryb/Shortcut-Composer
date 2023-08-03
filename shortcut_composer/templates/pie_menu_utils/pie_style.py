@@ -94,12 +94,12 @@ class PieStyle:
     @property
     def border_thickness(self):
         """Thickness of border around icons."""
-        return round(self.icon_radius*0.12)
+        return round(self.icon_radius*0.05)
 
     @property
     def unscaled_border_thickness(self):
         """Thickness of border of the pie."""
-        return round(self.unscaled_icon_radius*0.12)
+        return round(self.unscaled_icon_radius*0.05)
 
     @property
     def area_thickness(self):
@@ -110,11 +110,6 @@ class PieStyle:
     def inner_edge_radius(self):
         """Radius at which the base area starts."""
         return self.pie_radius - self.area_thickness
-
-    @property
-    def no_border_radius(self):
-        """Radius at which pie decoration border starts."""
-        return self.pie_radius - self.border_thickness//2
 
     @property
     def setting_button_radius(self) -> int:

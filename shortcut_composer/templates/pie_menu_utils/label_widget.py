@@ -65,16 +65,18 @@ class LabelWidget(BaseWidget):
         # label background
         painter.paint_wheel(
             center=self.center,
-            outer_radius=self.icon_radius-self._thickness,
+            outer_radius=(
+                self.icon_radius
+                - self._thin_border_thickness
+                - self._active_indicator_thickness),
             color=Krita.get_main_color_from_theme())
 
         # label thin border
-        border_size = self._thickness//3
         painter.paint_wheel(
             center=self.center,
-            outer_radius=self.icon_radius-self._thickness+border_size,
+            outer_radius=self.icon_radius-self._active_indicator_thickness,
             color=self._style.border_color,
-            thickness=border_size)
+            thickness=self._thin_border_thickness)
 
         # label thick border when label when disabled
         if not self.enabled:
@@ -82,7 +84,7 @@ class LabelWidget(BaseWidget):
                 center=self.center,
                 outer_radius=self.icon_radius,
                 color=self._style.active_color_dark,
-                thickness=self._thickness//3*2)
+                thickness=self._active_indicator_thickness)
 
         # label thick border when hovered (or it is forced)
         if self.forced or (self._hovered and self.draggable):
@@ -90,13 +92,17 @@ class LabelWidget(BaseWidget):
                 center=self.center,
                 outer_radius=self.icon_radius,
                 color=self._border_active_color,
-                thickness=self._thickness//3*2)
+                thickness=self._active_indicator_thickness)
 
     @property
-    def _thickness(self):
+    def _thin_border_thickness(self):
         if self._is_unscaled:
             return self._style.unscaled_border_thickness
         return self._style.border_thickness
+
+    @property
+    def _active_indicator_thickness(self):
+        return self._thin_border_thickness*2
 
     @property
     def draggable(self) -> bool:
