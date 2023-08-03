@@ -63,14 +63,15 @@ class LabelWidget(BaseWidget):
         """
         painter.paint_wheel(
             center=self.center,
-            outer_radius=self.icon_radius-1,
+            outer_radius=self.icon_radius-self._thickness,
             color=self._style.icon_color)
 
+        border_size = self._thickness//3
         painter.paint_wheel(
             center=self.center,
-            outer_radius=self.icon_radius,
+            outer_radius=self.icon_radius-self._thickness+border_size,
             color=self._style.border_color,
-            thickness=self._thickness)
+            thickness=border_size)
 
         if not self.enabled:
             painter.paint_wheel(
