@@ -169,6 +169,13 @@ class PieStyle:
             255)
 
     @property
+    def pie_decorator_color(self):
+        """Color of decorator near inner pie edge."""
+        color = self.background_color
+        color = QColor(color.red()-5, color.green()-5, color.blue()-5, 60)
+        return color
+
+    @property
     def font_multiplier(self):
         """Multiplier to apply to the font depending on the used OS."""
         return self.SYSTEM_FONT_SIZE[platform.system()]
