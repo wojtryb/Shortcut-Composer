@@ -4,7 +4,6 @@
 import math
 import platform
 from typing import TYPE_CHECKING
-from copy import copy
 
 from PyQt5.QtGui import QColor
 
@@ -180,13 +179,6 @@ class PieStyle:
             min(self.background_color.green()+15, 255),
             min(self.background_color.blue()+15, 255),
             255)
-
-    @property
-    def pie_border_color(self):
-        """Color of dark border of the pie."""
-        color = self.background_color
-        color = QColor(color.red()-5, color.green()-5, color.blue()-5, 120)
-        return color
 
     @property
     def font_multiplier(self):

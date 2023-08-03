@@ -61,11 +61,13 @@ class LabelWidget(BaseWidget):
 
         Paint a background behind a label its border, and image itself.
         """
+        # label background
         painter.paint_wheel(
             center=self.center,
             outer_radius=self.icon_radius-self._thickness,
             color=self._style.icon_color)
 
+        # label thin border
         border_size = self._thickness//3
         painter.paint_wheel(
             center=self.center,
@@ -73,6 +75,7 @@ class LabelWidget(BaseWidget):
             color=self._style.border_color,
             thickness=border_size)
 
+        # label thick border when label when disabled
         if not self.enabled:
             painter.paint_wheel(
                 center=self.center,
@@ -80,6 +83,7 @@ class LabelWidget(BaseWidget):
                 color=self._style.active_color_dark,
                 thickness=self._thickness//3*2)
 
+        # label thick border when hovered (or it is forced)
         if self.forced or (self._hovered and self.draggable):
             painter.paint_wheel(
                 center=self.center,

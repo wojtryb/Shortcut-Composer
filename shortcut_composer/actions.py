@@ -194,6 +194,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         pie_radius_scale=0.9
     ),
 
+
     # Use pie menu to pick one of the actions
     templates.PieMenu(
         name="Activate krita action (red)",
@@ -205,9 +206,8 @@ def create_actions() -> List[templates.RawInstructions]: return [
             Action.PRESERVE_ALPHA,
             Action.MIRROR_CANVAS,
         ],
-        background_color=QColor(140, 90, 90, 190),
+        background_color=QColor(95, 65, 65, 190),
         active_color=QColor(200, 70, 70),
-        pie_opacity=50,
     ),
 
     # Use pie menu to pick one of the actions
@@ -221,9 +221,8 @@ def create_actions() -> List[templates.RawInstructions]: return [
             Action.VIEW_ONION_SKIN,
             Action.RECORD_TIMELAPSE,
         ],
-        background_color=QColor(80, 130, 80, 190),
+        background_color=QColor(65, 95, 65, 190),
         active_color=QColor(70, 200, 70),
-        pie_opacity=50,
     ),
 
     # Use pie menu to pick one of the actions
@@ -237,9 +236,8 @@ def create_actions() -> List[templates.RawInstructions]: return [
             Action.TOGGLE_LAYER_ALPHA,
             Action.TOGGLE_LAYER_LOCK,
         ],
-        background_color=QColor(90, 90, 140, 190),
+        background_color=QColor(70, 70, 105, 190),
         active_color=QColor(110, 160, 235),
-        pie_opacity=50,
     ),
 
     # Use pie menu to pick one of the brush blending modes.
