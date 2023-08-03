@@ -62,9 +62,9 @@ class PiePainter:
             center=self._center,
             outer_radius=self.style.pie_radius,
             color=self.style.background_color,
-            thickness=self.style.area_thickness)
+            thickness=self.style.area_thickness+self.style.border_thickness//2)
 
-        # base wheel decorator
+        # base wheel border
         self.painter.paint_wheel(
             center=self._center,
             outer_radius=self.style.inner_edge_radius,

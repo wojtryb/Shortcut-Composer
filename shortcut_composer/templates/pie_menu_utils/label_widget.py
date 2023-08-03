@@ -67,8 +67,8 @@ class LabelWidget(BaseWidget):
             center=self.center,
             outer_radius=(
                 self.icon_radius
-                - self._thin_border_thickness
-                - self._active_indicator_thickness),
+                - self._active_indicator_thickness
+                - self._thin_border_thickness//2),
             color=Krita.get_main_color_from_theme())
 
         # label thin border
