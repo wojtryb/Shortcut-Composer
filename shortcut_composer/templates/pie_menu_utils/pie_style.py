@@ -165,13 +165,6 @@ class PieStyle:
             round(self.active_color.blue()*0.8))
 
     @property
-    def icon_color(self):
-        """Color of icon background."""
-        if Krita.is_light_theme_active:
-            return QColor(220, 220, 220)
-        return QColor(75, 75, 75)
-
-    @property
     def border_color(self):
         """Color of icon borders."""
         return QColor(

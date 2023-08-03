@@ -5,6 +5,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont, QColor, QFontDatabase
 from PyQt5.QtWidgets import QLabel, QWidget
 
+from api_krita import Krita
 from api_krita.pyqt import Text
 from ..pie_style import PieStyle
 from ..label import Label
@@ -41,7 +42,8 @@ class TextLabelWidget(LabelWidget):
         label.move(self.center.x()-heigth,
                    self.center.y()-heigth//2)
         label.setStyleSheet(f'''
-            background-color:rgba({self._color_to_str(self._style.icon_color)});
+            background-color:rgba({self._color_to_str(
+            Krita.get_main_color_from_theme())});
             color:rgba({self._color_to_str(to_display.color)});
         ''')
 

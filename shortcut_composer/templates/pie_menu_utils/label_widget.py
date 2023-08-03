@@ -7,6 +7,7 @@ from PyQt5.QtCore import Qt, QMimeData, QEvent
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QDrag, QPixmap, QMouseEvent, QPaintEvent
 
+from api_krita import Krita
 from api_krita.pyqt import Painter, PixmapTransform, BaseWidget
 from .pie_style import PieStyle
 from .label import Label
@@ -65,7 +66,7 @@ class LabelWidget(BaseWidget):
         painter.paint_wheel(
             center=self.center,
             outer_radius=self.icon_radius-self._thickness,
-            color=self._style.icon_color)
+            color=Krita.get_main_color_from_theme())
 
         # label thin border
         border_size = self._thickness//3
