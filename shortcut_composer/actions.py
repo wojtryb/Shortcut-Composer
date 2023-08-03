@@ -196,14 +196,50 @@ def create_actions() -> List[templates.RawInstructions]: return [
 
     # Use pie menu to pick one of the actions
     templates.PieMenu(
-        name="Activate krita action",
+        name="Activate krita action (red)",
         controller=controllers.ActionController(),
         values=[
-            Action.BLUR,
-            Action.SAVE,
-            Action.UNDO,
-            Action.TOGGLE_LAYER_ALPHA
+            Action.HORIZONTAL_MIRROR_TOOL,
+            Action.WRAP_AROUND_MODE,
+            Action.ERASER,
+            Action.PRESERVE_ALPHA,
+            Action.MIRROR_CANVAS,
         ],
+        background_color=QColor(140, 90, 90, 190),
+        active_color=QColor(200, 70, 70),
+        pie_opacity=50,
+    ),
+
+    # Use pie menu to pick one of the actions
+    templates.PieMenu(
+        name="Activate krita action (green)",
+        controller=controllers.ActionController(),
+        values=[
+            Action.CREATE_BLANK_FRAME,
+            Action.CREATE_DUPLICATE_FRAME,
+            Action.REMOVE_KEYFRAME,
+            Action.VIEW_ONION_SKIN,
+            Action.RECORD_TIMELAPSE,
+        ],
+        background_color=QColor(80, 130, 80, 190),
+        active_color=QColor(70, 200, 70),
+        pie_opacity=50,
+    ),
+
+    # Use pie menu to pick one of the actions
+    templates.PieMenu(
+        name="Activate krita action (blue)",
+        controller=controllers.ActionController(),
+        values=[
+            Action.ADD_PAINT_LAYER,
+            Action.TOGGLE_LAYER_VISIBILITY,
+            Action.TOGGLE_LAYER_ALPHA_INHERITANCE,
+            Action.TOGGLE_LAYER_ALPHA,
+            Action.TOGGLE_LAYER_LOCK,
+        ],
+        background_color=QColor(90, 90, 140, 190),
+        active_color=QColor(110, 160, 235),
+        pie_opacity=50,
     ),
 
     # Use pie menu to pick one of the brush blending modes.
