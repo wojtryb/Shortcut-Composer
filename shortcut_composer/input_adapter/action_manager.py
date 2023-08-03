@@ -11,10 +11,8 @@ from typing import Dict
 
 from PyQt5.QtWidgets import QWidgetAction
 
-from .api_krita import Krita
+from .action_manager_utils import Krita, ReleaseKeyEventFilter, ShortcutAdapter
 from .complex_action_interface import ComplexActionInterface
-from .event_filter import ReleaseKeyEventFilter
-from .shortcut_adapter import ShortcutAdapter
 
 
 @dataclass
