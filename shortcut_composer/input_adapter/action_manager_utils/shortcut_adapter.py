@@ -75,10 +75,6 @@ class ShortcutAdapter:
     def _key_sequence_from_event(event: QKeyEvent):
         return QKeySequence(event.modifiers() | event.key())  # type: ignore
 
-    table = str.maketrans(
-        u"ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ.",
-        u"QWERTYUIOP[]ASDFGHJKL;'ZXCVBNM,./")
-
     @classmethod
     def _match_shortcuts(cls, _a: QKeySequence, _b: QKeySequence, /) -> bool:
         """Custom match pattern - one string is preset in another one."""
