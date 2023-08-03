@@ -1,10 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from PyQt5.QtGui import (
-    QPixmap,
-    QPaintEvent,
-)
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QWidget
 
 from api_krita.pyqt import Painter, PixmapTransform
@@ -26,29 +23,9 @@ class ImageLabelWidget(LabelWidget):
         super().__init__(label, style, parent, is_unscaled)
         self.ready_image = self._prepare_image()
 
-    def paintEvent(self, event: QPaintEvent) -> None:
-        """
-        Paint the entire widget using the Painter wrapper.
-
-        Paint a background behind a label its border, and image itself.
-        """
-        with Painter(self, event) as painter:
-            painter.paint_wheel(
-                center=self.center,
-                outer_radius=self.icon_radius,
-                color=self._style.icon_color)
-
-            if self._is_unscaled:
-                thickness = self._style.unscaled_border_thickness
-            else:
-                thickness = self._style.border_thickness
-            painter.paint_wheel(
-                center=self.center,
-                outer_radius=(
-                    self.icon_radius-thickness//3),
-                color=self._border_color,
-                thickness=thickness)
-            painter.paint_pixmap(self.center, self.ready_image)
+    def paint(self, painter: Painter):
+        super().paint(painter)
+        painter.paint_pixmap(self.center, self.ready_image)
 
     def _prepare_image(self) -> QPixmap:
         """Return image after scaling and reshaping it to circle."""
@@ -60,4 +37,4 @@ class ImageLabelWidget(LabelWidget):
         rounded_image = PixmapTransform.make_pixmap_round(to_display)
         return PixmapTransform.scale_pixmap(
             pixmap=rounded_image,
-            size_px=round(self.icon_radius*1.725))
+            size_px=round((self.icon_radius-self._thickness)*2))

@@ -95,12 +95,12 @@ class PieStyle:
     @property
     def border_thickness(self):
         """Thickness of border around icons."""
-        return round(self.icon_radius*0.09)
+        return round(self.icon_radius*0.12)
 
     @property
     def unscaled_border_thickness(self):
         """Thickness of border of the pie."""
-        return round(self.unscaled_icon_radius*0.09)
+        return round(self.unscaled_icon_radius*0.12)
 
     @property
     def area_thickness(self):
@@ -168,23 +168,23 @@ class PieStyle:
     @property
     def icon_color(self):
         """Color of icon background."""
-        color = copy(self.background_color)
-        color.setAlpha(255)
-        return color
+        if Krita.is_light_theme_active:
+            return QColor(220, 220, 220)
+        return QColor(75, 75, 75)
 
     @property
     def border_color(self):
         """Color of icon borders."""
         return QColor(
-            min(self.icon_color.red()+15, 255),
-            min(self.icon_color.green()+15, 255),
-            min(self.icon_color.blue()+15, 255),
+            min(self.background_color.red()+15, 255),
+            min(self.background_color.green()+15, 255),
+            min(self.background_color.blue()+15, 255),
             255)
 
     @property
     def pie_border_color(self):
         """Color of dark border of the pie."""
-        color = self.icon_color
+        color = self.background_color
         color = QColor(color.red()-5, color.green()-5, color.blue()-5, 120)
         return color
 

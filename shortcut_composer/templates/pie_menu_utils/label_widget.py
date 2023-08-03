@@ -5,9 +5,9 @@ from typing import Protocol
 
 from PyQt5.QtCore import Qt, QMimeData, QEvent
 from PyQt5.QtWidgets import QWidget
-from PyQt5.QtGui import QDrag, QPixmap, QMouseEvent
+from PyQt5.QtGui import QDrag, QPixmap, QMouseEvent, QPaintEvent
 
-from api_krita.pyqt import PixmapTransform, BaseWidget
+from api_krita.pyqt import Painter, PixmapTransform, BaseWidget
 from .pie_style import PieStyle
 from .label import Label
 
@@ -50,6 +50,47 @@ class LabelWidget(BaseWidget):
     def add_instruction(self, instruction: WidgetInstructions):
         """Add additional logic to do on entering and leaving widget."""
         self._instructions.append(instruction)
+
+    def paintEvent(self, event: QPaintEvent) -> None:
+        with Painter(self, event) as painter:
+            self.paint(painter)
+
+    def paint(self, painter: Painter):
+        """
+        Paint the entire widget using the Painter wrapper.
+
+        Paint a background behind a label its border, and image itself.
+        """
+        painter.paint_wheel(
+            center=self.center,
+            outer_radius=self.icon_radius-1,
+            color=self._style.icon_color)
+
+        painter.paint_wheel(
+            center=self.center,
+            outer_radius=self.icon_radius,
+            color=self._style.border_color,
+            thickness=self._thickness)
+
+        if not self.enabled:
+            painter.paint_wheel(
+                center=self.center,
+                outer_radius=self.icon_radius,
+                color=self._style.active_color_dark,
+                thickness=self._thickness//3*2)
+
+        if self.forced or (self._hovered and self.draggable):
+            painter.paint_wheel(
+                center=self.center,
+                outer_radius=self.icon_radius,
+                color=self._border_active_color,
+                thickness=self._thickness//3*2)
+
+    @property
+    def _thickness(self):
+        if self._is_unscaled:
+            return self._style.unscaled_border_thickness
+        return self._style.border_thickness
 
     @property
     def draggable(self) -> bool:
@@ -129,15 +170,10 @@ class LabelWidget(BaseWidget):
         self.repaint()
 
     @property
-    def _border_color(self):
-        """Return border color which differs when enabled or hovered."""
+    def _border_active_color(self):
         if self.forced:
             return self._style.active_color
-        if not self.enabled:
-            return self._style.active_color_dark
-        if self._hovered and self.draggable:
-            return self._style.active_color
-        return self._style.border_color
+        return self._style.active_color
 
     @property
     def icon_radius(self):
