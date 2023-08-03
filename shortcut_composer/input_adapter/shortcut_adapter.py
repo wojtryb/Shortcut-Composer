@@ -7,6 +7,7 @@ from PyQt5.QtGui import QKeyEvent, QKeySequence
 
 from .api_krita import Krita
 from .complex_action_interface import ComplexActionInterface
+from .translator import Translator
 
 
 class ShortcutAdapter:
@@ -23,6 +24,9 @@ class ShortcutAdapter:
     - on_long_key_release (release long time after the press)
     - on_every_key_release (called after short or long release callback)
     """
+
+    TRANSLATOR = Translator()
+    """Non-latin siqns need to be substituted with their QWERTY equivalents."""
 
     def __init__(self, action: ComplexActionInterface) -> None:
         self.action = action
@@ -71,9 +75,14 @@ class ShortcutAdapter:
     def _key_sequence_from_event(event: QKeyEvent):
         return QKeySequence(event.modifiers() | event.key())  # type: ignore
 
-    @staticmethod
-    def _match_shortcuts(_a: QKeySequence, _b: QKeySequence, /) -> bool:
+    table = str.maketrans(
+        u"ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ.",
+        u"QWERTYUIOP[]ASDFGHJKL;'ZXCVBNM,./")
+
+    @classmethod
+    def _match_shortcuts(cls, _a: QKeySequence, _b: QKeySequence, /) -> bool:
         """Custom match pattern - one string is preset in another one."""
-        parsed_a = _a.toString()
-        parsed_b = _b.toString()
+        parsed_a = cls.TRANSLATOR.translate(_a.toString())
+        parsed_b = cls.TRANSLATOR.translate(_b.toString())
+
         return parsed_a in parsed_b or parsed_b in parsed_a
