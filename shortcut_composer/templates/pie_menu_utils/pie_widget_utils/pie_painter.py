@@ -72,12 +72,13 @@ class PiePainter:
             thickness=self.style.border_thickness)
 
         # base wheel decorator
-        decorator_thickness = self.style.border_thickness*4
         self.painter.paint_wheel(
             center=self._center,
-            outer_radius=self.style.inner_edge_radius + decorator_thickness,
-            color=self.style.pie_decorator_color,
-            thickness=decorator_thickness)
+            outer_radius=(
+                self.style.inner_edge_radius
+                + self.style.decorator_thickness),
+            color=self.style.background_decorator_color,
+            thickness=self.style.decorator_thickness)
 
     def _paint_active_pie(self) -> None:
         """Paint a pie behind a label which is active or during animation."""
@@ -98,14 +99,24 @@ class PiePainter:
                 color=self._pick_pie_color(label),
                 thickness=self.style.area_thickness + thickness_addition)
 
-            # active pie border
+            # pie decorator
             self.painter.paint_pie(
                 center=self._center,
                 outer_radius=self.style.pie_radius + thickness_addition,
                 angle=label.angle,
                 span=360//len(self.labels),
+                color=self.style.pie_decorator_color,
+                thickness=self.style.border_thickness*4)
+
+            # active pie border
+            self.painter.paint_pie(
+                center=self._center,
+                outer_radius=self.style.pie_radius +
+                thickness_addition + self.style.border_thickness//2,
+                angle=label.angle,
+                span=360//len(self.labels),
                 color=self.style.active_color_dark,
-                thickness=self.style.border_thickness*1.5)
+                thickness=self.style.border_thickness)
 
     def _pick_pie_color(self, label: Label) -> QColor:
         """Pick color of pie based on widget mode and animation progress."""

@@ -97,6 +97,11 @@ class PieStyle:
         return round(self.icon_radius*0.05)
 
     @property
+    def decorator_thickness(self):
+        """Thickness of decorators near edges."""
+        return self.border_thickness*4
+
+    @property
     def unscaled_border_thickness(self):
         """Thickness of border of the pie."""
         return round(self.unscaled_icon_radius*0.05)
@@ -169,9 +174,16 @@ class PieStyle:
             255)
 
     @property
-    def pie_decorator_color(self):
-        """Color of decorator near inner pie edge."""
+    def background_decorator_color(self):
+        """Color of decorator near inner edge."""
         color = self.background_color
+        color = QColor(color.red()-5, color.green()-5, color.blue()-5, 60)
+        return color
+
+    @property
+    def pie_decorator_color(self):
+        """Color of pie decorator near outer pie edge."""
+        color = self.active_color_dark
         color = QColor(color.red()-5, color.green()-5, color.blue()-5, 60)
         return color
 
