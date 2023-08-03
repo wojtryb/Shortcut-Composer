@@ -512,6 +512,21 @@ class Action(EnumGroup):
     RENAME_COMPOSITION = "rename_composition"
     RELOAD_SHORTCUT_COMPOSER = "Reload Shortcut Composer"
 
+    _toggles = Group("Toggles")
+    ERASER = "erase_action"
+    PRESERVE_ALPHA = "preserve_alpha"
+    MIRROR_CANVAS = "mirror_canvas"
+    SOFT_PROOFING = "softProof"
+    ISOLATE_LAYER = "isolate_active_layer"
+    VIEW_REFERENCE_IMAGES = "view_toggle_reference_images"
+    VIEW_ASSISTANTS = "view_toggle_painting_assistants"
+    VIEW_ASSISTANTS_PREVIEWS = "view_toggle_assistant_previews"
+    VIEW_GRID = "view_grid"
+    VIEW_RULER = "view_ruler"
+    VIEW_ONION_SKIN = "toggle_onion_skin"
+    SNAP_ASSISTANT = "toggle_assistant"
+    SNAP_TO_GRID = "view_snap_to_grid"
+
     _other = Group("Other")
     CONVERT_IMAGE_COLOUR_SPACE = "imagecolorspaceconversion"
     CONVERT_LAYER_COLOUR_SPACE = "layercolorspaceconversion"
@@ -519,7 +534,6 @@ class Action(EnumGroup):
     IMAGE_SPLIT = "imagesplit"
     MOVE_INTO_PREVIOUS_GROUP = "LayerGroupSwitcher/previous"
     MOVE_INTO_NEXT_GROUP = "LayerGroupSwitcher/next"
-    # --- #
     SET_COPY_FROM = "set-copy-from"
     CREATE_SNAPSHOT = "create_snapshot"
     SWITCH_TO_SELECTED_SNAPSHOT = "switchto_snapshot"
