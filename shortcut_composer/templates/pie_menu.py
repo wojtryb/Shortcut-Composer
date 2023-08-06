@@ -1,29 +1,26 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Type, TypeVar, Generic, Optional
+from typing import List, TypeVar, Generic, Optional
 from functools import cached_property
-from enum import Enum
 
 from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QColor
 
 from api_krita import Krita
+from data_components import DeadzoneStrategy
 from core_components import Controller, Instruction
-from .pie_menu_utils.settings_gui import (
-    PieSettings,
-    NumericPieSettings,
-    PresetPieSettings,
-    EnumPieSettings)
+from .pie_menu_utils.pie_settings_impl import dispatch_pie_settings
+from .pie_menu_utils.pie_config_impl import dispatch_pie_config
 from .pie_menu_utils import (
-    NonPresetPieConfig,
-    PresetPieConfig,
+    PieSettings,
     PieManager,
-    PieConfig,
     PieWidget,
+    PieButton,
+    Actuator,
+    EditMode,
     PieStyle,
     Label)
-from .pie_menu_utils.widget_utils import EditMode, PieButton
 from .raw_instructions import RawInstructions
 
 T = TypeVar('T')
@@ -34,10 +31,10 @@ class PieMenu(RawInstructions, Generic[T]):
     Pick value by hovering over a pie menu widget.
 
     - Widget is displayed under the cursor between key press and release
-    - Moving mouse in a direction of a value activates in on key release
+    - Moving mouse in a direction of a value activates it on key release
     - When the mouse was not moved past deadzone, value is not changed
     - Edit button activates mode in which pie does not hide on key
-      release and can be configured
+      release and can be configured (see PieSettings)
 
     ### Arguments:
 
@@ -51,6 +48,10 @@ class PieMenu(RawInstructions, Generic[T]):
     - `icon_radius_scale` -- (optional) default icons size multiplier
     - `background_color`  -- (optional) default rgba color of background
     - `active_color`      -- (optional) default rgba color of active pie
+    - `pie opacity`       -- (optional) default opacity of the pie
+    - `save local`        -- (optional) default save location
+    - `deadzone strategy` -- (optional) default strategy what to do,
+                              when mouse does not leave deadzone
     - `short_vs_long_press_time` -- (optional) time [s] that specifies
                                     if key press is short or long
 
@@ -81,60 +82,60 @@ class PieMenu(RawInstructions, Generic[T]):
         pie_radius_scale: float = 1.0,
         icon_radius_scale: float = 1.0,
         background_color: Optional[QColor] = None,
-        active_color: QColor = QColor(100, 150, 230, 255),
+        active_color: Optional[QColor] = None,
+        pie_opacity: int = 75,
         save_local: bool = False,
+        deadzone_strategy: DeadzoneStrategy = DeadzoneStrategy.DO_NOTHING,
         short_vs_long_press_time: Optional[float] = None
     ) -> None:
         super().__init__(name, instructions, short_vs_long_press_time)
         self._controller = controller
 
-        def _dispatch_config_type() -> Type[PieConfig[T]]:
-            if issubclass(self._controller.TYPE, str):
-                return PresetPieConfig   # type: ignore
-            return NonPresetPieConfig
-
-        self._config = _dispatch_config_type()(**{
-            "name": f"ShortcutComposer: {name}",
-            "values": values,
-            "pie_radius_scale": pie_radius_scale,
-            "icon_radius_scale": icon_radius_scale,
-            "save_local": save_local,
-            "background_color": background_color,
-            "active_color": active_color})
+        self._config = dispatch_pie_config(self._controller)(
+            name=f"ShortcutComposer: {name}",
+            values=values,
+            pie_radius_scale=pie_radius_scale,
+            icon_radius_scale=icon_radius_scale,
+            save_local=save_local,
+            background_color=background_color,
+            active_color=active_color,
+            pie_opacity=pie_opacity,
+            deadzone_strategy=deadzone_strategy)
         self._config.ORDER.register_callback(self._reset_labels)
 
         self._labels: List[Label] = []
         self._edit_mode = EditMode(self)
         self._style = PieStyle(items=self._labels, pie_config=self._config)
+        self.actuator = Actuator(
+            controller=self._controller,
+            strategy_field=self._config.DEADZONE_STRATEGY,
+            labels=self._labels)
 
     @cached_property
     def pie_widget(self) -> PieWidget:
-        """Qwidget of the Pie for selecting values."""
+        """Create Qwidget of the Pie for selecting values."""
         return PieWidget(
             style=self._style,
             labels=self._labels,
+            edit_mode=self._edit_mode,
             config=self._config)
 
     @cached_property
     def pie_settings(self) -> PieSettings:
-        """Create and return the right settings based on labels type."""
-        if issubclass(self._controller.TYPE, str):
-            return PresetPieSettings(self._config, self._style)  # type: ignore
-        elif issubclass(self._controller.TYPE, float):
-            return NumericPieSettings(self._config, self._style)
-        elif issubclass(self._controller.TYPE, Enum):
-            return EnumPieSettings(
-                self._controller, self._config, self._style)  # type: ignore
-        raise ValueError(f"Unknown pie config {self._config}")
+        """Create QWidget with pie settings right for given type of labels."""
+        return dispatch_pie_settings(self._controller)(
+            config=self._config,
+            style=self._style,
+            controller=self._controller)
 
     @cached_property
     def pie_manager(self) -> PieManager:
-        """Manager which shows, hides and moves Pie widget and its settings."""
+        """Create Manager which shows, hides and moves the Pie."""
         return PieManager(pie_widget=self.pie_widget)
 
     @cached_property
     def settings_button(self):
-        """Button with which user can enter the edit mode."""
+        """Create button with which user can enter the edit mode."""
         settings_button = PieButton(
             icon=Krita.get_icon("properties"),
             icon_scale=1.1,
@@ -147,7 +148,7 @@ class PieMenu(RawInstructions, Generic[T]):
 
     @cached_property
     def accept_button(self):
-        """Button displayed in edit mode, which allows to hide the pie."""
+        """Create button displayed in edit mode, for hiding the pie."""
         accept_button = PieButton(
             icon=Krita.get_icon("dialog-ok"),
             icon_scale=1.5,
@@ -177,24 +178,9 @@ class PieMenu(RawInstructions, Generic[T]):
         self._reset_labels()
         self.pie_widget.label_holder.reset()  # HACK: should be automatic
         self._move_buttons()
+        self.actuator.mark_selected_widget(self.pie_widget.widget_holder)
 
         self.pie_manager.start()
-
-    def on_every_key_release(self) -> None:
-        """
-        Handle the key release event.
-
-        Ignore if in edit mode. Otherwise, stop the manager and set the
-        selected value if deadzone was reached.
-        """
-        super().on_every_key_release()
-
-        if self._edit_mode.get():
-            return
-
-        self.pie_manager.stop()
-        if label := self.pie_widget.active:
-            self._controller.set_value(label.value)
 
     INVALID_VALUES: 'set[T]' = set()
 
@@ -221,3 +207,21 @@ class PieMenu(RawInstructions, Generic[T]):
                 self.INVALID_VALUES.add(value)
 
         self._config.refresh_order()
+
+    def on_every_key_release(self) -> None:
+        """
+        Handle the key release event.
+
+        In normal mode:
+            close pie, and set selected value if deadzone was reached
+        In edit mode:
+            ignore input
+
+        """
+        super().on_every_key_release()
+
+        if self._edit_mode:
+            return
+        self.pie_manager.stop()
+
+        self.actuator.activate(self.pie_widget.active)

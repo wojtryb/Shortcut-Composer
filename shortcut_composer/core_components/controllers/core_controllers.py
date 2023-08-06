@@ -1,13 +1,14 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Optional
+from typing import Optional, Union, NoReturn
 from dataclasses import dataclass
 
 from PyQt5.QtGui import QIcon
 
 from api_krita import Krita
-from api_krita.enums import Tool, Toggle, TransformMode
+from api_krita.pyqt import Text
+from api_krita.enums import Action, Tool, Toggle, TransformMode
 from api_krita.actions import TransformModeFinder
 from ..controller_base import Controller
 
@@ -38,6 +39,38 @@ class ToolController(Controller[Tool]):
         return value.icon
 
     def get_pretty_name(self, value: Tool) -> str:
+        """Forward enums' pretty name."""
+        return value.pretty_name
+
+
+class ActionController(Controller[Action]):
+    """
+    Gives access to krita actions.
+
+    - Operates on `Action`
+    - Does not have a default value.
+    """
+
+    TYPE = Action
+
+    @staticmethod
+    def get_value() -> NoReturn:
+        """Get currently active tool."""
+        raise NotImplementedError()
+
+    @staticmethod
+    def set_value(value: Action) -> None:
+        """Set a passed tool."""
+        value.activate()
+
+    def get_label(self, value: Tool) -> Union[QIcon, Text]:
+        """Forward the tools' icon."""
+        icon = value.icon
+        if not icon.isNull():
+            return value.icon
+        return Text(value.name[:3])
+
+    def get_pretty_name(self, value: Action) -> str:
         """Forward enums' pretty name."""
         return value.pretty_name
 

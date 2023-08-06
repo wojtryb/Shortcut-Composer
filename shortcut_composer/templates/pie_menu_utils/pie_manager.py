@@ -8,8 +8,8 @@ from PyQt5.QtGui import QCursor
 from api_krita.pyqt import Timer
 from composer_utils import Config
 from .pie_widget import PieWidget
+from .pie_widget_utils import CirclePoints
 from .label import Label
-from .widget_utils import CirclePoints
 
 
 class PieManager:

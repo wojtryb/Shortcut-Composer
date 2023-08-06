@@ -11,10 +11,8 @@ from typing import Dict
 
 from PyQt5.QtWidgets import QWidgetAction
 
-from .api_krita import Krita
+from .action_manager_utils import Krita, ReleaseKeyEventFilter, ShortcutAdapter
 from .complex_action_interface import ComplexActionInterface
-from .event_filter import ReleaseKeyEventFilter
-from .shortcut_adapter import ShortcutAdapter
 
 
 @dataclass
@@ -74,8 +72,8 @@ class ActionManager:
             krita_action=Krita.create_action(
                 window=self._window,
                 name=action.name),
-            shortcut=self._create_adapter(action)
-        )
+            shortcut=self._create_adapter(action))
+
         self._stored_actions[action.name] = container
 
     def _create_adapter(self, action: ComplexActionInterface) \
@@ -87,6 +85,5 @@ class ActionManager:
         """
         shortcut_adapter = ShortcutAdapter(action)
         self._event_filter.register_release_callback(
-            shortcut_adapter.event_filter_callback  # type: ignore
-        )
+            shortcut_adapter.event_filter_callback)  # type: ignore
         return shortcut_adapter

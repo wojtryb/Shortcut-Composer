@@ -4,7 +4,6 @@
 import math
 import platform
 from typing import TYPE_CHECKING
-from copy import copy
 
 from PyQt5.QtGui import QColor
 
@@ -94,8 +93,13 @@ class PieStyle:
 
     @property
     def border_thickness(self):
-        """Thickness of border around icons."""
-        return round(self.unscaled_icon_radius*0.06)
+        """Thickness of border of the pie and icons."""
+        return round(self.unscaled_icon_radius*0.05)
+
+    @property
+    def decorator_thickness(self):
+        """Thickness of decorators near edges."""
+        return self.border_thickness*4
 
     @property
     def area_thickness(self):
@@ -106,11 +110,6 @@ class PieStyle:
     def inner_edge_radius(self):
         """Radius at which the base area starts."""
         return self.pie_radius - self.area_thickness
-
-    @property
-    def no_border_radius(self):
-        """Radius at which pie decoration border starts."""
-        return self.pie_radius - self.border_thickness//2
 
     @property
     def setting_button_radius(self) -> int:
@@ -125,18 +124,32 @@ class PieStyle:
             * Config.PIE_DEADZONE_GLOBAL_SCALE.read())
 
     @property
-    def active_color(self):
-        """Color of active element."""
-        return self._pie_config.active_color
+    def active_color(self) -> QColor:
+        """
+        Color of highlight, when label is active.
+
+        If custom one is not specified, use the default one.
+        """
+        if self._pie_config.OVERRIDE_DEFAULT_THEME.read():
+            return self._pie_config.ACTIVE_COLOR.read()
+        else:
+            return Config.default_active_color
 
     @property
     def background_color(self) -> QColor:
-        """Color of base area. Depends on the app theme lightness"""
-        if self._pie_config.background_color is not None:
-            return self._pie_config.background_color
-        if Krita.is_light_theme_active:
-            return QColor(210, 210, 210, 190)
-        return QColor(75, 75, 75, 190)
+        """
+        Color of pie background area.
+
+        If custom one is not specified, use the default one.
+        Opacity is stored in a separate field in <0-100> range
+        """
+        if not self._pie_config.OVERRIDE_DEFAULT_THEME.read():
+            return Config.default_background_color
+
+        background_color = self._pie_config.BACKGROUND_COLOR.read()
+        opacity = self._pie_config.PIE_OPACITY.read() * 255 / 100
+        background_color.setAlpha(round(opacity))
+        return background_color
 
     @property
     def active_color_dark(self):
@@ -147,20 +160,27 @@ class PieStyle:
             round(self.active_color.blue()*0.8))
 
     @property
-    def icon_color(self):
-        """Color of icon background."""
-        color = copy(self.background_color)
-        color.setAlpha(255)
-        return color
-
-    @property
     def border_color(self):
         """Color of icon borders."""
         return QColor(
-            min(self.icon_color.red()+15, 255),
-            min(self.icon_color.green()+15, 255),
-            min(self.icon_color.blue()+15, 255),
+            min(self.background_color.red()+15, 255),
+            min(self.background_color.green()+15, 255),
+            min(self.background_color.blue()+15, 255),
             255)
+
+    @property
+    def background_decorator_color(self):
+        """Color of decorator near inner edge."""
+        color = self.background_color
+        color = QColor(color.red()-5, color.green()-5, color.blue()-5, 60)
+        return color
+
+    @property
+    def pie_decorator_color(self):
+        """Color of pie decorator near outer pie edge."""
+        color = self.active_color_dark
+        color = QColor(color.red()-5, color.green()-5, color.blue()-5, 60)
+        return color
 
     @property
     def font_multiplier(self):
@@ -172,4 +192,4 @@ class PieStyle:
         "Windows": 0.11,
         "Darwin": 0.265,
         "": 0.125}
-    """Scale to fix different font sizes each OS.."""
+    """Scale to fix different font sizes each OS."""

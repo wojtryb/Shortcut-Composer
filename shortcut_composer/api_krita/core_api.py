@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import (
     QDesktopWidget,
     QWidgetAction,
     QMdiArea)
-from PyQt5.QtGui import QKeySequence, QColor, QIcon
+from PyQt5.QtGui import QKeySequence, QColor, QIcon, QPalette
 from PyQt5.QtCore import QTimer
 
 from .wrappers import (
@@ -129,10 +129,18 @@ class KritaInstance:
                 self.main_window.themeChanged.connect(callback)
         QTimer.singleShot(1000, connect_callback)
 
+    def get_main_color_from_theme(self) -> QColor:
+        """Return main color of the current theme."""
+        return qApp.palette().color(QPalette.Window)
+
+    def get_active_color_from_theme(self) -> QColor:
+        """Return active color of the current theme."""
+        return qApp.palette().color(QPalette.Highlight)
+
     @property
     def is_light_theme_active(self) -> bool:
         """Return if currently set theme is light using it's main color."""
-        main_color: QColor = qApp.palette().window().color()
+        main_color = self.get_main_color_from_theme()
         return main_color.value() > 128
 
 

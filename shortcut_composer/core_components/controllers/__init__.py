@@ -1,26 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""
-Components that allow to get and set a specific property of krita.
-
-Available controllers:
-    - `ToolController`
-    - `BrushSizeController`
-    - `BlendingModeController`
-    - `OpacityController`
-    - `FlowController`
-    - `PresetController`
-    - `TimeController`
-    - `ActiveLayerController`
-    - `LayerVisibilityController`
-    - `LayerBlendingModeController`,
-    - `LayerOpacityController`,
-    - `CanvasRotationController`
-    - `CanvasZoomController`
-    - `ToggleController`
-    - `CreateLayerWithBlendingController`
-"""
+"""Components that allow to get and set a specific property of krita."""
 
 from .document_controllers import (
     ActiveLayerController,
@@ -46,6 +27,7 @@ from .node_controllers import (
 from .core_controllers import (
     TransformModeController,
     ToggleController,
+    ActionController,
     ToolController,
     UndoController,
 )
@@ -63,6 +45,7 @@ __all__ = [
     "OpacityController",
     "ToggleController",
     "PresetController",
+    "ActionController",
     "TimeController",
     "ToolController",
     "UndoController",

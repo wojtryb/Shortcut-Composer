@@ -26,6 +26,7 @@ class RoundButton(QPushButton, BaseWidget):
         self.setCursor(Qt.ArrowCursor)
 
         self._icon_scale = icon_scale
+        self._radius = initial_radius
         self._background_color = background_color
         self._active_color = active_color
 
@@ -38,21 +39,21 @@ class RoundButton(QPushButton, BaseWidget):
             self.setAttribute(Qt.WA_TranslucentBackground)
             self.setStyleSheet("background: transparent;")
 
-        self.resize(initial_radius)
+        self.refresh()
         self.show()
 
-    def resize(self, radius: int) -> None:
+    def refresh(self) -> None:
         """Change the size and repaint the button."""
-        self.setGeometry(0, 0, radius*2, radius*2)
+        self.setGeometry(0, 0, self._radius*2, self._radius*2)
 
         self.setStyleSheet(f"""
             QPushButton [
-                border: {round(radius*0.06)}px
+                border: {round(self._radius*0.06)}px
                     {self._color_to_str(self._border_color)};
-                border-radius: {radius}px;
+                border-radius: {self._radius}px;
                 border-style: outset;
                 background: {self._color_to_str(self._background_color)};
-                qproperty-iconSize:{round(radius*self._icon_scale)}px;
+                qproperty-iconSize:{round(self._radius*self._icon_scale)}px;
             ]
             QPushButton:hover [
                 background: {self._color_to_str(self._active_color)};

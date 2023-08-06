@@ -90,6 +90,21 @@
         <icon>krita_tool_grid</icon>
         </Action>
 
+        <Action name="Activate krita action (red)">
+        <activationFlags>1</activationFlags>
+        <icon>palette-edit</icon>
+        </Action>
+
+        <Action name="Activate krita action (green)">
+        <activationFlags>1</activationFlags>
+        <icon>palette-edit</icon>
+        </Action>
+
+        <Action name="Activate krita action (blue)">
+        <activationFlags>1</activationFlags>
+        <icon>palette-edit</icon>
+        </Action>
+
         <Action name="Pick painting blending modes">
         <activationFlags>1</activationFlags>
         <icon>format-text-bold</icon>

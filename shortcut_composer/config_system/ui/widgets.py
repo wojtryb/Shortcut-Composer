@@ -1,25 +1,36 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Any, List, Final, Optional, TypeVar, Generic, Protocol
-from PyQt5.QtWidgets import QDoubleSpinBox, QComboBox, QSpinBox, QWidget
+from enum import Enum
+from typing import List, Final, Optional, TypeVar, Generic, Protocol, Type
+from PyQt5.QtWidgets import (
+    QWidget,
+    QDoubleSpinBox,
+    QSpinBox,
+    QComboBox,
+    QCheckBox,
+    QPushButton,
+    QColorDialog)
+from PyQt5.QtGui import QColor
 
 from ..field import Field
 from .config_based_widget import ConfigBasedWidget
 
 F = TypeVar("F", bound=float)
+E = TypeVar("E", bound=Enum)
 
 
-class SpinBox(Protocol, Generic[F]):
+class SpinBoxInterface(Protocol, Generic[F]):
     """Representation of both Qt spinboxes as one generic class."""
 
     def value(self) -> F: ...
     def setValue(self, val: F) -> None: ...
+    def setEnabled(self, a0: bool) -> None: ...
 
 
-class ConfigSpinBox(ConfigBasedWidget[F]):
+class SpinBox(ConfigBasedWidget[F]):
     """
-    Wrapper of SpinBox linked to a configutation field.
+    Wrapper of SpinBox linked to a `float` configutation field.
 
     Based on QSpinBox or QDoubleSpinBox depending on the config type.
     Works only for fields of type: `int` or `float`.
@@ -37,18 +48,18 @@ class ConfigSpinBox(ConfigBasedWidget[F]):
         self._step = step
         self._max_value = max_value
         self._spin_box = self._init_spin_box()
-        self.widget: Final[SpinBox[F]] = self._spin_box
+        self.widget: Final[SpinBoxInterface[F]] = self._spin_box
         self.reset()
 
     def read(self) -> F:
         """Return the current value of the spinbox widget."""
         return self._spin_box.value()
 
-    def set(self, value: F):
+    def set(self, value: F) -> None:
         """Replace the value of the spinbox widget with passed one."""
         self._spin_box.setValue(value)
 
-    def _init_spin_box(self) -> SpinBox:
+    def _init_spin_box(self) -> SpinBoxInterface:
         """Return the spinbox widget of type based on config field type."""
         spin_box: QDoubleSpinBox = {int: QSpinBox, float: QDoubleSpinBox}[
             type(self.config_field.default)]()
@@ -61,19 +72,15 @@ class ConfigSpinBox(ConfigBasedWidget[F]):
         return spin_box
 
 
-class ConfigComboBox(ConfigBasedWidget[str]):
-    """
-    Wrapper of Combobox linked to a configutation field.
-
-    Works only for fields of type: `str`.
-    """
+class StringComboBox(ConfigBasedWidget[str]):
+    """Wrapper of Combobox linked to a `str` configutation field."""
 
     def __init__(
         self,
         config_field: Field[str],
         parent: Optional[QWidget] = None,
         pretty_name: Optional[str] = None,
-        allowed_values: List[Any] = [],
+        allowed_values: List[str] = [],
     ) -> None:
         super().__init__(config_field, parent, pretty_name)
         self._allowed_values = allowed_values
@@ -91,12 +98,121 @@ class ConfigComboBox(ConfigBasedWidget[str]):
         """Return the current value of the ComboBox."""
         return self._combo_box.currentText()
 
-    def set(self, value: str):
+    def set(self, value: str) -> None:
         """Replace the value of the ComboBox with passed one."""
-        return self._combo_box.setCurrentText(value)
+        self._combo_box.setCurrentText(value)
 
     def _init_combo_box(self) -> QComboBox:
-        """Return the spinbox widget."""
+        """Return the combobox widget."""
         combo_box = QComboBox()
         combo_box.setObjectName(self.config_field.name)
         return combo_box
+
+
+class EnumComboBox(ConfigBasedWidget[E]):
+    """
+    Wrapper of Combobox linked to a `Enum` configutation field.
+
+    Allows to pick one of enum members.
+    """
+
+    def __init__(
+        self,
+        config_field: Field[E],
+        enum_type: Type[E],
+        parent: Optional[QWidget] = None,
+        pretty_name: Optional[str] = None,
+    ) -> None:
+        super().__init__(config_field, parent, pretty_name)
+        self._enum_type = enum_type
+        self._combo_box = self._init_combo_box()
+        self.widget: Final[QComboBox] = self._combo_box
+
+        keys = list(self._enum_type._value2member_map_.keys())
+        self._combo_box.addItems(keys)
+
+        self.reset()
+
+    def read(self) -> E:
+        """Return Enum member selected with the combobox."""
+        text = self._combo_box.currentText()
+        return self._enum_type(text)
+
+    def set(self, value: E) -> None:
+        """Set the combobox to given Enum member."""
+        self._combo_box.setCurrentText(value.value)
+
+    def _init_combo_box(self) -> QComboBox:
+        """Return the combobox widget."""
+        combo_box = QComboBox()
+        combo_box.setObjectName(self.config_field.name)
+        return combo_box
+
+
+class ColorButton(ConfigBasedWidget[QColor]):
+    """
+    Wrapper of QPushButton linked to a `QColor` configutation field.
+
+    Button displays currently selected color, and clicking activates a
+    color picker for changing it.
+    """
+
+    def __init__(
+        self,
+        config_field: Field[QColor],
+        parent: Optional[QWidget] = None,
+        pretty_name: Optional[str] = None,
+    ) -> None:
+        super().__init__(config_field, parent, pretty_name)
+        self._button = self._init_button()
+        self._color = self.config_field.read()
+        self.widget: Final[QPushButton] = self._button
+
+        self.reset()
+
+    def read(self) -> QColor:
+        """Return QColor displayed in the button."""
+        return self._color
+
+    def set(self, value: QColor) -> None:
+        """Remember given color, and replace current button color with it."""
+        self._color = value
+        self._button.setStyleSheet(f"background-color: {self._color.name()}")
+
+    def _init_button(self) -> QPushButton:
+        """Return the QPushButton widget."""
+        def on_click():
+            """Set the selected color, if the dialog was not cancelled."""
+            fetched_color = QColorDialog.getColor(self._color)
+            if fetched_color.isValid():
+                self.set(fetched_color)
+
+        button = QPushButton("")
+        policy = button.sizePolicy()
+        policy.setRetainSizeWhenHidden(True)
+        button.setSizePolicy(policy)
+        button.clicked.connect(on_click)
+        return button
+
+
+class Checkbox(ConfigBasedWidget[bool]):
+    """Wrapper of QCheckBox linked to a `bool` configutation field."""
+
+    def __init__(
+        self,
+        config_field: Field[bool],
+        parent: Optional[QWidget] = None,
+        pretty_name: Optional[str] = None,
+    ) -> None:
+        super().__init__(config_field, parent, pretty_name)
+        self._checkbox = QCheckBox()
+        self.widget: Final[QCheckBox] = self._checkbox
+        self.reset()
+
+    def read(self) -> bool:
+        """Return checkbox state."""
+        return self._checkbox.isChecked()
+
+    def set(self, value: bool) -> None:
+        """Set checkbox state."""
+        self._checkbox.setChecked(value)

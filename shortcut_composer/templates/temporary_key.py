@@ -72,11 +72,11 @@ class TemporaryKey(RawInstructions, Generic[T]):
         self._was_high_before_press = False
 
     def _set_low(self) -> None:
-        """Defines how to switch to low state."""
+        """Switch to low state."""
         self._controller.set_value(self._low_value)
 
     def _set_high(self) -> None:
-        """Defines how to switch to high state."""
+        """Switch to high state."""
         self._controller.set_value(self._high_value)
 
     def _is_high_state(self) -> bool:

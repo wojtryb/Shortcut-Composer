@@ -18,11 +18,20 @@ once using their unified interface.
 
 from .config_based_widget import ConfigBasedWidget
 from .config_form_widget import ConfigFormWidget
-from .widgets import ConfigComboBox, ConfigSpinBox
+from .widgets import (
+    StringComboBox,
+    EnumComboBox,
+    ColorButton,
+    Checkbox,
+    SpinBox,
+)
 
 __all__ = [
     "ConfigBasedWidget",
     "ConfigFormWidget",
-    "ConfigComboBox",
-    "ConfigSpinBox"
+    "StringComboBox",
+    "EnumComboBox",
+    "ColorButton",
+    "Checkbox",
+    "SpinBox",
 ]

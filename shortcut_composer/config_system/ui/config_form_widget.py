@@ -36,7 +36,7 @@ class ConfigFormWidget(QWidget):
             Qt.AlignHCenter | Qt.AlignTop)  # type: ignore
         self.setLayout(self._layout)
 
-        self._widgets: List[ConfigBasedWidget] = []
+        self.widgets: List[ConfigBasedWidget] = []
         for element in elements:
             if isinstance(element, str):
                 self.add_title(element)
@@ -47,7 +47,7 @@ class ConfigFormWidget(QWidget):
 
     def add_row(self, element: ConfigBasedWidget) -> None:
         """Add a ConfigBasedWidget along with a label."""
-        self._widgets.append(element)
+        self.widgets.append(element)
         self._layout.addRow(f"{element.pretty_name}:", element.widget)
 
     def add_title(self, text: str) -> None:
@@ -59,10 +59,10 @@ class ConfigFormWidget(QWidget):
 
     def refresh(self) -> None:
         """Read values from krita config and apply them to stored boxes."""
-        for element in self._widgets:
+        for element in self.widgets:
             element.reset()
 
     def apply(self) -> None:
         """Write values from stored spin boxes to krita config file."""
-        for element in self._widgets:
+        for element in self.widgets:
             element.save()

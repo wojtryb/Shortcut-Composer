@@ -5,9 +5,10 @@ from typing import Protocol
 
 from PyQt5.QtCore import Qt, QMimeData, QEvent
 from PyQt5.QtWidgets import QWidget
-from PyQt5.QtGui import QDrag, QPixmap, QMouseEvent
+from PyQt5.QtGui import QDrag, QPixmap, QMouseEvent, QPaintEvent
 
-from api_krita.pyqt import PixmapTransform, BaseWidget
+from api_krita import Krita
+from api_krita.pyqt import Painter, PixmapTransform, BaseWidget
 from .pie_style import PieStyle
 from .label import Label
 
@@ -43,12 +44,59 @@ class LabelWidget(BaseWidget):
         self._draggable = True
         self._enabled = True
         self._hovered = False
+        self._forced = False
 
         self._instructions: list[WidgetInstructions] = []
 
     def add_instruction(self, instruction: WidgetInstructions):
         """Add additional logic to do on entering and leaving widget."""
         self._instructions.append(instruction)
+
+    def paintEvent(self, event: QPaintEvent) -> None:
+        with Painter(self, event) as painter:
+            self.paint(painter)
+
+    def paint(self, painter: Painter):
+        """
+        Paint the entire widget using the Painter wrapper.
+
+        Paint a background behind a label its border, and image itself.
+        """
+        # label background
+        painter.paint_wheel(
+            center=self.center,
+            outer_radius=(
+                self.icon_radius
+                - self._active_indicator_thickness
+                - self._style.border_thickness//2),
+            color=Krita.get_main_color_from_theme())
+
+        # label thin border
+        painter.paint_wheel(
+            center=self.center,
+            outer_radius=self.icon_radius-self._active_indicator_thickness,
+            color=self._style.border_color,
+            thickness=self._style.border_thickness)
+
+        # label thick border when label when disabled
+        if not self.enabled:
+            painter.paint_wheel(
+                center=self.center,
+                outer_radius=self.icon_radius,
+                color=self._style.active_color_dark,
+                thickness=self._active_indicator_thickness)
+
+        # label thick border when hovered (or it is forced)
+        if self.forced or (self._hovered and self.draggable):
+            painter.paint_wheel(
+                center=self.center,
+                outer_radius=self.icon_radius,
+                color=self._border_active_color,
+                thickness=self._active_indicator_thickness)
+
+    @property
+    def _active_indicator_thickness(self):
+        return self._style.border_thickness*2
 
     @property
     def draggable(self) -> bool:
@@ -78,6 +126,19 @@ class LabelWidget(BaseWidget):
         self._enabled = value
         if not value:
             self.draggable = False
+        self.repaint()
+
+    @property
+    def forced(self):
+        """Return whether the widget has forced active color."""
+        return self._forced
+
+    @forced.setter
+    def forced(self, value: bool) -> None:
+        """Make the widget look as it is active even if it is not."""
+        if self._forced == value:
+            return
+        self._forced = value
         self.repaint()
 
     def move_to_label(self) -> None:
@@ -115,13 +176,10 @@ class LabelWidget(BaseWidget):
         self.repaint()
 
     @property
-    def _border_color(self):
-        """Return border color which differs when enabled or hovered."""
-        if not self.enabled:
-            return self._style.active_color_dark
-        if self._hovered and self.draggable:
+    def _border_active_color(self):
+        if self.forced:
             return self._style.active_color
-        return self._style.border_color
+        return self._style.active_color
 
     @property
     def icon_radius(self):

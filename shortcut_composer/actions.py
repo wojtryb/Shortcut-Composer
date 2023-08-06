@@ -14,10 +14,11 @@ from typing import List
 
 from PyQt5.QtGui import QColor
 
-from api_krita.enums import Tool, Toggle, BlendingMode, TransformMode
+from api_krita.enums import Action, Tool, Toggle, BlendingMode, TransformMode
 from core_components import instructions, controllers
 from data_components import (
     CurrentLayerStack,
+    DeadzoneStrategy,
     PickStrategy,
     Slider,
     Range,
@@ -124,7 +125,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
 
     # Scroll timeline by sliding the cursor horizontally or
     # animated layers by sliding it vertically
-
+    #
     # Use TemporaryOn instruction to temporarily isolate active layer
     templates.CursorTracker(
         name="Scroll timeline or animated layers",
@@ -141,7 +142,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
 
     # Scroll brush sizes by sliding the cursor horizontally or
     # brush opacity layers by sliding it vertically
-
+    #
     # Opacity is contiguous from 10% to 100%, sizes come from a list
     # Switch 1% of opacity every 5 px (instead of default 50 px)
     templates.CursorTracker(
@@ -179,7 +180,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         ),
     ),
 
-    # Use pie menu to pick one of the sporadically used tools.
+    # Use pie menu to pick one of the tools.
     templates.PieMenu(
         name="Pick misc tools",
         controller=controllers.ToolController(),
@@ -190,7 +191,53 @@ def create_actions() -> List[templates.RawInstructions]: return [
             Tool.MULTI_BRUSH,
             Tool.ASSISTANTS,
         ],
-        pie_radius_scale=0.9
+        pie_radius_scale=0.9,
+    ),
+
+
+    # Use pie menu to pick one of the actions
+    templates.PieMenu(
+        name="Activate krita action (red)",
+        controller=controllers.ActionController(),
+        values=[
+            Action.HORIZONTAL_MIRROR_TOOL,
+            Action.WRAP_AROUND_MODE,
+            Action.ERASER,
+            Action.PRESERVE_ALPHA,
+            Action.MIRROR_CANVAS,
+        ],
+        background_color=QColor(95, 65, 65, 190),
+        active_color=QColor(200, 70, 70),
+    ),
+
+    # Use pie menu to pick one of the actions
+    templates.PieMenu(
+        name="Activate krita action (green)",
+        controller=controllers.ActionController(),
+        values=[
+            Action.CREATE_BLANK_FRAME,
+            Action.CREATE_DUPLICATE_FRAME,
+            Action.REMOVE_KEYFRAME,
+            Action.VIEW_ONION_SKIN,
+            Action.RECORD_TIMELAPSE,
+        ],
+        background_color=QColor(65, 95, 65, 190),
+        active_color=QColor(70, 200, 70),
+    ),
+
+    # Use pie menu to pick one of the actions
+    templates.PieMenu(
+        name="Activate krita action (blue)",
+        controller=controllers.ActionController(),
+        values=[
+            Action.ADD_PAINT_LAYER,
+            Action.TOGGLE_LAYER_VISIBILITY,
+            Action.TOGGLE_LAYER_ALPHA_INHERITANCE,
+            Action.TOGGLE_LAYER_ALPHA,
+            Action.TOGGLE_LAYER_LOCK,
+        ],
+        background_color=QColor(70, 70, 105, 190),
+        active_color=QColor(110, 160, 235),
     ),
 
     # Use pie menu to pick one of the brush blending modes.
@@ -199,6 +246,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         name="Pick painting blending modes",
         controller=controllers.BlendingModeController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
+        deadzone_strategy=DeadzoneStrategy.PICK_TOP,
         values=[
             BlendingMode.NORMAL,
             BlendingMode.OVERLAY,
@@ -208,7 +256,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
             BlendingMode.SCREEN,
             BlendingMode.DARKEN,
             BlendingMode.LIGHTEN,
-        ]
+        ],
     ),
 
     # Use pie menu to create painting layer with selected blending mode.
@@ -232,6 +280,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
     templates.PieMenu(
         name="Pick transform tool modes",
         controller=controllers.TransformModeController(),
+        deadzone_strategy=DeadzoneStrategy.PICK_TOP,
         values=[
             TransformMode.FREE,
             TransformMode.PERSPECTIVE,
@@ -242,43 +291,50 @@ def create_actions() -> List[templates.RawInstructions]: return [
         ]
     ),
 
-    # Use pie menu to pick one of presets from tag specified in settings.
+    # Use pie menu to pick one of stored presets.
     # Set tool to FREEHAND BRUSH if current tool does not allow to paint
     templates.PieMenu(
         name="Pick brush presets (red)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
+        deadzone_strategy=DeadzoneStrategy.PICK_PREVIOUS,
         values=Tag("★ My Favorites"),
         background_color=QColor(95, 65, 65, 190),
         active_color=QColor(200, 70, 70),
     ),
 
-    # Use pie menu to pick one of presets from tag specified in settings.
+    # Use pie menu to pick one of stored presets.
     # Set tool to FREEHAND BRUSH if current tool does not allow to paint
     templates.PieMenu(
         name="Pick brush presets (green)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
+        deadzone_strategy=DeadzoneStrategy.PICK_PREVIOUS,
         values=Tag("RGBA"),
         background_color=QColor(65, 95, 65, 190),
         active_color=QColor(70, 200, 70),
     ),
 
-    # Use pie menu to pick one of presets from tag specified in settings.
+    # Use pie menu to pick one of stored presets.
     # Set tool to FREEHAND BRUSH if current tool does not allow to paint
     templates.PieMenu(
         name="Pick brush presets (blue)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
+        deadzone_strategy=DeadzoneStrategy.PICK_PREVIOUS,
         values=Tag("Erasers"),
         background_color=QColor(70, 70, 105, 190),
         active_color=QColor(110, 160, 235),
     ),
 
+    # Use pie menu to pick one of stored presets.
+    # By default, preset names are stored in .kra document.
+    # Set tool to FREEHAND BRUSH if current tool does not allow to paint
     templates.PieMenu(
         name="Pick local brush presets",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
+        deadzone_strategy=DeadzoneStrategy.PICK_PREVIOUS,
         values=[],
         save_local=True,
         active_color=QColor(234, 172, 0),
