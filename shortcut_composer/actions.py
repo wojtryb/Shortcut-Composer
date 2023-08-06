@@ -191,7 +191,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
             Tool.MULTI_BRUSH,
             Tool.ASSISTANTS,
         ],
-        pie_radius_scale=0.9
+        pie_radius_scale=0.9,
     ),
 
 
@@ -246,6 +246,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         name="Pick painting blending modes",
         controller=controllers.BlendingModeController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
+        deadzone_strategy=DeadzoneStrategy.PICK_TOP,
         values=[
             BlendingMode.NORMAL,
             BlendingMode.OVERLAY,
@@ -255,7 +256,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
             BlendingMode.SCREEN,
             BlendingMode.DARKEN,
             BlendingMode.LIGHTEN,
-        ]
+        ],
     ),
 
     # Use pie menu to create painting layer with selected blending mode.
@@ -296,6 +297,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         name="Pick brush presets (red)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
+        deadzone_strategy=DeadzoneStrategy.PICK_PREVIOUS,
         values=Tag("★ My Favorites"),
         background_color=QColor(95, 65, 65, 190),
         active_color=QColor(200, 70, 70),
@@ -307,6 +309,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         name="Pick brush presets (green)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
+        deadzone_strategy=DeadzoneStrategy.PICK_PREVIOUS,
         values=Tag("RGBA"),
         background_color=QColor(65, 95, 65, 190),
         active_color=QColor(70, 200, 70),
@@ -318,6 +321,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         name="Pick brush presets (blue)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
+        deadzone_strategy=DeadzoneStrategy.PICK_PREVIOUS,
         values=Tag("Erasers"),
         background_color=QColor(70, 70, 105, 190),
         active_color=QColor(110, 160, 235),
@@ -330,6 +334,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         name="Pick local brush presets",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
+        deadzone_strategy=DeadzoneStrategy.PICK_PREVIOUS,
         values=[],
         save_local=True,
         active_color=QColor(234, 172, 0),
