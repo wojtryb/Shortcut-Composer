@@ -39,5 +39,5 @@ class ImageLabelWidget(LabelWidget):
             pixmap=rounded_image,
             size_px=round((
                 self.icon_radius
-                - self._thin_border_thickness
+                - self._style.border_thickness
                 - self._active_indicator_thickness)*2))

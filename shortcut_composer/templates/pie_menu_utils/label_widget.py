@@ -68,7 +68,7 @@ class LabelWidget(BaseWidget):
             outer_radius=(
                 self.icon_radius
                 - self._active_indicator_thickness
-                - self._thin_border_thickness//2),
+                - self._style.border_thickness//2),
             color=Krita.get_main_color_from_theme())
 
         # label thin border
@@ -76,7 +76,7 @@ class LabelWidget(BaseWidget):
             center=self.center,
             outer_radius=self.icon_radius-self._active_indicator_thickness,
             color=self._style.border_color,
-            thickness=self._thin_border_thickness)
+            thickness=self._style.border_thickness)
 
         # label thick border when label when disabled
         if not self.enabled:
@@ -95,14 +95,8 @@ class LabelWidget(BaseWidget):
                 thickness=self._active_indicator_thickness)
 
     @property
-    def _thin_border_thickness(self):
-        if self._is_unscaled:
-            return self._style.unscaled_border_thickness
-        return self._style.border_thickness
-
-    @property
     def _active_indicator_thickness(self):
-        return self._thin_border_thickness*2
+        return self._style.border_thickness*2
 
     @property
     def draggable(self) -> bool:
