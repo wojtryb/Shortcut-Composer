@@ -76,7 +76,7 @@ class AnimationProgress:
     The change is the fastest when the animation starts, and then slows
     down near the end (controlled by `steep` argument).
 
-    There is a `reset()` method to cancel the animation immediatelly.
+    There is a `reset()` method to cancel the animation immediately.
     """
 
     def __init__(self, speed_scale: float = 1.0, steep: float = 1.0) -> None:
@@ -100,5 +100,5 @@ class AnimationProgress:
         return self._value
 
     def reset(self) -> None:
-        """Arbitralily set a value to 0"""
+        """Arbitrarily set a value to 0"""
         self._value = 0

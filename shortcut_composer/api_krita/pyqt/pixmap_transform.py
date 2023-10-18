@@ -19,22 +19,22 @@ class PixmapTransform:
         image = pixmap.toImage()
         image.convertToFormat(QImage.Format_ARGB32)
 
-        imgsize = min(image.width(), image.height())
-        out_img = QImage(imgsize, imgsize, QImage.Format_ARGB32)
+        img_size = min(image.width(), image.height())
+        out_img = QImage(img_size, img_size, QImage.Format_ARGB32)
         out_img.fill(Qt.transparent)
 
         painter = QPainter(out_img)
         painter.setBrush(QBrush(image))
         painter.setPen(Qt.NoPen)
         painter.setRenderHint(QPainter.Antialiasing, True)
-        painter.drawEllipse(0, 0, imgsize, imgsize)
+        painter.drawEllipse(0, 0, img_size, img_size)
         painter.end()
 
         return QPixmap.fromImage(out_img)
 
     @staticmethod
     def scale_pixmap(pixmap: QPixmap, size_px: int) -> QPixmap:
-        """Scale a square pixmal to new size."""
+        """Scale a square pixmap to new size."""
         return pixmap.scaled(
             size_px,
             size_px,

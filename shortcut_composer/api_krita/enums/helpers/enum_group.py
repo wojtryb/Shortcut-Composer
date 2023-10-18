@@ -38,7 +38,7 @@ class EnumGroupMeta(EnumMeta):
         for group_variable_name in group_var_names:
             attrs._member_names.remove(group_variable_name)
 
-        # Create Enum class. attrs emtpies itself in a process
+        # Create Enum class. attrs empties itself in a process
         new_class = super().__new__(cls, name, bases, attrs)
         # List of all groups
         group_list = [v for _, v in items if isinstance(v, Group)]

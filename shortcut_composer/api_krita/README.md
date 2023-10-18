@@ -1,5 +1,5 @@
 ### Alternative Krita API
-Package `api_krita` wraps krita api offering PEP8 compatibility, typings, and docstring documentation. Most of objects attributes are now available as settables properties.
+Package `api_krita` wraps krita api offering PEP8 compatibility, typings, and docstring documentation. Most of objects attributes are now available as settable properties.
 
 ```python
 from .api_krita import Krita

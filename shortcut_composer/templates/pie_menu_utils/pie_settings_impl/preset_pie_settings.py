@@ -73,7 +73,7 @@ class PresetPieSettings(PieSettings):
             if is_tag_mode:
                 self._auto_combobox.set(self._manual_combobox.read())
                 self._auto_combobox.save()
-                # Reset hidden combobox to prevent unnecesary icon loading
+                # Reset hidden combobox to prevent unnecessary icon loading
                 self._manual_combobox.set(
                     self._manual_combobox.config_field.default)
                 self._manual_combobox.save()
@@ -89,7 +89,7 @@ class PresetPieSettings(PieSettings):
         return mode_button
 
     def _init_auto_combobox(self) -> GroupComboBox:
-        """Create tag modecombobox, which sets tag presets to the pie."""
+        """Create tag mode combobox, which sets tag presets to the pie."""
         def handle_picked_tag():
             """Save used tag in config and report the values changed."""
             auto_combobox.save()

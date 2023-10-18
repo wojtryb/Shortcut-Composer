@@ -4,7 +4,7 @@
 """
 Wrappers of classes in krita API.
 
-Adds typing, dosctrings and changes the interface to be PEP8 compatibile.
+Adds typing, docstrings and changes the interface to be PEP8 compatible.
 """
 
 from .tool_descriptor import ToolDescriptor

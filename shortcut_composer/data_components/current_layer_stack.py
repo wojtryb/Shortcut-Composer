@@ -18,7 +18,7 @@ class CurrentLayerStack(list):
     Is initialized with `PickStrategy`, which can filter layers based on
     their properties (`default: ALL`).
 
-    For more info about avaiable strategies, check `PickStrategy`.
+    For more info about available strategies, check `PickStrategy`.
 
     ### Example usage:
     ```python

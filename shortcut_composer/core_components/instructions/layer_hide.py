@@ -16,12 +16,12 @@ class ToggleLayerVisibility(Instruction):
 
         self.document = document
         self.affected_node = self.document.active_node
-        self.affected_node.toggle_visility()
+        self.affected_node.toggle_visibility()
         self.document.refresh()
 
     def on_every_key_release(self, *_) -> None:
         """Change visibility of layer which was active on key press."""
-        self.affected_node.toggle_visility()
+        self.affected_node.toggle_visibility()
         self.document.refresh()
 
 

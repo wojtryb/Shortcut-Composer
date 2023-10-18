@@ -59,7 +59,7 @@ class View:
 
     @blending_mode.setter
     def blending_mode(self, mode: BlendingMode) -> None:
-        """Set blening mode inside this `View` using its enum."""
+        """Set blending mode inside this `View` using its enum."""
         self.view.setCurrentBlendingMode(mode.value)
 
     @property

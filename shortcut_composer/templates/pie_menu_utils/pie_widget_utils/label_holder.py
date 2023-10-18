@@ -18,7 +18,7 @@ class LabelHolder:
     """
     Represents the pie icons as a positional label container.
 
-    Creates and controls the publically available WidgetHolder with
+    Creates and controls the publicly available WidgetHolder with
     actual pie widgets. Is responsible for making sure that WidgetHolder
     state always reflect the internal state of this container.
     """
@@ -68,7 +68,7 @@ class LabelHolder:
         """
         Swap positions of two labels from the holder.
 
-        As this operation only changes label order, fully reseting all
+        As this operation only changes label order, fully resetting all
         the widgets is not needed.
         """
         if self._locked:

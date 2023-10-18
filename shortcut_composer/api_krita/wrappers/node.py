@@ -67,7 +67,7 @@ class Node():
         """Set visibility of this node."""
         self.node.setVisible(value)
 
-    def toggle_visility(self) -> None:
+    def toggle_visibility(self) -> None:
         """Change visibility of this node to the opposite one."""
         self.visible = not self.visible
 

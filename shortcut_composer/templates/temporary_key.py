@@ -23,8 +23,8 @@ class TemporaryKey(RawInstructions, Generic[T]):
     - `name`         -- unique name of action. Must match the definition
                         in shortcut_composer.action file.
     - `controller`   -- defines which krita property will be modified.
-    - `high_value`   -- value to switch to compatibile with controller.
-    - `low_value`    -- (optional*) value to return to compatibile with
+    - `high_value`   -- value to switch to compatible with controller.
+    - `low_value`    -- (optional*) value to return to compatible with
                         controller. If not given, taken from controller.
     - `instructions` -- (optional) list of additional instructions to
                         perform on key press and release.

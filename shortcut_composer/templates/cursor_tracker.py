@@ -45,7 +45,7 @@ class CursorTracker(Generic[T, U]):
 
     ### Action implementation examples:
 
-    Exaples of defining a tracker for one, and for both axes.
+    Examples of defining a tracker for one, and for both axes.
 
     ```python
     templates.CursorTracker(

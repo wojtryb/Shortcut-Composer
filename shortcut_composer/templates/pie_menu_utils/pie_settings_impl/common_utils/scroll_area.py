@@ -39,7 +39,7 @@ class ScrollArea(QWidget):
     All the created widgets are stored in case they may need to be
     reused when labels change again.
 
-    Currently handled widgets are publically available, so that the
+    Currently handled widgets are publicly available, so that the
     class owner can change their state (draggable, enabled).
 
     ScrollArea comes with embedded QLabel showing the name of the
@@ -127,7 +127,7 @@ class ScrollArea(QWidget):
         return search_bar
 
     def _apply_search_bar_filter(self) -> None:
-        """Replace widgets in layout with those thich match the filter."""
+        """Replace widgets in layout with those that match the filter."""
         self.setUpdatesEnabled(False)
         pattern = re.escape(self._search_bar.text())
         regex = re.compile(pattern, flags=re.IGNORECASE)
@@ -168,7 +168,7 @@ class ScrollArea(QWidget):
         self.widgets_changed.emit()
 
     def mark_used_values(self, used_values: list) -> None:
-        """Make all values currently used in pie undraggable and disabled."""
+        """Make all values currently used in pie non draggable and disabled."""
         for widget in self._children_list:
             if widget.label.value in used_values:
                 widget.enabled = False

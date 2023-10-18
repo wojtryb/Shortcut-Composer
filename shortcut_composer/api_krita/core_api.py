@@ -49,8 +49,8 @@ class KritaInstance:
 
     def get_cursor(self) -> Cursor:
         """Return wrapper of krita `Cursor`. Don't use on plugin init phase."""
-        qwin = self.get_active_qwindow()
-        return Cursor(qwin)
+        q_win = self.get_active_qwindow()
+        return Cursor(q_win)
 
     def trigger_action(self, action_name: str) -> None:
         """Trigger internal krita action called `action_name`."""

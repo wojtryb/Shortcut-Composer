@@ -9,7 +9,7 @@ Package `config_system` consists of `Field` and `FieldGroup` which grant object-
 - reset the value to default.
 - register a callback run on each value change.
 
-Type of default value passed on initlization is remembered, and used to parse values both on read and write. Supported types are:
+Type of default value passed on initialization is remembered, and used to parse values both on read and write. Supported types are:
 - `int`, `list[int]`,
 - `float`, `list[float]`,
 - `str`, `list[str]`,
