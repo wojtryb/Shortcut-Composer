@@ -33,3 +33,15 @@ class Controller(Generic[T]):
     def get_pretty_name(self, value: T) -> str:
         """Get value name that can be displayed to the user in GUI."""
         return str(value)
+
+
+class NumericController(Controller[int]):
+    TYPE = int
+
+    DEFAULT_VALUE: int
+    MIN_VALUE: int
+    MAX_VALUE: int
+
+    STEP: int
+    WRAPPING: bool
+    ADAPTIVE: bool

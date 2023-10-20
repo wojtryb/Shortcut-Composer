@@ -6,7 +6,7 @@ from PyQt5.QtGui import QPixmap, QImage
 from api_krita import Krita
 from api_krita.enums import BlendingMode
 from api_krita.pyqt import Text, Colorizer
-from ..controller_base import Controller
+from ..controller_base import Controller, NumericController
 
 
 class ViewBasedController:
@@ -47,7 +47,7 @@ class PresetController(ViewBasedController, Controller[str]):
             return QPixmap.fromImage(image)
 
 
-class BrushSizeController(ViewBasedController, Controller[int]):
+class BrushSizeController(ViewBasedController, NumericController):
     """
     Gives access to `brush size`.
 
@@ -56,7 +56,12 @@ class BrushSizeController(ViewBasedController, Controller[int]):
     """
 
     TYPE = int
-    DEFAULT_VALUE: float = 100
+    DEFAULT_VALUE: int = 100
+    MIN_VALUE = 1
+    MAX_VALUE = 10_000
+    STEP = 1
+    WRAPPING = False
+    ADAPTIVE = True
 
     def get_value(self) -> float:
         """Get current brush size."""
@@ -103,7 +108,7 @@ class BlendingModeController(ViewBasedController, Controller[BlendingMode]):
         return value.pretty_name
 
 
-class OpacityController(ViewBasedController, Controller[int]):
+class OpacityController(ViewBasedController, NumericController):
     """
     Gives access to `brush opacity` in %.
 
@@ -113,6 +118,11 @@ class OpacityController(ViewBasedController, Controller[int]):
 
     TYPE = int
     DEFAULT_VALUE: int = 100
+    MIN_VALUE = 0
+    MAX_VALUE = 100
+    STEP = 1
+    WRAPPING = False
+    ADAPTIVE = False
 
     def get_value(self) -> int:
         """Get current brush opacity."""
@@ -131,7 +141,7 @@ class OpacityController(ViewBasedController, Controller[int]):
         return f"{value}%"
 
 
-class FlowController(ViewBasedController, Controller[int]):
+class FlowController(ViewBasedController, NumericController):
     """
     Gives access to `brush flow` in %.
 
@@ -141,6 +151,11 @@ class FlowController(ViewBasedController, Controller[int]):
 
     TYPE = int
     DEFAULT_VALUE: int = 100
+    MIN_VALUE = 0
+    MAX_VALUE = 100
+    STEP = 1
+    WRAPPING = False
+    ADAPTIVE = False
 
     def get_value(self) -> int:
         """Get current brush flow."""

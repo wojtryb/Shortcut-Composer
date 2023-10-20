@@ -3,6 +3,7 @@
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
+    QAbstractSpinBox,
     QHBoxLayout,
     QVBoxLayout,
     QScrollArea,
@@ -10,7 +11,7 @@ from PyQt5.QtWidgets import (
     QWidget,
     QLabel)
 
-from core_components import Controller
+from core_components import NumericController
 from templates.pie_menu_utils.pie_config_impl import NonPresetPieConfig
 from templates.pie_menu_utils import Label, PieStyle, PieSettings
 from templates.pie_menu_utils.label_widget_impl import dispatch_label_widget
@@ -19,7 +20,7 @@ from templates.pie_menu_utils.label_widget_impl import dispatch_label_widget
 class NumericValuePicker(QWidget):
     def __init__(
         self,
-        controller: Controller[float],
+        controller: NumericController,
         style: PieStyle,
         parent=None
     ) -> None:
@@ -70,8 +71,12 @@ class NumericValuePicker(QWidget):
             self._icon_holder.setWidget(self._icon)
 
         spin_box = QSpinBox()
-        spin_box.setMinimum(0)
-        spin_box.setMaximum(10_000)
+        spin_box.setMinimum(self._controller.MIN_VALUE)
+        spin_box.setMaximum(self._controller.MAX_VALUE)
+        spin_box.setSingleStep(self._controller.STEP)
+        spin_box.setWrapping(self._controller.WRAPPING)
+        if self._controller.ADAPTIVE:
+            spin_box.setStepType(QAbstractSpinBox.AdaptiveDecimalStepType)
         spin_box.valueChanged.connect(update_icon)
         return spin_box
 
@@ -93,7 +98,7 @@ class NumericPieSettings(PieSettings):
 
     def __init__(
         self,
-        controller: Controller[float],
+        controller: NumericController,
         config: NonPresetPieConfig,
         style: PieStyle,
         *args, **kwargs

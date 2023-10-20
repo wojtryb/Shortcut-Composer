@@ -4,7 +4,7 @@
 from api_krita import Krita
 from api_krita.enums import BlendingMode, NodeType
 from api_krita.pyqt import Text, Colorizer
-from ..controller_base import Controller
+from ..controller_base import Controller, NumericController
 
 
 class NodeBasedController:
@@ -23,7 +23,7 @@ class NodeBasedController:
         self.active_node = active_node
 
 
-class LayerOpacityController(NodeBasedController, Controller[int]):
+class LayerOpacityController(NodeBasedController, NumericController):
     """
     Gives access to active layers' `opacity` in %.
 
@@ -33,6 +33,11 @@ class LayerOpacityController(NodeBasedController, Controller[int]):
 
     TYPE = int
     DEFAULT_VALUE = 100
+    MIN_VALUE = 0
+    MAX_VALUE = 100
+    STEP = 1
+    WRAPPING = False
+    ADAPTIVE = False
 
     def get_value(self) -> int:
         """Get currently active blending mode."""

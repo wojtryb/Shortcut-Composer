@@ -5,7 +5,7 @@ from typing import Type
 from enum import Enum
 
 from api_krita.enums.helpers import EnumGroup
-from core_components import Controller
+from core_components import Controller, NumericController
 from ..pie_settings import PieSettings
 from .enum_group_pie_settings import EnumGroupPieSettings
 from .numeric_pie_settings import NumericPieSettings
@@ -15,10 +15,10 @@ from .enum_pie_settings import EnumPieSettings
 
 def dispatch_pie_settings(controller: Controller) -> Type[PieSettings]:
     """Return the right settings type based on value type."""
-    if issubclass(controller.TYPE, str):
-        return PresetPieSettings
-    elif issubclass(controller.TYPE, int):
+    if isinstance(controller, NumericController):
         return NumericPieSettings
+    elif issubclass(controller.TYPE, str):
+        return PresetPieSettings
     elif issubclass(controller.TYPE, EnumGroup):
         return EnumGroupPieSettings
     elif issubclass(controller.TYPE, Enum):

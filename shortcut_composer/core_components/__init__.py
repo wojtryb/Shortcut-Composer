@@ -11,10 +11,11 @@ concrete implementations are stored in respective packages.
 """
 
 from .instruction_base import Instruction, InstructionHolder
-from .controller_base import Controller
+from .controller_base import Controller, NumericController
 
 __all__ = [
     'InstructionHolder',
     'Instruction',
     'Controller',
+    'NumericController',
 ]

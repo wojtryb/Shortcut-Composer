@@ -5,7 +5,7 @@ from typing import Optional
 from api_krita import Krita
 from api_krita.wrappers import Node
 from api_krita.pyqt import Text
-from ..controller_base import Controller
+from ..controller_base import Controller, NumericController
 
 
 class DocumentBasedController:
@@ -43,7 +43,7 @@ class ActiveLayerController(DocumentBasedController, Controller[Node]):
         return value.name
 
 
-class TimeController(DocumentBasedController, Controller[int]):
+class TimeController(DocumentBasedController, NumericController):
     """
     Gives access to animation timeline.
 
@@ -53,6 +53,11 @@ class TimeController(DocumentBasedController, Controller[int]):
 
     TYPE = int
     DEFAULT_VALUE = 0
+    MIN_VALUE = 0
+    MAX_VALUE = 10_000
+    STEP = 1
+    WRAPPING = False
+    ADAPTIVE = False
 
     def get_value(self) -> int:
         """Get current frame on animation timeline."""

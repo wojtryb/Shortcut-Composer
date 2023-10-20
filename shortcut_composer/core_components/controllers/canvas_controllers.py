@@ -3,7 +3,7 @@
 
 from api_krita import Krita
 from api_krita.pyqt import Text
-from ..controller_base import Controller
+from ..controller_base import NumericController
 
 
 class CanvasBasedController:
@@ -14,7 +14,7 @@ class CanvasBasedController:
         self.canvas = Krita.get_active_canvas()
 
 
-class CanvasZoomController(CanvasBasedController, Controller[int]):
+class CanvasZoomController(CanvasBasedController, NumericController):
     """
     Gives access to `zoom` in %.
 
@@ -23,7 +23,12 @@ class CanvasZoomController(CanvasBasedController, Controller[int]):
     """
 
     TYPE = int
-    DEFAULT_VALUE: float = 100
+    DEFAULT_VALUE = 100
+    MIN_VALUE = 1
+    MAX_VALUE = 6_400
+    STEP = 1
+    WRAPPING = False
+    ADAPTIVE = True
 
     def get_value(self) -> int:
         """Get current zoom level in %"""
@@ -42,7 +47,7 @@ class CanvasZoomController(CanvasBasedController, Controller[int]):
         return f"{round(value)}%"
 
 
-class CanvasRotationController(CanvasBasedController, Controller[int]):
+class CanvasRotationController(CanvasBasedController, NumericController):
     """
     Gives access to `canvas rotation` in degrees.
 
@@ -52,7 +57,12 @@ class CanvasRotationController(CanvasBasedController, Controller[int]):
     """
 
     TYPE = int
-    DEFAULT_VALUE: float = 0
+    DEFAULT_VALUE = 0
+    MIN_VALUE = 0
+    MAX_VALUE = 360
+    STEP = 5
+    WRAPPING = True
+    ADAPTIVE = False
 
     def get_value(self) -> int:
         """Get canvas rotation in degrees."""

@@ -10,7 +10,7 @@ from api_krita import Krita
 from api_krita.pyqt import Text
 from api_krita.enums import Action, Tool, Toggle, TransformMode
 from api_krita.actions import TransformModeFinder
-from ..controller_base import Controller
+from ..controller_base import Controller, NumericController
 
 
 class ToolController(Controller[Tool]):
@@ -137,7 +137,7 @@ class ToggleController(Controller[bool]):
         return value.pretty_name
 
 
-class UndoController(Controller[int]):
+class UndoController(NumericController):
     """
     Gives access to `undo` and `redo` actions.
 
@@ -149,9 +149,16 @@ class UndoController(Controller[int]):
     - Each Undo and redo change remembered position by 1
     """
 
-    state = 0
     TYPE = int
     DEFAULT_VALUE = 0
+    MIN_VALUE = 0
+    MAX_VALUE = 10_000
+    STEP = 1
+    WRAPPING = False
+    ADAPTIVE = False
+
+    def __init__(self):
+        self.state = 0
 
     def get_value(self) -> int:
         """Return remembered position on undo stack"""
