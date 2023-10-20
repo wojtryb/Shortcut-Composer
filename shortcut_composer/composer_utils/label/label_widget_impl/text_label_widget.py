@@ -11,9 +11,9 @@ from api_krita import Krita
 from api_krita.pyqt import Text
 from ..label_widget_style import LabelWidgetStyle
 from ..label_widget import LabelWidget
-from ..label import Label
+from ..label_interface import LabelInterface
 
-T = TypeVar("T")
+T = TypeVar("T", bound=LabelInterface)
 
 
 class TextLabelWidget(LabelWidget[T]):
@@ -21,7 +21,7 @@ class TextLabelWidget(LabelWidget[T]):
 
     def __init__(
         self,
-        label: Label[T],
+        label: T,
         label_widget_style: LabelWidgetStyle,
         parent: QWidget,
         is_unscaled: bool = False,

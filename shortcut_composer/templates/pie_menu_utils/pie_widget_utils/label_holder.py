@@ -5,9 +5,10 @@ from typing import List
 from functools import partial
 
 from api_krita.pyqt import BaseWidget
-from composer_utils.label import Label, LabelWidget
+from composer_utils.label import LabelWidget
 from composer_utils.label.label_widget_impl import dispatch_label_widget
 from ..pie_style import PieStyle
+from ..pie_label import PieLabel
 from ..pie_config import PieConfig
 from .widget_holder import WidgetHolder
 from .circle_points import CirclePoints
@@ -24,7 +25,7 @@ class LabelHolder:
 
     def __init__(
         self,
-        labels: List[Label],
+        labels: List[PieLabel],
         pie_style: PieStyle,
         config: PieConfig,
         owner: BaseWidget,
@@ -41,29 +42,29 @@ class LabelHolder:
         self.widget_holder = WidgetHolder()
         self.reset(notify=False)
 
-    def append(self, label: Label):
+    def append(self, label: PieLabel):
         """Append the new label to the holder."""
         if (self._config.allow_value_edit):
             self._labels.append(label)
             self.reset()
 
-    def insert(self, index: int, label: Label):
+    def insert(self, index: int, label: PieLabel):
         """Insert the new label to the holder at given index."""
         if (self._config.allow_value_edit):
             self._labels.insert(index, label)
             self.reset()
 
-    def remove(self, label: Label):
+    def remove(self, label: PieLabel):
         """Remove the label from the holder."""
         if (label in self._labels and self._config.allow_value_edit):
             self._labels.remove(label)
             self.reset()
 
-    def index(self, label: Label):
+    def index(self, label: PieLabel):
         """Return the index at which the label is stored."""
         return self._labels.index(label)
 
-    def swap(self, _a: Label, _b: Label):
+    def swap(self, _a: PieLabel, _b: PieLabel):
         """
         Swap positions of two labels from the holder.
 
@@ -116,7 +117,7 @@ class LabelHolder:
             child.setParent(None)  # type: ignore
         self.widget_holder.clear()
 
-        children_widgets: List[LabelWidget] = []
+        children_widgets: List[LabelWidget[PieLabel]] = []
         for label in self._labels:
             children_widgets.append(dispatch_label_widget(label)(
                 label, self._pie_style.label_style, self._owner))

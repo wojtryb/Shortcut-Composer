@@ -12,8 +12,9 @@ from PyQt5.QtGui import (
 
 from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
 from composer_utils import Config
-from composer_utils.label import Label, LabelWidget
+from composer_utils.label import LabelWidget
 from .edit_mode import EditMode
+from .pie_label import PieLabel
 from .pie_style import PieStyle
 from .pie_config import PieConfig
 from .pie_widget_utils import (
@@ -41,7 +42,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     def __init__(
         self,
         pie_style: PieStyle,
-        labels: List[Label[T]],
+        labels: List[PieLabel[T]],
         edit_mode: EditMode,
         config: PieConfig,
         parent=None
@@ -72,7 +73,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         Config.PIE_GLOBAL_SCALE.register_callback(self._reset)
         Config.PIE_ICON_GLOBAL_SCALE.register_callback(self._reset)
 
-        self.active: Optional[Label] = None
+        self.active: Optional[PieLabel] = None
         self._last_widget = None
 
         self.label_holder = LabelHolder(

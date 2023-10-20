@@ -11,6 +11,7 @@ from .pie_widget import PieWidget
 from .pie_button import PieButton
 from .pie_style import PieStyle
 from .edit_mode import EditMode
+from .pie_label import PieLabel
 from .actuator import Actuator
 
 __all__ = [
@@ -20,6 +21,7 @@ __all__ = [
     "PieConfig",
     "PieWidget",
     "PieButton",
+    "PieLabel",
     "PieStyle",
     "EditMode",
     "Actuator",

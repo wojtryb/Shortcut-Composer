@@ -7,7 +7,7 @@ from PyQt5.QtGui import QCursor
 
 from api_krita.pyqt import Timer
 from composer_utils import Config
-from composer_utils.label import Label
+from .pie_label import PieLabel
 from .pie_widget import PieWidget
 from .pie_widget_utils import CirclePoints
 
@@ -65,7 +65,7 @@ class PieManager:
         holder = self._pie_widget.label_holder.widget_holder
         self._set_active_label(holder.on_angle(angle).label)
 
-    def _set_active_label(self, label: Optional[Label]) -> None:
+    def _set_active_label(self, label: Optional[PieLabel]) -> None:
         """Mark label as active and start animating the change."""
         if self._pie_widget.active != label:
             self._pie_widget.active = label

@@ -10,27 +10,27 @@ from PyQt5.QtGui import QDrag, QPixmap, QMouseEvent, QPaintEvent
 from api_krita import Krita
 from api_krita.pyqt import Painter, PixmapTransform, BaseWidget
 from .label_widget_style import LabelWidgetStyle
-from .label import Label
+from .label_interface import LabelInterface
 
-T = TypeVar("T")
+T = TypeVar("T", bound=LabelInterface, contravariant=True)
 
 
-class WidgetInstructions(Protocol):
+class WidgetInstructions(Protocol, Generic[T]):
     """Additional logic to do on entering and leaving a widget."""
 
-    def on_enter(self, label: Label) -> None:
+    def on_enter(self, label: T) -> None:
         """Logic to perform when mouse starts hovering over widget."""
 
-    def on_leave(self, label: Label) -> None:
+    def on_leave(self, label: T) -> None:
         """Logic to perform when mouse stops hovering over widget."""
 
 
 class LabelWidget(BaseWidget, Generic[T]):
-    """Displays a `label` inside of `widget` using given `style`."""
+    """Displays a LabelInterface data using given style."""
 
     def __init__(
         self,
-        label: Label[T],
+        label: T,
         label_widget_style: LabelWidgetStyle,
         parent: QWidget,
         is_unscaled: bool = False,
@@ -144,10 +144,6 @@ class LabelWidget(BaseWidget, Generic[T]):
             return
         self._forced = value
         self.repaint()
-
-    def move_to_label(self) -> None:
-        """Move the widget according to current center of label it holds."""
-        self.move_center(self.label.center)
 
     def mousePressEvent(self, e: QMouseEvent) -> None:
         """Initiate a drag loop for this Widget, so Widgets can be swapped."""

@@ -6,10 +6,10 @@ from enum import Enum
 
 from api_krita.enums.helpers import EnumGroup
 from core_components import Controller
-from composer_utils.label import Label
 from templates.pie_menu_utils import PieStyle, PieSettings
 from templates.pie_menu_utils.pie_config_impl import NonPresetPieConfig
 from .common_utils import GroupScrollArea, GroupManager
+from ..pie_label import PieLabel
 
 
 class EnumGroupPieSettings(PieSettings):
@@ -53,7 +53,7 @@ class EnumGroupManager(GroupManager):
             return list(self._enum_type._member_map_.values())
         return self._enum_type._groups_[group]
 
-    def create_labels(self, values: List[Enum]) -> List[Label[Enum]]:
+    def create_labels(self, values: List[Enum]) -> List[PieLabel[Enum]]:
         """Create labels from list of preset names."""
-        labels = [Label.from_value(v, self._controller) for v in values]
+        labels = [PieLabel.from_value(v, self._controller) for v in values]
         return [label for label in labels if label is not None]

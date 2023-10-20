@@ -9,9 +9,9 @@ from PyQt5.QtWidgets import QWidget
 from api_krita.pyqt import Painter, PixmapTransform
 from ..label_widget_style import LabelWidgetStyle
 from ..label_widget import LabelWidget
-from ..label import Label
+from ..label_interface import LabelInterface
 
-T = TypeVar("T")
+T = TypeVar("T", bound=LabelInterface)
 
 
 class ImageLabelWidget(LabelWidget[T]):
@@ -19,7 +19,7 @@ class ImageLabelWidget(LabelWidget[T]):
 
     def __init__(
         self,
-        label: Label,
+        label: T,
         label_widget_style: LabelWidgetStyle,
         parent: QWidget,
         is_unscaled: bool = False,

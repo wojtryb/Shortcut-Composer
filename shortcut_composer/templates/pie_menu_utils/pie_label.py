@@ -8,43 +8,45 @@ from dataclasses import dataclass, field
 from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QPixmap, QIcon
 
-from ..global_config import Config
+from composer_utils.label import LabelInterface
+from composer_utils.global_config import Config  # move to Label init
 from core_components import Controller
 
 T = TypeVar("T")
 
 
 @dataclass
-class Label(Generic[T]):
+class PieLabel(LabelInterface, Generic[T]):
     """
     Data representing a single value in PieWidget.
 
     - `value` -- Value to set using the controller
+    - `display_value` -- `value` representation to display. Can be
+                         either a colored text or an image
+    - `pretty_name` -- String to use when displaying the label to user
     - `center -- Label position in widget coordinates
     - `angle` -- Angle in degrees in relation to widget center. Angles are
                  counted clockwise with 0 being the top of widget
-    - `display_value` -- `value` representation to display. Can be
-                         either a colored text or an image
     - `activation_progress` -- state of animation in range <0-1>
     """
 
     value: Final[T]
-    center: QPoint = field(default_factory=QPoint)
-    angle: int = 0
     display_value: Union[QPixmap, QIcon, Text, None] = None
     pretty_name: str = ""
+    center: QPoint = field(default_factory=QPoint)
+    angle: int = 0
 
     def __post_init__(self) -> None:
         self.activation_progress = AnimationProgress(speed_scale=1, steep=1)
 
-    def swap_locations(self, other: 'Label[T]') -> None:
+    def swap_locations(self, other: 'PieLabel[T]') -> None:
         """Change position data with information Label."""
         self.angle, other.angle = other.angle, self.angle
         self.center, other.center = other.center, self.center
 
     def __eq__(self, other: T) -> bool:
         """Consider two labels with the same value and position - equal."""
-        if not isinstance(other, Label):
+        if not isinstance(other, PieLabel):
             return False
 
         return self.value == other.value
@@ -54,13 +56,14 @@ class Label(Generic[T]):
         return hash(self.value)
 
     @staticmethod
-    def from_value(value: T, controller: Controller) -> 'Optional[Label[T]]':
+    def from_value(value: T, controller: Controller)\
+            -> 'Optional[PieLabel[T]]':
         """Use provided controller to create a label holding passed value."""
         label = controller.get_label(value)
         if label is None:
             return None
 
-        return Label(
+        return PieLabel(
             value=value,
             display_value=label,
             pretty_name=controller.get_pretty_name(value))

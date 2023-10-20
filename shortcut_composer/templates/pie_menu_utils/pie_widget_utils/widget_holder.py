@@ -2,21 +2,25 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Dict, Iterator
-from composer_utils.label import Label, LabelWidget
+
+from composer_utils.label import LabelWidget
+from ..pie_label import PieLabel
+
+PieLabelWidget = LabelWidget[PieLabel]
 
 
 class WidgetHolder:
     """Holds LabelWidgets in relation to their angles on PieWidget."""
 
     def __init__(self):
-        self._widgets: Dict[int, LabelWidget] = {}
+        self._widgets: Dict[int, PieLabelWidget] = {}
 
-    def add(self, widget: LabelWidget) -> None:
-        """Add a new LabelWidget to the holder."""
+    def add(self, widget: PieLabelWidget) -> None:
+        """Add a new LabelWidget[Label] to the holder."""
         self._widgets[widget.label.angle] = widget
-        widget.move_to_label()
+        widget.move_center(widget.label.center)
 
-    def swap(self, w_a: LabelWidget, w_b: LabelWidget) -> None:
+    def swap(self, w_a: PieLabelWidget, w_b: PieLabelWidget) -> None:
         """Swap position of two widgets."""
         a_angle = w_a.label.angle
         b_angle = w_b.label.angle
@@ -25,10 +29,10 @@ class WidgetHolder:
         self._widgets[b_angle] = w_a
 
         w_a.label.swap_locations(w_b.label)
-        w_a.move_to_label()
-        w_b.move_to_label()
+        w_a.move_center(w_a.label.center)
+        w_b.move_center(w_b.label.center)
 
-    def on_angle(self, angle: float) -> LabelWidget:
+    def on_angle(self, angle: float) -> PieLabelWidget:
         """Return LabelWidget which is the closest to given `angle`."""
         def angle_difference(label_angle: float) -> float:
             """Return the smallest difference between two angles."""
@@ -38,15 +42,15 @@ class WidgetHolder:
         closest = min(self.angles(), key=angle_difference)
         return self._widgets[closest]
 
-    def on_label(self, label: Label):
+    def on_label(self, label: PieLabel):
         """Return widget wrapping the label of the same value as given."""
         for widget in self._widgets.values():
             if widget.label == label:
                 return widget
         raise ValueError(f"{label} not in holder.")
 
-    def angle(self, widget: LabelWidget) -> int:
-        """Return at which angle is the given LabelWidget."""
+    def angle(self, widget: PieLabelWidget) -> int:
+        """Return at which angle is the given LabelWidget[Label]."""
         for angle, held_widget in self._widgets.items():
             if widget == held_widget:
                 return angle
@@ -60,7 +64,7 @@ class WidgetHolder:
         """Iterate over all angles at which LabelWidgets are."""
         return iter(self._widgets.keys())
 
-    def __iter__(self) -> Iterator[LabelWidget]:
+    def __iter__(self) -> Iterator[PieLabelWidget]:
         """Iterate over all held LabelWidgets."""
         for angle in sorted(self.angles()):
             yield self._widgets[angle]

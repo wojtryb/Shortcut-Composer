@@ -15,9 +15,10 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QSizePolicy)
 
-from composer_utils.label import Label, LabelWidget
+from composer_utils.label import LabelWidget
 from composer_utils.label.label_widget_impl import dispatch_label_widget
 from templates.pie_menu_utils import PieStyle
+from ...pie_label import PieLabel
 from .offset_grid_layout import OffsetGridLayout
 
 
@@ -63,8 +64,8 @@ class ScrollArea(QWidget):
         self._pie_style = pie_style
         self._columns = columns
 
-        self._known_children: dict[Label, LabelWidget] = {}
-        self._children_list: List[LabelWidget] = []
+        self._known_children: dict[PieLabel, LabelWidget[PieLabel]] = {}
+        self._children_list: List[LabelWidget[PieLabel]] = []
 
         self._grid = OffsetGridLayout(self._columns, self)
         self._active_label_display = self._init_active_label_display()
@@ -91,7 +92,7 @@ class ScrollArea(QWidget):
         layout.addLayout(footer)
         return layout
 
-    def _init_active_label_display(self):
+    def _init_active_label_display(self) -> QLabel:
         """Return a label displaying hovered label."""
         label = QLabel(self)
         label.setSizePolicy(
@@ -139,8 +140,8 @@ class ScrollArea(QWidget):
         self._grid.replace(children)
         QTimer.singleShot(10, lambda: self.setUpdatesEnabled(True))
 
-    def _create_child(self, label: Label) -> LabelWidget:
-        """Create LabelWidget that represent the label."""
+    def _create_child(self, label: PieLabel) -> LabelWidget[PieLabel]:
+        """Create LabelWidget[PieLabel] that represent the label."""
         child = dispatch_label_widget(label)(
             label=label,
             label_widget_style=self._pie_style.label_style,
@@ -153,7 +154,7 @@ class ScrollArea(QWidget):
         self._known_children[label] = child
         return child
 
-    def replace_handled_labels(self, labels: List[Label]) -> None:
+    def replace_handled_labels(self, labels: List[PieLabel]) -> None:
         """Replace current list of widgets with new ones."""
         self.setUpdatesEnabled(False)
         self._children_list.clear()
@@ -185,10 +186,10 @@ class ChildInstruction:
     def __init__(self, display_label: QLabel) -> None:
         self._display_label = display_label
 
-    def on_enter(self, label: Label) -> None:
+    def on_enter(self, label: PieLabel) -> None:
         """Set text of label which was entered with mouse."""
         self._display_label.setText(str(label.pretty_name))
 
-    def on_leave(self, label: Label) -> None:
+    def on_leave(self, label: PieLabel) -> None:
         """Reset text after mouse leaves the widget."""
         self._display_label.setText("")

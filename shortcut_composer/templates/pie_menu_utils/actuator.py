@@ -2,10 +2,11 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Optional, List
+
 from config_system import Field
 from core_components import Controller
 from data_components import DeadzoneStrategy
-from composer_utils.label import Label
+from .pie_label import PieLabel
 from .pie_widget_utils import WidgetHolder
 
 
@@ -33,10 +34,10 @@ class Actuator:
         self,
         controller: Controller,
         strategy_field: Field,
-        labels: List[Label]
+        labels: List[PieLabel]
     ) -> None:
         self._controller = controller
-        self._last_label: Optional[Label] = None
+        self._last_label: Optional[PieLabel] = None
         self._labels = labels
 
         def update_strategy():
@@ -45,7 +46,7 @@ class Actuator:
         strategy_field.register_callback(update_strategy)
         update_strategy()
 
-    def activate(self, active: Optional[Label]) -> None:
+    def activate(self, active: Optional[PieLabel]) -> None:
         """Activate the correct label"""
         if active is not None:
             # Out of deadzone, label picked
@@ -58,7 +59,7 @@ class Actuator:
             self._controller.set_value(self.selected_label.value)
 
     @property
-    def selected_label(self) -> Optional[Label]:
+    def selected_label(self) -> Optional[PieLabel]:
         """Return label which should be picked on deadzone."""
         if self._current_strategy == DeadzoneStrategy.DO_NOTHING:
             return None

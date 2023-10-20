@@ -8,7 +8,6 @@ from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QColor
 
 from api_krita import Krita
-from composer_utils.label import Label
 from data_components import DeadzoneStrategy
 from core_components import Controller, Instruction
 from .pie_menu_utils.pie_config_impl import dispatch_pie_config
@@ -20,7 +19,8 @@ from .pie_menu_utils import (
     PieWidget,
     PieButton,
     Actuator,
-    EditMode)
+    EditMode,
+    PieLabel)
 from .raw_instructions import RawInstructions
 
 T = TypeVar('T')
@@ -103,7 +103,7 @@ class PieMenu(RawInstructions, Generic[T]):
             deadzone_strategy=deadzone_strategy)
         self._config.ORDER.register_callback(self._reset_labels)
 
-        self._labels: List[Label] = []
+        self._labels: List[PieLabel] = []
         self._edit_mode = EditMode(self)
         self._style_manager = StyleManager(pie_config=self._config)
         self.actuator = Actuator(
@@ -202,7 +202,7 @@ class PieMenu(RawInstructions, Generic[T]):
 
         self._labels.clear()
         for value in values:
-            label = Label.from_value(value, self._controller)
+            label = PieLabel.from_value(value, self._controller)
             if label is not None:
                 self._labels.append(label)
             else:

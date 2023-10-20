@@ -12,10 +12,10 @@ from PyQt5.QtWidgets import (
     QLabel)
 
 from core_components import NumericController
-from composer_utils.label import Label
 from composer_utils.label.label_widget_impl import dispatch_label_widget
 from templates.pie_menu_utils.pie_config_impl import NonPresetPieConfig
 from templates.pie_menu_utils import PieStyle, PieSettings
+from ..pie_label import PieLabel
 
 
 class NumericValuePicker(QWidget):
@@ -51,7 +51,7 @@ class NumericValuePicker(QWidget):
         return layout
 
     def _create_icon(self, value: int):
-        label = Label.from_value(value, self._controller)
+        label = PieLabel.from_value(value, self._controller)
 
         if label is None:
             raise Exception

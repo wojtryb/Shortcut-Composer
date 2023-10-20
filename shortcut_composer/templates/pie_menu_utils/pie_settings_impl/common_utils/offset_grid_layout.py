@@ -7,11 +7,15 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QGridLayout
 
 from composer_utils.label import LabelWidget
+from ...pie_label import PieLabel
 
 
 class GridPosition(NamedTuple):
     grid_row: int
     grid_col: int
+
+
+PieLabelWidget = LabelWidget[PieLabel]
 
 
 class OffsetGridLayout(QGridLayout):
@@ -34,7 +38,7 @@ class OffsetGridLayout(QGridLayout):
 
     def __init__(self, max_columns: int, owner: QWidget) -> None:
         super().__init__()
-        self._widgets: List[LabelWidget] = []
+        self._widgets: List[PieLabelWidget] = []
         self._max_columns = max_columns
         self._items_in_group = 2*max_columns - 1
         self._owner = owner
@@ -57,7 +61,8 @@ class OffsetGridLayout(QGridLayout):
         col = item-self._max_columns
         return GridPosition(grid_row=group*4+2, grid_col=col*2+1)
 
-    def _internal_insert(self, index: int, widget: LabelWidget) -> None:
+    def _internal_insert(self, index: int, widget: PieLabelWidget
+                         ) -> None:
         """Insert widget at given index if not stored already."""
         if widget in self._widgets:
             return
@@ -65,23 +70,23 @@ class OffsetGridLayout(QGridLayout):
         widget.show()
         self._widgets.insert(index, widget)
 
-    def insert(self, index: int, widget: LabelWidget) -> None:
+    def insert(self, index: int, widget: PieLabelWidget) -> None:
         """Insert the widget at given index and refresh the layout."""
         self._internal_insert(index, widget)
         self._refresh()
 
-    def append(self, widget: LabelWidget) -> None:
+    def append(self, widget: PieLabelWidget) -> None:
         """Append the widget at the end and refresh the layout."""
         self._internal_insert(len(self), widget)
         self._refresh()
 
-    def extend(self, widgets: List[LabelWidget]) -> None:
+    def extend(self, widgets: List[PieLabelWidget]) -> None:
         """Extend layout with the given widgets and refresh the layout."""
         for widget in widgets:
             self._internal_insert(len(self), widget)
         self._refresh()
 
-    def replace(self, widgets: List[LabelWidget]) -> None:
+    def replace(self, widgets: List[PieLabelWidget]) -> None:
         """Replace all existing widgets with the ones provided."""
         if widgets == self._widgets:
             return

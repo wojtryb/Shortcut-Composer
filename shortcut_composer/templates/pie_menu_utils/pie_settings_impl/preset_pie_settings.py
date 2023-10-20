@@ -10,9 +10,9 @@ from api_krita.wrappers import Database
 from api_krita.pyqt import SafeConfirmButton
 from core_components.controllers import PresetController
 from data_components import Tag
-from composer_utils.label import Label
 from templates.pie_menu_utils.pie_config_impl import PresetPieConfig
 from templates.pie_menu_utils import PieStyle, PieSettings
+from ..pie_label import PieLabel
 from .common_utils import GroupComboBox, GroupScrollArea, GroupManager
 
 
@@ -155,7 +155,7 @@ class PresetPieSettings(PieSettings):
 
 class PresetGroupManager(GroupManager):
 
-    known_labels: Dict[str, Union[Label, None]] = {}
+    known_labels: Dict[str, Union[PieLabel, None]] = {}
 
     def __init__(self) -> None:
         self._controller = PresetController()
@@ -169,15 +169,15 @@ class PresetGroupManager(GroupManager):
             return list(Krita.get_presets().keys())
         return Tag(group)
 
-    def create_labels(self, values: Iterable[str]) -> List[Label[str]]:
+    def create_labels(self, values: Iterable[str]) -> List[PieLabel[str]]:
         """Create labels from list of preset names."""
-        labels: list[Optional[Label]] = []
+        labels: list[Optional[PieLabel]] = []
 
         for preset in values:
             if preset in self.known_labels:
                 label = self.known_labels[preset]
             else:
-                label = Label.from_value(preset, self._controller)
+                label = PieLabel.from_value(preset, self._controller)
                 self.known_labels[preset] = label
             labels.append(label)
 
