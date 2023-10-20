@@ -1,6 +1,7 @@
 import math
 
-from composer_utils import LabelWidgetStyle, Config
+from composer_utils import Config
+from composer_utils.label import LabelWidgetStyle
 from .pie_config import PieConfig
 from .pie_style import PieStyle
 

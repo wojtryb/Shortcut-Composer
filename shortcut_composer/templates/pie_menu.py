@@ -8,7 +8,7 @@ from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QColor
 
 from api_krita import Krita
-from composer_utils import Label
+from composer_utils.label import Label
 from data_components import DeadzoneStrategy
 from core_components import Controller, Instruction
 from .pie_menu_utils.pie_config_impl import dispatch_pie_config

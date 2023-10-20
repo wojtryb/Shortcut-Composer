@@ -6,7 +6,8 @@ from typing import Optional
 from PyQt5.QtGui import QCursor
 
 from api_krita.pyqt import Timer
-from composer_utils import Config, Label
+from composer_utils import Config
+from composer_utils.label import Label
 from .pie_widget import PieWidget
 from .pie_widget_utils import CirclePoints
 

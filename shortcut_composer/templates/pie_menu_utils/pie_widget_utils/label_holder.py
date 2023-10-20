@@ -5,8 +5,8 @@ from typing import List
 from functools import partial
 
 from api_krita.pyqt import BaseWidget
-from composer_utils import Label, LabelWidget
-from composer_utils.label_widget_impl import dispatch_label_widget
+from composer_utils.label import Label, LabelWidget
+from composer_utils.label.label_widget_impl import dispatch_label_widget
 from ..pie_style import PieStyle
 from ..pie_config import PieConfig
 from .widget_holder import WidgetHolder

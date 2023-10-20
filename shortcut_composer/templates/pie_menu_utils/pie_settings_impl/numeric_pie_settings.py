@@ -12,8 +12,8 @@ from PyQt5.QtWidgets import (
     QLabel)
 
 from core_components import NumericController
-from composer_utils import Label
-from composer_utils.label_widget_impl import dispatch_label_widget
+from composer_utils.label import Label
+from composer_utils.label.label_widget_impl import dispatch_label_widget
 from templates.pie_menu_utils.pie_config_impl import NonPresetPieConfig
 from templates.pie_menu_utils import PieStyle, PieSettings
 

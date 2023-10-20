@@ -9,8 +9,9 @@ from PyQt5.QtWidgets import QLabel, QWidget
 
 from api_krita import Krita
 from api_krita.pyqt import Text
-from composer_utils import Label, LabelWidget
 from ..label_widget_style import LabelWidgetStyle
+from ..label_widget import LabelWidget
+from ..label import Label
 
 T = TypeVar("T")
 

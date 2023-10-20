@@ -4,7 +4,7 @@
 from enum import Enum
 
 from core_components import Controller
-from composer_utils import Label
+from composer_utils.label import Label
 from templates.pie_menu_utils.pie_config_impl import NonPresetPieConfig
 from templates.pie_menu_utils import PieStyle, PieSettings
 from .common_utils import ScrollArea

@@ -15,8 +15,8 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QSizePolicy)
 
-from composer_utils import Label, LabelWidget
-from composer_utils.label_widget_impl import dispatch_label_widget
+from composer_utils.label import Label, LabelWidget
+from composer_utils.label.label_widget_impl import dispatch_label_widget
 from templates.pie_menu_utils import PieStyle
 from .offset_grid_layout import OffsetGridLayout
 

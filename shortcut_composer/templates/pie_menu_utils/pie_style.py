@@ -4,7 +4,8 @@
 from PyQt5.QtGui import QColor
 
 from api_krita import Krita
-from composer_utils import Config, LabelWidgetStyle
+from composer_utils import Config
+from composer_utils.label import LabelWidgetStyle
 
 
 class PieStyle:

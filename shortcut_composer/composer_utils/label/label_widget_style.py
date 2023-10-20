@@ -5,7 +5,7 @@ import platform
 from PyQt5.QtGui import QColor
 
 from api_krita import Krita
-from .global_config import Config
+from ..global_config import Config
 
 
 class LabelWidgetStyle:

@@ -3,9 +3,9 @@
 
 from typing import Optional, List
 from config_system import Field
-from composer_utils import Label
 from core_components import Controller
 from data_components import DeadzoneStrategy
+from composer_utils.label import Label
 from .pie_widget_utils import WidgetHolder
 
 
