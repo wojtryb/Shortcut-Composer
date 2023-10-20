@@ -53,7 +53,7 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
         """Refresh the values in case the active document changed."""
         self.ORDER.write(self.values())
 
-    def set_current_as_default(self):
+    def set_current_as_default(self) -> None:
         """Set current pie values as a new default list of values."""
         self.ORDER.default = self.ORDER.read()
 

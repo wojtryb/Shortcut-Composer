@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QAbstractItemView, QListWidget, QWidget
 
 class ValueList(QListWidget):
     """
-    List widget with multiselection and convenience methods.
+    List widget with multi-selection and convenience methods.
 
     When movable, elements of list can be reordered with drag and drop.
     """

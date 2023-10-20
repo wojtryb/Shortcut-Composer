@@ -25,7 +25,7 @@ class ReleaseKeyEventFilter(QMdiArea):
         """
         Override filtering method, executed by Qt on every event.
 
-        When the event is recognised to be KeyRelease event, run all
+        When the event is recognized to be KeyRelease event, run all
         registered callbacks.
 
         Always return False to let the event reach its desired

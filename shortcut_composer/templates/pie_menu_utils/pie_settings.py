@@ -62,7 +62,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
 
         self._tab_holder = QTabWidget()
         self._local_settings = ConfigFormWidget([
-            "Behaviour",
+            "Behavior",
             EnumComboBox(
                 config_field=config.DEADZONE_STRATEGY,
                 parent=self,
@@ -235,7 +235,7 @@ class LocationTab(QWidget):
         return label
 
     def _init_mode_description(self) -> QLabel:
-        """Return QLabel with onedetailed description of the active mode."""
+        """Return QLabel with one detailed description of the active mode."""
         label = QLabel()
         label.setSizePolicy(
             QSizePolicy.Ignored,

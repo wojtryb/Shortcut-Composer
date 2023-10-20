@@ -3,7 +3,7 @@
 
 from api_krita.pyqt import Text
 from typing import Union, Generic, TypeVar, Final, Optional
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QPixmap, QIcon
@@ -29,7 +29,7 @@ class Label(Generic[T]):
     """
 
     value: Final[T]
-    center: QPoint = QPoint(0, 0)
+    center: QPoint = field(default_factory=QPoint)
     angle: int = 0
     display_value: Union[QPixmap, QIcon, Text, None] = None
     pretty_name: str = ""
@@ -76,7 +76,7 @@ class AnimationProgress:
     The change is the fastest when the animation starts, and then slows
     down near the end (controlled by `steep` argument).
 
-    There is a `reset()` method to cancel the animation immediatelly.
+    There is a `reset()` method to cancel the animation immediately.
     """
 
     def __init__(self, speed_scale: float = 1.0, steep: float = 1.0) -> None:
@@ -100,5 +100,5 @@ class AnimationProgress:
         return self._value
 
     def reset(self) -> None:
-        """Arbitralily set a value to 0"""
+        """Arbitrarily set a value to 0"""
         self._value = 0

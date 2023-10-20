@@ -1,4 +1,4 @@
-# Shortcut composer **v1.4.0**
+# Shortcut composer **v1.4.1**
 
 [![python](https://img.shields.io/badge/Python-3.8-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
 [![Code style: black](https://img.shields.io/badge/code%20style-autopep8-333333.svg)](https://pypi.org/project/autopep8/)
@@ -39,7 +39,7 @@ The plugin adds new shortcuts of the following types:
 [![PIE MENUS - release video](https://github-production-user-asset-6210df.s3.amazonaws.com/51094047/238179887-87c00d86-0e65-46c2-94c4-52bb02c99501.png)](https://youtu.be/hrjBycVYFZM "PIE MENUS - introducing Shortcut Composer")
 
 ## Requirements
-- Version of krita on plugin release: **5.1.5**
+- Version of krita on plugin release: **5.2.0**
 - Required version of krita: **5.1.0** or later
 
 OS support state:
@@ -49,7 +49,7 @@ OS support state:
 - [ ] Android (Does not support python plugins yet)
 
 > **Note**
-> On **Linux** the only oficially supported version of Krita is **.appimage**, which ships with all required dependencies. Running the plugin on Krita installed from Snap or distribution repositories is not recommended as it may not work out of the box and may require extra dependency-related work.
+> On **Linux** the only officially supported version of Krita is **.appimage**, which ships with all required dependencies. Running the plugin on Krita installed from Snap or distribution repositories is not recommended as it may not work out of the box and may require extra dependency-related work.
 
 ## How to install or update the plugin:
 Installation steps are THE SAME for installing the plugin for the first time and for updating it to the new version:
@@ -62,7 +62,7 @@ Installation steps are THE SAME for installing the plugin for the first time and
 4. Set custom shortcuts in **Settings > Configure Krita > Keyboard Shortcuts** under **Scripts > Shortcut Composer: ...** sections. By intention, there are no default bindings.
 
 > **Warning**
-> Some keyboard buttons like **Space, R, Y, V, 1, 2, 3, 4, 5, 6** are reserved for Krita's Canvas Inputs. Assigning those keys to actions (including those from the plugin) may result in conflicts and abnormal behaviour different for each OS. Either avoid those keys, or remove their bindings in **Settings > Configure Krita > Canvas Input Settings**.
+> Some keyboard buttons like **Space, R, Y, V, 1, 2, 3, 4, 5, 6** are reserved for Krita's Canvas Inputs. Assigning those keys to actions (including those from the plugin) may result in conflicts and abnormal behavior different for each OS. Either avoid those keys, or remove their bindings in **Settings > Configure Krita > Canvas Input Settings**.
 
 
 ## For krita plugin programmers

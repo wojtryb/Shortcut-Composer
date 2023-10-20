@@ -7,7 +7,7 @@ System granting easier API to control krita configuration in kritarc.
 Consists of two classes: "Field" and "FieldGroup".
 Read the documentation of those classes for more info.
 
-Holds a subpackage with ui elements dependent on the introducad
+Holds a subpackage with ui elements dependent on the introduced
 configuration concept.
 """
 

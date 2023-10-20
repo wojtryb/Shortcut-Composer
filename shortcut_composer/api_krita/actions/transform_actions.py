@@ -78,7 +78,7 @@ class TransformModeFinder:
     - Buttons of every transform modes from the tool options widget
     - Button used to apply the changes of transform tool
 
-    As the widget do not exist during plugin intialization phase,
+    As the widget do not exist during plugin initialization phase,
     fetching the elements needs to happen at runtime. If wrappers get
     deleted by C++, the fetching may need to be done again.
     """
@@ -119,16 +119,16 @@ class TransformModeFinder:
 
     def _fetch_transform_options(self) -> QWidget:
         """Fetch widget with transform tool options."""
-        for qobj in Krita.get_active_qwindow().findChildren(QWidget):
-            if qobj.objectName() == "KisToolTransform option widget":
-                return qobj  # type: ignore
+        for q_obj in Krita.get_active_qwindow().findChildren(QWidget):
+            if q_obj.objectName() == "KisToolTransform option widget":
+                return q_obj  # type: ignore
         raise RuntimeError("Transform options not found.")
 
     def _fetch_mode_button(self, mode: TransformMode) -> QToolButton:
         """Fetch a button that activates a given mode."""
-        for qobj in self._transform_options.findChildren(QToolButton):
-            if qobj.objectName() == mode.button_name:
-                return qobj  # type: ignore
+        for q_obj in self._transform_options.findChildren(QToolButton):
+            if q_obj.objectName() == mode.button_name:
+                return q_obj  # type: ignore
         raise RuntimeError(f"Could not find the {mode.name} button.")
 
     def _fetch_apply_button(self) -> QPushButton:

@@ -21,7 +21,7 @@ E = TypeVar("E", bound=Enum)
 
 
 class SpinBoxInterface(Protocol, Generic[F]):
-    """Representation of both Qt spinboxes as one generic class."""
+    """Representation of both Qt spin_boxes as one generic class."""
 
     def value(self) -> F: ...
     def setValue(self, val: F) -> None: ...
@@ -30,7 +30,7 @@ class SpinBoxInterface(Protocol, Generic[F]):
 
 class SpinBox(ConfigBasedWidget[F]):
     """
-    Wrapper of SpinBox linked to a `float` configutation field.
+    Wrapper of SpinBox linked to a `float` configuration field.
 
     Based on QSpinBox or QDoubleSpinBox depending on the config type.
     Works only for fields of type: `int` or `float`.
@@ -73,7 +73,7 @@ class SpinBox(ConfigBasedWidget[F]):
 
 
 class StringComboBox(ConfigBasedWidget[str]):
-    """Wrapper of Combobox linked to a `str` configutation field."""
+    """Wrapper of Combobox linked to a `str` configuration field."""
 
     def __init__(
         self,
@@ -111,7 +111,7 @@ class StringComboBox(ConfigBasedWidget[str]):
 
 class EnumComboBox(ConfigBasedWidget[E]):
     """
-    Wrapper of Combobox linked to a `Enum` configutation field.
+    Wrapper of Combobox linked to a `Enum` configuration field.
 
     Allows to pick one of enum members.
     """
@@ -151,7 +151,7 @@ class EnumComboBox(ConfigBasedWidget[E]):
 
 class ColorButton(ConfigBasedWidget[QColor]):
     """
-    Wrapper of QPushButton linked to a `QColor` configutation field.
+    Wrapper of QPushButton linked to a `QColor` configuration field.
 
     Button displays currently selected color, and clicking activates a
     color picker for changing it.
@@ -196,7 +196,7 @@ class ColorButton(ConfigBasedWidget[QColor]):
 
 
 class Checkbox(ConfigBasedWidget[bool]):
-    """Wrapper of QCheckBox linked to a `bool` configutation field."""
+    """Wrapper of QCheckBox linked to a `bool` configuration field."""
 
     def __init__(
         self,

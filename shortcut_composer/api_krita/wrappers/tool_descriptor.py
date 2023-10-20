@@ -47,10 +47,10 @@ class ToolDescriptor:
         def find_active_tool_name(self) -> str:
             """Find and return name of currently active tool."""
             self._ensure_toolbox()
-            for qobj in self.toolbox.findChildren(QToolButton):
-                if qobj.metaObject().className() == "KoToolBoxButton":
-                    if qobj.isChecked():
-                        return qobj.objectName()
+            for q_obj in self.toolbox.findChildren(QToolButton):
+                if q_obj.metaObject().className() == "KoToolBoxButton":
+                    if q_obj.isChecked():
+                        return q_obj.objectName()
             raise RuntimeError("No active tool found.")
 
         def _ensure_toolbox(self):
@@ -63,7 +63,7 @@ class ToolDescriptor:
         def _init_toolbox(self) -> QWidget:
             """Find and return reference to unwrapped toolbox object."""
             qwindow = self.instance.activeWindow().qwindow()
-            for qobj in qwindow.findChildren(QWidget):
-                if qobj.metaObject().className() == "KoToolBox":
-                    return qobj
+            for q_obj in qwindow.findChildren(QWidget):
+                if q_obj.metaObject().className() == "KoToolBox":
+                    return q_obj
             raise RuntimeError("Toolbox not found.")

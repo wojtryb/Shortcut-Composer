@@ -26,7 +26,7 @@ class Slider(Generic[T]):
 
     - `controller`        -- defines which krita property will be modified
     - `values`            -- list or range of values to switch to
-                             compatibile with controller
+                             compatible with controller
     - `sensitivity_scale` -- (optional) changes sensitivity of slider
     - `deadzone`          -- (optional) amount of pixels a mouse needs
                              to be moved for slider to start to work

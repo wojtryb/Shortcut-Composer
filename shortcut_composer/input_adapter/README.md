@@ -1,7 +1,7 @@
 ### Custom keyboard shortcut interface
-Package `input_adapter` consists of `ActionManager` and `ComplexActionInterface` which together allow to recognise more keyboard events than usual krita action does.
+Package `input_adapter` consists of `ActionManager` and `ComplexActionInterface` which together allow to recognize more keyboard events than usual krita action does.
 
-While usual actions can only recognise key press, implementing `ComplexActionInterface` lets you override methods performed on:
+While usual actions can only recognize key press, implementing `ComplexActionInterface` lets you override methods performed on:
 - key press
 - short key release
 - long key release

@@ -32,15 +32,15 @@ class TextLabelWidget(LabelWidget):
         if not isinstance(to_display, Text):
             raise TypeError("Label supposed to be text.")
 
-        heigth = round(self.icon_radius*0.8)
+        height = round(self.icon_radius*0.8)
 
         label = QLabel(self)
         label.setText(to_display.value)
         label.setAlignment(Qt.AlignCenter)
-        label.setGeometry(0, 0, round(heigth*2), round(heigth))
+        label.setGeometry(0, 0, round(height*2), round(height))
         label.setFont(self._font)
-        label.move(self.center.x()-heigth,
-                   self.center.y()-heigth//2)
+        label.move(self.center.x()-height,
+                   self.center.y()-height//2)
         label.setStyleSheet(f'''
             background-color:rgba({self._color_to_str(
             Krita.get_main_color_from_theme())});

@@ -28,7 +28,7 @@ class SliderHandler(Generic[T]):
     - `is_horizontal` -- specifies which axis to track.
 
     On initialization, values to cycle stored in `slider` are wrapped in
-    proper `SliderValues` which provides values compatibile with the
+    proper `SliderValues` which provides values compatible with the
     controller.
 
     The handler is running between `start()` and `stop()` calls.
@@ -41,7 +41,7 @@ class SliderHandler(Generic[T]):
 
     Main handler loop starts:
     - the mouse offset is being interpreted
-    - interpreted values allow to fetch controller compatibile values
+    - interpreted values allow to fetch controller compatible values
       from the `SliderValues`
     - `SliderValues` values are being set using the controller.
 

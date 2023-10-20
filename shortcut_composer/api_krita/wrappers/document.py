@@ -13,7 +13,7 @@ class KritaDocument(Protocol):
 
     def activeNode(self) -> KritaNode: ...
     def setActiveNode(self, node: KritaNode): ...
-    def createNode(self, name: str, node_type: NodeType) -> KritaNode: ...
+    def createNode(self, name: str, node_type: str) -> KritaNode: ...
     def topLevelNodes(self) -> List[KritaNode]: ...
     def resolution(self) -> int: ...
     def currentTime(self) -> int: ...
@@ -53,7 +53,7 @@ class Document:
         usable from Krita. For example with add_child_node() method of
         Node Class.
 
-        When relevant, the new Node will have the colorspace of the
+        When relevant, the new Node will have the color space of the
         image by default; that can be changed with Node::setColorSpace.
 
         The settings and selections for relevant layer and mask types
@@ -69,7 +69,7 @@ class Document:
     @current_time.setter
     def current_time(self, time: int) -> None:
         """Set current time using frame number"""
-        self.document.setCurrentTime(time)
+        self.document.setCurrentTime(round(time))
 
     def get_top_nodes(self) -> List[Node]:
         """Return a list of `Nodes` without a parent."""
@@ -86,7 +86,7 @@ class Document:
         return recursive_search(self.get_top_nodes(), [])
 
     @property
-    def dpi(self):
+    def dpi(self) -> int:
         """Return dpi (dot per inch) of the document."""
         return self.document.resolution()
 

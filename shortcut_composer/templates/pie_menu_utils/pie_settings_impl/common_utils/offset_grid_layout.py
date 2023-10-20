@@ -10,8 +10,8 @@ from templates.pie_menu_utils import LabelWidget
 
 
 class GridPosition(NamedTuple):
-    gridrow: int
-    gridcol: int
+    grid_row: int
+    grid_col: int
 
 
 class OffsetGridLayout(QGridLayout):
@@ -51,10 +51,10 @@ class OffsetGridLayout(QGridLayout):
         group, item = divmod(index, self._items_in_group)
 
         if item < self._max_columns:
-            return GridPosition(gridrow=group*4, gridcol=item*2)
+            return GridPosition(grid_row=group*4, grid_col=item*2)
 
         col = item-self._max_columns
-        return GridPosition(gridrow=group*4+2, gridcol=col*2+1)
+        return GridPosition(grid_row=group*4+2, grid_col=col*2+1)
 
     def _internal_insert(self, index: int, widget: LabelWidget) -> None:
         """Insert widget at given index if not stored already."""

@@ -27,7 +27,7 @@ class MultipleAssignment(RawInstructions, Generic[T]):
     - `name`          -- unique name of action. Must match the
                          definition in shortcut_composer.action file
     - `controller`    -- defines which krita property will be modified
-    - `values`        -- list of values to cycle compatibile with controller
+    - `values`        -- list of values to cycle compatible with controller
     - `default_value` -- (optional*) value to switch to after long press.
                          Does not have to belong to the list. If not
                          given, taken from a controller.

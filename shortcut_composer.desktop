@@ -5,4 +5,4 @@ X-KDE-Library=shortcut_composer
 X-Python-2-Compatible=false
 X-Krita-Manual=manual.html
 Name=Shortcut Composer
-Comment=Api for creating complex krita keyboard shortcuts. 
+Comment=Plugin for creating complex krita keyboard shortcuts.

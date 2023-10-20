@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+import sys
 from typing import Dict, List, Tuple, TypeVar, Optional
 from enum import Enum, EnumMeta
 T = TypeVar("T", bound=Enum)
@@ -36,9 +37,17 @@ class EnumGroupMeta(EnumMeta):
         # Remove groups from attrs, so they won't become Enum members
         group_var_names = [k for k, v in items if isinstance(v, Group)]
         for group_variable_name in group_var_names:
-            attrs._member_names.remove(group_variable_name)
+            members = attrs._member_names
+            if sys.version_info.major <= 2:
+                raise RuntimeError("Python 2 not supported")
+            if sys.version_info.minor <= 10:
+                # Until 3.10, _EnumDict._member_names was a list
+                members.remove(group_variable_name)
+            else:
+                # From 3.11, _EnumDict._member_names is a dict
+                del members[group_variable_name]
 
-        # Create Enum class. attrs emtpies itself in a process
+        # Create Enum class. attrs empties itself in a process
         new_class = super().__new__(cls, name, bases, attrs)
         # List of all groups
         group_list = [v for _, v in items if isinstance(v, Group)]

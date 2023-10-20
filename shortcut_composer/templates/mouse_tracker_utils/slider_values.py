@@ -8,14 +8,14 @@ from data_components import Range
 from .new_types import Interpreted
 
 Controlled = TypeVar("Controlled")
-"""Value compatibile with handled controller."""
+"""Value compatible with handled controller."""
 
 
 class SliderValues(ABC, Generic[Controlled]):
     """
-    Converts between interpreted values and those compatibile with controller.
+    Converts between interpreted values and those compatible with controller.
 
-    Works as if it was a container with  controller compatibile values:
+    Works as if it was a container with  controller compatible values:
     - `at()` fetches controller value using interpreted value
     - `index()` fetches interpreted value using controller value
 
@@ -30,11 +30,11 @@ class SliderValues(ABC, Generic[Controlled]):
 
     @abstractmethod
     def at(self, value: Interpreted) -> Controlled:
-        """Return controller compatibile value based on interpreted value."""
+        """Return controller compatible value based on interpreted value."""
 
     @abstractmethod
     def index(self, value: Controlled) -> Interpreted:
-        """Return first occurance of controlled value."""
+        """Return first occurrence of controlled value."""
 
 
 class RangeSliderValues(SliderValues):
@@ -70,7 +70,7 @@ class ListSliderValues(SliderValues, Generic[Controlled]):
     Unlike in lists, floats are supported for fetching values by
     performing a round() operation.
 
-    `min` and `max` values are provided by analizing the length of
+    `min` and `max` values are provided by analyzing the length of
     controlled list. They represent the full range of values that allow
     to fetch values considering the round conversion.
 
@@ -99,10 +99,10 @@ class ListSliderValues(SliderValues, Generic[Controlled]):
     def index(self, value: Controlled) -> Interpreted:
         """Return index of list element directly from it."""
         if value not in self._values:
-            value = self._handle_nonpresent_element(value)
+            value = self._handle_non_present_element(value)
         return Interpreted(self._values.index(value))
 
-    def _handle_nonpresent_element(self, value: Controlled) -> Controlled:
+    def _handle_non_present_element(self, value: Controlled) -> Controlled:
         """
         Swap given controlled value, if it does not belong to values list.
 
