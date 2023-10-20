@@ -85,7 +85,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self.set_draggable(False)
 
     def _reset(self):
-        """Set widget geometry according to style and refresh CirclePoints."""
+        """Set widget geometry according to style."""
         widget_diameter = self._pie_style.widget_radius*2
         self.setGeometry(0, 0, widget_diameter, widget_diameter)
 

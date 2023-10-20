@@ -182,7 +182,9 @@ def create_actions() -> List[templates.RawInstructions]: return [
 
     templates.PieMenu(
         name="Pick canvas zoom",
-        controller=controllers.CanvasZoomController(),
+        # controller=controllers.CanvasZoomController(),
+        # controller=controllers.CanvasRotationController(),
+        controller=controllers.BrushSizeController(),
         values=[50, 100, 200],
     ),
 

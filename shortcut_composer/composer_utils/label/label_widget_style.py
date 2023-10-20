@@ -1,10 +1,10 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from typing import Callable
 import platform
-from PyQt5.QtGui import QColor
 
-# from api_krita import Krita
+from PyQt5.QtGui import QColor
 
 
 class LabelWidgetStyle:
@@ -18,11 +18,33 @@ class LabelWidgetStyle:
     change over time.
     """
 
-    def __init__(self) -> None:
-        self.icon_radius = 100
-        self.border_thickness = 5
-        self.active_color = QColor(0, 0, 0)
-        self.background_color = QColor(0, 0, 0)
+    def __init__(
+        self,
+        icon_radius_callback: Callable[[], int],
+        border_thickness_callback: Callable[[], int],
+        active_color_callback: Callable[[], QColor],
+        background_color_callback: Callable[[], QColor],
+    ) -> None:
+        self._icon_radius_callback = icon_radius_callback
+        self._border_thickness_callback = border_thickness_callback
+        self._active_color_callback = active_color_callback
+        self._background_color_callback = background_color_callback
+
+    @property
+    def icon_radius(self) -> int:
+        return self._icon_radius_callback()
+
+    @property
+    def border_thickness(self) -> int:
+        return self._border_thickness_callback()
+
+    @property
+    def active_color(self) -> QColor:
+        return self._active_color_callback()
+
+    @property
+    def background_color(self) -> QColor:
+        return self._background_color_callback()
 
     @property
     def active_color_dark(self):

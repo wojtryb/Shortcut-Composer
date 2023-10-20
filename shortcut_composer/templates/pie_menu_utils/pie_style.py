@@ -1,6 +1,8 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from typing import Callable
+
 from PyQt5.QtGui import QColor
 
 from composer_utils.label import LabelWidgetStyle
@@ -17,13 +19,36 @@ class PieStyle:
     change over time.
     """
 
-    def __init__(self, label_style: LabelWidgetStyle) -> None:
+    def __init__(
+        self,
+        label_style: LabelWidgetStyle,
+        pie_radius_callback: Callable[[], int],
+        deadzone_radius_callback: Callable[[], float],
+        settings_button_radius_callback: Callable[[], int],
+        accept_button_radius_callback: Callable[[], int],
+    ) -> None:
         self.label_style = label_style
 
-        self.pie_radius = 400
-        self.deadzone_radius = 100.0
-        self.setting_button_radius = 50
-        self.accept_button_radius = 50
+        self._pie_radius_callback = pie_radius_callback
+        self._deadzone_radius_callback = deadzone_radius_callback
+        self._settings_button_radius_callback = settings_button_radius_callback
+        self._accept_button_radius_callback = accept_button_radius_callback
+
+    @property
+    def pie_radius(self) -> int:
+        return self._pie_radius_callback()
+
+    @property
+    def deadzone_radius(self) -> float:
+        return self._deadzone_radius_callback()
+
+    @property
+    def setting_button_radius(self) -> int:
+        return self._settings_button_radius_callback()
+
+    @property
+    def accept_button_radius(self) -> int:
+        return self._accept_button_radius_callback()
 
     @property
     def widget_radius(self) -> int:
