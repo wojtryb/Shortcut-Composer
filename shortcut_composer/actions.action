@@ -85,6 +85,11 @@
     <Actions category="Scripts">
         <text>Shortcut Composer: Pie Menus</text>
 
+        <Action name="Pick canvas zoom">
+        <activationFlags>1</activationFlags>
+        <icon>krita_tool_grid</icon>
+        </Action>
+
         <Action name="Pick misc tools">
         <activationFlags>1</activationFlags>
         <icon>krita_tool_grid</icon>
