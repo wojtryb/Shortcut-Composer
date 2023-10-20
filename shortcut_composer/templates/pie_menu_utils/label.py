@@ -3,7 +3,7 @@
 
 from api_krita.pyqt import Text
 from typing import Union, Generic, TypeVar, Final, Optional
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QPixmap, QIcon
@@ -29,7 +29,7 @@ class Label(Generic[T]):
     """
 
     value: Final[T]
-    center: QPoint = QPoint(0, 0)
+    center: QPoint = field(default_factory=QPoint)
     angle: int = 0
     display_value: Union[QPixmap, QIcon, Text, None] = None
     pretty_name: str = ""
