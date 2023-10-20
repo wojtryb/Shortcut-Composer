@@ -2,10 +2,10 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Optional, List
-from core_components import Controller
 from config_system import Field
+from composer_utils import Label
+from core_components import Controller
 from data_components import DeadzoneStrategy
-from .label import Label
 from .pie_widget_utils import WidgetHolder
 
 
@@ -71,7 +71,7 @@ class Actuator:
                 return self._last_label
             return None
 
-    def mark_selected_widget(self, widget_holder: WidgetHolder):
+    def mark_selected_widget(self, widget_holder: WidgetHolder) -> None:
         """Force color of the label that is selected for being picked."""
         widget_holder.clear_forced_widgets()
 

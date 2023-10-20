@@ -5,21 +5,21 @@ from typing import Optional
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
-    QWidget,
-    QTabWidget,
     QVBoxLayout,
     QHBoxLayout,
-    QLabel,
-    QSizePolicy)
+    QSizePolicy,
+    QTabWidget,
+    QWidget,
+    QLabel)
 
 from api_krita import Krita
 from api_krita.pyqt import AnimatedWidget, BaseWidget, SafeConfirmButton
 from config_system.ui import (
     ConfigFormWidget,
-    SpinBox,
     EnumComboBox,
     ColorButton,
-    Checkbox)
+    Checkbox,
+    SpinBox)
 from composer_utils import Config
 from data_components import DeadzoneStrategy
 from .pie_style import PieStyle
@@ -43,11 +43,11 @@ class PieSettings(AnimatedWidget, BaseWidget):
     def __init__(
         self,
         config: PieConfig,
-        style: PieStyle,
+        pie_style: PieStyle,
         *args, **kwargs
     ) -> None:
         AnimatedWidget.__init__(self, None, Config.PIE_ANIMATION_TIME.read())
-        self.setMinimumHeight(round(style.widget_radius*2))
+        self.setMinimumHeight(round(pie_style.widget_radius*2))
         self.setAcceptDrops(True)
         self.setWindowFlags((
             self.windowFlags() |  # type: ignore
@@ -56,7 +56,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
             Qt.FramelessWindowHint))
         self.setCursor(Qt.ArrowCursor)
 
-        self._style = style
+        self._pie_style = pie_style
         self._config = config
         self._config.register_to_order_related(self._reset)
 
@@ -147,7 +147,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
 
     def _reset(self) -> None:
         """React to change in pie size."""
-        self.setMinimumHeight(self._style.widget_radius*2)
+        self.setMinimumHeight(self._pie_style.widget_radius*2)
 
     def _reset_config_to_default(self):
         """

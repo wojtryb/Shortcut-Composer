@@ -8,8 +8,8 @@ from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QColor
 
 from api_krita.pyqt import Painter
+from composer_utils import Label
 from ..pie_style import PieStyle
-from ..label import Label
 
 
 @dataclass
@@ -68,7 +68,7 @@ class PiePainter:
         self.painter.paint_wheel(
             center=self._center,
             outer_radius=self.style.inner_edge_radius,
-            color=self.style.border_color,
+            color=self.style.label_style.border_color,
             thickness=self.style.border_thickness)
 
         # base wheel decorator

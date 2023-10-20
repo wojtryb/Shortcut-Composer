@@ -6,7 +6,7 @@ from typing import List, NamedTuple
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QGridLayout
 
-from templates.pie_menu_utils import LabelWidget
+from composer_utils import LabelWidget
 
 
 class GridPosition(NamedTuple):
@@ -38,6 +38,7 @@ class OffsetGridLayout(QGridLayout):
         self._max_columns = max_columns
         self._items_in_group = 2*max_columns - 1
         self._owner = owner
+
         self.setAlignment(Qt.AlignTop)  # type: ignore
         self.setVerticalSpacing(5)
         self.setHorizontalSpacing(5)

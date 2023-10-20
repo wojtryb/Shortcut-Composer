@@ -12,22 +12,23 @@ from PyQt5.QtWidgets import (
     QLabel)
 
 from core_components import NumericController
+from composer_utils import Label
+from composer_utils.label_widget_impl import dispatch_label_widget
 from templates.pie_menu_utils.pie_config_impl import NonPresetPieConfig
-from templates.pie_menu_utils import Label, PieStyle, PieSettings
-from templates.pie_menu_utils.label_widget_impl import dispatch_label_widget
+from templates.pie_menu_utils import PieStyle, PieSettings
 
 
 class NumericValuePicker(QWidget):
     def __init__(
         self,
         controller: NumericController,
-        style: PieStyle,
+        pie_style: PieStyle,
         parent=None
     ) -> None:
         super().__init__(parent)
 
         self._controller = controller
-        self._style = style
+        self._pie_style = pie_style
 
         self._icon = self._create_icon(value=0)
         self._spin_box = self._init_spin_box()
@@ -57,7 +58,7 @@ class NumericValuePicker(QWidget):
 
         icon = dispatch_label_widget(label)(
             label=label,
-            style=self._style,
+            label_widget_style=self._pie_style.label_style,
             parent=self,
             is_unscaled=True)
         icon.setFixedSize(icon.icon_radius*2, icon.icon_radius*2)
@@ -100,12 +101,12 @@ class NumericPieSettings(PieSettings):
         self,
         controller: NumericController,
         config: NonPresetPieConfig,
-        style: PieStyle,
+        pie_style: PieStyle,
         *args, **kwargs
     ) -> None:
-        super().__init__(config, style)
+        super().__init__(config, pie_style)
 
-        self._numeric_picker = NumericValuePicker(controller, style)
+        self._numeric_picker = NumericValuePicker(controller, pie_style)
 
         self._tab_holder.insertTab(1, self._numeric_picker, "Values")
         self._tab_holder.setCurrentIndex(1)

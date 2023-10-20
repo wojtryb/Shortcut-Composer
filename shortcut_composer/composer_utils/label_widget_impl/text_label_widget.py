@@ -1,28 +1,31 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from typing import TypeVar
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont, QColor, QFontDatabase
 from PyQt5.QtWidgets import QLabel, QWidget
 
 from api_krita import Krita
 from api_krita.pyqt import Text
-from ..pie_style import PieStyle
-from ..label import Label
-from ..label_widget import LabelWidget
+from composer_utils import Label, LabelWidget
+from ..label_widget_style import LabelWidgetStyle
+
+T = TypeVar("T")
 
 
-class TextLabelWidget(LabelWidget):
+class TextLabelWidget(LabelWidget[T]):
     """Displays a `label` which holds text."""
 
     def __init__(
         self,
-        label: Label,
-        style: PieStyle,
+        label: Label[T],
+        label_widget_style: LabelWidgetStyle,
         parent: QWidget,
         is_unscaled: bool = False,
     ) -> None:
-        super().__init__(label, style, parent, is_unscaled)
+        super().__init__(label, label_widget_style, parent, is_unscaled)
         self._pyqt_label = self._create_pyqt_label()
 
     def _create_pyqt_label(self) -> QLabel:
@@ -55,7 +58,7 @@ class TextLabelWidget(LabelWidget):
         """Return font to use in pyqt label."""
         font = QFontDatabase.systemFont(QFontDatabase.TitleFont)
         font.setPointSize(round(
-            self._style.font_multiplier
+            self._label_widget_style.font_multiplier
             * self.width()
             * self._sign_amount_multiplier))
         font.setBold(True)

@@ -9,7 +9,7 @@ from PyQt5.QtGui import QDrag, QPixmap, QMouseEvent, QPaintEvent
 
 from api_krita import Krita
 from api_krita.pyqt import Painter, PixmapTransform, BaseWidget
-from .pie_style import PieStyle
+from .label_widget_style import LabelWidgetStyle
 from .label import Label
 
 T = TypeVar("T")
@@ -31,14 +31,14 @@ class LabelWidget(BaseWidget, Generic[T]):
     def __init__(
         self,
         label: Label[T],
-        style: PieStyle,
+        label_widget_style: LabelWidgetStyle,
         parent: QWidget,
         is_unscaled: bool = False,
     ) -> None:
         super().__init__(parent)
 
         self.label = label
-        self._style = style
+        self._label_widget_style = label_widget_style
         self._is_unscaled = is_unscaled
 
         # Set geometry after self._is_unscaled is initialized
@@ -72,22 +72,22 @@ class LabelWidget(BaseWidget, Generic[T]):
             outer_radius=(
                 self.icon_radius
                 - self._active_indicator_thickness
-                - self._style.border_thickness//2),
+                - self._label_widget_style.border_thickness//2),
             color=Krita.get_main_color_from_theme())
 
         # label thin border
         painter.paint_wheel(
             center=self.center,
             outer_radius=self.icon_radius-self._active_indicator_thickness,
-            color=self._style.border_color,
-            thickness=self._style.border_thickness)
+            color=self._label_widget_style.border_color,
+            thickness=self._label_widget_style.border_thickness)
 
         # label thick border when label when disabled
         if not self.enabled:
             painter.paint_wheel(
                 center=self.center,
                 outer_radius=self.icon_radius,
-                color=self._style.active_color_dark,
+                color=self._label_widget_style.active_color_dark,
                 thickness=self._active_indicator_thickness)
 
         # label thick border when hovered (or it is forced)
@@ -95,12 +95,12 @@ class LabelWidget(BaseWidget, Generic[T]):
             painter.paint_wheel(
                 center=self.center,
                 outer_radius=self.icon_radius,
-                color=self._border_active_color,
+                color=self._label_widget_style.active_color,
                 thickness=self._active_indicator_thickness)
 
     @property
     def _active_indicator_thickness(self):
-        return self._style.border_thickness*2
+        return self._label_widget_style.border_thickness*2
 
     @property
     def draggable(self) -> bool:
@@ -180,14 +180,8 @@ class LabelWidget(BaseWidget, Generic[T]):
         self.repaint()
 
     @property
-    def _border_active_color(self):
-        if self.forced:
-            return self._style.active_color
-        return self._style.active_color
-
-    @property
     def icon_radius(self):
         """Return icon radius based flag passed on initialization."""
         if self._is_unscaled:
-            return self._style.unscaled_icon_radius
-        return self._style.icon_radius
+            return self._label_widget_style.unscaled_icon_radius
+        return self._label_widget_style.icon_radius

@@ -5,10 +5,9 @@ from typing import List
 from functools import partial
 
 from api_krita.pyqt import BaseWidget
+from composer_utils import Label, LabelWidget
+from composer_utils.label_widget_impl import dispatch_label_widget
 from ..pie_style import PieStyle
-from ..label import Label
-from ..label_widget import LabelWidget
-from ..label_widget_impl import dispatch_label_widget
 from ..pie_config import PieConfig
 from .widget_holder import WidgetHolder
 from .circle_points import CirclePoints
@@ -26,12 +25,12 @@ class LabelHolder:
     def __init__(
         self,
         labels: List[Label],
-        style: PieStyle,
+        pie_style: PieStyle,
         config: PieConfig,
         owner: BaseWidget,
     ) -> None:
         self._labels = labels
-        self._style = style
+        self._pie_style = pie_style
         self._config = config
         # Refresh itself when config changed, but do not notify change
         # in config as holder was not their cause
@@ -115,11 +114,11 @@ class LabelHolder:
         children_widgets: List[LabelWidget] = []
         for label in self._labels:
             children_widgets.append(dispatch_label_widget(label)(
-                label, self._style, self._owner))
+                label, self._pie_style.label_style, self._owner))
 
         circle_points = CirclePoints(
             center=self._owner.center,
-            radius=self._style.pie_radius)
+            radius=self._pie_style.pie_radius)
         angles = circle_points.iterate_over_circle(len(self._labels))
         for child, (angle, point) in zip(children_widgets, angles):
             child.setParent(self._owner)

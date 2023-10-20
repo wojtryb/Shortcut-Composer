@@ -5,23 +5,22 @@ from typing import List
 
 from config_system import Field
 from templates.pie_menu_utils import PieStyle
-from templates.pie_menu_utils.pie_settings_impl.common_utils import (
-    GroupComboBox,
-    GroupManager)
 from .scroll_area import ScrollArea
+from .group_combo_box import GroupComboBox
+from .group_manager import GroupManager
 
 
 class GroupScrollArea(ScrollArea):
     def __init__(
         self,
         fetcher: GroupManager,
-        style: PieStyle,
+        pie_style: PieStyle,
         columns: int,
         field: Field,
         additional_fields: List[str] = [],
         parent=None
     ) -> None:
-        super().__init__(style, columns, parent)
+        super().__init__(pie_style, columns, parent)
         self._field = field
         self._fetcher = fetcher
         self._chooser = GroupComboBox(

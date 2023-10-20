@@ -2,8 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Dict, Iterator
-from ..label_widget import LabelWidget
-from ..label import Label
+from composer_utils import Label, LabelWidget
 
 
 class WidgetHolder:
