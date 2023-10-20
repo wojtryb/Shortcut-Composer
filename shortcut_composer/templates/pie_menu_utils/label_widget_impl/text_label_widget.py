@@ -32,7 +32,7 @@ class TextLabelWidget(LabelWidget):
         if not isinstance(to_display, Text):
             raise TypeError("Label supposed to be text.")
 
-        height = round(self.icon_radius*0.8)
+        height = round(self.icon_radius*0.75)
 
         label = QLabel(self)
         label.setText(to_display.value)
@@ -54,9 +54,25 @@ class TextLabelWidget(LabelWidget):
     def _font(self) -> QFont:
         """Return font to use in pyqt label."""
         font = QFontDatabase.systemFont(QFontDatabase.TitleFont)
-        font.setPointSize(round(self._style.font_multiplier*self.width()))
+        font.setPointSize(round(
+            self._style.font_multiplier
+            * self.width()
+            * self._sign_amount_multiplier))
         font.setBold(True)
         return font
+
+    @property
+    def _sign_amount_multiplier(self):
+        """Return multiplier (0-1) getting smaller the more signs are there."""
+        to_display = self.label.display_value
+
+        if not isinstance(to_display, Text):
+            raise TypeError("Label supposed to be text.")
+
+        signs_amount = len(to_display.value)
+        if signs_amount <= 4:
+            return 1
+        return 4/(signs_amount)
 
     @staticmethod
     def _color_to_str(color: QColor) -> str: return f'''
