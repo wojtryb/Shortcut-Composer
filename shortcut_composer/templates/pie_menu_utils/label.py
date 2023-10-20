@@ -46,7 +46,8 @@ class Label(Generic[T]):
         """Consider two labels with the same value and position - equal."""
         if not isinstance(other, Label):
             return False
-        return self.value == other.value and self.center == other.center
+
+        return self.value == other.value
 
     def __hash__(self) -> int:
         """Use value for hashing, as it should not change over time."""
