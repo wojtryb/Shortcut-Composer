@@ -69,7 +69,7 @@ class Document:
     @current_time.setter
     def current_time(self, time: int) -> None:
         """Set current time using frame number"""
-        self.document.setCurrentTime(time)
+        self.document.setCurrentTime(round(time))
 
     def get_top_nodes(self) -> List[Node]:
         """Return a list of `Nodes` without a parent."""
@@ -86,7 +86,7 @@ class Document:
         return recursive_search(self.get_top_nodes(), [])
 
     @property
-    def dpi(self):
+    def dpi(self) -> int:
         """Return dpi (dot per inch) of the document."""
         return self.document.resolution()
 
