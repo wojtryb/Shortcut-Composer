@@ -22,45 +22,33 @@ class NumericValuePicker(QWidget):
         controller: Controller[float],
         style: PieStyle,
         parent=None
-    ):
+    ) -> None:
         super().__init__(parent)
 
         self._controller = controller
         self._style = style
 
-        self._icon = self._refresh_icon(0)
+        self._icon = self._create_icon(value=0)
+        self._spin_box = self._init_spin_box()
+        self._icon_holder = self._init_icon_holder()
+        self._layout = self._init_layout()
 
-        def update_icon(a0: int):
-            self._icon = self._refresh_icon(a0)
-            self._area.setWidget(self._icon)
+        self.setLayout(self._layout)
 
-        self._spin_box = QSpinBox()
-        self._spin_box.setMinimum(0)
-        self._spin_box.setMaximum(10_000)
-        self._spin_box.valueChanged.connect(update_icon)
-
-        self._area = QScrollArea()
-        self._area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self._area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self._area.setWidget(self._icon)
-        self._area.setFixedSize(
-            round(self._icon.width()*1.1), round(self._icon.height()*1.1))
-        self._area.setAlignment(Qt.AlignCenter)
-        self._area.setSizeAdjustPolicy(QScrollArea.AdjustIgnored)
-
+    def _init_layout(self):
         right_side = QVBoxLayout()
         right_side.setAlignment(Qt.AlignTop)
         right_side.addWidget(QLabel("\nSet icon value:"))
         right_side.addWidget(self._spin_box)
 
-        self._layout = QHBoxLayout()
-        self._layout.setAlignment(Qt.AlignTop)
-        self._layout.addWidget(self._area, 1, Qt.AlignTop)
-        self._layout.addLayout(right_side, 1)
+        layout = QHBoxLayout()
+        layout.setAlignment(Qt.AlignTop)
+        layout.addWidget(self._icon_holder, 1, Qt.AlignTop)
+        layout.addLayout(right_side, 1)
 
-        self.setLayout(self._layout)
+        return layout
 
-    def _refresh_icon(self, value: int):
+    def _create_icon(self, value: int):
         label = Label.from_value(value, self._controller)
 
         if label is None:
@@ -75,6 +63,29 @@ class NumericValuePicker(QWidget):
         icon.draggable = True
 
         return icon
+
+    def _init_spin_box(self):
+        def update_icon(a0: int):
+            self._icon = self._create_icon(a0)
+            self._icon_holder.setWidget(self._icon)
+
+        spin_box = QSpinBox()
+        spin_box.setMinimum(0)
+        spin_box.setMaximum(10_000)
+        spin_box.valueChanged.connect(update_icon)
+        return spin_box
+
+    def _init_icon_holder(self):
+        icon_holder = QScrollArea()
+        icon_holder.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        icon_holder.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        icon_holder.setWidget(self._icon)
+        icon_holder.setAlignment(Qt.AlignCenter)
+        icon_holder.setSizeAdjustPolicy(QScrollArea.AdjustIgnored)
+        icon_holder.setFixedSize(
+            round(self._icon.width()*1.1),
+            round(self._icon.height()*1.1))
+        return icon_holder
 
 
 class NumericPieSettings(PieSettings):
