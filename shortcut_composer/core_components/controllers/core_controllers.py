@@ -137,7 +137,7 @@ class ToggleController(Controller[bool]):
         return value.pretty_name
 
 
-class UndoController(Controller[float]):
+class UndoController(Controller[int]):
     """
     Gives access to `undo` and `redo` actions.
 
@@ -150,17 +150,15 @@ class UndoController(Controller[float]):
     """
 
     state = 0
-    TYPE = float
+    TYPE = int
     DEFAULT_VALUE = 0
 
     def get_value(self) -> int:
         """Return remembered position on undo stack"""
         return self.state
 
-    def set_value(self, value: float) -> None:
+    def set_value(self, value: int) -> None:
         """Compares value with remembered position and performs undo/redo."""
-        value = round(value)
-
         if value == self.state:
             return
         elif value > self.state:

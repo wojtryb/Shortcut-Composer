@@ -17,7 +17,7 @@ def dispatch_pie_settings(controller: Controller) -> Type[PieSettings]:
     """Return the right settings type based on value type."""
     if issubclass(controller.TYPE, str):
         return PresetPieSettings
-    elif issubclass(controller.TYPE, float):
+    elif issubclass(controller.TYPE, int):
         return NumericPieSettings
     elif issubclass(controller.TYPE, EnumGroup):
         return EnumGroupPieSettings
