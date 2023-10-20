@@ -237,10 +237,10 @@ class LocationTab(QWidget):
     def _init_mode_description(self) -> QLabel:
         """Return QLabel with one detailed description of the active mode."""
         label = QLabel()
+        label.setWordWrap(True)
         label.setSizePolicy(
             QSizePolicy.Ignored,
             QSizePolicy.Ignored)
-        label.setWordWrap(True)
         return label
 
     def _init_set_new_default_button(self) -> SafeConfirmButton:

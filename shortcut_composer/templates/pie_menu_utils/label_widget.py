@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Protocol
+from typing import Protocol, TypeVar, Generic
 
 from PyQt5.QtCore import Qt, QMimeData, QEvent
 from PyQt5.QtWidgets import QWidget
@@ -11,6 +11,8 @@ from api_krita import Krita
 from api_krita.pyqt import Painter, PixmapTransform, BaseWidget
 from .pie_style import PieStyle
 from .label import Label
+
+T = TypeVar("T")
 
 
 class WidgetInstructions(Protocol):
@@ -23,12 +25,12 @@ class WidgetInstructions(Protocol):
         """Logic to perform when mouse stops hovering over widget."""
 
 
-class LabelWidget(BaseWidget):
+class LabelWidget(BaseWidget, Generic[T]):
     """Displays a `label` inside of `widget` using given `style`."""
 
     def __init__(
         self,
-        label: Label,
+        label: Label[T],
         style: PieStyle,
         parent: QWidget,
         is_unscaled: bool = False,
