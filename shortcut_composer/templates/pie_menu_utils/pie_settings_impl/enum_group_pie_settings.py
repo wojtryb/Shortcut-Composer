@@ -4,8 +4,9 @@
 from typing import List
 from enum import Enum
 
-from api_krita.enums.helpers import EnumGroup
 from core_components import Controller
+from api_krita.enums.helpers import EnumGroup
+from composer_utils.label import LabelWidgetStyle
 from templates.pie_menu_utils import PieStyle, PieSettings
 from templates.pie_menu_utils.pie_config_impl import NonPresetPieConfig
 from .common_utils import GroupScrollArea, GroupManager
@@ -18,13 +19,14 @@ class EnumGroupPieSettings(PieSettings):
         controller: Controller[EnumGroup],
         config: NonPresetPieConfig,
         pie_style: PieStyle,
+        label_style: LabelWidgetStyle,
         *args, **kwargs
     ) -> None:
-        super().__init__(config, pie_style)
+        super().__init__(config, pie_style, label_style)
 
         self._action_values = GroupScrollArea(
             fetcher=EnumGroupManager(controller),
-            pie_style=self._pie_style,
+            label_style=self._label_style,
             columns=3,
             field=self._config.field("Last tag selected", "All"),
             additional_fields=["All"])

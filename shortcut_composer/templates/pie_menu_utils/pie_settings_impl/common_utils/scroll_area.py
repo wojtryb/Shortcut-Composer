@@ -15,9 +15,8 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QSizePolicy)
 
-from composer_utils.label import LabelWidget
+from composer_utils.label import LabelWidget, LabelWidgetStyle
 from composer_utils.label.label_widget_impl import dispatch_label_widget
-from templates.pie_menu_utils import PieStyle
 from ...pie_label import PieLabel
 from .offset_grid_layout import OffsetGridLayout
 
@@ -56,12 +55,12 @@ class ScrollArea(QWidget):
 
     def __init__(
         self,
-        pie_style: PieStyle,
+        label_style: LabelWidgetStyle,
         columns: int,
         parent=None
     ) -> None:
         super().__init__(parent)
-        self._pie_style = pie_style
+        self._label_style = label_style
         self._columns = columns
 
         self._known_children: dict[PieLabel, LabelWidget[PieLabel]] = {}
@@ -110,7 +109,7 @@ class ScrollArea(QWidget):
         area = QScrollArea()
         area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        radius = self._pie_style.label_style.unscaled_icon_radius
+        radius = self._label_style.icon_radius
         area.setMinimumWidth(round(radius*self._columns*2.3))
         area.setMinimumHeight(round(radius*9.2))
         area.setWidgetResizable(True)
@@ -144,7 +143,7 @@ class ScrollArea(QWidget):
         """Create LabelWidget[PieLabel] that represent the label."""
         child = dispatch_label_widget(label)(
             label=label,
-            label_widget_style=self._pie_style.label_style,
+            label_widget_style=self._label_style,
             parent=self,
             is_unscaled=True)
         child.setFixedSize(child.icon_radius*2, child.icon_radius*2)

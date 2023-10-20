@@ -21,6 +21,7 @@ from config_system.ui import (
     Checkbox,
     SpinBox)
 from composer_utils import Config
+from composer_utils.label import LabelWidgetStyle
 from data_components import DeadzoneStrategy
 from .pie_style import PieStyle
 from .pie_config import PieConfig
@@ -44,6 +45,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
         self,
         config: PieConfig,
         pie_style: PieStyle,
+        label_style: LabelWidgetStyle,
         *args, **kwargs
     ) -> None:
         AnimatedWidget.__init__(self, None, Config.PIE_ANIMATION_TIME.read())
@@ -57,6 +59,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
         self.setCursor(Qt.ArrowCursor)
 
         self._pie_style = pie_style
+        self._label_style = label_style
         self._config = config
         self._config.register_to_order_related(self._reset)
 

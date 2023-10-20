@@ -126,6 +126,7 @@ class PieMenu(RawInstructions, Generic[T]):
         return dispatch_pie_settings(self._controller)(
             config=self._config,
             pie_style=self._style_manager.pie_style,
+            label_style=self._style_manager.unscaled_label_style,
             controller=self._controller)
 
     @cached_property

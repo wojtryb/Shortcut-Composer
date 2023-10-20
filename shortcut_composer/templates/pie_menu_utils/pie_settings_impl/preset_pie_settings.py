@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 from api_krita import Krita
 from api_krita.wrappers import Database
 from api_krita.pyqt import SafeConfirmButton
+from composer_utils.label import LabelWidgetStyle
 from core_components.controllers import PresetController
 from data_components import Tag
 from templates.pie_menu_utils.pie_config_impl import PresetPieConfig
@@ -29,9 +30,10 @@ class PresetPieSettings(PieSettings):
         self,
         config: PresetPieConfig,
         pie_style: PieStyle,
+        label_style: LabelWidgetStyle,
         *args, **kwargs
     ) -> None:
-        super().__init__(config, pie_style)
+        super().__init__(config, pie_style, label_style)
         self._config: PresetPieConfig
 
         self._preset_scroll_area = self._init_preset_scroll_area()
@@ -48,7 +50,7 @@ class PresetPieSettings(PieSettings):
         """Create preset scroll area which tracks which ones are used."""
         preset_scroll_area = GroupScrollArea(
             fetcher=PresetGroupManager(),
-            pie_style=self._pie_style,
+            label_style=self._label_style,
             columns=3,
             field=self._config.field("Last tag selected", "---Select tag---"),
             additional_fields=["---Select tag---", "All"])

@@ -178,6 +178,4 @@ class LabelWidget(BaseWidget, Generic[T]):
     @property
     def icon_radius(self):
         """Return icon radius based flag passed on initialization."""
-        if self._is_unscaled:
-            return self._label_widget_style.unscaled_icon_radius
         return self._label_widget_style.icon_radius

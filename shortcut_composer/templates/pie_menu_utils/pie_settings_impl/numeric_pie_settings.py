@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import (
     QLabel)
 
 from core_components import NumericController
+from composer_utils.label import LabelWidgetStyle
 from composer_utils.label.label_widget_impl import dispatch_label_widget
 from templates.pie_menu_utils.pie_config_impl import NonPresetPieConfig
 from templates.pie_menu_utils import PieStyle, PieSettings
@@ -102,9 +103,10 @@ class NumericPieSettings(PieSettings):
         controller: NumericController,
         config: NonPresetPieConfig,
         pie_style: PieStyle,
+        label_style: LabelWidgetStyle,
         *args, **kwargs
     ) -> None:
-        super().__init__(config, pie_style)
+        super().__init__(config, pie_style, label_style)
 
         self._numeric_picker = NumericValuePicker(controller, pie_style)
 

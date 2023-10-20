@@ -4,8 +4,7 @@
 import platform
 from PyQt5.QtGui import QColor
 
-from api_krita import Krita
-from ..global_config import Config  # TODO: move it to style manager
+# from api_krita import Krita
 
 
 class LabelWidgetStyle:
@@ -20,37 +19,10 @@ class LabelWidgetStyle:
     """
 
     def __init__(self) -> None:
-        self._base_size = Krita.screen_size/2560
-
-        self.max_icon_radius = 100
-        self.icon_radius_scale = 1.0
+        self.icon_radius = 100
+        self.border_thickness = 5
         self.active_color = QColor(0, 0, 0)
         self.background_color = QColor(0, 0, 0)
-
-    @property
-    def base_icon_radius(self) -> int:
-        """Radius of icons in pixels. Not affected by items amount."""
-        return round(
-            50 * self._base_size
-            * self.icon_radius_scale
-            * Config.PIE_ICON_GLOBAL_SCALE.read())
-
-    @property
-    def unscaled_icon_radius(self) -> int:
-        """Radius of icons in pixels. Ignores local scale and items amount."""
-        return round(
-            50 * self._base_size
-            * Config.PIE_ICON_GLOBAL_SCALE.read())
-
-    @property
-    def icon_radius(self) -> int:
-        """Icons radius depend on settings, but they have to fit in the pie."""
-        return min(self.base_icon_radius, self.max_icon_radius)
-
-    @property
-    def border_thickness(self):
-        """Thickness of border of the icons."""
-        return round(self.unscaled_icon_radius*0.05)
 
     @property
     def active_color_dark(self):
@@ -66,8 +38,7 @@ class LabelWidgetStyle:
         return QColor(
             min(self.background_color.red()+15, 255),
             min(self.background_color.green()+15, 255),
-            min(self.background_color.blue()+15, 255),
-            255)
+            min(self.background_color.blue()+15, 255))
 
     @property
     def font_multiplier(self):
