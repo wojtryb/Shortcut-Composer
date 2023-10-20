@@ -107,6 +107,11 @@ class LabelHolder:
         if current_labels == self._labels and notify:
             return
 
+        self._locked = True
+        if notify:
+            self._config.set_values([label.value for label in self._labels])
+        self._locked = False
+
         for child in self.widget_holder:
             child.setParent(None)  # type: ignore
         self.widget_holder.clear()
@@ -127,8 +132,3 @@ class LabelHolder:
             child.label.center = point
             child.draggable = True
             self.widget_holder.add(child)
-
-        self._locked = True
-        if notify:
-            self._config.set_values([label.value for label in self._labels])
-        self._locked = False
