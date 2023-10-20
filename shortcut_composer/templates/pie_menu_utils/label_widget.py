@@ -36,12 +36,14 @@ class LabelWidget(BaseWidget, Generic[T]):
         is_unscaled: bool = False,
     ) -> None:
         super().__init__(parent)
-        self.setGeometry(0, 0, style.icon_radius*2, style.icon_radius*2)
-        self.setCursor(Qt.ArrowCursor)
 
         self.label = label
         self._style = style
         self._is_unscaled = is_unscaled
+
+        # Set geometry after self._is_unscaled is initialized
+        self.setGeometry(0, 0, self.icon_radius*2, self.icon_radius*2)
+        self.setCursor(Qt.ArrowCursor)
 
         self._draggable = True
         self._enabled = True
