@@ -5,12 +5,12 @@
 
 from .circle_points import CirclePoints
 from .widget_holder import WidgetHolder
-from .label_holder import LabelHolder
+from .order_handler import OrderHandler
 from .pie_painter import PiePainter
 
 __all__ = [
     "CirclePoints",
     "WidgetHolder",
-    "LabelHolder",
+    "OrderHandler",
     "PiePainter",
 ]

@@ -14,7 +14,7 @@ from .widget_holder import WidgetHolder
 from .circle_points import CirclePoints
 
 
-class LabelHolder:
+class OrderHandler:
     """
     Represents the pie icons as a positional label container.
 

@@ -20,7 +20,7 @@ from .pie_config import PieConfig
 from .pie_widget_utils import (
     WidgetHolder,
     CirclePoints,
-    LabelHolder,
+    OrderHandler,
     PiePainter)
 
 T = TypeVar('T')
@@ -30,7 +30,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     """
     PyQt5 widget with icons on ring that can be selected by hovering.
 
-    Uses LabelHolder to store children widgets representing available
+    Uses OrderHandler to store children widgets representing available
     values. When the pie enters the edit mode, its children become
     draggable.
 
@@ -75,7 +75,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self.active: Optional[PieLabel] = None
         self._last_widget = None
 
-        self.label_holder = LabelHolder(
+        self.order_handler = OrderHandler(
             labels=self._labels,
             style_holder=self._style_holder,
             config=self.config,
@@ -125,11 +125,11 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self._last_widget = source_widget
         if distance > self._style_holder.pie_style.widget_radius:
             # Dragged out of the PieWidget
-            return self.label_holder.remove(label)
+            return self.order_handler.remove(label)
 
         if not self._labels:
             # First label dragged to empty pie
-            return self.label_holder.insert(0, label)
+            return self.order_handler.insert(0, label)
 
         if distance < self.deadzone:
             # Do nothing in deadzone
@@ -138,10 +138,10 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         angle = circle_points.angle_from_point(e.pos())
         _a = self.widget_holder.on_angle(angle)
 
-        if label not in self.label_holder or not self._labels:
+        if label not in self.order_handler or not self._labels:
             # Dragged with unknown label
-            index = self.label_holder.index(_a.label)
-            return self.label_holder.insert(index, label)
+            index = self.order_handler.index(_a.label)
+            return self.order_handler.insert(index, label)
 
         _b = self.widget_holder.on_label(label)
         if _a == _b:
@@ -149,24 +149,24 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             return
 
         # Dragged existing label to a new location
-        self.label_holder.swap(_a.label, _b.label)
+        self.order_handler.swap(_a.label, _b.label)
         self.repaint()
 
     def dragLeaveEvent(self, e: QDragLeaveEvent) -> None:
         """Remove the label when its widget is dragged out."""
         if self._last_widget is not None:
-            self.label_holder.remove(self._last_widget.label)
+            self.order_handler.remove(self._last_widget.label)
         return super().dragLeaveEvent(e)
 
     def set_draggable(self, draggable: bool):
         """Change draggable state of all children."""
-        for widget in self.label_holder.widget_holder:
+        for widget in self.order_handler.widget_holder:
             widget.draggable = draggable
 
     @property
     def widget_holder(self) -> WidgetHolder:
         """Return the holder with child widgets."""
-        return self.label_holder.widget_holder
+        return self.order_handler.widget_holder
 
     @property
     def _type(self) -> Optional[type]:
