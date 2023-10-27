@@ -81,13 +81,18 @@
         <icon>zoom-original</icon>
         </Action>
 
+        <Action name="Scroll brush rotation">
+        <activationFlags>1</activationFlags>
+        <icon>transform_icons_liquify_rotate</icon>
+        </Action>
+
     </Actions>
     <Actions category="Scripts">
         <text>Shortcut Composer: Pie Menus</text>
 
-        <Action name="Pick canvas zoom">
+        <Action name="Pick brush rotation">
         <activationFlags>1</activationFlags>
-        <icon>krita_tool_grid</icon>
+        <icon>transform_icons_liquify_rotate</icon>
         </Action>
 
         <Action name="Pick misc tools">

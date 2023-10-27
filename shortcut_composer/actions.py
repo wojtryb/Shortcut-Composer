@@ -180,12 +180,20 @@ def create_actions() -> List[templates.RawInstructions]: return [
         ),
     ),
 
+    templates.CursorTracker(
+        name="Scroll brush rotation",
+        horizontal_slider=Slider(
+            controller=controllers.BrushRotationController(),
+            values=Range(-infinity, infinity),
+            sensitivity_scale=10,
+        ),
+    ),
+
     templates.PieMenu(
-        name="Pick canvas zoom",
-        # controller=controllers.CanvasZoomController(),
-        # controller=controllers.CanvasRotationController(),
-        controller=controllers.BrushSizeController(),
-        values=[50, 100, 200],
+        name="Pick brush rotation",
+        controller=controllers.BrushRotationController(),
+        values=[i for i in range(90, 0, -15)] + \
+        [i for i in range(360, 90, -15)],
     ),
 
     # Use pie menu to pick one of the tools.
