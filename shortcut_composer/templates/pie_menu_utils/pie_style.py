@@ -22,12 +22,14 @@ class PieStyle:
     def __init__(
         self,
         label_style: LabelWidgetStyle,
+        unscaled_label_style: LabelWidgetStyle,
         pie_radius_callback: Callable[[], int],
         deadzone_radius_callback: Callable[[], float],
         settings_button_radius_callback: Callable[[], int],
         accept_button_radius_callback: Callable[[], int],
     ) -> None:
         self.label_style = label_style
+        self.unscaled_label_style = unscaled_label_style
 
         self._pie_radius_callback = pie_radius_callback
         self._deadzone_radius_callback = deadzone_radius_callback
@@ -53,7 +55,7 @@ class PieStyle:
     @property
     def widget_radius(self) -> int:
         """Radius of the entire widget, including base and the icons."""
-        return self.pie_radius + self.label_style.icon_radius
+        return self.pie_radius + self.unscaled_label_style.icon_radius
 
     @property
     def border_thickness(self):

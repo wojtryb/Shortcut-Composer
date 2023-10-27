@@ -24,6 +24,7 @@ class StyleManager:
             background_color_callback=self.bg_color_callback)
         self.pie_style = PieStyle(
             label_style=self.label_style,
+            unscaled_label_style=self.unscaled_label_style,
             pie_radius_callback=self.pie_radius_callback,
             deadzone_radius_callback=self.deadzone_radius_callback,
             settings_button_radius_callback=self.settings_button_radius_callback,
