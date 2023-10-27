@@ -14,13 +14,13 @@ class GroupScrollArea(ScrollArea):
     def __init__(
         self,
         fetcher: GroupManager,
-        label_style: LabelWidgetStyle,
+        unscaled_label_style: LabelWidgetStyle,
         columns: int,
         field: Field,
         additional_fields: List[str] = [],
         parent=None
     ) -> None:
-        super().__init__(label_style, columns, parent)
+        super().__init__(unscaled_label_style, columns, parent)
         self._field = field
         self._fetcher = fetcher
         self._chooser = GroupComboBox(

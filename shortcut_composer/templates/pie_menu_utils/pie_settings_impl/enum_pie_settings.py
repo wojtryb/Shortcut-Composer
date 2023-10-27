@@ -4,9 +4,9 @@
 from enum import Enum
 
 from core_components import Controller
-from composer_utils.label import LabelWidgetStyle
 from templates.pie_menu_utils.pie_config_impl import NonPresetPieConfig
-from templates.pie_menu_utils import PieStyle, PieSettings
+from templates.pie_menu_utils import PieSettings
+from ..style_manager import StyleManager
 from ..pie_label import PieLabel
 from .common_utils import ScrollArea
 
@@ -24,11 +24,10 @@ class EnumPieSettings(PieSettings):
         self,
         controller: Controller[Enum],
         config: NonPresetPieConfig,
-        pie_style: PieStyle,
-        label_style: LabelWidgetStyle,
+        style_manager: StyleManager,
         *args, **kwargs
     ) -> None:
-        super().__init__(config, pie_style, label_style)
+        super().__init__(config, style_manager)
 
         names = controller.TYPE._member_names_
         values = [controller.TYPE[name] for name in names]

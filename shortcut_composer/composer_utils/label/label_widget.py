@@ -33,15 +33,12 @@ class LabelWidget(BaseWidget, Generic[T]):
         label: T,
         label_widget_style: LabelWidgetStyle,
         parent: QWidget,
-        is_unscaled: bool = False,
     ) -> None:
         super().__init__(parent)
 
         self.label = label
         self._label_widget_style = label_widget_style
-        self._is_unscaled = is_unscaled
 
-        # Set geometry after self._is_unscaled is initialized
         self.setGeometry(0, 0, self.icon_radius*2, self.icon_radius*2)
         self.setCursor(Qt.ArrowCursor)
 

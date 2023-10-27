@@ -21,9 +21,8 @@ from config_system.ui import (
     Checkbox,
     SpinBox)
 from composer_utils import Config
-from composer_utils.label import LabelWidgetStyle
 from data_components import DeadzoneStrategy
-from .pie_style import PieStyle
+from .style_manager import StyleManager
 from .pie_config import PieConfig
 
 
@@ -44,12 +43,11 @@ class PieSettings(AnimatedWidget, BaseWidget):
     def __init__(
         self,
         config: PieConfig,
-        pie_style: PieStyle,
-        label_style: LabelWidgetStyle,
+        style_manager: StyleManager,
         *args, **kwargs
     ) -> None:
         AnimatedWidget.__init__(self, None, Config.PIE_ANIMATION_TIME.read())
-        self.setMinimumHeight(round(pie_style.widget_radius*2))
+        self.setMinimumHeight(round(style_manager.pie_style.widget_radius*2))
         self.setAcceptDrops(True)
         self.setWindowFlags((
             self.windowFlags() |  # type: ignore
@@ -58,8 +56,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
             Qt.FramelessWindowHint))
         self.setCursor(Qt.ArrowCursor)
 
-        self._pie_style = pie_style
-        self._label_style = label_style
+        self._style_manager = style_manager
         self._config = config
         self._config.register_to_order_related(self._reset)
 
@@ -150,7 +147,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
 
     def _reset(self) -> None:
         """React to change in pie size."""
-        self.setMinimumHeight(self._pie_style.widget_radius*2)
+        self.setMinimumHeight(self._style_manager.pie_style.widget_radius*2)
 
     def _reset_config_to_default(self):
         """

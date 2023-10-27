@@ -15,7 +15,8 @@ from core_components import NumericController
 from composer_utils.label import LabelWidgetStyle
 from composer_utils.label.label_widget_impl import dispatch_label_widget
 from templates.pie_menu_utils.pie_config_impl import NonPresetPieConfig
-from templates.pie_menu_utils import PieStyle, PieSettings
+from templates.pie_menu_utils import PieSettings
+from ..style_manager import StyleManager
 from ..pie_label import PieLabel
 
 
@@ -23,13 +24,13 @@ class NumericValuePicker(QWidget):
     def __init__(
         self,
         controller: NumericController,
-        pie_style: PieStyle,
+        unscaled_label_style: LabelWidgetStyle,
         parent=None
     ) -> None:
         super().__init__(parent)
 
         self._controller = controller
-        self._pie_style = pie_style
+        self._unscaled_label_style = unscaled_label_style
 
         self._icon = self._create_icon(value=0)
         self._spin_box = self._init_spin_box()
@@ -59,9 +60,8 @@ class NumericValuePicker(QWidget):
 
         icon = dispatch_label_widget(label)(
             label=label,
-            label_widget_style=self._pie_style.label_style,
-            parent=self,
-            is_unscaled=True)
+            label_widget_style=self._unscaled_label_style,
+            parent=self)
         icon.setFixedSize(icon.icon_radius*2, icon.icon_radius*2)
         icon.draggable = True
 
@@ -102,13 +102,14 @@ class NumericPieSettings(PieSettings):
         self,
         controller: NumericController,
         config: NonPresetPieConfig,
-        pie_style: PieStyle,
-        label_style: LabelWidgetStyle,
+        style_manager: StyleManager,
         *args, **kwargs
     ) -> None:
-        super().__init__(config, pie_style, label_style)
+        super().__init__(config, style_manager)
 
-        self._numeric_picker = NumericValuePicker(controller, pie_style)
+        self._numeric_picker = NumericValuePicker(
+            controller,
+            style_manager.unscaled_label_style)
 
         self._tab_holder.insertTab(1, self._numeric_picker, "Values")
         self._tab_holder.setCurrentIndex(1)

@@ -22,9 +22,8 @@ class ImageLabelWidget(LabelWidget[T]):
         label: T,
         label_widget_style: LabelWidgetStyle,
         parent: QWidget,
-        is_unscaled: bool = False,
     ) -> None:
-        super().__init__(label, label_widget_style, parent, is_unscaled)
+        super().__init__(label, label_widget_style, parent)
         self.ready_image = self._prepare_image()
 
     def paint(self, painter: Painter):

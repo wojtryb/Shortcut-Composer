@@ -21,15 +21,13 @@ class PieStyle:
 
     def __init__(
         self,
-        label_style: LabelWidgetStyle,
         unscaled_label_style: LabelWidgetStyle,
         pie_radius_callback: Callable[[], int],
         deadzone_radius_callback: Callable[[], float],
         settings_button_radius_callback: Callable[[], int],
         accept_button_radius_callback: Callable[[], int],
     ) -> None:
-        self.label_style = label_style
-        self.unscaled_label_style = unscaled_label_style
+        self._unscaled_label_style = unscaled_label_style
 
         self._pie_radius_callback = pie_radius_callback
         self._deadzone_radius_callback = deadzone_radius_callback
@@ -55,12 +53,12 @@ class PieStyle:
     @property
     def widget_radius(self) -> int:
         """Radius of the entire widget, including base and the icons."""
-        return self.pie_radius + self.unscaled_label_style.icon_radius
+        return self.pie_radius + self._unscaled_label_style.icon_radius
 
     @property
     def border_thickness(self):
         """Thickness of border of the pie."""
-        return self.label_style.border_thickness
+        return self._unscaled_label_style.border_thickness
 
     @property
     def decorator_thickness(self):
@@ -79,16 +77,20 @@ class PieStyle:
 
     @property
     def active_color(self) -> QColor:
-        return self.label_style.active_color
+        return self._unscaled_label_style.active_color
 
     @property
     def background_color(self) -> QColor:
-        return self.label_style.background_color
+        return self._unscaled_label_style.background_color
 
     @property
     def active_color_dark(self):
         """Color variation of active element."""
-        return self.label_style.active_color_dark
+        return self._unscaled_label_style.active_color_dark
+
+    @property
+    def border_color(self):
+        return self._unscaled_label_style.border_color
 
     @property
     def background_decorator_color(self):

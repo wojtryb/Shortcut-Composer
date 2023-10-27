@@ -115,7 +115,7 @@ class PieMenu(RawInstructions, Generic[T]):
     def pie_widget(self) -> PieWidget:
         """Create Qwidget of the Pie for selecting values."""
         return PieWidget(
-            pie_style=self._style_manager.pie_style,
+            style_manager=self._style_manager,
             labels=self._labels,
             edit_mode=self._edit_mode,
             config=self._config)
@@ -125,8 +125,7 @@ class PieMenu(RawInstructions, Generic[T]):
         """Create QWidget with pie settings right for given type of labels."""
         return dispatch_pie_settings(self._controller)(
             config=self._config,
-            pie_style=self._style_manager.pie_style,
-            label_style=self._style_manager.unscaled_label_style,
+            style_manager=self._style_manager,
             controller=self._controller)
 
     @cached_property
