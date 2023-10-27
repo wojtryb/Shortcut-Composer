@@ -80,6 +80,40 @@ class BrushSizeController(ViewBasedController, NumericController):
         return f"{round(value)}px"
 
 
+class BrushRotationController(ViewBasedController, NumericController):
+    """
+    Gives access to `brush rotation` in degrees.
+
+    - Operates on `int` in range `0 to 360`
+    - Other values are expressed in that range
+    - Defaults to `0`
+    """
+
+    TYPE = int
+    DEFAULT_VALUE = 0
+    MIN_VALUE = 0
+    MAX_VALUE = 360
+    STEP = 5
+    WRAPPING = True
+    ADAPTIVE = False
+
+    def get_value(self) -> int:
+        """Get brush rotation in degrees."""
+        return round(self.view.brush_rotation)
+
+    def set_value(self, value: int) -> None:
+        """Set brush rotation in degrees."""
+        self.view.brush_rotation = value
+
+    def get_label(self, value: int) -> LabelText:
+        """Return Text with formatted canvas rotation."""
+        return LabelText(self.get_pretty_name(value))
+
+    def get_pretty_name(self, value: int) -> str:
+        """Format the brush rotation like: `30°`."""
+        return f"{round(value)}°"
+
+
 class BlendingModeController(ViewBasedController, Controller[BlendingMode]):
     """
     Gives access to `brush blending mode`.

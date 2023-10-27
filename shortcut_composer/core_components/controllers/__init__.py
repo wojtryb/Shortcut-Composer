@@ -12,6 +12,7 @@ from .canvas_controllers import (
     CanvasZoomController,
 )
 from .view_controllers import (
+    BrushRotationController,
     BlendingModeController,
     BrushSizeController,
     OpacityController,
@@ -19,10 +20,10 @@ from .view_controllers import (
     FlowController,
 )
 from .node_controllers import (
+    CreateLayerWithBlendingController,
     LayerBlendingModeController,
     LayerVisibilityController,
     LayerOpacityController,
-    CreateLayerWithBlendingController,
 )
 from .core_controllers import (
     TransformModeController,
@@ -33,10 +34,12 @@ from .core_controllers import (
 )
 
 __all__ = [
+    "CreateLayerWithBlendingController",
     "LayerBlendingModeController",
-    "TransformModeController",
     "LayerVisibilityController",
     "CanvasRotationController",
+    "TransformModeController",
+    "BrushRotationController",
     "BlendingModeController",
     "LayerOpacityController",
     "ActiveLayerController",
@@ -50,5 +53,4 @@ __all__ = [
     "ToolController",
     "UndoController",
     "FlowController",
-    "CreateLayerWithBlendingController",
 ]
