@@ -15,7 +15,7 @@ from composer_utils import Config
 from composer_utils.label import LabelWidget
 from .edit_mode import EditMode
 from .pie_label import PieLabel
-from .style_manager import StyleManager
+from .style_holder import StyleHolder
 from .pie_config import PieConfig
 from .pie_widget_utils import (
     WidgetHolder,
@@ -41,14 +41,14 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
     def __init__(
         self,
-        style_manager: StyleManager,
+        style_holder: StyleHolder,
         labels: List[PieLabel[T]],
         edit_mode: EditMode,
         config: PieConfig,
         parent=None
     ) -> None:
         AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())
-        diameter = 2*style_manager.pie_style.widget_radius
+        diameter = 2*style_holder.pie_style.widget_radius
         self.setGeometry(0, 0, diameter, diameter)
 
         self.setAcceptDrops(True)
@@ -62,7 +62,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self.setStyleSheet("background: transparent;")
         self.setCursor(Qt.CrossCursor)
 
-        self._style_manager = style_manager
+        self._style_holder = style_holder
         self._labels = labels
         self.edit_mode = edit_mode
         self.config = config
@@ -77,7 +77,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
         self.label_holder = LabelHolder(
             labels=self._labels,
-            style_manager=self._style_manager,
+            style_holder=self._style_holder,
             config=self.config,
             owner=self)
 
@@ -85,18 +85,18 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
     def _reset(self):
         """Set widget geometry according to style."""
-        diameter = 2*self._style_manager.pie_style.widget_radius
+        diameter = 2*self._style_holder.pie_style.widget_radius
         self.setGeometry(0, 0, diameter, diameter)
 
     @property
     def deadzone(self) -> float:
         """Return the deadzone distance."""
-        return self._style_manager.pie_style.deadzone_radius
+        return self._style_holder.pie_style.deadzone_radius
 
     def paintEvent(self, event: QPaintEvent) -> None:
         """Paint the entire widget using the Painter wrapper."""
         with Painter(self, event) as painter:
-            PiePainter(painter, self._labels, self._style_manager.pie_style)
+            PiePainter(painter, self._labels, self._style_holder.pie_style)
 
     def dragEnterEvent(self, e: QDragEnterEvent) -> None:
         """Allow dragging the widgets while in edit mode."""
@@ -111,7 +111,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         label = source_widget.label
         circle_points = CirclePoints(
             center=self.center,
-            radius=self._style_manager.pie_style.pie_radius)
+            radius=self._style_holder.pie_style.pie_radius)
         distance = circle_points.distance(e.pos())
 
         if not isinstance(source_widget, LabelWidget):
@@ -123,7 +123,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             return
 
         self._last_widget = source_widget
-        if distance > self._style_manager.pie_style.widget_radius:
+        if distance > self._style_holder.pie_style.widget_radius:
             # Dragged out of the PieWidget
             return self.label_holder.remove(label)
 

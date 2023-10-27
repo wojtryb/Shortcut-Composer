@@ -13,7 +13,7 @@ from data_components import Tag
 from templates.pie_menu_utils.pie_config_impl import PresetPieConfig
 from templates.pie_menu_utils import PieSettings
 from ..pie_label import PieLabel
-from ..style_manager import StyleManager
+from ..style_holder import StyleHolder
 from .common_utils import GroupComboBox, GroupScrollArea, GroupManager
 
 
@@ -29,10 +29,10 @@ class PresetPieSettings(PieSettings):
     def __init__(
         self,
         config: PresetPieConfig,
-        style_manager: StyleManager,
+        style_holder: StyleHolder,
         *args, **kwargs
     ) -> None:
-        super().__init__(config, style_manager)
+        super().__init__(config, style_holder)
         self._config: PresetPieConfig
 
         self._preset_scroll_area = self._init_preset_scroll_area()
@@ -49,7 +49,7 @@ class PresetPieSettings(PieSettings):
         """Create preset scroll area which tracks which ones are used."""
         preset_scroll_area = GroupScrollArea(
             fetcher=PresetGroupManager(),
-            unscaled_label_style=self._style_manager.unscaled_label_style,
+            unscaled_label_style=self._style_holder.unscaled_label_style,
             columns=3,
             field=self._config.field("Last tag selected", "---Select tag---"),
             additional_fields=["---Select tag---", "All"])

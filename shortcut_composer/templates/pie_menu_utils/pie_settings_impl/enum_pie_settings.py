@@ -6,7 +6,7 @@ from enum import Enum
 from core_components import Controller
 from templates.pie_menu_utils.pie_config_impl import NonPresetPieConfig
 from templates.pie_menu_utils import PieSettings
-from ..style_manager import StyleManager
+from ..style_holder import StyleHolder
 from ..pie_label import PieLabel
 from .common_utils import ScrollArea
 
@@ -24,10 +24,10 @@ class EnumPieSettings(PieSettings):
         self,
         controller: Controller[Enum],
         config: NonPresetPieConfig,
-        style_manager: StyleManager,
+        style_holder: StyleHolder,
         *args, **kwargs
     ) -> None:
-        super().__init__(config, style_manager)
+        super().__init__(config, style_holder)
 
         names = controller.TYPE._member_names_
         values = [controller.TYPE[name] for name in names]

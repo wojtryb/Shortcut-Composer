@@ -9,7 +9,7 @@ from composer_utils.label import LabelWidget
 from composer_utils.label.label_widget_impl import dispatch_label_widget
 from ..pie_label import PieLabel
 from ..pie_config import PieConfig
-from ..style_manager import StyleManager
+from ..style_holder import StyleHolder
 from .widget_holder import WidgetHolder
 from .circle_points import CirclePoints
 
@@ -26,12 +26,12 @@ class LabelHolder:
     def __init__(
         self,
         labels: List[PieLabel],
-        style_manager: StyleManager,
+        style_holder: StyleHolder,
         config: PieConfig,
         owner: BaseWidget,
     ) -> None:
         self._labels = labels
-        self._style_manager = style_manager
+        self._style_holder = style_holder
         self._config = config
         # Refresh itself when config changed, but do not notify change
         # in config as holder was not their cause
@@ -120,11 +120,11 @@ class LabelHolder:
         children_widgets: List[LabelWidget[PieLabel]] = []
         for label in self._labels:
             children_widgets.append(dispatch_label_widget(label)(
-                label, self._style_manager.label_style, self._owner))
+                label, self._style_holder.label_style, self._owner))
 
         circle_points = CirclePoints(
             center=self._owner.center,
-            radius=self._style_manager.pie_style.pie_radius)
+            radius=self._style_holder.pie_style.pie_radius)
         angles = circle_points.iterate_over_circle(len(self._labels))
         for child, (angle, point) in zip(children_widgets, angles):
             child.setParent(self._owner)

@@ -8,7 +8,7 @@ from core_components import Controller
 from api_krita.enums.helpers import EnumGroup
 from templates.pie_menu_utils import PieSettings
 from templates.pie_menu_utils.pie_config_impl import NonPresetPieConfig
-from ..style_manager import StyleManager
+from ..style_holder import StyleHolder
 from ..pie_label import PieLabel
 from .common_utils import GroupScrollArea, GroupManager
 
@@ -18,14 +18,14 @@ class EnumGroupPieSettings(PieSettings):
         self,
         controller: Controller[EnumGroup],
         config: NonPresetPieConfig,
-        style_manager: StyleManager,
+        style_holder: StyleHolder,
         *args, **kwargs
     ) -> None:
-        super().__init__(config, style_manager)
+        super().__init__(config, style_holder)
 
         self._action_values = GroupScrollArea(
             fetcher=EnumGroupManager(controller),
-            unscaled_label_style=self._style_manager.unscaled_label_style,
+            unscaled_label_style=self._style_holder.unscaled_label_style,
             columns=3,
             field=self._config.field("Last tag selected", "All"),
             additional_fields=["All"])

@@ -13,7 +13,7 @@ from core_components import Controller, Instruction
 from .pie_menu_utils.pie_config_impl import dispatch_pie_config
 from .pie_menu_utils.pie_settings_impl import dispatch_pie_settings
 from .pie_menu_utils import (
-    StyleManager,
+    StyleHolder,
     PieSettings,
     PieManager,
     PieWidget,
@@ -105,7 +105,7 @@ class PieMenu(RawInstructions, Generic[T]):
 
         self._labels: List[PieLabel] = []
         self._edit_mode = EditMode(self)
-        self._style_manager = StyleManager(pie_config=self._config)
+        self._style_holder = StyleHolder(pie_config=self._config)
         self.actuator = Actuator(
             controller=self._controller,
             strategy_field=self._config.DEADZONE_STRATEGY,
@@ -115,7 +115,7 @@ class PieMenu(RawInstructions, Generic[T]):
     def pie_widget(self) -> PieWidget:
         """Create Qwidget of the Pie for selecting values."""
         return PieWidget(
-            style_manager=self._style_manager,
+            style_holder=self._style_holder,
             labels=self._labels,
             edit_mode=self._edit_mode,
             config=self._config)
@@ -125,7 +125,7 @@ class PieMenu(RawInstructions, Generic[T]):
         """Create QWidget with pie settings right for given type of labels."""
         return dispatch_pie_settings(self._controller)(
             config=self._config,
-            style_manager=self._style_manager,
+            style_holder=self._style_holder,
             controller=self._controller)
 
     @cached_property
@@ -140,9 +140,9 @@ class PieMenu(RawInstructions, Generic[T]):
             icon=Krita.get_icon("properties"),
             icon_scale=1.1,
             parent=self.pie_widget,
-            radius_callback=lambda: self._style_manager.pie_style
+            radius_callback=lambda: self._style_holder.pie_style
             .setting_button_radius,
-            pie_style=self._style_manager.pie_style,
+            pie_style=self._style_holder.pie_style,
             config=self._config)
         settings_button.clicked.connect(lambda: self._edit_mode.set(True))
         return settings_button
@@ -154,9 +154,9 @@ class PieMenu(RawInstructions, Generic[T]):
             icon=Krita.get_icon("dialog-ok"),
             icon_scale=1.5,
             parent=self.pie_widget,
-            radius_callback=lambda: self._style_manager.pie_style
+            radius_callback=lambda: self._style_holder.pie_style
             .accept_button_radius,
-            pie_style=self._style_manager.pie_style,
+            pie_style=self._style_holder.pie_style,
             config=self._config)
 
         # Work around the Qt bug where button resets to (0, 0) on config change

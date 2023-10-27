@@ -7,7 +7,7 @@ from .pie_config import PieConfig
 from .pie_style import PieStyle
 
 
-class StyleManager:
+class StyleHolder:
     def __init__(self, pie_config: PieConfig) -> None:
         self._pie_config = pie_config
         self._base_size = Krita.screen_size/2560

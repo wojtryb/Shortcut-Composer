@@ -16,7 +16,7 @@ from composer_utils.label import LabelWidgetStyle
 from composer_utils.label.label_widget_impl import dispatch_label_widget
 from templates.pie_menu_utils.pie_config_impl import NonPresetPieConfig
 from templates.pie_menu_utils import PieSettings
-from ..style_manager import StyleManager
+from ..style_holder import StyleHolder
 from ..pie_label import PieLabel
 
 
@@ -102,14 +102,14 @@ class NumericPieSettings(PieSettings):
         self,
         controller: NumericController,
         config: NonPresetPieConfig,
-        style_manager: StyleManager,
+        style_holder: StyleHolder,
         *args, **kwargs
     ) -> None:
-        super().__init__(config, style_manager)
+        super().__init__(config, style_holder)
 
         self._numeric_picker = NumericValuePicker(
             controller,
-            style_manager.unscaled_label_style)
+            style_holder.unscaled_label_style)
 
         self._tab_holder.insertTab(1, self._numeric_picker, "Values")
         self._tab_holder.setCurrentIndex(1)
