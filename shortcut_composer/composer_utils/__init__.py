@@ -3,8 +3,9 @@
 
 """Utilities specific for this plugin. Not directly reusable elsewhere."""
 
+from .animation_progress import AnimationProgress
 from .settings_dialog import SettingsDialog
 from .buttons_layout import ButtonsLayout
 from .global_config import Config
 
-__all__ = ["SettingsDialog", "ButtonsLayout", "Config"]
+__all__ = ["AnimationProgress", "SettingsDialog", "ButtonsLayout", "Config"]

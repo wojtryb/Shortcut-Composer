@@ -9,7 +9,7 @@ from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QPixmap, QIcon
 
 from composer_utils.label import LabelInterface
-from composer_utils.global_config import Config  # move to Label init
+from composer_utils import AnimationProgress
 from core_components import Controller
 
 T = TypeVar("T")
@@ -67,42 +67,3 @@ class PieLabel(LabelInterface, Generic[T]):
             value=value,
             display_value=label,
             pretty_name=controller.get_pretty_name(value))
-
-
-class AnimationProgress:
-    """
-    Grants interface to track progress of two-way steep animation.
-
-    Holds the state of animation as float in range <0-1> which can be
-    obtained with `value` property.
-
-    Animation state can be altered with `up()` and `down()` methods.
-    The change is the fastest when the animation starts, and then slows
-    down near the end (controlled by `steep` argument).
-
-    There is a `reset()` method to cancel the animation immediately.
-    """
-
-    def __init__(self, speed_scale: float = 1.0, steep: float = 1.0) -> None:
-        self._value = 0
-        self._speed = 0.004*Config.get_sleep_time()*speed_scale
-        self._steep = steep
-
-    def up(self) -> None:
-        """Increase the animation progress."""
-        difference = (1+self._steep-self._value) * self._speed
-        self._value = min(self._value + difference, 1)
-
-    def down(self) -> None:
-        """Decrease the animation progress."""
-        difference = (self._value+self._steep) * self._speed
-        self._value = max(self._value - difference, 0)
-
-    @property
-    def value(self) -> float:
-        """Get current state of animation. It ss in range <0-1>."""
-        return self._value
-
-    def reset(self) -> None:
-        """Arbitrarily set a value to 0"""
-        self._value = 0
