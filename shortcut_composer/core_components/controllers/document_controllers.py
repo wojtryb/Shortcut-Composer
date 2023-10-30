@@ -4,7 +4,7 @@
 from typing import Optional
 from api_krita import Krita
 from api_krita.wrappers import Node
-from api_krita.pyqt import Text
+from composer_utils import Text
 from ..controller_base import Controller, NumericController
 
 

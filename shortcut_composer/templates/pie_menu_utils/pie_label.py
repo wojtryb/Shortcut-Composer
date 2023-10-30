@@ -1,15 +1,14 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from api_krita.pyqt import Text
 from typing import Union, Generic, TypeVar, Final, Optional
 from dataclasses import dataclass, field
 
 from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QPixmap, QIcon
 
+from composer_utils import AnimationProgress, Text
 from composer_utils.label import LabelInterface
-from composer_utils import AnimationProgress
 from core_components import Controller
 
 T = TypeVar("T")

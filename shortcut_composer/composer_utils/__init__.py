@@ -7,5 +7,12 @@ from .animation_progress import AnimationProgress
 from .settings_dialog import SettingsDialog
 from .buttons_layout import ButtonsLayout
 from .global_config import Config
+from .text import Text
 
-__all__ = ["AnimationProgress", "SettingsDialog", "ButtonsLayout", "Config"]
+__all__ = [
+    "AnimationProgress",
+    "SettingsDialog",
+    "ButtonsLayout",
+    "Config",
+    "Text"
+]

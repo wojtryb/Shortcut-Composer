@@ -7,9 +7,9 @@ from dataclasses import dataclass
 from PyQt5.QtGui import QIcon
 
 from api_krita import Krita
-from api_krita.pyqt import Text
 from api_krita.enums import Action, Tool, Toggle, TransformMode
 from api_krita.actions import TransformModeFinder
+from composer_utils import Text
 from ..controller_base import Controller, NumericController
 
 

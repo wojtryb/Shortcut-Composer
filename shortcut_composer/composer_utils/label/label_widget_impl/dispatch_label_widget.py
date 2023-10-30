@@ -7,7 +7,7 @@ from PyQt5.QtGui import (
     QPixmap,
     QIcon,
 )
-from api_krita.pyqt import Text
+from ...text import Text
 from ..label_widget import LabelWidget
 from ..label_interface import LabelInterface
 from .icon_label_widget import IconLabelWidget

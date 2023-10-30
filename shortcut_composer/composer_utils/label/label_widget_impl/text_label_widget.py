@@ -8,7 +8,7 @@ from PyQt5.QtGui import QFont, QColor, QFontDatabase
 from PyQt5.QtWidgets import QLabel, QWidget
 
 from api_krita import Krita
-from api_krita.pyqt import Text
+from ...text import Text
 from ..label_widget_style import LabelWidgetStyle
 from ..label_widget import LabelWidget
 from ..label_interface import LabelInterface

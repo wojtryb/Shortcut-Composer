@@ -3,7 +3,7 @@
 
 from typing import Optional, Union, Generic, TypeVar, Type
 from PyQt5.QtGui import QPixmap, QIcon
-from api_krita.pyqt import Text
+from composer_utils import Text
 
 T = TypeVar("T")
 

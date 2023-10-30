@@ -10,7 +10,6 @@ from .round_button import RoundButton
 from .colorizer import Colorizer
 from .painter import Painter
 from .timer import Timer
-from .text import Text
 
 __all__ = [
     "SafeConfirmButton",
@@ -21,5 +20,4 @@ __all__ = [
     "Colorizer",
     "Painter",
     "Timer",
-    "Text",
 ]

@@ -3,7 +3,8 @@
 
 from api_krita import Krita
 from api_krita.enums import BlendingMode, NodeType
-from api_krita.pyqt import Text, Colorizer
+from api_krita.pyqt import Colorizer
+from composer_utils import Text
 from ..controller_base import Controller, NumericController
 
 

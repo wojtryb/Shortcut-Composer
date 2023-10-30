@@ -5,7 +5,7 @@ from typing import Union, Generic, TypeVar, Protocol
 
 from PyQt5.QtGui import QPixmap, QIcon
 
-from api_krita.pyqt import Text
+from ..text import Text
 
 T = TypeVar("T")
 
