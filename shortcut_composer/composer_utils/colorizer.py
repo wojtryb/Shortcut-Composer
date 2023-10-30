@@ -7,7 +7,7 @@ from enum import Enum
 from PyQt5.QtGui import QColor
 
 from api_krita import Krita
-from ..enums import BlendingMode
+from api_krita.enums import BlendingMode
 
 
 class Color(Enum):

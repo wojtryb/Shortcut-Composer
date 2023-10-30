@@ -7,7 +7,6 @@ from .custom_widgets import AnimatedWidget, BaseWidget
 from .safe_confirm_button import SafeConfirmButton
 from .pixmap_transform import PixmapTransform
 from .round_button import RoundButton
-from .colorizer import Colorizer
 from .painter import Painter
 from .timer import Timer
 
@@ -17,7 +16,6 @@ __all__ = [
     "AnimatedWidget",
     "RoundButton",
     "BaseWidget",
-    "Colorizer",
     "Painter",
     "Timer",
 ]
