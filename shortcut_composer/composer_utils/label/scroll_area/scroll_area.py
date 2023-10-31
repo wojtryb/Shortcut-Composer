@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import re
-from typing import List, Protocol, Callable
+from typing import List, Sequence, Protocol, Callable, TypeVar, Generic
 
 from PyQt5.QtCore import Qt, QTimer, pyqtSignal
 from PyQt5.QtWidgets import (
@@ -17,8 +17,10 @@ from PyQt5.QtWidgets import (
 
 from composer_utils.label import LabelWidget, LabelWidgetStyle
 from composer_utils.label.label_widget_impl import dispatch_label_widget
-from ...pie_label import PieLabel
+from ..label_interface import LabelInterface
 from .offset_grid_layout import OffsetGridLayout
+
+T = TypeVar("T", bound=LabelInterface, contravariant=True)
 
 
 class EmptySignal(Protocol):
@@ -28,7 +30,7 @@ class EmptySignal(Protocol):
     def connect(self, method: Callable[[], None]) -> None: ...
 
 
-class ScrollArea(QWidget):
+class ScrollArea(QWidget, Generic[T]):
     """
     Widget containing a scrollable list of PieWidgets.
 
@@ -63,8 +65,8 @@ class ScrollArea(QWidget):
         self._unscaled_label_style = unscaled_label_style
         self._columns = columns
 
-        self._known_children: dict[PieLabel, LabelWidget[PieLabel]] = {}
-        self._children_list: List[LabelWidget[PieLabel]] = []
+        self._known_children: dict[LabelInterface, LabelWidget[T]] = {}
+        self._children_list: List[LabelWidget[T]] = []
 
         self._grid = OffsetGridLayout(self._columns, self)
         self._active_label_display = self._init_active_label_display()
@@ -139,8 +141,8 @@ class ScrollArea(QWidget):
         self._grid.replace(children)
         QTimer.singleShot(10, lambda: self.setUpdatesEnabled(True))
 
-    def _create_child(self, label: PieLabel) -> LabelWidget[PieLabel]:
-        """Create LabelWidget[PieLabel] that represent the label."""
+    def _create_child(self, label: LabelInterface) -> LabelWidget[T]:
+        """Create LabelWidget[LabelInterface] that represent the label."""
         child = dispatch_label_widget(label)(
             label=label,
             label_widget_style=self._unscaled_label_style,
@@ -152,7 +154,7 @@ class ScrollArea(QWidget):
         self._known_children[label] = child
         return child
 
-    def replace_handled_labels(self, labels: List[PieLabel]) -> None:
+    def replace_handled_labels(self, labels: Sequence[LabelInterface]) -> None:
         """Replace current list of widgets with new ones."""
         self.setUpdatesEnabled(False)
         self._children_list.clear()
@@ -184,10 +186,10 @@ class ChildInstruction:
     def __init__(self, display_label: QLabel) -> None:
         self._display_label = display_label
 
-    def on_enter(self, label: PieLabel) -> None:
+    def on_enter(self, label: LabelInterface) -> None:
         """Set text of label which was entered with mouse."""
         self._display_label.setText(str(label.pretty_name))
 
-    def on_leave(self, label: PieLabel) -> None:
+    def on_leave(self, label: LabelInterface) -> None:
         """Reset text after mouse leaves the widget."""
         self._display_label.setText("")

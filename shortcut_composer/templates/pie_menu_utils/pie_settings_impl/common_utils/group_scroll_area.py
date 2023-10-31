@@ -5,9 +5,8 @@ from typing import List
 
 from config_system import Field
 from composer_utils.label import LabelWidgetStyle
-from .scroll_area import ScrollArea
+from composer_utils.label.scroll_area import ScrollArea, GroupManager
 from .group_combo_box import GroupComboBox
-from .group_manager import GroupManager
 
 
 class GroupScrollArea(ScrollArea):

@@ -8,13 +8,14 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 from api_krita import Krita
 from api_krita.wrappers import Database
 from api_krita.pyqt import SafeConfirmButton
+from composer_utils.label.scroll_area import GroupManager
 from core_components.controllers import PresetController
 from data_components import Tag
 from templates.pie_menu_utils.pie_config_impl import PresetPieConfig
 from templates.pie_menu_utils import PieSettings
 from ..pie_label import PieLabel
 from ..style_holder import StyleHolder
-from .common_utils import GroupComboBox, GroupScrollArea, GroupManager
+from .common_utils import GroupComboBox, GroupScrollArea
 
 
 class PresetPieSettings(PieSettings):

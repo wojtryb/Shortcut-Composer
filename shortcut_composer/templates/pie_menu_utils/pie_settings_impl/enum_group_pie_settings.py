@@ -6,11 +6,12 @@ from enum import Enum
 
 from core_components import Controller
 from api_krita.enums.helpers import EnumGroup
+from composer_utils.label.scroll_area import GroupManager
 from templates.pie_menu_utils import PieSettings
 from templates.pie_menu_utils.pie_config_impl import NonPresetPieConfig
 from ..style_holder import StyleHolder
 from ..pie_label import PieLabel
-from .common_utils import GroupScrollArea, GroupManager
+from .common_utils import GroupScrollArea
 
 
 class EnumGroupPieSettings(PieSettings):

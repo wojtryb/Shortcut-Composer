@@ -8,7 +8,7 @@ from templates.pie_menu_utils.pie_config_impl import NonPresetPieConfig
 from templates.pie_menu_utils import PieSettings
 from ..style_holder import StyleHolder
 from ..pie_label import PieLabel
-from .common_utils import ScrollArea
+from composer_utils.label.scroll_area import ScrollArea
 
 
 class EnumPieSettings(PieSettings):
@@ -34,7 +34,7 @@ class EnumPieSettings(PieSettings):
         labels = [PieLabel.from_value(value, controller) for value in values]
         labels = [label for label in labels if label is not None]
 
-        self._action_values = ScrollArea(self._label_style, 3)
+        self._action_values = ScrollArea[PieLabel](self._label_style, 3)
         self._action_values.replace_handled_labels(labels)
         self._tab_holder.insertTab(1, self._action_values, "Values")
         self._tab_holder.setCurrentIndex(1)
