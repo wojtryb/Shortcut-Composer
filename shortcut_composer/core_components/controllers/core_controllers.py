@@ -9,7 +9,7 @@ from PyQt5.QtGui import QIcon
 from api_krita import Krita
 from api_krita.enums import Action, Tool, Toggle, TransformMode
 from api_krita.actions import TransformModeFinder
-from composer_utils import Text
+from composer_utils.label import LabelText
 from ..controller_base import Controller, NumericController
 
 
@@ -63,12 +63,12 @@ class ActionController(Controller[Action]):
         """Set a passed tool."""
         value.activate()
 
-    def get_label(self, value: Tool) -> Union[QIcon, Text]:
+    def get_label(self, value: Tool) -> Union[QIcon, LabelText]:
         """Forward the tools' icon."""
         icon = value.icon
         if not icon.isNull():
             return value.icon
-        return Text(value.name[:3])
+        return LabelText(value.name[:3])
 
     def get_pretty_name(self, value: Action) -> str:
         """Forward enums' pretty name."""

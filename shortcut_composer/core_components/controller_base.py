@@ -3,7 +3,7 @@
 
 from typing import Optional, Union, Generic, TypeVar, Type
 from PyQt5.QtGui import QPixmap, QIcon
-from composer_utils import Text
+from composer_utils.label import LabelText
 
 T = TypeVar("T")
 
@@ -26,7 +26,7 @@ class Controller(Generic[T]):
         """Set handled value in krita."""
         ...
 
-    def get_label(self, value: T) -> Union[Text, QPixmap, QIcon, None]:
+    def get_label(self, value: T) -> Union[LabelText, QPixmap, QIcon, None]:
         """Get value representation that can be displayed in GUI,"""
         ...
 

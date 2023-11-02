@@ -3,7 +3,7 @@
 
 from api_krita import Krita
 from api_krita.enums import BlendingMode, NodeType
-from composer_utils import Text, Colorizer
+from composer_utils.label import LabelText, LabelTextColorizer
 from ..controller_base import Controller, NumericController
 
 
@@ -49,9 +49,11 @@ class LayerOpacityController(NodeBasedController, NumericController):
             self.active_node.opacity = opacity
             self.active_document.refresh()
 
-    def get_label(self, value: int) -> Text:
-        """Return Text with formatted layer opacity."""
-        return Text(self.get_pretty_name(value), Colorizer.percentage(value))
+    def get_label(self, value: int) -> LabelText:
+        """Return LabelText with formatted layer opacity."""
+        return LabelText(
+            value=self.get_pretty_name(value),
+            color=LabelTextColorizer.percentage(value))
 
     def get_pretty_name(self, value: float) -> str:
         """Format the layer opacity like: `100%`"""
@@ -80,9 +82,11 @@ class LayerBlendingModeController(NodeBasedController,
             self.active_node.blending_mode = blending_mode
             self.active_document.refresh()
 
-    def get_label(self, value: BlendingMode) -> Text:
+    def get_label(self, value: BlendingMode) -> LabelText:
         """Return Label of 3 first letters of mode name in correct color."""
-        return Text(value.name[:3], Colorizer.blending_mode(value))
+        return LabelText(
+            value=value.name[:3],
+            color=LabelTextColorizer.blending_mode(value))
 
     def get_pretty_name(self, value: BlendingMode) -> str:
         """Forward enums' pretty name."""
@@ -131,9 +135,11 @@ class CreateLayerWithBlendingController(NodeBasedController,
         parent = self.active_node.get_parent_node()
         parent.add_child_node(layer, self.active_node)
 
-    def get_label(self, value: BlendingMode) -> Text:
+    def get_label(self, value: BlendingMode) -> LabelText:
         """Return Label of 3 first letters of mode name in correct color."""
-        return Text("+" + value.name[:3], Colorizer.blending_mode(value))
+        return LabelText(
+            value="+" + value.name[:3],
+            color=LabelTextColorizer.blending_mode(value))
 
     def get_pretty_name(self, value: BlendingMode) -> str:
         """Forward enums' pretty name."""

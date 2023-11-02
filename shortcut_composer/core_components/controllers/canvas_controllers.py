@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from api_krita import Krita
-from composer_utils import Text
+from composer_utils.label import LabelText
 from ..controller_base import NumericController
 
 
@@ -38,9 +38,9 @@ class CanvasZoomController(CanvasBasedController, NumericController):
         """Set current zoom level in %"""
         self.canvas.zoom = value
 
-    def get_label(self, value: int) -> Text:
-        """Return Text with formatted canvas zoom."""
-        return Text(self.get_pretty_name(value))
+    def get_label(self, value: int) -> LabelText:
+        """Return LabelText with formatted canvas zoom."""
+        return LabelText(self.get_pretty_name(value))
 
     def get_pretty_name(self, value: int) -> str:
         """Format the canvas zoom like: `100%`."""
@@ -72,9 +72,9 @@ class CanvasRotationController(CanvasBasedController, NumericController):
         """Set rotation in degrees."""
         self.canvas.rotation = value
 
-    def get_label(self, value: int) -> Text:
-        """Return Text with formatted canvas rotation."""
-        return Text(self.get_pretty_name(value))
+    def get_label(self, value: int) -> LabelText:
+        """Return LabelText with formatted canvas rotation."""
+        return LabelText(self.get_pretty_name(value))
 
     def get_pretty_name(self, value: int) -> str:
         """Format the canvas rotation like: `30°`."""

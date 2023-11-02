@@ -5,7 +5,7 @@ from typing import Optional
 from PyQt5.QtGui import QPixmap, QImage
 from api_krita import Krita
 from api_krita.enums import BlendingMode
-from composer_utils import Text, Colorizer
+from composer_utils.label import LabelText, LabelTextColorizer
 from ..controller_base import Controller, NumericController
 
 
@@ -71,9 +71,9 @@ class BrushSizeController(ViewBasedController, NumericController):
         """Set current brush size."""
         self.view.brush_size = value
 
-    def get_label(self, value: float) -> Text:
-        """Return Text with formatted brush size."""
-        return Text(self.get_pretty_name(value))
+    def get_label(self, value: float) -> LabelText:
+        """Return LabelText with formatted brush size."""
+        return LabelText(self.get_pretty_name(value))
 
     def get_pretty_name(self, value: float) -> str:
         """Format the brush size like: `100px`"""
@@ -99,9 +99,11 @@ class BlendingModeController(ViewBasedController, Controller[BlendingMode]):
         """Set a passed blending mode."""
         self.view.blending_mode = value
 
-    def get_label(self, value: BlendingMode) -> Text:
+    def get_label(self, value: BlendingMode) -> LabelText:
         """Return Label of 3 first letters of mode name in correct color."""
-        return Text(value.name[:3], Colorizer.blending_mode(value))
+        return LabelText(
+            value=value.name[:3],
+            color=LabelTextColorizer.blending_mode(value))
 
     def get_pretty_name(self, value: BlendingMode) -> str:
         """Forward enums' pretty name."""
@@ -132,9 +134,11 @@ class OpacityController(ViewBasedController, NumericController):
         """Set passed brush opacity."""
         self.view.opacity = value
 
-    def get_label(self, value: int) -> Text:
+    def get_label(self, value: int) -> LabelText:
         """Return Text with formatted brush opacity."""
-        return Text(self.get_pretty_name(value), Colorizer.percentage(value))
+        return LabelText(
+            value=self.get_pretty_name(value),
+            color=LabelTextColorizer.percentage(value))
 
     def get_pretty_name(self, value: float) -> str:
         """Format the opacity like: `100%`"""
@@ -165,9 +169,11 @@ class FlowController(ViewBasedController, NumericController):
         """Set passed brush flow."""
         self.view.flow = value
 
-    def get_label(self, value: int) -> Text:
+    def get_label(self, value: int) -> LabelText:
         """Return Text with formatted brush flow."""
-        return Text(self.get_pretty_name(value), Colorizer.percentage(value))
+        return LabelText(
+            value=self.get_pretty_name(value),
+            color=LabelTextColorizer.percentage(value))
 
     def get_pretty_name(self, value: float) -> str:
         """Format the flow like: `100%`"""

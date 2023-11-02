@@ -28,7 +28,7 @@ class Color(Enum):
     VIOLET = QColor(173, 133, 251)
 
 
-class Colorizer(QColor):
+class LabelTextColorizer(QColor):
     """Functions that return a color associated with value of property."""
 
     @classmethod

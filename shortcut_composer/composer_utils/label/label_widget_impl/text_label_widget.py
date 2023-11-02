@@ -8,10 +8,10 @@ from PyQt5.QtGui import QFont, QColor, QFontDatabase
 from PyQt5.QtWidgets import QLabel, QWidget
 
 from api_krita import Krita
-from ...text import Text
-from ..label_widget_style import LabelWidgetStyle
+from ..label_text import LabelText
 from ..label_widget import LabelWidget
 from ..label_interface import LabelInterface
+from ..label_widget_style import LabelWidgetStyle
 
 T = TypeVar("T", bound=LabelInterface)
 
@@ -32,7 +32,7 @@ class TextLabelWidget(LabelWidget[T]):
         """Create and show a new Qt5 label. Does not need redrawing."""
         to_display = self.label.display_value
 
-        if not isinstance(to_display, Text):
+        if not isinstance(to_display, LabelText):
             raise TypeError("Label supposed to be text.")
 
         height = round(self.icon_radius*0.75)
@@ -69,7 +69,7 @@ class TextLabelWidget(LabelWidget[T]):
         """Return multiplier (0-1) getting smaller the more signs are there."""
         to_display = self.label.display_value
 
-        if not isinstance(to_display, Text):
+        if not isinstance(to_display, LabelText):
             raise TypeError("Label supposed to be text.")
 
         signs_amount = len(to_display.value)

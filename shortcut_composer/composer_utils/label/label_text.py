@@ -6,7 +6,7 @@ from PyQt5.QtGui import QColor
 
 
 @dataclass
-class Text:
+class LabelText:
     """Text along with its color."""
 
     value: str

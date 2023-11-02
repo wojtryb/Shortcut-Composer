@@ -4,7 +4,7 @@
 from typing import Optional
 from api_krita import Krita
 from api_krita.wrappers import Node
-from composer_utils import Text
+from composer_utils.label import LabelText
 from ..controller_base import Controller, NumericController
 
 
@@ -67,6 +67,6 @@ class TimeController(DocumentBasedController, NumericController):
         """Set passed frame of animation timeline as active."""
         self.document.current_time = value
 
-    def get_label(self, value: int) -> Text:
-        """Return Text with frame id as string."""
-        return Text(self.get_pretty_name(value))
+    def get_label(self, value: int) -> LabelText:
+        """Return LabelText with frame id as string."""
+        return LabelText(self.get_pretty_name(value))

@@ -7,7 +7,7 @@ from PyQt5.QtGui import (
     QPixmap,
     QIcon,
 )
-from ...text import Text
+from ..label_text import LabelText
 from ..label_widget import LabelWidget
 from ..label_interface import LabelInterface
 from .icon_label_widget import IconLabelWidget
@@ -24,6 +24,6 @@ def dispatch_label_widget(label: T) -> Type[LabelWidget[T]]:
 
     return {
         QPixmap: ImageLabelWidget,
-        Text: TextLabelWidget,
+        LabelText: TextLabelWidget,
         QIcon: IconLabelWidget,
     }[type(label.display_value)]

@@ -7,8 +7,8 @@ from dataclasses import dataclass, field
 from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QPixmap, QIcon
 
-from composer_utils import AnimationProgress, Text
-from composer_utils.label import LabelInterface
+from composer_utils import AnimationProgress
+from composer_utils.label import LabelInterface, LabelText
 from core_components import Controller
 
 T = TypeVar("T")
@@ -30,7 +30,7 @@ class PieLabel(LabelInterface, Generic[T]):
     """
 
     value: Final[T]
-    display_value: Union[QPixmap, QIcon, Text, None] = None
+    display_value: Union[QPixmap, QIcon, LabelText, None] = None
     pretty_name: str = ""
     center: QPoint = field(default_factory=QPoint)
     angle: int = 0

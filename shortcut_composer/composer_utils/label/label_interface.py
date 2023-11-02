@@ -5,7 +5,7 @@ from typing import Union, Generic, TypeVar, Protocol
 
 from PyQt5.QtGui import QPixmap, QIcon
 
-from ..text import Text
+from .label_text import LabelText
 
 T = TypeVar("T")
 
@@ -21,5 +21,5 @@ class LabelInterface(Protocol, Generic[T]):
     """
 
     value: T
-    display_value: Union[QPixmap, QIcon, Text, None]
+    display_value: Union[QPixmap, QIcon, LabelText, None]
     pretty_name: str
