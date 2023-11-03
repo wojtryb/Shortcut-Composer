@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Optional
+from typing import Optional, Callable
 
 from PyQt5.QtWidgets import QWidget, QPushButton
 from PyQt5.QtGui import QColor, QIcon
@@ -15,20 +15,20 @@ class RoundButton(QPushButton, BaseWidget):
 
     def __init__(
         self, *,
+        radius_callback: Callable[[], int],
+        background_color_callback: Callable[[], QColor],
+        active_color_callback: Callable[[], QColor],
         icon: QIcon = QIcon(),
         icon_scale: float = 1,
-        initial_radius: int,
-        background_color: QColor,
-        active_color: QColor,
         parent: Optional[QWidget] = None,
     ) -> None:
         QPushButton.__init__(self, icon, "", parent)
         self.setCursor(Qt.ArrowCursor)
 
+        self._radius_callback = radius_callback
         self._icon_scale = icon_scale
-        self._radius = initial_radius
-        self._background_color = background_color
-        self._active_color = active_color
+        self._background_color_callback = background_color_callback
+        self._active_color_callback = active_color_callback
 
         if parent is None:
             self.setWindowFlags((
@@ -39,26 +39,31 @@ class RoundButton(QPushButton, BaseWidget):
             self.setAttribute(Qt.WA_TranslucentBackground)
             self.setStyleSheet("background: transparent;")
 
-        self.refresh()
         self.show()
 
-    def refresh(self) -> None:
+    def show(self) -> None:
         """Change the size and repaint the button."""
-        self.setGeometry(0, 0, self._radius*2, self._radius*2)
+        radius = self._radius_callback()
+        self.setGeometry(0, 0, radius*2, radius*2)
+
+        active_color = self._active_color_callback()
+        background_color = self._background_color_callback()
 
         self.setStyleSheet(f"""
             QPushButton [
-                border: {round(self._radius*0.06)}px
+                border: {round(radius*0.06)}px
                     {self._color_to_str(self._border_color)};
-                border-radius: {self._radius}px;
+                border-radius: {radius}px;
                 border-style: outset;
-                background: {self._color_to_str(self._background_color)};
-                qproperty-iconSize:{round(self._radius*self._icon_scale)}px;
+                background: {self._color_to_str(background_color)};
+                qproperty-iconSize:{round(radius*self._icon_scale)}px;
             ]
             QPushButton:hover [
-                background: {self._color_to_str(self._active_color)};
+                background: {self._color_to_str(active_color)};
             ]
         """.replace('[', '{').replace(']', '}'))
+
+        super().show()
 
     @staticmethod
     def _color_to_str(color: QColor) -> str: return f'''rgba(
@@ -67,8 +72,9 @@ class RoundButton(QPushButton, BaseWidget):
     @property
     def _border_color(self) -> QColor:
         """Color of button border."""
+        background_color = self._background_color_callback()
         return QColor(
-            min(self._background_color.red()+15, 255),
-            min(self._background_color.green()+15, 255),
-            min(self._background_color.blue()+15, 255),
+            min(background_color.red()+15, 255),
+            min(background_color.green()+15, 255),
+            min(background_color.blue()+15, 255),
             255)

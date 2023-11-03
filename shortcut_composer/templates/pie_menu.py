@@ -8,6 +8,7 @@ from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QColor
 
 from api_krita import Krita
+from api_krita.pyqt import RoundButton
 from data_components import DeadzoneStrategy
 from core_components import Controller, Instruction
 from .pie_menu_utils.pie_config_impl import dispatch_pie_config
@@ -17,7 +18,6 @@ from .pie_menu_utils import (
     PieSettings,
     PieManager,
     PieWidget,
-    PieButton,
     Actuator,
     EditMode,
     PieLabel)
@@ -136,28 +136,30 @@ class PieMenu(RawInstructions, Generic[T]):
     @cached_property
     def settings_button(self):
         """Create button with which user can enter the edit mode."""
-        settings_button = PieButton(
+        pie_style = self._style_holder.pie_style
+
+        settings_button = RoundButton(
+            radius_callback=lambda: pie_style.setting_button_radius,
+            background_color_callback=lambda: pie_style.background_color,
+            active_color_callback=lambda: pie_style.active_color,
             icon=Krita.get_icon("properties"),
             icon_scale=1.1,
-            parent=self.pie_widget,
-            radius_callback=lambda: self._style_holder.pie_style
-            .setting_button_radius,
-            pie_style=self._style_holder.pie_style,
-            config=self._config)
+            parent=self.pie_widget)
         settings_button.clicked.connect(lambda: self._edit_mode.set(True))
         return settings_button
 
     @cached_property
     def accept_button(self):
         """Create button displayed in edit mode, for hiding the pie."""
-        accept_button = PieButton(
+        pie_style = self._style_holder.pie_style
+
+        accept_button = RoundButton(
+            radius_callback=lambda: pie_style.accept_button_radius,
+            background_color_callback=lambda: pie_style.background_color,
+            active_color_callback=lambda: pie_style.active_color,
             icon=Krita.get_icon("dialog-ok"),
             icon_scale=1.5,
-            parent=self.pie_widget,
-            radius_callback=lambda: self._style_holder.pie_style
-            .accept_button_radius,
-            pie_style=self._style_holder.pie_style,
-            config=self._config)
+            parent=self.pie_widget)
 
         # Work around the Qt bug where button resets to (0, 0) on config change
         self._config.register_callback(self._move_accept_button_to_center)

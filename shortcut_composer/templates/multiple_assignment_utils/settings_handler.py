@@ -38,11 +38,12 @@ class SettingsHandler:
         self._settings.setWindowTitle(f"Configure: {name}")
 
         self._button = RoundButton(
+            radius_callback=lambda: 25,
+            background_color_callback=lambda: QColor(75, 75, 75, 255),
+            active_color_callback=lambda: QColor(100, 150, 230, 255),
             icon=Krita.get_icon("properties"),
             icon_scale=1.1,
-            initial_radius=25,
-            background_color=QColor(75, 75, 75, 255),
-            active_color=QColor(100, 150, 230, 255))
+            parent=None)
         self._button.clicked.connect(self._on_button_click)
         self._button.move(0, 0)
         self._button.hide()
