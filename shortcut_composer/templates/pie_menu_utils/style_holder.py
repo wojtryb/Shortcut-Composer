@@ -38,7 +38,6 @@ class StyleHolder:
     def _unscaled_icon_radius(self):
         return round(
             50 * self._base_size
-            * self._pie_config.ICON_RADIUS_SCALE.read()
             * Config.PIE_ICON_GLOBAL_SCALE.read())
 
     def _icon_radius(self):
