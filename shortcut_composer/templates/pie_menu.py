@@ -160,13 +160,6 @@ class PieMenu(RawInstructions, Generic[T]):
         accept_button.hide()
         return accept_button
 
-    def _move_buttons(self):
-        """Move accept and setting buttons to their correct positions."""
-        self.accept_button.move_center(self.pie_widget.center)
-        self.settings_button.move(QPoint(
-            self.pie_widget.width()-self.settings_button.width(),
-            self.pie_widget.height()-self.settings_button.height()))
-
     def on_key_press(self) -> None:
         """Handle the event of user pressing the action key."""
         super().on_key_press()
@@ -177,7 +170,10 @@ class PieMenu(RawInstructions, Generic[T]):
         self._controller.refresh()
         self._reset_labels()
         self.pie_widget.label_holder.reset()  # HACK: should be automatic
-        self._move_buttons()
+        self.accept_button.move_center(self.pie_widget.center)
+        self.settings_button.move(QPoint(
+            self.pie_widget.width()-self.settings_button.width(),
+            self.pie_widget.height()-self.settings_button.height()))
         self.actuator.mark_selected_widget(self.pie_widget.widget_holder)
 
         self.pie_manager.start()

@@ -65,7 +65,11 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self._labels = labels
         self._edit_mode = edit_mode
         self.config = config
-        self.config.register_callback(self._reset)
+
+        self.config.PIE_RADIUS_SCALE.register_callback(self._reset)
+        self.config.ICON_RADIUS_SCALE.register_callback(self._reset)
+        Config.PIE_GLOBAL_SCALE.register_callback(self._reset)
+        Config.PIE_ICON_GLOBAL_SCALE.register_callback(self._reset)
 
         self.active: Optional[Label] = None
         self._last_widget = None
@@ -77,7 +81,6 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             owner=self)
 
         self.set_draggable(False)
-        self._reset()
 
     def _reset(self):
         """Set widget geometry according to style and refresh CirclePoints."""
