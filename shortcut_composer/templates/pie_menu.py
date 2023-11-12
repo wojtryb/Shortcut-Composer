@@ -156,6 +156,10 @@ class PieMenu(RawInstructions, Generic[T]):
             radius_callback=lambda: self._style.accept_button_radius,
             style=self._style,
             config=self._config)
+
+        # Work around the Qt bug where button resets to (0, 0) on config change
+        self._config.register_callback(self._move_accept_button_to_center)
+
         accept_button.clicked.connect(lambda: self._edit_mode.set(False))
         accept_button.hide()
         return accept_button
@@ -170,7 +174,7 @@ class PieMenu(RawInstructions, Generic[T]):
         self._controller.refresh()
         self._reset_labels()
         self.pie_widget.label_holder.reset()  # HACK: should be automatic
-        self.accept_button.move_center(self.pie_widget.center)
+        self._move_accept_button_to_center()
         self.settings_button.move(QPoint(
             self.pie_widget.width()-self.settings_button.width(),
             self.pie_widget.height()-self.settings_button.height()))
@@ -221,3 +225,7 @@ class PieMenu(RawInstructions, Generic[T]):
         self.pie_manager.stop()
 
         self.actuator.activate(self.pie_widget.active)
+
+    def _move_accept_button_to_center(self):
+        """Ensure the accept button is in the center of the pie."""
+        self.accept_button.move_center(self.pie_widget.center)
