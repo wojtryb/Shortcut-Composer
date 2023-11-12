@@ -46,6 +46,7 @@ class EditMode:
         self._move_settings_next_to_pie()
         self._obj.accept_button.show()
         self._obj.settings_button.hide()
+        self._obj.pie_widget.active = None
 
     def _move_settings_next_to_pie(self):
         """Move settings window so that it lies on right side of pie."""

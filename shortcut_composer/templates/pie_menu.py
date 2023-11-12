@@ -222,9 +222,9 @@ class PieMenu(RawInstructions, Generic[T]):
 
         if self._edit_mode:
             return
-        self.pie_manager.stop()
 
         self.actuator.activate(self.pie_widget.active)
+        self.pie_manager.stop()
 
     def _move_accept_button_to_center(self):
         """Ensure the accept button is in the center of the pie."""

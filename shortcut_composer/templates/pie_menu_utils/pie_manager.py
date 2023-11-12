@@ -38,6 +38,7 @@ class PieManager:
 
     def stop(self, hide: bool = True) -> None:
         """Hide the widget and stop the mouse tracking loop."""
+        self._pie_widget.active = None
         self._timer.stop()
         for label in self._pie_widget.label_holder:
             label.activation_progress.reset()
@@ -50,6 +51,9 @@ class PieManager:
         # released during the drag&drop operation or when user clicked
         # outside the pie widget.
         if not self._pie_widget.isVisible():
+            return self.stop()
+
+        if self._pie_widget.edit_mode.get():
             return self.stop()
 
         cursor = QCursor().pos()

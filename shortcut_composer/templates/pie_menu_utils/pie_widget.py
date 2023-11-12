@@ -63,7 +63,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
         self._style = style
         self._labels = labels
-        self._edit_mode = edit_mode
+        self.edit_mode = edit_mode
         self.config = config
 
         self.config.PIE_RADIUS_SCALE.register_callback(self._reset)
@@ -99,7 +99,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
     def dragEnterEvent(self, e: QDragEnterEvent) -> None:
         """Allow dragging the widgets while in edit mode."""
-        if self._edit_mode:
+        if self.edit_mode:
             return e.accept()
         e.ignore()
 
