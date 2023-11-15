@@ -4,7 +4,7 @@
 from typing import List, Protocol
 from enum import Enum
 
-from ..label_interface import LabelInterface
+from composer_utils.label.label_interface import LabelInterface
 
 
 class GroupManager(Protocol):

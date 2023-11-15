@@ -8,7 +8,7 @@ from templates.pie_menu_utils.pie_config_impl import NonPresetPieConfig
 from templates.pie_menu_utils import PieSettings
 from ..style_holder import StyleHolder
 from ..pie_label import PieLabel
-from composer_utils.label.scroll_area import ScrollArea
+from shortcut_composer.composer_utils.label.complex_widgets import ScrollArea
 
 
 class EnumPieSettings(PieSettings):

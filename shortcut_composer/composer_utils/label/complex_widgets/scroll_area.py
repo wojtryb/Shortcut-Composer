@@ -18,7 +18,7 @@ from PyQt5.QtWidgets import (
 from composer_utils.label import LabelWidget, LabelWidgetStyle
 from composer_utils.label.label_widget_impl import dispatch_label_widget
 from ..label_interface import LabelInterface
-from .offset_grid_layout import OffsetGridLayout
+from .scroll_area_utils import OffsetGridLayout
 
 T = TypeVar("T", bound=LabelInterface, contravariant=True)
 
