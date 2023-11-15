@@ -34,7 +34,8 @@ class EnumPieSettings(PieSettings):
         labels = [PieLabel.from_value(value, controller) for value in values]
         labels = [label for label in labels if label is not None]
 
-        self._action_values = ScrollArea[PieLabel](self._label_style, 3)
+        self._action_values = ScrollArea[PieLabel](
+            self._style_holder.unscaled_label_style, 3)
         self._action_values.replace_handled_labels(labels)
         self._tab_holder.insertTab(1, self._action_values, "Values")
         self._tab_holder.setCurrentIndex(1)
