@@ -38,7 +38,7 @@ class PieManager:
 
     def stop(self, hide: bool = True) -> None:
         """Hide the widget and stop the mouse tracking loop."""
-        self._pie_widget.active = None
+        self._pie_widget.active_label = None
         self._timer.stop()
         for label in self._pie_widget.order_handler:
             label.activation_progress.reset()
@@ -53,7 +53,7 @@ class PieManager:
         if not self._pie_widget.isVisible():
             return self.stop()
 
-        if self._pie_widget.edit_mode.get():
+        if self._pie_widget.is_in_edit_mode:
             return self.stop()
 
         cursor = QCursor().pos()
@@ -67,8 +67,8 @@ class PieManager:
 
     def _set_active_label(self, label: Optional[PieLabel]) -> None:
         """Mark label as active and start animating the change."""
-        if self._pie_widget.active != label:
-            self._pie_widget.active = label
+        if self._pie_widget.active_label != label:
+            self._pie_widget.active_label = label
             self._animator.start()
 
 
@@ -90,7 +90,7 @@ class LabelAnimator:
     def _update(self) -> None:
         """Move all labels to next animation state. End animation if needed."""
         for label in self._pie_widget.order_handler:
-            if self._pie_widget.active == label:
+            if self._pie_widget.active_label == label:
                 label.activation_progress.up()
             else:
                 label.activation_progress.down()

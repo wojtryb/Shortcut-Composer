@@ -106,7 +106,7 @@ class PieMenu(RawInstructions, Generic[T]):
         self._labels: List[PieLabel] = []
         self._edit_mode = EditMode(self)
         self._style_holder = StyleHolder(pie_config=self._config)
-        self.actuator = Actuator(
+        self._actuator = Actuator(
             controller=self._controller,
             strategy_field=self._config.DEADZONE_STRATEGY,
             labels=self._labels)
@@ -185,7 +185,8 @@ class PieMenu(RawInstructions, Generic[T]):
 
         self.pie_widget.order_handler.reset()  # HACK: should be automatic
 
-        self.actuator.mark_selected_widget(self.pie_widget.widget_holder)
+        self._actuator.mark_selected_widget(
+            self.pie_widget.order_handler.widget_holder)
 
         self.pie_manager.start()
 
@@ -230,7 +231,7 @@ class PieMenu(RawInstructions, Generic[T]):
         if self._edit_mode:
             return
 
-        self.actuator.activate(self.pie_widget.active)
+        self._actuator.activate(self.pie_widget.active_label)
         self.pie_manager.stop()
 
     def _move_accept_button_to_center(self):

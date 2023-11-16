@@ -39,7 +39,7 @@ class EditMode:
         """Set the edit mode on."""
         self._obj.pie_manager.stop(hide=False)
         self._obj.pie_widget.set_draggable(True)
-        self._obj.pie_widget.widget_holder.clear_forced_widgets()
+        self._obj.pie_widget.order_handler.widget_holder.clear_forced_widgets()
         self._obj.pie_widget.repaint()
         self._obj.pie_settings.show()
         self._obj.pie_settings.resize(self._obj.pie_settings.sizeHint())
@@ -47,7 +47,7 @@ class EditMode:
         self._obj.accept_button.show()
         self._obj.accept_button.move_center(self._obj.pie_widget.center)
         self._obj.settings_button.hide()
-        self._obj.pie_widget.active = None
+        self._obj.pie_widget.active_label = None
 
     def _move_settings_next_to_pie(self):
         """Move settings window so that it lies on right side of pie."""

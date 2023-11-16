@@ -18,7 +18,6 @@ from .pie_label import PieLabel
 from .style_holder import StyleHolder
 from .pie_config import PieConfig
 from .pie_widget_utils import (
-    WidgetHolder,
     CirclePoints,
     OrderHandler,
     PiePainter)
@@ -64,34 +63,39 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
         self._style_holder = style_holder
         self._labels = labels
-        self.edit_mode = edit_mode
-        self.config = config
+        self._config = config
+        self._edit_mode = edit_mode
 
-        self.config.PIE_RADIUS_SCALE.register_callback(self._reset)
-        self.config.ICON_RADIUS_SCALE.register_callback(self._reset)
+        self._config.PIE_RADIUS_SCALE.register_callback(self._reset)
+        self._config.ICON_RADIUS_SCALE.register_callback(self._reset)
         Config.PIE_GLOBAL_SCALE.register_callback(self._reset)
         Config.PIE_ICON_GLOBAL_SCALE.register_callback(self._reset)
 
-        self.active: Optional[PieLabel] = None
+        self.active_label: Optional[PieLabel] = None
         self._last_widget = None
 
         self.order_handler = OrderHandler(
             labels=self._labels,
             style_holder=self._style_holder,
-            config=self.config,
+            config=self._config,
             owner=self)
 
         self.set_draggable(False)
 
-    def _reset(self):
-        """Set widget geometry according to style."""
-        diameter = 2*self._style_holder.pie_style.widget_radius
-        self.setGeometry(0, 0, diameter, diameter)
+    def set_draggable(self, draggable: bool):
+        """Change draggable state of all children."""
+        for widget in self.order_handler.widget_holder:
+            widget.draggable = draggable
 
     @property
     def deadzone(self) -> float:
         """Return the deadzone distance."""
         return self._style_holder.pie_style.deadzone_radius
+
+    @property
+    def is_in_edit_mode(self) -> bool:
+        """Return whether the pie widget is in edit mode."""
+        return self._edit_mode.get()
 
     def paintEvent(self, event: QPaintEvent) -> None:
         """Paint the entire widget using the Painter wrapper."""
@@ -100,7 +104,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
     def dragEnterEvent(self, e: QDragEnterEvent) -> None:
         """Allow dragging the widgets while in edit mode."""
-        if self.edit_mode:
+        if self._edit_mode:
             return e.accept()
         e.ignore()
 
@@ -136,14 +140,14 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             return
 
         angle = circle_points.angle_from_point(e.pos())
-        _a = self.widget_holder.on_angle(angle)
+        _a = self.order_handler.widget_holder.on_angle(angle)
 
         if label not in self.order_handler or not self._labels:
             # Dragged with unknown label
             index = self.order_handler.index(_a.label)
             return self.order_handler.insert(index, label)
 
-        _b = self.widget_holder.on_label(label)
+        _b = self.order_handler.widget_holder.on_label(label)
         if _a == _b:
             # Dragged over the same widget
             return
@@ -158,19 +162,14 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             self.order_handler.remove(self._last_widget.label)
         return super().dragLeaveEvent(e)
 
-    def set_draggable(self, draggable: bool):
-        """Change draggable state of all children."""
-        for widget in self.order_handler.widget_holder:
-            widget.draggable = draggable
-
-    @property
-    def widget_holder(self) -> WidgetHolder:
-        """Return the holder with child widgets."""
-        return self.order_handler.widget_holder
-
     @property
     def _type(self) -> Optional[type]:
         """Return type of values stored in labels. None if no labels."""
         if not self._labels:
             return None
         return type(self._labels[0].value)
+
+    def _reset(self):
+        """Set widget geometry according to style."""
+        diameter = 2*self._style_holder.pie_style.widget_radius
+        self.setGeometry(0, 0, diameter, diameter)
