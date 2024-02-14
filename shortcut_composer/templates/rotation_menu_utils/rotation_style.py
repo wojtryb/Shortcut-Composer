@@ -30,13 +30,26 @@ class RotationStyle:
         return round(100 * self._deadzone_scale_callback() * self._base_size)
 
     @property
+    def inner_zone_span(self) -> int:
+        return round(75 * self._inner_zone_scale_callback() * self._base_size)
+
+    @property
     def inner_zone_radius(self) -> int:
-        free_zone = 75 * self._inner_zone_scale_callback() * self._base_size
-        return round(self.deadzone_radius + free_zone)
+        return round(self.deadzone_radius + self.inner_zone_span)
 
     @property
     def transparent_border(self) -> int:
         return round(15 * self._base_size)
+
+    @property
+    def border_thickness(self) -> int:
+        """Thickness of border of the pie."""
+        return round(2 * self._base_size)
+
+    @property
+    def decorator_thickness(self) -> int:
+        """Thickness of decorators near edges."""
+        return self.inner_zone_span//4
 
     @property
     def widget_radius(self) -> int:
@@ -45,6 +58,22 @@ class RotationStyle:
     @property
     def active_color(self) -> QColor:
         return self._active_color_callback()
+
+    @property
+    def active_color_dark(self):
+        """Color variation of active element."""
+        return QColor(
+            round(self.active_color.red()*0.92),
+            round(self.active_color.green()*0.92),
+            round(self.active_color.blue()*0.92))
+
+    @property
+    def border_color(self):
+        """Color of icon borders."""
+        return QColor(
+            min(round(self.active_color.red()*0.7), 255),
+            min(round(self.active_color.green()*0.7), 255),
+            min(round(self.active_color.blue()*0.7), 255))
 
     @property
     def settings_button_radius(self) -> int:

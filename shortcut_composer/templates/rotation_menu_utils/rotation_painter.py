@@ -62,30 +62,60 @@ class RotationPainter:
             thickness=1)
 
     def _paint_active_angle(self) -> None:
-        thickness = self._style.inner_zone_radius-self._style.deadzone_radius+2
         for angle, progress in self._state.animations_in_progress.items():
-
-            thickness_change = round(
-                (1-progress.value) * self._style.transparent_border)
-
-            color = self._style.active_color
-            color.setAlpha(round(progress.value * 255))
-
-            self._painter.paint_pie(
-                center=self._center,
-                outer_radius=self._style.inner_zone_radius+thickness_change,
+            self._paint_decorated_pie(
                 angle=angle,
                 span=self._style.discrete_pie_span,
-                color=color,
-                thickness=thickness+thickness_change)
+                animation_value=progress.value)
 
         if self._state.selected_zone == Zone.CONTIGUOUS_ZONE:
-            self._painter.paint_pie(
-                center=self._center,
-                outer_radius=self._style.inner_zone_radius,
-                angle=self._state.selected_angle,
+            self._paint_decorated_pie(
+                angle=angle,
                 span=10,
-                color=self._style.active_color,
-                thickness=thickness)
+                animation_value=1.0)
 
+    def _paint_decorated_pie(
+        self,
+        angle: int,
+        span: int,
+        animation_value: float,
+    ) -> None:
+        thickness = self._style.inner_zone_radius-self._style.deadzone_radius+2
         # +2 allows the indicator to cover the deadzone circle
+
+        thickness_change = round(
+            (1-animation_value) * self._style.transparent_border)
+        opacity = round(animation_value * 255)
+
+        self._painter.paint_pie(
+            center=self._center,
+            outer_radius=self._style.inner_zone_radius+thickness_change,
+            angle=angle,
+            span=span,
+            color=self._set_opacity(
+                self._style.active_color, opacity),
+            thickness=thickness+thickness_change)
+
+        self._painter.paint_pie(
+            center=self._center,
+            outer_radius=self._style.inner_zone_radius+thickness_change,
+            angle=angle,
+            span=span,
+            color=self._set_opacity(
+                self._style.active_color_dark, opacity),
+            thickness=self._style.decorator_thickness)
+
+        self._painter.paint_pie(
+            center=self._center,
+            outer_radius=self._style.inner_zone_radius+thickness_change,
+            angle=angle,
+            span=span,
+            color=self._set_opacity(
+                self._style.border_color, opacity),
+            thickness=self._style.border_thickness)
+
+    @staticmethod
+    def _set_opacity(color: QColor, opacity: int):
+        returned_color = color
+        returned_color.setAlpha(opacity)
+        return returned_color
