@@ -42,13 +42,13 @@ class RotationPainter:
 
         self._painter.paint_wheel(
             center=self._center,
-            outer_radius=self._deadzone_radius,
+            outer_radius=self._deadzone_radius+2,
             color=QColor(128, 255, 128, 120),
             thickness=1)
 
         self._painter.paint_wheel(
             center=self._center,
-            outer_radius=self._deadzone_radius,
+            outer_radius=self._deadzone_radius+1,
             color=QColor(255, 128, 128, 120),
             thickness=1)
 
@@ -63,7 +63,7 @@ class RotationPainter:
 
         self._painter.paint_wheel(
             center=self._center,
-            outer_radius=self._widget_radius,
+            outer_radius=self._widget_radius-1,
             color=QColor(255, 128, 128, 120),
             thickness=1)
 
