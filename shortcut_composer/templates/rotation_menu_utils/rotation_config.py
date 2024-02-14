@@ -58,3 +58,6 @@ class RotationConfig(FieldGroup, Generic[T]):
         free_zone = self.INNER_ZONE_SCALE.read() * 75 * self._base_size
         return round(self.deadzone_radius + free_zone)
 
+    @property
+    def settings_button_radius(self) -> int:
+        return round(25 * self._base_size)
