@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Union
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QFormLayout,
@@ -26,7 +25,7 @@ class ConfigFormWidget(QWidget):
     save values to config of all stored ones.
     """
 
-    def __init__(self, elements: List[Union[ConfigBasedWidget, str]]) -> None:
+    def __init__(self, elements: list[ConfigBasedWidget | str]) -> None:
         super().__init__()
         self._layout = QFormLayout()
         self._layout.RowWrapPolicy(QFormLayout.DontWrapRows)
@@ -36,7 +35,7 @@ class ConfigFormWidget(QWidget):
             Qt.AlignHCenter | Qt.AlignTop)  # type: ignore
         self.setLayout(self._layout)
 
-        self.widgets: List[ConfigBasedWidget] = []
+        self.widgets: list[ConfigBasedWidget] = []
         for element in elements:
             if isinstance(element, str):
                 self.add_title(element)

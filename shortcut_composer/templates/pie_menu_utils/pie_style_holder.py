@@ -3,6 +3,8 @@
 
 import math
 
+from PyQt5.QtGui import QColor
+
 from api_krita import Krita
 from composer_utils import Config
 from composer_utils.label import LabelWidgetStyle
@@ -32,18 +34,18 @@ class PieStyleHolder:
             settings_button_radius_callback=self._settings_button_radius,
             accept_button_radius_callback=self._accept_button_radius)
 
-    def _pie_radius(self):
+    def _pie_radius(self) -> int:
         return round(
             165 * self._base_size
             * self._pie_config.PIE_RADIUS_SCALE.read()
             * Config.PIE_GLOBAL_SCALE.read())
 
-    def _unscaled_icon_radius(self):
+    def _unscaled_icon_radius(self) -> int:
         return round(
             50 * self._base_size
             * Config.PIE_ICON_GLOBAL_SCALE.read())
 
-    def _icon_radius(self):
+    def _icon_radius(self) -> int:
         elements = self._pie_config.ORDER.read()
         if not elements:
             max_radius = 1
@@ -53,29 +55,29 @@ class PieStyleHolder:
 
         return min(self._unscaled_icon_radius(), max_radius)
 
-    def _border_thickness(self):
+    def _border_thickness(self) -> int:
         return round(self._unscaled_icon_radius()*0.05)
 
-    def _deadzone_radius(self):
+    def _deadzone_radius(self) -> float:
         elements = self._pie_config.ORDER.read()
         if not elements:
             return float("inf")
         return self.pie_style.accept_button_radius
 
-    def _active_color(self):
+    def _active_color(self) -> QColor:
         if self._pie_config.OVERRIDE_DEFAULT_THEME.read():
             return self._pie_config.ACTIVE_COLOR.read()
         return Config.default_active_color
 
-    def _background_color(self):
+    def _background_color(self) -> QColor:
         if self._pie_config.OVERRIDE_DEFAULT_THEME.read():
             return self._pie_config.BACKGROUND_COLOR.read()
         else:
             return Config.default_background_color
 
-    def _accept_button_radius(self):
+    def _accept_button_radius(self) -> int:
         return round(
             40 * self._base_size * Config.PIE_DEADZONE_GLOBAL_SCALE.read())
 
-    def _settings_button_radius(self):
+    def _settings_button_radius(self) -> int:
         return round(30 * self._base_size)

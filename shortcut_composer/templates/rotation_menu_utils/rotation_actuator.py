@@ -32,7 +32,7 @@ class RotationActuator:
         self._controller = controller
         self._config = config
 
-        def update_strategy():
+        def update_strategy() -> None:
             self._strategy = strategy_field.read()
         self._strategy: RotationDeadzoneStrategy
         strategy_field.register_callback(update_strategy)
@@ -40,7 +40,7 @@ class RotationActuator:
 
         self._timer = Timer(self._update, Config.get_sleep_time())
 
-    def start(self):
+    def start(self) -> None:
         """Start loop of contiguous value setting."""
         self._center_global = QCursor().pos()
         self._starting_value = self._reverse_modifier(
@@ -67,12 +67,12 @@ class RotationActuator:
         modified = self._modifier(value)
         self._controller.set_value(modified)
 
-    def _modifier(self, value: int):
+    def _modifier(self, value: int) -> int:
         """Transforms angle to value considering sign and offset."""
         sign = -1 if self._config.IS_COUNTERCLOCKWISE.read() else 1
         return sign*(value - self._config.OFFSET.read())
 
-    def _reverse_modifier(self, value: int):
+    def _reverse_modifier(self, value: int) -> int:
         """Transforms value to angle."""
         sign = -1 if self._config.IS_COUNTERCLOCKWISE.read() else 1
         return sign*value + self._config.OFFSET.read()

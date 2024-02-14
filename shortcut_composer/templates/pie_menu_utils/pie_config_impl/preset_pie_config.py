@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Callable, Union, Optional
+from typing import Callable
 from PyQt5.QtGui import QColor
 
 from config_system import Field
@@ -20,12 +20,12 @@ class PresetPieConfig(PieConfig[str]):
     def __init__(
         self,
         name: str,
-        values: Union[Tag, List[str]],
+        values: Tag | list[str],
         pie_radius_scale: float,
         icon_radius_scale: float,
         save_local: bool,
-        background_color: Optional[QColor],
-        active_color: Optional[QColor],
+        background_color: QColor | None,
+        active_color: QColor | None,
         pie_opacity: int,
         deadzone_strategy: PieDeadzoneStrategy
     ) -> None:
@@ -58,13 +58,13 @@ class PresetPieConfig(PieConfig[str]):
         """Return whether user can add and remove items from the pie."""
         return not self.TAG_MODE.read()
 
-    def values(self) -> List[str]:
+    def values(self) -> list[str]:
         """Return all presets based on mode and stored order."""
         if not self.TAG_MODE.read():
             return self.ORDER.read()
         return Tag(self.TAG_NAME.read())
 
-    def set_values(self, values: List[str]) -> None:
+    def set_values(self, values: list[str]) -> None:
         """When in tag mode, remember the tag order. Then write normally."""
         if self.TAG_MODE.read():
             group = "ShortcutComposer: Tag order"

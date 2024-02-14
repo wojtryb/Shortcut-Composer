@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from krita import Krita as Api, Extension, qApp
-from typing import Callable, Protocol, Any, Dict, Optional
+from typing import Callable, Protocol, Any
 
 from PyQt5.QtWidgets import (
     QMainWindow,
@@ -36,7 +36,7 @@ class KritaInstance:
         """Return wrapper of krita `View`."""
         return View(self.instance.activeWindow().activeView())
 
-    def get_active_document(self) -> Optional[Document]:
+    def get_active_document(self) -> Document | None:
         """Return wrapper of krita `Document`."""
         document = self.instance.activeDocument()
         if document is None:
@@ -60,7 +60,7 @@ class KritaInstance:
         """Return shortcut of krita action called `action_name`."""
         return self.instance.action(action_name).shortcut()
 
-    def get_presets(self) -> Dict[str, Any]:
+    def get_presets(self) -> dict[str, Any]:
         """Return a list of unwrapped preset objects"""
         return self.instance.resources('preset')
 
@@ -79,7 +79,7 @@ class KritaInstance:
         group: str,
         name: str,
         default: str = "Not stored"
-    ) -> Optional[str]:
+    ) -> str | None:
         """
         Read a setting from kritarc file.
 
@@ -123,7 +123,7 @@ class KritaInstance:
         Method is delayed with a timer to allow running it on plugin
         initialization phase.
         """
-        def connect_callback():
+        def connect_callback() -> None:
             self.main_window = self.instance.activeWindow()
             if self.main_window is not None:
                 self.main_window.themeChanged.connect(callback)

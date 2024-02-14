@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Type
+from typing import Type
 from enum import Enum
 
 from PyQt5.QtWidgets import QVBoxLayout, QDialog
@@ -15,7 +15,7 @@ from .action_values import ActionValues
 class ActionValuesWindow(QDialog):
     """Tab in which user can change action enums and their order."""
 
-    def __init__(self, enum_type: Type[Enum], config: Field[List[Enum]]):
+    def __init__(self, enum_type: Type[Enum], config: Field[list[Enum]]):
         super().__init__()
         self.setWindowFlags(
             self.windowFlags() | Qt.WindowStaysOnTopHint)  # type: ignore

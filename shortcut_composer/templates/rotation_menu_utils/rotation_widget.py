@@ -58,7 +58,7 @@ class RotationWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self.setGeometry(0, 0, self._diameter, self._diameter)
 
     @property
-    def _diameter(self):
+    def _diameter(self) -> int:
         diameter = self._style.widget_radius * 2
         # make sure there is a place for settings button
         return max(diameter, self._style.settings_button_radius*2)

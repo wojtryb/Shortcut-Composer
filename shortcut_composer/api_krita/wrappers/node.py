@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from dataclasses import dataclass
-from typing import List, Protocol
+from typing import Protocol
 from ..enums import BlendingMode
 
 
@@ -25,7 +25,7 @@ class KritaNode(Protocol):
     def setCollapsed(self, value: bool) -> None: ...
     def animated(self) -> bool: ...
     def uniqueId(self) -> str: ...
-    def childNodes(self) -> List['KritaNode']: ...
+    def childNodes(self) -> list['KritaNode']: ...
     def parentNode(self) -> 'KritaNode': ...
 
 
@@ -121,7 +121,7 @@ class Node():
         """Read-only property telling if this node has animation frames."""
         return self.node.animated()
 
-    def get_child_nodes(self) -> List['Node']:
+    def get_child_nodes(self) -> list['Node']:
         """Return a list of wrapped Nodes that are children of this one."""
         return [Node(node) for node in self.node.childNodes()]
 

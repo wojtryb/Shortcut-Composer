@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Union, Optional, Generic, TypeVar
+from typing import Generic, TypeVar
 
 from composer_utils import Config
 from config_system import Field
@@ -64,9 +64,9 @@ class Slider(Generic[T]):
     def __init__(
         self,
         controller: Controller[T],
-        values: Union[List[T], Range],
+        values: list[T] | Range,
         sensitivity_scale: float = 1.0,
-        deadzone: Optional[int] = None,
+        deadzone: int | None = None,
     ) -> None:
         self.controller = controller
         self.values = values
@@ -79,7 +79,7 @@ class Slider(Generic[T]):
 
         self.deadzone = self._read(deadzone, Config.TRACKER_DEADZONE)
 
-    def _read(self, passed: Optional[int], field: Field) -> int:
+    def _read(self, passed: int | None, field: Field) -> int:
         if passed is not None:
             return passed
         return field.read()

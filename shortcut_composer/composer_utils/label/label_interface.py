@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Union, Generic, TypeVar, Protocol
+from typing import Generic, TypeVar, Protocol
 
 from PyQt5.QtGui import QPixmap, QIcon
 
@@ -21,5 +21,5 @@ class LabelInterface(Protocol, Generic[T]):
     """
 
     value: T
-    display_value: Union[QPixmap, QIcon, LabelText, None]
+    display_value: QPixmap | QIcon | LabelText | None
     pretty_name: str

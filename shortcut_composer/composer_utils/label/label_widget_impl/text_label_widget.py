@@ -65,7 +65,7 @@ class TextLabelWidget(LabelWidget[T]):
         return font
 
     @property
-    def _sign_amount_multiplier(self):
+    def _sign_amount_multiplier(self) -> float:
         """Return multiplier (0-1) getting smaller the more signs are there."""
         to_display = self.label.display_value
 

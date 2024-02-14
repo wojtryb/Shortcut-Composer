@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Dict, Union, Iterable, Optional
+from typing import Iterable
 
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 
@@ -57,7 +57,7 @@ class PresetPieSettings(PieSettings):
         policy.setRetainSizeWhenHidden(True)
         preset_scroll_area.setSizePolicy(policy)
 
-        def refresh_draggable():
+        def refresh_draggable() -> None:
             """Mark which pies are currently used in the pie."""
             preset_scroll_area.mark_used_values(self._config.values())
 
@@ -68,7 +68,7 @@ class PresetPieSettings(PieSettings):
 
     def _init_mode_button(self) -> SafeConfirmButton:
         """Create button which switches between tag and manual mode."""
-        def switch_mode():
+        def switch_mode() -> None:
             """Change the is_tag_mode to the opposite state."""
             is_tag_mode = not self.get_tag_mode()
             self.set_tag_mode(is_tag_mode)
@@ -92,7 +92,7 @@ class PresetPieSettings(PieSettings):
 
     def _init_auto_combobox(self) -> GroupComboBox:
         """Create tag mode combobox, which sets tag presets to the pie."""
-        def handle_picked_tag():
+        def handle_picked_tag() -> None:
             """Save used tag in config and report the values changed."""
             auto_combobox.save()
             self._config.refresh_order()
@@ -156,23 +156,23 @@ class PresetPieSettings(PieSettings):
 
 class PresetGroupManager(GroupManager):
 
-    known_labels: Dict[str, Union[PieLabel, None]] = {}
+    known_labels: dict[str, PieLabel | None] = {}
 
     def __init__(self) -> None:
         self._controller = PresetController()
 
-    def fetch_groups(self) -> List[str]:
+    def fetch_groups(self) -> list[str]:
         with Database() as database:
             return database.get_brush_tags()
 
-    def get_values(self, group: str) -> List[str]:
+    def get_values(self, group: str) -> list[str]:
         if group == "All":
             return list(Krita.get_presets().keys())
         return Tag(group)
 
-    def create_labels(self, values: Iterable[str]) -> List[PieLabel[str]]:
+    def create_labels(self, values: Iterable[str]) -> list[PieLabel[str]]:
         """Create labels from list of preset names."""
-        labels: list[Optional[PieLabel]] = []
+        labels: list[PieLabel | None] = []
 
         for preset in values:
             if preset in self.known_labels:

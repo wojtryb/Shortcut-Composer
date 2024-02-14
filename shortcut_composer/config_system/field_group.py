@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import TypeVar, Optional, Callable, Iterator, List
+from typing import TypeVar, Callable, Iterator
 from .field import Field
 
 T = TypeVar('T')
@@ -22,14 +22,14 @@ class FieldGroup:
 
     def __init__(self, name: str) -> None:
         self.name = name
-        self._fields: List[Field] = []
-        self._callbacks: List[Callable[[], None]] = []
+        self._fields: list[Field] = []
+        self._callbacks: list[Callable[[], None]] = []
 
     def field(
         self,
         name: str,
         default: T,
-        parser_type: Optional[type] = None,
+        parser_type: type | None = None,
         local: bool = False,
     ) -> Field[T]:
         """Create and return a new field in the group."""

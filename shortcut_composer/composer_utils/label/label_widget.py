@@ -96,7 +96,7 @@ class LabelWidget(BaseWidget, Generic[T]):
                 thickness=self._active_indicator_thickness)
 
     @property
-    def _active_indicator_thickness(self):
+    def _active_indicator_thickness(self) -> int:
         return self._label_widget_style.border_thickness*2
 
     @property
@@ -115,7 +115,7 @@ class LabelWidget(BaseWidget, Generic[T]):
         self.setCursor(Qt.CrossCursor)
 
     @property
-    def enabled(self):
+    def enabled(self) -> bool:
         """Return whether the label interacts with mouse hover and drag."""
         return self._enabled
 
@@ -130,7 +130,7 @@ class LabelWidget(BaseWidget, Generic[T]):
         self.repaint()
 
     @property
-    def forced(self):
+    def forced(self) -> bool:
         """Return whether the widget has forced active color."""
         return self._forced
 
@@ -173,6 +173,6 @@ class LabelWidget(BaseWidget, Generic[T]):
         self.repaint()
 
     @property
-    def icon_radius(self):
+    def icon_radius(self) -> int:
         """Return icon radius based flag passed on initialization."""
         return self._label_widget_style.icon_radius

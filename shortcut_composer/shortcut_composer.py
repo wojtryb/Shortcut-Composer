@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List
 from dataclasses import dataclass
 from PyQt5.QtWidgets import QWidgetAction
 
@@ -29,7 +28,7 @@ class GarbageProtector:
     action_manager: ActionManager
     reload_action: QWidgetAction
 
-    def is_alive(self):
+    def is_alive(self) -> bool:
         """Return False if the action was deleted by C++"""
         try:
             self.settings_action.isEnabled()
@@ -44,7 +43,7 @@ class ShortcutComposer(Extension):
     def __init__(self, parent) -> None:
         """Add callback to reload actions on theme change."""
         super().__init__(parent)
-        self._protectors: List[GarbageProtector] = []
+        self._protectors: list[GarbageProtector] = []
         Krita.add_theme_change_callback(self._reload_composer)
 
     def setup(self) -> None: """Obligatory abstract method override."""

@@ -9,7 +9,7 @@ from ..controller_base import NumericController
 class CanvasBasedController:
     """Family of controllers which operate on values from active document."""
 
-    def refresh(self):
+    def refresh(self) -> None:
         """Refresh currently stored canvas."""
         self.canvas = Krita.get_active_canvas()
 

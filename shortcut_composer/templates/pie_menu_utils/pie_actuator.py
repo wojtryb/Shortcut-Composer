@@ -1,8 +1,6 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Optional, List
-
 from config_system import Field
 from core_components import Controller
 from data_components import PieDeadzoneStrategy
@@ -29,19 +27,19 @@ class PieActuator:
         self,
         controller: Controller,
         strategy_field: Field,
-        labels: List[PieLabel]
+        labels: list[PieLabel]
     ) -> None:
         self._controller = controller
-        self._last_label: Optional[PieLabel] = None
+        self._last_label: PieLabel | None = None
         self._labels = labels
 
-        def update_strategy():
+        def update_strategy() -> None:
             self._current_strategy = strategy_field.read()
         self._current_strategy: PieDeadzoneStrategy
         strategy_field.register_callback(update_strategy)
         update_strategy()
 
-    def activate(self, active: Optional[PieLabel]) -> None:
+    def activate(self, active: PieLabel | None) -> None:
         """Activate the correct label"""
         if active is not None:
             # Out of deadzone, label picked
@@ -54,7 +52,7 @@ class PieActuator:
             self._controller.set_value(self.selected_label.value)
 
     @property
-    def selected_label(self) -> Optional[PieLabel]:
+    def selected_label(self) -> PieLabel | None:
         """Return label which should be picked on deadzone."""
         if self._current_strategy == PieDeadzoneStrategy.DO_NOTHING:
             return None

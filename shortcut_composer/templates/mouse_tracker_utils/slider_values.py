@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Any, List, Generic, TypeVar
+from typing import Any, Generic, TypeVar
 from abc import ABC, abstractmethod
 
 from data_components import Range
@@ -77,7 +77,7 @@ class ListSliderValues(SliderValues, Generic[Controlled]):
     Controlled values may change over time.
     """
 
-    def __init__(self, values: List[Controlled]) -> None:
+    def __init__(self, values: list[Controlled]) -> None:
         self._values = values
         self.min = Interpreted(-0.49)
 
@@ -112,7 +112,7 @@ class ListSliderValues(SliderValues, Generic[Controlled]):
         if not isinstance(value, (int, float)):
             return self._values[0]
 
-        sorted_values: List[Any] = sorted(self._values)
+        sorted_values: list[Any] = sorted(self._values)
         for list_element in sorted_values:
             if list_element >= value:
                 return list_element

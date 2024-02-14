@@ -1,8 +1,6 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Optional
-
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QVBoxLayout,
@@ -104,7 +102,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
                 max_value=100),
         ])
 
-        def update_theme_state():
+        def update_theme_state() -> None:
             """Hide color buttons when not taken into consideration."""
             enable_state = theme_checkbox.widget.isChecked()
             bg_button.widget.setVisible(enable_state)
@@ -149,7 +147,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
         """React to change in pie size."""
         self.setMinimumHeight(self._style_holder.pie_style.widget_radius*2)
 
-    def _reset_config_to_default(self):
+    def _reset_config_to_default(self) -> None:
         """
         Reset widgets from preferences layout to default values.
 
@@ -165,7 +163,7 @@ class LocationTab(QWidget):
     def __init__(
         self,
         config: PieConfig,
-        parent: Optional[QWidget] = None
+        parent: QWidget | None = None
     ) -> None:
         """Tab that allows to switch location in which icon order is saved."""
         super().__init__(parent)
@@ -208,7 +206,7 @@ class LocationTab(QWidget):
 
     def _init_location_button(self) -> SafeConfirmButton:
         """Return button that switches between save locations."""
-        def switch_mode():
+        def switch_mode() -> None:
             values = self._config.ORDER.read()
 
             self.is_local_mode = not self.is_local_mode
@@ -301,7 +299,7 @@ class LocationTab(QWidget):
                 "remain useful regardless of which document is edited.")
         self._config.SAVE_LOCAL.write(value)
 
-    def _update_button_activity(self):
+    def _update_button_activity(self) -> None:
         """Disable location action buttons, when they won't do anything."""
         if not self._config.is_order_default():
             self._set_new_default_button.setEnabled(True)

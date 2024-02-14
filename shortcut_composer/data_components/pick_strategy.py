@@ -2,18 +2,17 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from enum import Enum
-from typing import List
 from functools import partial
 
 from api_krita.wrappers import Document, Node
 
 
-def _pick_all(document: Document) -> List[Node]:
+def _pick_all(document: Document) -> list[Node]:
     """Pick all nodes from document as list without group hierarchy"""
     return document.get_all_nodes(include_collapsed=False)
 
 
-def _pick_current_visibility(document: Document) -> List[Node]:
+def _pick_current_visibility(document: Document) -> list[Node]:
     """Pick nodes from document that has the same visibility as active one."""
     nodes = document.get_all_nodes(include_collapsed=False)
     current_visibility = document.active_node.visible
@@ -21,7 +20,7 @@ def _pick_current_visibility(document: Document) -> List[Node]:
             if node.visible == current_visibility]
 
 
-def _pick_node_attribute(document: Document, attribute: str) -> List[Node]:
+def _pick_node_attribute(document: Document, attribute: str) -> list[Node]:
     """Pick nodes from document based on a single attribute."""
     nodes = document.get_all_nodes(include_collapsed=False)
     return [node for node in nodes

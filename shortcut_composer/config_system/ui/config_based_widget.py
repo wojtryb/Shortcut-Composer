@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from abc import ABC, abstractmethod
-from typing import Final, Optional, TypeVar, Generic
+from typing import Final, TypeVar, Generic
 from PyQt5.QtWidgets import QWidget
 
 from ..field import Field
@@ -25,8 +25,8 @@ class ConfigBasedWidget(ABC, Generic[T]):
     def __init__(
         self,
         config_field: Field,
-        parent: Optional[QWidget] = None,
-        pretty_name: Optional[str] = None,
+        parent: QWidget | None = None,
+        pretty_name: str | None = None,
     ) -> None:
         self._parent = parent
         self.config_field: Final[Field] = config_field
@@ -39,7 +39,7 @@ class ConfigBasedWidget(ABC, Generic[T]):
         ...
 
     @abstractmethod
-    def set(self, value: T):
+    def set(self, value: T) -> None:
         """Replace the value of the widget with passed one."""
         ...
 
@@ -51,7 +51,7 @@ class ConfigBasedWidget(ABC, Generic[T]):
         """Save the current value of the widget to kritarc."""
         self.config_field.write(self.read())
 
-    def _init_pretty_name(self, pretty_name: Optional[str]) -> str:
+    def _init_pretty_name(self, pretty_name: str | None) -> str:
         """Pick the name of the widget. Config field name if not given."""
         if pretty_name is not None:
             return pretty_name

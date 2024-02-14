@@ -1,8 +1,6 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List
-
 from config_system import Field
 from composer_utils.label import LabelWidgetStyle
 from shortcut_composer.composer_utils.label.complex_widgets import ScrollArea
@@ -17,7 +15,7 @@ class GroupScrollArea(ScrollArea):
         unscaled_label_style: LabelWidgetStyle,
         columns: int,
         field: Field,
-        additional_fields: List[str] = [],
+        additional_fields: list[str] = [],
         parent=None
     ) -> None:
         super().__init__(unscaled_label_style, columns, parent)

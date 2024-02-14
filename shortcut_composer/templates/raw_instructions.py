@@ -1,8 +1,6 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Optional
-
 from composer_utils import Config
 from core_components import InstructionHolder, Instruction
 from input_adapter import ComplexActionInterface
@@ -42,8 +40,8 @@ class RawInstructions(ComplexActionInterface):
     def __init__(
         self,
         name: str,
-        instructions: Optional[List[Instruction]] = None,
-        short_vs_long_press_time: Optional[float] = None
+        instructions: list[Instruction] | None = None,
+        short_vs_long_press_time: float | None = None
     ) -> None:
         self.name = name
         self.short_vs_long_press_time = _read_time(short_vs_long_press_time)
@@ -67,7 +65,7 @@ class RawInstructions(ComplexActionInterface):
         self._instructions.on_every_key_release()
 
 
-def _read_time(short_vs_long_press_time: Optional[float]) -> float:
+def _read_time(short_vs_long_press_time: float | None) -> float:
     """Return the given time, or time red from krita config if not given."""
     if short_vs_long_press_time is None:
         return Config.SHORT_VS_LONG_PRESS_TIME.read()

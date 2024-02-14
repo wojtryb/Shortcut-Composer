@@ -147,5 +147,5 @@ class SettingsDialog(QDialog):
         self.refresh()
         Krita.trigger_action("Reload Shortcut Composer")
 
-    def refresh(self):
+    def refresh(self) -> None:
         self._general_tab.refresh()

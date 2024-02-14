@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import sys
-from typing import Dict, List, Tuple, TypeVar, Optional
+from typing import Tuple, TypeVar
 from enum import Enum, EnumMeta
 T = TypeVar("T", bound=Enum)
 
@@ -10,7 +10,7 @@ T = TypeVar("T", bound=Enum)
 class EnumGroupMeta(EnumMeta):
     """Metaclass for creating enum groups. See EnumGroup documentation."""
 
-    _groups_: Dict[str, 'Group']
+    _groups_: dict[str, 'Group']
     """Maps enum groups to their pretty names."""
 
     def __new__(
@@ -20,11 +20,11 @@ class EnumGroupMeta(EnumMeta):
         attrs
     ) -> 'EnumGroupMeta':
         # Filter out class attributes provided by Python.
-        items: List[Tuple[str, Group]]
+        items: list[Tuple[str, Group]]
         items = [i for i in attrs.items() if not i[0].startswith("__")]
 
         # Add keys (which will become enum members) to correct groups
-        current_group: Optional[Group] = None
+        current_group: Group | None = None
         for key, value in items:
             if isinstance(value, Group):
                 current_group = value
@@ -67,7 +67,7 @@ class EnumGroupMeta(EnumMeta):
         return new_class
 
 
-class Group(List[Enum]):
+class Group(list[Enum]):
     """List of enum members belonging to one Enum."""
 
     def __init__(self, name: str) -> None:

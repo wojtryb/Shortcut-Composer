@@ -26,7 +26,7 @@ class ImageLabelWidget(LabelWidget[T]):
         super().__init__(label, label_widget_style, parent)
         self.ready_image = self._prepare_image()
 
-    def paint(self, painter: Painter):
+    def paint(self, painter: Painter) -> None:
         super().paint(painter)
         painter.paint_pixmap(self.center, self.ready_image)
 

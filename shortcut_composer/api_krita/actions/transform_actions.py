@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Dict, Optional
 from functools import partial, partialmethod
 
 from PyQt5.QtCore import QTimer
@@ -27,7 +26,7 @@ class TransformModeActions:
 
     def __init__(self, window) -> None:
         self._finder = TransformModeFinder()
-        self._actions: Dict[TransformMode, QWidgetAction] = {}
+        self._actions: dict[TransformMode, QWidgetAction] = {}
         self._create_actions(window)
 
     def _create_actions(self, window) -> None:
@@ -84,7 +83,7 @@ class TransformModeFinder:
     """
 
     def __init__(self) -> None:
-        self._mode_buttons: Dict[TransformMode, QToolButton] = {}
+        self._mode_buttons: dict[TransformMode, QToolButton] = {}
         self._transform_options: QWidget
         self._apply_button: QPushButton
 
@@ -111,7 +110,7 @@ class TransformModeFinder:
             self._apply_button.click()
         self._mode_buttons[mode].click()
 
-    def get_active_mode(self) -> Optional[TransformMode]:
+    def get_active_mode(self) -> TransformMode | None:
         for mode, button in self._mode_buttons.items():
             if button.isChecked():
                 return mode

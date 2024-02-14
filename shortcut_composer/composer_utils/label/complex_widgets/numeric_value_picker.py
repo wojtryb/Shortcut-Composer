@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import (
 
 from typing import Callable, TypeVar, Generic
 
-from composer_utils.label import LabelWidgetStyle
+from composer_utils.label import LabelWidgetStyle, LabelWidget
 from composer_utils.label.label_widget_impl import dispatch_label_widget
 from ..label_interface import LabelInterface
 
@@ -50,7 +50,7 @@ class NumericValuePicker(QWidget, Generic[T]):
 
         self.setLayout(self._layout)
 
-    def _init_layout(self):
+    def _init_layout(self) -> QHBoxLayout:
         right_side = QVBoxLayout()
         right_side.setAlignment(Qt.AlignTop)
         right_side.addWidget(QLabel("\nSet icon value:"))
@@ -63,7 +63,7 @@ class NumericValuePicker(QWidget, Generic[T]):
 
         return layout
 
-    def _create_icon(self, value: int):
+    def _create_icon(self, value: int) -> LabelWidget[T]:
         label = self._create_label_from_integer(value)
 
         icon = dispatch_label_widget(label)(
@@ -75,8 +75,8 @@ class NumericValuePicker(QWidget, Generic[T]):
 
         return icon
 
-    def _init_spin_box(self):
-        def update_icon(a0: int):
+    def _init_spin_box(self) -> QSpinBox:
+        def update_icon(a0: int) -> None:
             self._icon = self._create_icon(a0)
             self._icon_holder.setWidget(self._icon)
 
@@ -90,7 +90,7 @@ class NumericValuePicker(QWidget, Generic[T]):
         spin_box.valueChanged.connect(update_icon)
         return spin_box
 
-    def _init_icon_holder(self):
+    def _init_icon_holder(self) -> QScrollArea:
         icon_holder = QScrollArea()
         icon_holder.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         icon_holder.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)

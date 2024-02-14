@@ -10,7 +10,7 @@ from ..controller_base import Controller, NumericController
 class NodeBasedController:
     """Family of controllers which operate on values from active node."""
 
-    def refresh(self):
+    def refresh(self) -> None:
         """Refresh currently stored active node."""
         active_document = Krita.get_active_document()
         if active_document is None:

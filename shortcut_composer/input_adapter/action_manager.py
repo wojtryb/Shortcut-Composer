@@ -7,7 +7,6 @@ key_release events.
 """
 
 from dataclasses import dataclass
-from typing import Dict
 
 from PyQt5.QtWidgets import QWidgetAction
 
@@ -54,7 +53,7 @@ class ActionManager:
     def __init__(self, window) -> None:
         self._window = window
         self._event_filter = ReleaseKeyEventFilter()
-        self._stored_actions: Dict[str, ActionContainer] = {}
+        self._stored_actions: dict[str, ActionContainer] = {}
 
     def bind_action(self, action: ComplexActionInterface) -> None:
         """

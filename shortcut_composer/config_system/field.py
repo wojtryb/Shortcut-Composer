@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import TypeVar, Generic, Optional, Callable
+from typing import TypeVar, Generic, Callable
 
 T = TypeVar('T')
 
@@ -41,7 +41,7 @@ class Field(Generic[T]):
         config_group: str,
         name: str,
         default: T,
-        parser_type: Optional[type] = None,
+        parser_type: type | None = None,
         local: bool = False,
     ) -> 'Field[T]':
         from .field_base_impl import ListField, NonListField

@@ -13,10 +13,10 @@ from .rotation_widget_state import Zone, WidgetState
 class RotationPainter:
     """Uses provided painter and parts of widget information to paint it."""
 
-    def __init__(self, style: RotationStyle):
+    def __init__(self, style: RotationStyle) -> None:
         self._style = style
 
-    def paint(self, painter: Painter, state: WidgetState):
+    def paint(self, painter: Painter, state: WidgetState) -> None:
         """Paint the widget which created the passed painter."""
         self._painter = painter
         self._state = state

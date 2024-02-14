@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 
-from typing import Generic, TypeVar, Optional
+from typing import Generic, TypeVar
 
 from PyQt5.QtGui import QColor
 
@@ -23,7 +23,7 @@ class RotationConfig(FieldGroup, Generic[T]):
         inner_zone_scale: float,
         divisions: int,
         inverse_zones: bool,
-        active_color: Optional[QColor],
+        active_color: QColor | None,
         is_counterclockwise: bool,
         deadzone_strategy: RotationDeadzoneStrategy,
         offset: int,

@@ -72,7 +72,7 @@ class RotationStyle:
         return self._active_color_callback()
 
     @property
-    def active_color_dark(self):
+    def active_color_dark(self) -> QColor:
         """Color variation of selection pie decorator."""
         return QColor(
             round(self.active_color.red()*0.92),
@@ -80,7 +80,7 @@ class RotationStyle:
             round(self.active_color.blue()*0.92))
 
     @property
-    def border_color(self):
+    def border_color(self) -> QColor:
         """Color of selection pie border."""
         return QColor(
             min(round(self.active_color.red()*0.7), 255),

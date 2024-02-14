@@ -1,8 +1,6 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List
-
 from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QColor
 
@@ -14,10 +12,10 @@ from ..pie_label import PieLabel
 class PiePainter:
     """Uses provided painter and parts of widget information to paint it."""
 
-    def __init__(self, style: PieStyle):
+    def __init__(self, style: PieStyle) -> None:
         self._style = style
 
-    def paint(self, painter: Painter, labels: List[PieLabel]):
+    def paint(self, painter: Painter, labels: list[PieLabel]) -> None:
         """Paint the widget which created the passed painter."""
         self._painter = painter
         self._labels = labels

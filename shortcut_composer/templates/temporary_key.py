@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, TypeVar, Generic, Optional
+from typing import TypeVar, Generic
 
 from core_components import Controller, Instruction
 from .raw_instructions import RawInstructions
@@ -61,9 +61,9 @@ class TemporaryKey(RawInstructions, Generic[T]):
         name: str,
         controller: Controller[T],
         high_value: T,
-        low_value: Optional[T] = None,
-        instructions: Optional[List[Instruction]] = None,
-        short_vs_long_press_time: Optional[float] = None
+        low_value: T | None = None,
+        instructions: list[Instruction] | None = None,
+        short_vs_long_press_time: float | None = None
     ) -> None:
         super().__init__(name, instructions, short_vs_long_press_time)
         self._controller = controller
@@ -102,7 +102,7 @@ class TemporaryKey(RawInstructions, Generic[T]):
         super().on_long_key_release()
         self._set_low()
 
-    def _read_default_value(self, value: Optional[T]) -> T:
+    def _read_default_value(self, value: T | None) -> T:
         """Read value from controller if it was not given."""
         if (default := self._controller.DEFAULT_VALUE) is None:
             raise ValueError(

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from enum import Enum
-from typing import List, Final, Optional, TypeVar, Generic, Protocol, Type
+from typing import Final, TypeVar, Generic, Protocol, Type
 from PyQt5.QtWidgets import (
     QWidget,
     QDoubleSpinBox,
@@ -39,8 +39,8 @@ class SpinBox(ConfigBasedWidget[F]):
     def __init__(
         self,
         config_field: Field[F],
-        parent: Optional[QWidget] = None,
-        pretty_name: Optional[str] = None,
+        parent: QWidget | None = None,
+        pretty_name: str | None = None,
         step: F = 1,
         max_value: F = 100,
     ) -> None:
@@ -78,9 +78,9 @@ class StringComboBox(ConfigBasedWidget[str]):
     def __init__(
         self,
         config_field: Field[str],
-        parent: Optional[QWidget] = None,
-        pretty_name: Optional[str] = None,
-        allowed_values: List[str] = [],
+        parent: QWidget | None = None,
+        pretty_name: str | None = None,
+        allowed_values: list[str] = [],
     ) -> None:
         super().__init__(config_field, parent, pretty_name)
         self._allowed_values = allowed_values
@@ -120,8 +120,8 @@ class EnumComboBox(ConfigBasedWidget[E]):
         self,
         config_field: Field[E],
         enum_type: Type[E],
-        parent: Optional[QWidget] = None,
-        pretty_name: Optional[str] = None,
+        parent: QWidget | None = None,
+        pretty_name: str | None = None,
     ) -> None:
         super().__init__(config_field, parent, pretty_name)
         self._enum_type = enum_type
@@ -160,8 +160,8 @@ class ColorButton(ConfigBasedWidget[QColor]):
     def __init__(
         self,
         config_field: Field[QColor],
-        parent: Optional[QWidget] = None,
-        pretty_name: Optional[str] = None,
+        parent: QWidget | None = None,
+        pretty_name: str | None = None,
     ) -> None:
         super().__init__(config_field, parent, pretty_name)
         self._button = self._init_button()
@@ -201,8 +201,8 @@ class Checkbox(ConfigBasedWidget[bool]):
     def __init__(
         self,
         config_field: Field[bool],
-        parent: Optional[QWidget] = None,
-        pretty_name: Optional[str] = None,
+        parent: QWidget | None = None,
+        pretty_name: str | None = None,
     ) -> None:
         super().__init__(config_field, parent, pretty_name)
         self._checkbox = QCheckBox()

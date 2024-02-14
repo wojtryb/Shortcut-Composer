@@ -26,17 +26,17 @@ class WidgetState:
     selected_angle: int = 0
     selected_zone: Zone = Zone.DEADZONE
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.animations_in_progress = defaultdict(lambda: AnimationProgress())
         """State of animations for each discrete pie."""
 
-    def reset(self):
+    def reset(self) -> None:
         """Reset the state to starting value."""
         self.selected_angle = 0
         self.selected_zone = Zone.DEADZONE
         self.animations_in_progress.clear()
 
-    def tick_animations(self):
+    def tick_animations(self) -> None:
         """Update animations of discrete pies."""
         current_animation = self.animations_in_progress[self.selected_angle]
         if self.selected_zone == Zone.DISCRETE_ZONE:

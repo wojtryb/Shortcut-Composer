@@ -14,11 +14,11 @@ class FieldWithEditableDefault(Field, Generic[T, F]):
         obj.__init__(*args, **kwargs)
         return obj
 
-    def __init__(self, field: F, field_with_default: Field[T]):
+    def __init__(self, field: F, field_with_default: Field[T]) -> None:
         self.field = field
         self._default_field = field_with_default
 
-        def handle_change_of_default():
+        def handle_change_of_default() -> None:
             self.field.default = self._default_field.read()
         self._default_field.register_callback(handle_change_of_default)
         handle_change_of_default()

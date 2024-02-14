@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, TypeVar, Generic, Optional
+from typing import TypeVar, Generic
 from functools import cached_property
 
 from PyQt5.QtCore import QPoint
@@ -77,16 +77,16 @@ class PieMenu(RawInstructions, Generic[T]):
         self, *,
         name: str,
         controller: Controller[T],
-        values: List[T],
-        instructions: Optional[List[Instruction]] = None,
+        values: list[T],
+        instructions: list[Instruction] | None = None,
         pie_radius_scale: float = 1.0,
         icon_radius_scale: float = 1.0,
-        background_color: Optional[QColor] = None,
-        active_color: Optional[QColor] = None,
+        background_color: QColor | None = None,
+        active_color: QColor | None = None,
         pie_opacity: int = 75,
         save_local: bool = False,
         deadzone_strategy=PieDeadzoneStrategy.DO_NOTHING,
-        short_vs_long_press_time: Optional[float] = None
+        short_vs_long_press_time: float | None = None
     ) -> None:
         super().__init__(name, instructions, short_vs_long_press_time)
         self._controller = controller
@@ -103,7 +103,7 @@ class PieMenu(RawInstructions, Generic[T]):
             deadzone_strategy=deadzone_strategy)
         self._config.ORDER.register_callback(self._reset_labels)
 
-        self._labels: List[PieLabel] = []
+        self._labels: list[PieLabel] = []
         self._edit_mode = PieEditMode(self)
         self._style_holder = PieStyleHolder(pie_config=self._config)
         self._actuator = PieActuator(
@@ -134,7 +134,7 @@ class PieMenu(RawInstructions, Generic[T]):
         return PieManager(pie_widget=self.pie_widget)
 
     @cached_property
-    def settings_button(self):
+    def settings_button(self) -> RoundButton:
         """Create button with which user can enter the edit mode."""
         pie_style = self._style_holder.pie_style
 
@@ -149,7 +149,7 @@ class PieMenu(RawInstructions, Generic[T]):
         return settings_button
 
     @cached_property
-    def accept_button(self):
+    def accept_button(self) -> RoundButton:
         """Create button displayed in edit mode, for hiding the pie."""
         pie_style = self._style_holder.pie_style
 

@@ -3,7 +3,7 @@
 
 from krita import Krita as Api
 import os.path
-from typing import List, Any
+from typing import Any
 
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 
@@ -27,7 +27,7 @@ class Database:
         path = os.path.join(path, "resourcecache.sqlite")
         cls.database.setDatabaseName(path)
 
-    def _single_column_query(self, sql_query: str, value: str) -> List[Any]:
+    def _single_column_query(self, sql_query: str, value: str) -> list[Any]:
         """Use SQL query to get single column in a form of a list."""
         if not self.database.open():
             return []
@@ -43,7 +43,7 @@ class Database:
         query_handler.finish()
         return return_list
 
-    def get_preset_names_from_tag(self, tag_name: str) -> List[str]:
+    def get_preset_names_from_tag(self, tag_name: str) -> list[str]:
         """Return list of all preset names that belong to given tag."""
         tag_name = tag_name.replace("\"", "\"\"")
         sql_query = f'''
@@ -59,7 +59,7 @@ class Database:
         '''
         return self._single_column_query(sql_query, "preset")
 
-    def get_brush_tags(self) -> List[str]:
+    def get_brush_tags(self) -> list[str]:
         "Return list of all tag names."
         sql_query = '''
             SELECT DISTINCT t.name AS tag

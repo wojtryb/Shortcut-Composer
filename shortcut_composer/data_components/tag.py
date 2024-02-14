@@ -1,12 +1,11 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List
 from api_krita.wrappers import Database
 from config_system import Field
 
 
-class Tag(List[str]):
+class Tag(list[str]):
     """List representing names of presets in a tag of given name."""
 
     def __init__(self, tag_name: str) -> None:
@@ -18,7 +17,7 @@ class Tag(List[str]):
         self.clear()
         self.extend(self._read_presets())
 
-    def _read_presets(self) -> List[str]:
+    def _read_presets(self) -> list[str]:
         """
         Read the brush presets from the database using tag name.
 

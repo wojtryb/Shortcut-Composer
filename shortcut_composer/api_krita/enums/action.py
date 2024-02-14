@@ -553,7 +553,7 @@ class Action(EnumGroup):
     CUT_COLUMNS = "cut_columns_to_clipboard"
     PASTE_COLUMNS = "paste_columns_from_clipboard"
 
-    def activate(self):
+    def activate(self) -> None:
         """Activate the action."""
         try:
             Api.instance().action(self.value).trigger()

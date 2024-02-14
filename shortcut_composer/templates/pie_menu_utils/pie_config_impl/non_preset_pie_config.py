@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Callable, Generic, TypeVar, Optional
+from typing import Callable, Generic, TypeVar
 from PyQt5.QtGui import QColor
 
 from data_components import PieDeadzoneStrategy
@@ -16,12 +16,12 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
     def __init__(
         self,
         name: str,
-        values: List[T],
+        values: list[T],
         pie_radius_scale: float,
         icon_radius_scale: float,
         save_local: bool,
-        background_color: Optional[QColor],
-        active_color: Optional[QColor],
+        background_color: QColor | None,
+        active_color: QColor | None,
         pie_opacity: int,
         deadzone_strategy: PieDeadzoneStrategy
     ) -> None:
@@ -41,11 +41,11 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
             default=self._values)
         self.allow_value_edit = True
 
-    def values(self) -> List[T]:
+    def values(self) -> list[T]:
         """Return values defined be the user to display as icons."""
         return self.ORDER.read()
 
-    def set_values(self, values: List[T]) -> None:
+    def set_values(self, values: list[T]) -> None:
         """Change current values to new ones."""
         self.ORDER.write(values)
 

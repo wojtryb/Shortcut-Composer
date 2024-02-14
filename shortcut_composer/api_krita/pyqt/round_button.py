@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Optional, Callable
+from typing import Callable
 
 from PyQt5.QtWidgets import QWidget, QPushButton
 from PyQt5.QtGui import QColor, QIcon
@@ -20,7 +20,7 @@ class RoundButton(QPushButton, BaseWidget):
         active_color_callback: Callable[[], QColor],
         icon: QIcon = QIcon(),
         icon_scale: float = 1,
-        parent: Optional[QWidget] = None,
+        parent: QWidget | None = None,
     ) -> None:
         QPushButton.__init__(self, icon, "", parent)
         self.setCursor(Qt.ArrowCursor)

@@ -64,7 +64,7 @@ class Tool(EnumGroup):
             return PRETTY_NAMES[self]
         return f"{self.name.replace('_', ' ').title()} Tool"
 
-    def activate(self):
+    def activate(self) -> None:
         Api.instance().action(self.value).trigger()
 
     @classmethod

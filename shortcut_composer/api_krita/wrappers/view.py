@@ -3,7 +3,7 @@
 
 from krita import Krita as Api
 from dataclasses import dataclass
-from typing import Protocol, Dict
+from typing import Protocol
 from functools import cached_property
 
 from ..enums import BlendingMode
@@ -39,7 +39,7 @@ class View:
     view: KritaView
 
     @cached_property
-    def preset_map(self) -> Dict[str, _KritaPreset]:
+    def preset_map(self) -> dict[str, _KritaPreset]:
         """Return dictionary mapping preset names to krita preset objects."""
         return Api.instance().resources('preset')
 
@@ -95,11 +95,11 @@ class View:
         self.view.setBrushSize(brush_size)
 
     @property
-    def brush_rotation(self):
+    def brush_rotation(self) -> float:
         """Settable property with brush rotation in deg between 0 and 360."""
         return self.view.brushRotation()
 
     @brush_rotation.setter
-    def brush_rotation(self, rotation: float):
+    def brush_rotation(self, rotation: float) -> None:
         """Set brush rotation with float representing angle in degrees."""
         self.view.setBrushRotation(rotation % 360)

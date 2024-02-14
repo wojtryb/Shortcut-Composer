@@ -1,8 +1,6 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Optional
-
 from PyQt5.QtGui import QCursor
 
 from api_krita.pyqt import Timer
@@ -18,7 +16,7 @@ class PieManager:
     Displays the widget between start() and stop() calls.
     """
 
-    def __init__(self, pie_widget: PieWidget):
+    def __init__(self, pie_widget: PieWidget) -> None:
         self._pie_widget = pie_widget
         self._timer = Timer(self._handle_cursor, Config.get_sleep_time())
         self._animator = LabelAnimator(pie_widget)
@@ -63,7 +61,7 @@ class PieManager:
         holder = self._pie_widget.order_handler.widget_holder
         self._set_active_label(holder.on_angle(angle).label)
 
-    def _set_active_label(self, label: Optional[PieLabel]) -> None:
+    def _set_active_label(self, label: PieLabel | None) -> None:
         """Mark label as active and start animating the change."""
         if self._pie_widget.active_label != label:
             self._pie_widget.active_label = label

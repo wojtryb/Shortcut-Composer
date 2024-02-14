@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Optional, Union, Generic, TypeVar, Type
+from typing import Generic, TypeVar, Type
 from PyQt5.QtGui import QPixmap, QIcon
 from composer_utils.label import LabelText
 
@@ -12,7 +12,7 @@ class Controller(Generic[T]):
     """Component that allows to get and set a specific property of krita."""
 
     TYPE: Type[T]
-    DEFAULT_VALUE: Optional[T] = None
+    DEFAULT_VALUE: T | None = None
 
     def refresh(self) -> None:
         """Refresh stored krita components."""
@@ -26,7 +26,7 @@ class Controller(Generic[T]):
         """Set handled value in krita."""
         ...
 
-    def get_label(self, value: T) -> Union[LabelText, QPixmap, QIcon, None]:
+    def get_label(self, value: T) -> LabelText | QPixmap | QIcon | None:
         """Get value representation that can be displayed in GUI,"""
         ...
 

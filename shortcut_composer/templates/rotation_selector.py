@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Optional
 from functools import cached_property
 
 from PyQt5.QtCore import QPoint
@@ -53,16 +52,16 @@ class RotationSelector(RawInstructions):
         self, *,
         name: str,
         controller: Controller[int],
-        instructions: Optional[List[Instruction]] = None,
+        instructions: list[Instruction] | None = None,
         deadzone_scale: float = 1.0,
         inner_zone_scale: float = 1.0,
         is_counterclockwise: bool = False,
         offset: int = 0,
         inverse_zones: bool = False,
         divisions: int = 24,
-        active_color: Optional[QColor] = None,
+        active_color: QColor | None = None,
         deadzone_strategy=RotationDeadzoneStrategy.KEEP_CHANGE,
-        short_vs_long_press_time: Optional[float] = None,
+        short_vs_long_press_time: float | None = None,
     ) -> None:
         super().__init__(name, instructions, short_vs_long_press_time)
         self._controller = controller
@@ -101,7 +100,7 @@ class RotationSelector(RawInstructions):
             strategy_field=self._config.DEADZONE_STRATEGY)
 
     @cached_property
-    def settings_button(self):
+    def settings_button(self) -> RoundButton:
         """Create button with which user can enter the edit mode."""
 
         settings_button = RoundButton(
@@ -112,7 +111,7 @@ class RotationSelector(RawInstructions):
             icon_scale=1.1,
             parent=self._rotation_widget)
 
-        def on_click():
+        def on_click() -> None:
             self._rotation_widget.hide()
             self.rotation_settings.show()
         settings_button.clicked.connect(on_click)
@@ -120,7 +119,7 @@ class RotationSelector(RawInstructions):
         return settings_button
 
     @cached_property
-    def rotation_settings(self):
+    def rotation_settings(self) -> RotationSettings:
         """Create a settings widget which configures the menu."""
         return RotationSettings(config=self._config)
 

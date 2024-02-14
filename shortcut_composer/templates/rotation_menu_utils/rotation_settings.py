@@ -112,6 +112,6 @@ class RotationSettings(BaseWidget):
         self._config.reset_default()
         self.refresh()
 
-    def refresh(self):
+    def refresh(self) -> None:
         """Update boxes with configured values."""
         self._general_tab.refresh()

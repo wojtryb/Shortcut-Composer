@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Union, Generic, TypeVar, Final, Optional
+from typing import Generic, TypeVar, Final
 from dataclasses import dataclass, field
 
 from PyQt5.QtCore import QPoint
@@ -30,7 +30,7 @@ class PieLabel(LabelInterface, Generic[T]):
     """
 
     value: Final[T]
-    display_value: Union[QPixmap, QIcon, LabelText, None] = None
+    display_value: QPixmap | QIcon | LabelText | None = None
     pretty_name: str = ""
     center: QPoint = field(default_factory=QPoint)
     angle: int = 0
@@ -56,7 +56,7 @@ class PieLabel(LabelInterface, Generic[T]):
 
     @staticmethod
     def from_value(value: T, controller: Controller)\
-            -> 'Optional[PieLabel[T]]':
+            -> 'PieLabel[T] | None':
         """Use provided controller to create a label holding passed value."""
         label = controller.get_label(value)
         if label is None:

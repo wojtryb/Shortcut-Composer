@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import re
-from typing import List, Sequence, Protocol, Callable, TypeVar, Generic
+from typing import Sequence, Protocol, Callable, TypeVar, Generic
 
 from PyQt5.QtCore import Qt, QTimer, pyqtSignal
 from PyQt5.QtWidgets import (
@@ -66,7 +66,7 @@ class ScrollArea(QWidget, Generic[T]):
         self._columns = columns
 
         self._known_children: dict[LabelInterface, LabelWidget[T]] = {}
-        self._children_list: List[LabelWidget[T]] = []
+        self._children_list: list[LabelWidget[T]] = []
 
         self._grid = OffsetGridLayout(self._columns, self)
         self._active_label_display = self._init_active_label_display()

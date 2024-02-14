@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import TypeVar, Optional, Generic, List
+from typing import TypeVar, Generic
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import (
@@ -38,7 +38,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     def __init__(
         self,
         style_holder: PieStyleHolder,
-        labels: List[PieLabel[T]],
+        labels: list[PieLabel[T]],
         edit_mode: PieEditMode,
         config: PieConfig,
         parent=None
@@ -70,7 +70,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         Config.PIE_GLOBAL_SCALE.register_callback(self._reset)
         Config.PIE_ICON_GLOBAL_SCALE.register_callback(self._reset)
 
-        self.active_label: Optional[PieLabel] = None
+        self.active_label: PieLabel | None = None
         self._last_widget = None
 
         self.order_handler = OrderHandler(
@@ -81,7 +81,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
         self.set_draggable(False)
 
-    def set_draggable(self, draggable: bool):
+    def set_draggable(self, draggable: bool) -> None:
         """Change draggable state of all children."""
         for widget in self.order_handler.widget_holder:
             widget.draggable = draggable
@@ -162,13 +162,13 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         return super().dragLeaveEvent(e)
 
     @property
-    def _type(self) -> Optional[type]:
+    def _type(self) -> type | None:
         """Return type of values stored in labels. None if no labels."""
         if not self._labels:
             return None
         return type(self._labels[0].value)
 
-    def _reset(self):
+    def _reset(self) -> None:
         """Set widget geometry according to style."""
         diameter = 2*self._style_holder.pie_style.widget_radius
         self.setGeometry(0, 0, diameter, diameter)

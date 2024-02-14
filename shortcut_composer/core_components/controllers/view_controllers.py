@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Optional
 from PyQt5.QtGui import QPixmap, QImage
 from api_krita import Krita
 from api_krita.enums import BlendingMode
@@ -12,7 +11,7 @@ from ..controller_base import Controller, NumericController
 class ViewBasedController:
     """Family of controllers which operate on values from active view."""
 
-    def refresh(self):
+    def refresh(self) -> None:
         """Refresh currently stored active view."""
         self.view = Krita.get_active_view()
 
@@ -37,7 +36,7 @@ class PresetController(ViewBasedController, Controller[str]):
         """Set a preset of passed name."""
         self.view.brush_preset = value
 
-    def get_label(self, value: str) -> Optional[QPixmap]:
+    def get_label(self, value: str) -> QPixmap | None:
         """Return the preset icon or None, when there preset name unknown."""
         try:
             image: QImage = Krita.get_presets()[value].image()

@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List
+from typing import Iterator
 from functools import partial
 
 from api_krita.pyqt import BaseWidget
@@ -25,7 +25,7 @@ class OrderHandler:
 
     def __init__(
         self,
-        labels: List[PieLabel],
+        labels: list[PieLabel],
         style_holder: PieStyleHolder,
         config: PieConfig,
         owner: BaseWidget,
@@ -42,29 +42,29 @@ class OrderHandler:
         self.widget_holder = WidgetHolder()
         self.reset(notify=False)
 
-    def append(self, label: PieLabel):
+    def append(self, label: PieLabel) -> None:
         """Append the new label to the holder."""
         if (self._config.allow_value_edit):
             self._labels.append(label)
             self.reset()
 
-    def insert(self, index: int, label: PieLabel):
+    def insert(self, index: int, label: PieLabel) -> None:
         """Insert the new label to the holder at given index."""
         if (self._config.allow_value_edit):
             self._labels.insert(index, label)
             self.reset()
 
-    def remove(self, label: PieLabel):
+    def remove(self, label: PieLabel) -> None:
         """Remove the label from the holder."""
         if (label in self._labels and self._config.allow_value_edit):
             self._labels.remove(label)
             self.reset()
 
-    def index(self, label: PieLabel):
+    def index(self, label: PieLabel) -> int:
         """Return the index at which the label is stored."""
         return self._labels.index(label)
 
-    def swap(self, _a: PieLabel, _b: PieLabel):
+    def swap(self, _a: PieLabel, _b: PieLabel) -> None:
         """
         Swap positions of two labels from the holder.
 
@@ -89,7 +89,7 @@ class OrderHandler:
         self._config.set_values([label.value for label in self._labels])
         self._locked = False
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[PieLabel]:
         """Iterate over all labels in the holder."""
         return iter(self._labels)
 
@@ -117,7 +117,7 @@ class OrderHandler:
             child.setParent(None)  # type: ignore
         self.widget_holder.clear()
 
-        children_widgets: List[LabelWidget[PieLabel]] = []
+        children_widgets: list[LabelWidget[PieLabel]] = []
         for label in self._labels:
             children_widgets.append(dispatch_label_widget(label)(
                 label, self._style_holder.label_style, self._owner))

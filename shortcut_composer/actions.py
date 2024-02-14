@@ -10,7 +10,6 @@ visible in `keyboard shortcuts` menu in krita settings.
 """
 
 import templates
-from typing import List
 
 from PyQt5.QtGui import QColor
 
@@ -28,7 +27,7 @@ from data_components import (
 infinity = float("inf")
 
 
-def create_actions() -> List[templates.RawInstructions]: return [
+def create_actions() -> list[templates.RawInstructions]: return [
     # Switch between FREEHAND BRUSH and the MOVE tool
     templates.TemporaryKey(
         name="Temporary move tool",

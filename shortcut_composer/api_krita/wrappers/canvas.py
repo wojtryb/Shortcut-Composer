@@ -23,7 +23,7 @@ class Canvas:
 
     canvas: KritaCanvas
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self._zoom_scale = Document(self.canvas.view().document()).dpi/7200
 
     @property

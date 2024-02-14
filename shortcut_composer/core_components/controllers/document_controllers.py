@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Optional
 from api_krita import Krita
 from api_krita.wrappers import Node
 from composer_utils.label import LabelText
@@ -11,7 +10,7 @@ from ..controller_base import Controller, NumericController
 class DocumentBasedController:
     """Family of controllers which operate on values from active document."""
 
-    def refresh(self):
+    def refresh(self) -> None:
         """Refresh currently stored active document."""
         document = Krita.get_active_document()
         if document is None:
@@ -30,7 +29,7 @@ class ActiveLayerController(DocumentBasedController, Controller[Node]):
 
     TYPE = Node
 
-    def get_value(self) -> Optional[Node]:
+    def get_value(self) -> Node | None:
         """Get current node."""
         return self.document.active_node
 

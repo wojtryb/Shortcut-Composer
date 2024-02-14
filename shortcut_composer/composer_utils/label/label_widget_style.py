@@ -47,7 +47,7 @@ class LabelWidgetStyle:
         return self._background_color_callback()
 
     @property
-    def active_color_dark(self):
+    def active_color_dark(self) -> QColor:
         """Color variation of active element."""
         return QColor(
             round(self.active_color.red()*0.8),
@@ -55,7 +55,7 @@ class LabelWidgetStyle:
             round(self.active_color.blue()*0.8))
 
     @property
-    def border_color(self):
+    def border_color(self) -> QColor:
         """Color of icon borders."""
         return QColor(
             min(self.background_color.red()+15, 255),
@@ -63,7 +63,7 @@ class LabelWidgetStyle:
             min(self.background_color.blue()+15, 255))
 
     @property
-    def font_multiplier(self):
+    def font_multiplier(self) -> float:
         """Multiplier to apply to the font depending on the used OS."""
         return self.SYSTEM_FONT_SIZE[platform.system()]
 
