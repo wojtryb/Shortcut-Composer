@@ -12,6 +12,7 @@ from api_krita.pyqt import RoundButton
 from core_components import Controller, Instruction
 from .raw_instructions import RawInstructions
 from .rotation_menu_utils import (
+    RotationSettings,
     RotationActuator,
     RotationManager,
     RotationConfig,
@@ -67,7 +68,17 @@ class RotationMenu(RawInstructions):
             icon=Krita.get_icon("properties"),
             icon_scale=1.1,
             parent=self._rotation_widget)
+
+        def on_click():
+            self._rotation_widget.hide()
+            self.rotation_settings.show()
+        settings_button.clicked.connect(on_click)
+
         return settings_button
+
+    @cached_property
+    def rotation_settings(self):
+        return RotationSettings(config=self._config)
 
     def on_key_press(self) -> None:
         """Handle the event of user pressing the action key."""
