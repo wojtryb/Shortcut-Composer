@@ -44,7 +44,6 @@ class RotationMenu(RawInstructions):
         sign = -1 if counterclockwise else 1
         self._rotation_actuator = RotationActuator(
             rotation_widget=self._rotation_widget,
-            config=self._config,
             controller=controller,
             modifier=lambda x: sign*x + offset)
 

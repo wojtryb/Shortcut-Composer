@@ -19,8 +19,8 @@ class RotationWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
     class Zone(Enum):
         DEADZONE = 0
-        INNER_ZONE = 1
-        OUTER_ZONE = 2
+        DISCRETE_ZONE = 1
+        CONTIGUOUS_ZONE = 2
 
     def __init__(self, config: RotationConfig, parent=None) -> None:
         self._config = config
