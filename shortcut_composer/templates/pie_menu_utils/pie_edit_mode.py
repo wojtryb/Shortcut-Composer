@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from ..pie_menu import PieMenu
 
 
-class EditMode:
+class PieEditMode:
     """
     Handles the edit mode of the PieMenu action.
 

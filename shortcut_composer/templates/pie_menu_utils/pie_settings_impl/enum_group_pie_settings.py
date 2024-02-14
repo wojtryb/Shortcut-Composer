@@ -8,7 +8,7 @@ from core_components import Controller
 from api_krita.enums.helpers import EnumGroup
 from templates.pie_menu_utils import PieSettings
 from templates.pie_menu_utils.pie_config_impl import NonPresetPieConfig
-from ..style_holder import StyleHolder
+from ..pie_style_holder import PieStyleHolder
 from ..pie_label import PieLabel
 from .common_utils import GroupManager, GroupScrollArea
 
@@ -18,7 +18,7 @@ class EnumGroupPieSettings(PieSettings):
         self,
         controller: Controller[EnumGroup],
         config: NonPresetPieConfig,
-        style_holder: StyleHolder,
+        style_holder: PieStyleHolder,
         *args, **kwargs
     ) -> None:
         super().__init__(config, style_holder)

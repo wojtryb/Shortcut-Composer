@@ -7,7 +7,7 @@ from PyQt5.QtGui import QColor
 from api_krita import Krita
 from config_system import FieldGroup
 from config_system.field_base_impl import DualField, FieldWithEditableDefault
-from data_components import DeadzoneStrategy
+from data_components import PieDeadzoneStrategy
 
 T = TypeVar("T")
 U = TypeVar("U")
@@ -26,7 +26,7 @@ class PieConfig(FieldGroup, Generic[T], ABC):
         background_color: Optional[QColor],
         active_color: Optional[QColor],
         pie_opacity: int,
-        deadzone_strategy: DeadzoneStrategy
+        deadzone_strategy: PieDeadzoneStrategy
     ) -> None:
         super().__init__(name)
         self._values = values

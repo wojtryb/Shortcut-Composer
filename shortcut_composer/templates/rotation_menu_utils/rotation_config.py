@@ -14,7 +14,7 @@ T = TypeVar("T")
 
 
 class RotationConfig(FieldGroup, Generic[T]):
-    """FieldGroup representing config of RotationMenu."""
+    """FieldGroup representing config of RotationSelector."""
 
     def __init__(
         self,

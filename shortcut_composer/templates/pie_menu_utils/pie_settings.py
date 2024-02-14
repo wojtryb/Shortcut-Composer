@@ -21,8 +21,8 @@ from config_system.ui import (
     Checkbox,
     SpinBox)
 from composer_utils import Config
-from data_components import DeadzoneStrategy
-from .style_holder import StyleHolder
+from data_components import PieDeadzoneStrategy
+from .pie_style_holder import PieStyleHolder
 from .pie_config import PieConfig
 
 
@@ -43,7 +43,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
     def __init__(
         self,
         config: PieConfig,
-        style_holder: StyleHolder,
+        style_holder: PieStyleHolder,
         *args, **kwargs
     ) -> None:
         AnimatedWidget.__init__(self, None, Config.PIE_ANIMATION_TIME.read())
@@ -67,7 +67,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
                 config_field=config.DEADZONE_STRATEGY,
                 parent=self,
                 pretty_name="On deadzone",
-                enum_type=DeadzoneStrategy),
+                enum_type=PieDeadzoneStrategy),
 
             "Size",
             SpinBox(

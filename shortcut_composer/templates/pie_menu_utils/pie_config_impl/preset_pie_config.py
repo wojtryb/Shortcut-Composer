@@ -5,7 +5,7 @@ from typing import List, Callable, Union, Optional
 from PyQt5.QtGui import QColor
 
 from config_system import Field
-from data_components import Tag, DeadzoneStrategy
+from data_components import Tag, PieDeadzoneStrategy
 from ..pie_config import PieConfig
 
 
@@ -27,7 +27,7 @@ class PresetPieConfig(PieConfig[str]):
         background_color: Optional[QColor],
         active_color: Optional[QColor],
         pie_opacity: int,
-        deadzone_strategy: DeadzoneStrategy
+        deadzone_strategy: PieDeadzoneStrategy
     ) -> None:
         super().__init__(
             name=name,

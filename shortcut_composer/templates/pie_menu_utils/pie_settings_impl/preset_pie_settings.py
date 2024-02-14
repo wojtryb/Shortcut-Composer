@@ -13,7 +13,7 @@ from data_components import Tag
 from templates.pie_menu_utils.pie_config_impl import PresetPieConfig
 from templates.pie_menu_utils import PieSettings
 from ..pie_label import PieLabel
-from ..style_holder import StyleHolder
+from ..pie_style_holder import PieStyleHolder
 from .common_utils import GroupManager, GroupComboBox, GroupScrollArea
 
 
@@ -29,7 +29,7 @@ class PresetPieSettings(PieSettings):
     def __init__(
         self,
         config: PresetPieConfig,
-        style_holder: StyleHolder,
+        style_holder: PieStyleHolder,
         *args, **kwargs
     ) -> None:
         super().__init__(config, style_holder)

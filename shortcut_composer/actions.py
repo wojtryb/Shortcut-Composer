@@ -18,8 +18,8 @@ from api_krita.enums import Action, Tool, Toggle, BlendingMode, TransformMode
 from core_components import instructions, controllers
 from data_components import (
     RotationDeadzoneStrategy,
+    PieDeadzoneStrategy,
     CurrentLayerStack,
-    DeadzoneStrategy,
     PickStrategy,
     Slider,
     Range,
@@ -247,7 +247,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         name="Pick painting blending modes",
         controller=controllers.BlendingModeController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        deadzone_strategy=DeadzoneStrategy.PICK_TOP,
+        deadzone_strategy=PieDeadzoneStrategy.PICK_TOP,
         values=[
             BlendingMode.NORMAL,
             BlendingMode.OVERLAY,
@@ -281,7 +281,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
     templates.PieMenu(
         name="Pick transform tool modes",
         controller=controllers.TransformModeController(),
-        deadzone_strategy=DeadzoneStrategy.PICK_TOP,
+        deadzone_strategy=PieDeadzoneStrategy.PICK_TOP,
         values=[
             TransformMode.FREE,
             TransformMode.PERSPECTIVE,
@@ -298,7 +298,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         name="Pick brush presets (red)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        deadzone_strategy=DeadzoneStrategy.PICK_PREVIOUS,
+        deadzone_strategy=PieDeadzoneStrategy.PICK_PREVIOUS,
         values=Tag("★ My Favorites"),
         background_color=QColor(95, 65, 65, 190),
         active_color=QColor(200, 70, 70),
@@ -310,7 +310,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         name="Pick brush presets (green)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        deadzone_strategy=DeadzoneStrategy.PICK_PREVIOUS,
+        deadzone_strategy=PieDeadzoneStrategy.PICK_PREVIOUS,
         values=Tag("RGBA"),
         background_color=QColor(65, 95, 65, 190),
         active_color=QColor(70, 200, 70),
@@ -322,7 +322,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         name="Pick brush presets (blue)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        deadzone_strategy=DeadzoneStrategy.PICK_PREVIOUS,
+        deadzone_strategy=PieDeadzoneStrategy.PICK_PREVIOUS,
         values=Tag("Erasers"),
         background_color=QColor(70, 70, 105, 190),
         active_color=QColor(110, 160, 235),
@@ -335,13 +335,13 @@ def create_actions() -> List[templates.RawInstructions]: return [
         name="Pick local brush presets",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        deadzone_strategy=DeadzoneStrategy.PICK_PREVIOUS,
+        deadzone_strategy=PieDeadzoneStrategy.PICK_PREVIOUS,
         values=[],
         save_local=True,
         active_color=QColor(234, 172, 0),
     ),
 
-    templates.RotationMenu(
+    templates.RotationSelector(
         name="Rotate canvas",
         controller=controllers.CanvasRotationController(),
         is_counterclockwise=False,
@@ -351,7 +351,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         deadzone_strategy=RotationDeadzoneStrategy.KEEP_CHANGE,
     ),
 
-    templates.RotationMenu(
+    templates.RotationSelector(
         name="Rotate brush",
         controller=controllers.BrushRotationController(),
         is_counterclockwise=True,

@@ -6,7 +6,7 @@ from composer_utils.label.complex_widgets import NumericValuePicker
 
 from templates.pie_menu_utils.pie_config_impl import NonPresetPieConfig
 from templates.pie_menu_utils import PieSettings
-from ..style_holder import StyleHolder
+from ..pie_style_holder import PieStyleHolder
 from ..pie_label import PieLabel
 
 
@@ -17,7 +17,7 @@ class NumericPieSettings(PieSettings):
         self,
         controller: NumericController,
         config: NonPresetPieConfig,
-        style_holder: StyleHolder,
+        style_holder: PieStyleHolder,
         *args, **kwargs
     ) -> None:
         super().__init__(config, style_holder)

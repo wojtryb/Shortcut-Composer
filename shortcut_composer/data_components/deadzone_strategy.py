@@ -4,9 +4,9 @@
 from enum import Enum
 
 
-class DeadzoneStrategy(Enum):
+class PieDeadzoneStrategy(Enum):
     """
-    Enumeration of actions that can be done on deadzone key release.
+    Enumeration of actions that can be done on deadzone key release in Pie.
 
     Values are strings meant for being displayed in the UI.
     """
@@ -20,7 +20,7 @@ class DeadzoneStrategy(Enum):
 
 class RotationDeadzoneStrategy(Enum):
     """
-    Enumeration of actions that can be done on deadzone of RotationMenu.
+    Enumeration of actions that can be done on deadzone of RotationSelector.
 
     Values are strings meant for being displayed in the UI.
     """

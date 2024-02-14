@@ -21,7 +21,7 @@ from .rotation_menu_utils import (
     RotationStyle)
 
 
-class RotationMenu(RawInstructions):
+class RotationSelector(RawInstructions):
     """
     Pick an angle by hovering over a widget.
 

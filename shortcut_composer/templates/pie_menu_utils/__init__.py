@@ -3,24 +3,24 @@
 
 """Components used by PieMenu action."""
 
-from .style_holder import StyleHolder
+from .pie_style_holder import PieStyleHolder
+from .pie_edit_mode import PieEditMode
 from .pie_settings import PieSettings
+from .pie_actuator import PieActuator
 from .pie_manager import PieManager
 from .pie_config import PieConfig
 from .pie_widget import PieWidget
 from .pie_style import PieStyle
-from .edit_mode import EditMode
 from .pie_label import PieLabel
-from .actuator import Actuator
 
 __all__ = [
-    "StyleHolder",
+    "PieStyleHolder",
+    "PieEditMode",
     "PieSettings",
+    "PieActuator",
     "PieManager",
     "PieConfig",
     "PieWidget",
     "PieLabel",
     "PieStyle",
-    "EditMode",
-    "Actuator",
 ]

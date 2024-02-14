@@ -9,17 +9,17 @@ from PyQt5.QtGui import QColor
 
 from api_krita import Krita
 from api_krita.pyqt import RoundButton
-from data_components import DeadzoneStrategy
+from data_components import PieDeadzoneStrategy
 from core_components import Controller, Instruction
 from .pie_menu_utils.pie_config_impl import dispatch_pie_config
 from .pie_menu_utils.pie_settings_impl import dispatch_pie_settings
 from .pie_menu_utils import (
-    StyleHolder,
+    PieStyleHolder,
     PieSettings,
     PieManager,
     PieWidget,
-    Actuator,
-    EditMode,
+    PieActuator,
+    PieEditMode,
     PieLabel)
 from .raw_instructions import RawInstructions
 
@@ -85,7 +85,7 @@ class PieMenu(RawInstructions, Generic[T]):
         active_color: Optional[QColor] = None,
         pie_opacity: int = 75,
         save_local: bool = False,
-        deadzone_strategy: DeadzoneStrategy = DeadzoneStrategy.DO_NOTHING,
+        deadzone_strategy=PieDeadzoneStrategy.DO_NOTHING,
         short_vs_long_press_time: Optional[float] = None
     ) -> None:
         super().__init__(name, instructions, short_vs_long_press_time)
@@ -104,9 +104,9 @@ class PieMenu(RawInstructions, Generic[T]):
         self._config.ORDER.register_callback(self._reset_labels)
 
         self._labels: List[PieLabel] = []
-        self._edit_mode = EditMode(self)
-        self._style_holder = StyleHolder(pie_config=self._config)
-        self._actuator = Actuator(
+        self._edit_mode = PieEditMode(self)
+        self._style_holder = PieStyleHolder(pie_config=self._config)
+        self._actuator = PieActuator(
             controller=self._controller,
             strategy_field=self._config.DEADZONE_STRATEGY,
             labels=self._labels)

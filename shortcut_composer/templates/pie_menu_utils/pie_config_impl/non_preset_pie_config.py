@@ -4,7 +4,7 @@
 from typing import List, Callable, Generic, TypeVar, Optional
 from PyQt5.QtGui import QColor
 
-from data_components import DeadzoneStrategy
+from data_components import PieDeadzoneStrategy
 from ..pie_config import PieConfig
 
 T = TypeVar("T")
@@ -23,7 +23,7 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
         background_color: Optional[QColor],
         active_color: Optional[QColor],
         pie_opacity: int,
-        deadzone_strategy: DeadzoneStrategy
+        deadzone_strategy: PieDeadzoneStrategy
     ) -> None:
         super().__init__(
             name=name,

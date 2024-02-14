@@ -9,7 +9,7 @@ They can perform simple operations in krita, but shouldn't hold any
 complex logic.
 """
 
-from .deadzone_strategy import DeadzoneStrategy, RotationDeadzoneStrategy
+from .deadzone_strategy import PieDeadzoneStrategy, RotationDeadzoneStrategy
 from .current_layer_stack import CurrentLayerStack
 from .pick_strategy import PickStrategy
 from .slider import Slider
@@ -18,8 +18,8 @@ from .tag import Tag
 
 __all__ = [
     "RotationDeadzoneStrategy",
+    "PieDeadzoneStrategy",
     "CurrentLayerStack",
-    "DeadzoneStrategy",
     "PickStrategy",
     "Slider",
     "Range",

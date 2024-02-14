@@ -5,12 +5,12 @@ from typing import Optional, List
 
 from config_system import Field
 from core_components import Controller
-from data_components import DeadzoneStrategy
+from data_components import PieDeadzoneStrategy
 from .pie_label import PieLabel
 from .pie_widget_utils import WidgetHolder
 
 
-class Actuator:
+class PieActuator:
     """
     Activates the correct labels from the Pie.
 
@@ -37,7 +37,7 @@ class Actuator:
 
         def update_strategy():
             self._current_strategy = strategy_field.read()
-        self._current_strategy: DeadzoneStrategy
+        self._current_strategy: PieDeadzoneStrategy
         strategy_field.register_callback(update_strategy)
         update_strategy()
 
@@ -56,13 +56,13 @@ class Actuator:
     @property
     def selected_label(self) -> Optional[PieLabel]:
         """Return label which should be picked on deadzone."""
-        if self._current_strategy == DeadzoneStrategy.DO_NOTHING:
+        if self._current_strategy == PieDeadzoneStrategy.DO_NOTHING:
             return None
-        elif self._current_strategy == DeadzoneStrategy.PICK_TOP:
+        elif self._current_strategy == PieDeadzoneStrategy.PICK_TOP:
             if self._labels:
                 return self._labels[0]
             return None
-        elif self._current_strategy == DeadzoneStrategy.PICK_PREVIOUS:
+        elif self._current_strategy == PieDeadzoneStrategy.PICK_PREVIOUS:
             if self._last_label in self._labels:
                 return self._last_label
             return None

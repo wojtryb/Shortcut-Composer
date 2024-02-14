@@ -13,9 +13,9 @@ from PyQt5.QtGui import (
 from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
 from composer_utils import Config
 from composer_utils.label import LabelWidget
-from .edit_mode import EditMode
+from .pie_edit_mode import PieEditMode
 from .pie_label import PieLabel
-from .style_holder import StyleHolder
+from .pie_style_holder import PieStyleHolder
 from .pie_config import PieConfig
 from .pie_widget_utils import (
     CirclePoints,
@@ -40,9 +40,9 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
     def __init__(
         self,
-        style_holder: StyleHolder,
+        style_holder: PieStyleHolder,
         labels: List[PieLabel[T]],
-        edit_mode: EditMode,
+        edit_mode: PieEditMode,
         config: PieConfig,
         parent=None
     ) -> None:
