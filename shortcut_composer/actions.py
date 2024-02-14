@@ -346,6 +346,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         counterclockwise=False,
         offset=0,
         divisions=24,
+        inverse_zones=False,
     ),
 
     templates.RotationMenu(
@@ -354,6 +355,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         counterclockwise=True,
         offset=90,
         divisions=24,
+        inverse_zones=False,
     ),
 
     # .......................................

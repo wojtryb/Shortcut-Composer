@@ -70,12 +70,25 @@ class RotationManager:
 
         cursor = QCursor().pos()
         circle = CirclePoints(self._center_global, 0)
-        if circle.distance(cursor) > self._config.free_zone_radius:
-            to_set = self._modifier(round(circle.angle_from_point(cursor)))
-        elif circle.distance(cursor) > self._config.deadzone_radius:
-            to_set = self._modifier(snap_degree(
+
+        def snap_angle():
+            return self._modifier(snap_degree(
                 value=round(circle.angle_from_point(cursor)),
                 step_size=360//self._config.DIVISIONS.read()))
-        else:
+
+        def free_angle():
+            return self._modifier(round(circle.angle_from_point(cursor)))
+
+        inner_zone = snap_angle
+        outer_zone = free_angle
+        if self._config.INVERSE_ZONES.read():
+            inner_zone, outer_zone = outer_zone, inner_zone
+
+        if circle.distance(cursor) < self._config.deadzone_radius:
             to_set = self._starting_value
+        elif circle.distance(cursor) < self._config.widget_radius:
+            to_set = inner_zone()
+        else:
+            to_set = outer_zone()
+
         self._controller.set_value(to_set)

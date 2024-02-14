@@ -40,11 +40,11 @@ class RotationWidget(AnimatedWidget, BaseWidget, Generic[T]):
             RotationPainter(
                 painter=painter,
                 deadzone_radius=self._config.deadzone_radius,
-                widget_radius=self._config.free_zone_radius)
+                widget_radius=self._config.widget_radius)
 
     def _resize(self) -> None:
         self.setGeometry(0, 0, self._diameter, self._diameter)
 
     @property
     def _diameter(self):
-        return self._config.free_zone_radius * 2
+        return self._config.widget_radius * 2
