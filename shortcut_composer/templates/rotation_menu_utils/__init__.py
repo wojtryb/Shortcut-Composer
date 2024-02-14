@@ -1,3 +1,8 @@
+# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+"""Components used by RotationMenu action."""
+
 from .rotation_settings import RotationSettings
 from .rotation_actuator import RotationActuator
 from .rotation_manager import RotationManager

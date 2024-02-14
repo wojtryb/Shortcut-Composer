@@ -23,11 +23,6 @@ class Actuator:
 
     Actuator tracks selected strategy using `strategy_field` passed on
     initialization. It can be changed in runtime.
-
-    Strategies:
-    DeadzoneStrategy.DO_NOTHING - no action is needed
-    DeadzoneStrategy.PICK_TOP - first label in list is activated
-    DeadzoneStrategy.PICK_PREVIOUS - remembered label is activated
     """
 
     def __init__(

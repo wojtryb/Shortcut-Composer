@@ -9,6 +9,12 @@ from composer_utils.label import LabelWidgetStyle
 
 
 class PieStyle:
+    """
+    Style which allows to paint a PieWidget.
+
+    Callbacks passed in init determine base values. Rest of the values
+    is calculated using those base values.
+    """
 
     def __init__(
         self,
@@ -27,18 +33,22 @@ class PieStyle:
 
     @property
     def pie_radius(self) -> int:
+        """Radius of the pie, excluding the icons."""
         return self._pie_radius_callback()
 
     @property
     def deadzone_radius(self) -> float:
+        """Radius of the deadzone in the center."""
         return self._deadzone_radius_callback()
 
     @property
     def setting_button_radius(self) -> int:
+        """Radius of the button which activates settings widget."""
         return self._settings_button_radius_callback()
 
     @property
     def accept_button_radius(self) -> int:
+        """Radius of the button which accepts the edit."""
         return self._accept_button_radius_callback()
 
     @property
@@ -68,10 +78,12 @@ class PieStyle:
 
     @property
     def active_color(self) -> QColor:
+        """Color of active elements."""
         return self._unscaled_label_style.active_color
 
     @property
     def background_color(self) -> QColor:
+        """Color of the widget background."""
         return self._unscaled_label_style.background_color
 
     @property
@@ -81,6 +93,7 @@ class PieStyle:
 
     @property
     def border_color(self):
+        """Color of the active pie border."""
         return self._unscaled_label_style.border_color
 
     @property

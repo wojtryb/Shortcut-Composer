@@ -16,6 +16,7 @@ from .rotation_config import RotationConfig
 
 
 class RotationSettings(BaseWidget):
+    """Widget that allows to change values in passed config."""
 
     def __init__(self, config: RotationConfig) -> None:
         super().__init__(None)
@@ -109,4 +110,5 @@ class RotationSettings(BaseWidget):
         self.refresh()
 
     def refresh(self):
+        """Update boxes with configured values."""
         self._general_tab.refresh()

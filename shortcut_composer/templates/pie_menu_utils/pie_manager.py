@@ -16,8 +16,7 @@ class PieManager:
     """
     Handles the passed PieWidget by tracking a mouse to find active label.
 
-    - Displays the widget between start() and stop() calls.
-    - Starts a thread loop which checks for changes of active label.
+    Displays the widget between start() and stop() calls.
     """
 
     def __init__(self, pie_widget: PieWidget):

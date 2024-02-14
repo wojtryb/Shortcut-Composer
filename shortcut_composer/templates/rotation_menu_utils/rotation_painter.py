@@ -11,16 +11,19 @@ from .rotation_widget_state import Zone, WidgetState
 
 
 class RotationPainter:
+    """Uses provided painter and parts of widget information to paint it."""
+
     def __init__(self, style: RotationStyle):
         self._style = style
 
     def paint(self, painter: Painter, state: WidgetState):
+        """Paint the widget which created the passed painter."""
         self._painter = painter
         self._state = state
 
         self._paint_deadzone_indicator()
         self._paint_free_zone_indicator()
-        self._paint_active_angle()
+        self._paint_selection()
 
     @property
     def _center(self) -> QPoint:
@@ -28,7 +31,7 @@ class RotationPainter:
         return QPoint(self._style.widget_radius, self._style.widget_radius)
 
     def _paint_deadzone_indicator(self) -> None:
-        """Paint the circle representing deadzone, when its valid."""
+        """Paint the circle representing deadzone."""
         if not self._style.deadzone_radius:
             return
 
@@ -45,7 +48,7 @@ class RotationPainter:
             thickness=1)
 
     def _paint_free_zone_indicator(self) -> None:
-        """Paint the circle representing deadzone, when its valid."""
+        """Paint the circle representing zone after deadzone."""
         if self._style.deadzone_radius == self._style.inner_zone_radius:
             return
 
@@ -61,7 +64,8 @@ class RotationPainter:
             color=QColor(255, 128, 128, 120),
             thickness=1)
 
-    def _paint_active_angle(self) -> None:
+    def _paint_selection(self) -> None:
+        """Paint pies representing selected value."""
         for angle, progress in self._state.animations_in_progress.items():
             if progress.value == 0:
                 continue
@@ -73,7 +77,7 @@ class RotationPainter:
         if self._state.selected_zone == Zone.CONTIGUOUS_ZONE:
             self._paint_decorated_pie(
                 angle=self._state.selected_angle,
-                span=10,
+                span=self._style.contiguous_pie_span,
                 animation_value=1.0)
 
     def _paint_decorated_pie(
@@ -82,6 +86,7 @@ class RotationPainter:
         span: int,
         animation_value: float,
     ) -> None:
+        """Paint a pie with decorator and border."""
         thickness = self._style.inner_zone_radius-self._style.deadzone_radius+2
         # +2 allows the indicator to cover the deadzone circle
 
@@ -117,7 +122,8 @@ class RotationPainter:
             thickness=self._style.border_thickness)
 
     @staticmethod
-    def _set_opacity(color: QColor, opacity: int):
+    def _set_opacity(color: QColor, opacity: int) -> QColor:
+        """Return QColor with modified opacity."""
         returned_color = color
         returned_color.setAlpha(opacity)
         return returned_color

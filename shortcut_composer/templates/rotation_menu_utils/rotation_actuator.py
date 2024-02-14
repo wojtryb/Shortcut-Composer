@@ -14,6 +14,13 @@ from .rotation_config import RotationConfig
 
 
 class RotationActuator:
+    """
+    Contiguously activates the selected angle in the widget.
+
+    Actuator tracks selected strategy using `strategy_field` passed on
+    initialization. It can be changed in runtime.
+    """
+
     def __init__(
         self,
         rotation_widget: RotationWidget,
@@ -34,6 +41,7 @@ class RotationActuator:
         self._timer = Timer(self._update, Config.get_sleep_time())
 
     def start(self):
+        """Start loop of contiguous value setting."""
         self._center_global = QCursor().pos()
         self._starting_value = self._reverse_modifier(
             self._controller.get_value())
@@ -41,9 +49,11 @@ class RotationActuator:
         self._timer.start()
 
     def stop(self) -> None:
+        """Start the loop of contiguous value setting."""
         self._timer.stop()
 
     def _update(self) -> None:
+        """Set the angle considering deadzone strategy and value modifier."""
         if self._rotation_widget.state.selected_zone == Zone.DEADZONE:
             if self._strategy == RotationDeadzoneStrategy.KEEP_CHANGE:
                 return
@@ -58,9 +68,11 @@ class RotationActuator:
         self._controller.set_value(modified)
 
     def _modifier(self, value: int):
+        """Transforms angle to value considering sign and offset."""
         sign = -1 if self._config.IS_COUNTERCLOCKWISE.read() else 1
         return sign*(value - self._config.OFFSET.read())
 
     def _reverse_modifier(self, value: int):
+        """Transforms value to angle."""
         sign = -1 if self._config.IS_COUNTERCLOCKWISE.read() else 1
         return sign*value + self._config.OFFSET.read()

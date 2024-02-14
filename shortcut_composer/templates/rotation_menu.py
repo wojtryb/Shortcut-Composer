@@ -22,6 +22,33 @@ from .rotation_menu_utils import (
 
 
 class RotationMenu(RawInstructions):
+    """
+    Pick an angle by hovering over a widget.
+
+    - Widget is displayed under the cursor between key press and release
+    - Moving the mouse past deadzone contiguously sets a value
+    - Depending on the zone, value is discrete or contiguous
+    - When in deadzone, selected strategy is used to determine action
+    - Edit button activates the setting widget
+
+    ### Arguments:
+
+    - `name`          -- unique name of action. Must match the
+                         definition in shortcut_composer.action file
+    - `controller`    -- defines which krita property will be modified
+    - `instructions`  -- (optional) list of additional instructions to
+                         perform on key press and release
+    - `deadzone_scale`      -- (optional) default deadzone size multiplier
+    - `inner_zone_scale`    -- (optional) default inner zone size multiplier
+    - `is_counterclockwise` -- (optional) default rotation direction
+    - `offset`              -- (optional) default offset of zero value
+    - `inverse_zones`       -- (optional) default order of zones
+    - `divisions` -- (optional) default amount of values in discrete zone
+    - `deadzone strategy` -- (optional) default strategy what to do,
+                              when mouse does not leave deadzone
+    - `active_color`      -- (optional) default rgba color of active pie
+    """
+
     def __init__(
         self, *,
         name: str,
@@ -94,6 +121,7 @@ class RotationMenu(RawInstructions):
 
     @cached_property
     def rotation_settings(self):
+        """Create a settings widget which configures the menu."""
         return RotationSettings(config=self._config)
 
     def on_key_press(self) -> None:

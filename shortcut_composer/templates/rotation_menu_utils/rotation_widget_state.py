@@ -9,25 +9,35 @@ from composer_utils import AnimationProgress
 
 
 class Zone(Enum):
+    """Zones in the widget."""
+
     DEADZONE = 0
+    """Zone in which angle is not red."""
     DISCRETE_ZONE = 1
+    """Zone in which angles are being red with intervals."""
     CONTIGUOUS_ZONE = 2
+    """Zone in which angles are being red contiguously."""
 
 
 @dataclass
 class WidgetState:
+    """Represents current state of the widget."""
+
     selected_angle: int = 0
     selected_zone: Zone = Zone.DEADZONE
 
     def __post_init__(self):
         self.animations_in_progress = defaultdict(lambda: AnimationProgress())
+        """State of animations for each discrete pie."""
 
     def reset(self):
+        """Reset the state to starting value."""
         self.selected_angle = 0
         self.selected_zone = Zone.DEADZONE
         self.animations_in_progress.clear()
 
     def tick_animations(self):
+        """Update animations of discrete pies."""
         current_animation = self.animations_in_progress[self.selected_angle]
         if self.selected_zone == Zone.DISCRETE_ZONE:
             current_animation.up()

@@ -17,10 +17,10 @@ from .rotation_widget_state import Zone
 
 class RotationManager:
     """
-    Handles the passed PieWidget by tracking a mouse to find active label.
+    Updates the state of RotationWidget by tracking a mouse.
 
-    - Displays the widget between start() and stop() calls.
-    - Starts a thread loop which checks for changes of active label.
+    Displays the widget and tracks a mouse between start() and stop() calls.
+    Contiguously updates widget state, updates animations and paints it.
     """
 
     def __init__(
@@ -52,10 +52,7 @@ class RotationManager:
             self._rotation_widget.hide()
 
     def _handle_cursor(self) -> None:
-        """Calculate zone of the cursor and mark which child is active."""
-        # NOTE: The widget can get hidden outside of stop() when key is
-        # released during the drag&drop operation or when user clicked
-        # outside the pie widget.
+        """Calculate zone and angle of the cursor."""
         if not self._rotation_widget.isVisible():
             return self.stop()
 
@@ -83,6 +80,7 @@ class RotationManager:
 
     @staticmethod
     def _snap_degree(value: int, step_size: int) -> int:
+        """Snap a `value` to closest multiplication of the `step_size`"""
         if not 0 < step_size <= 360:
             raise RuntimeError("Step needs to be in range (0, 360>")
 

@@ -32,7 +32,7 @@ class PieMenu(RawInstructions, Generic[T]):
 
     - Widget is displayed under the cursor between key press and release
     - Moving mouse in a direction of a value activates it on key release
-    - When the mouse was not moved past deadzone, value is not changed
+    - When in deadzone, selected strategy is used to determine action
     - Edit button activates mode in which pie does not hide on key
       release and can be configured (see PieSettings)
 
