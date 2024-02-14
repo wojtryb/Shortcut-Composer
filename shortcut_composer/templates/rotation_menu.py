@@ -4,7 +4,7 @@
 from typing import List, Optional
 from core_components import Controller, Instruction
 from .raw_instructions import RawInstructions
-from .rotation_menu_utils import RotationManager
+from .rotation_menu_utils import RotationManager, RotationConfig
 
 
 class RotationMenu(RawInstructions):
@@ -15,13 +15,19 @@ class RotationMenu(RawInstructions):
         instructions: Optional[List[Instruction]] = None,
         counterclockwise: bool = False,
         offset: int = 0,
+        deadzone_scale: float = 1.0,
         short_vs_long_press_time: Optional[float] = None,
     ) -> None:
         super().__init__(name, instructions, short_vs_long_press_time)
         self._controller = controller
 
+        self._config = RotationConfig(
+            name=self.name,
+            deadzone_scale=deadzone_scale)
+
         sign = -1 if counterclockwise else 1
         self._rotation_manager = RotationManager(
+            config=self._config,
             controller=controller,
             modifier=lambda x: sign*x + offset)
 
