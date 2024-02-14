@@ -180,22 +180,6 @@ def create_actions() -> List[templates.RawInstructions]: return [
         ),
     ),
 
-    templates.CursorTracker(
-        name="Scroll brush rotation",
-        horizontal_slider=Slider(
-            controller=controllers.BrushRotationController(),
-            values=Range(-infinity, infinity),
-            sensitivity_scale=10,
-        ),
-    ),
-
-    templates.PieMenu(
-        name="Pick brush rotation",
-        controller=controllers.BrushRotationController(),
-        values=[i for i in range(90, 0, -15)] + \
-        [i for i in range(360, 90, -15)],
-    ),
-
     # Use pie menu to pick one of the tools.
     templates.PieMenu(
         name="Pick misc tools",
@@ -354,6 +338,20 @@ def create_actions() -> List[templates.RawInstructions]: return [
         values=[],
         save_local=True,
         active_color=QColor(234, 172, 0),
+    ),
+
+    templates.RotationMenu(
+        name="Rotate canvas",
+        controller=controllers.CanvasRotationController(),
+        counterclockwise=False,
+        offset=0,
+    ),
+
+    templates.RotationMenu(
+        name="Rotate brush",
+        controller=controllers.BrushRotationController(),
+        counterclockwise=True,
+        offset=90,
     ),
 
     # .......................................

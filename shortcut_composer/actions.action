@@ -81,19 +81,9 @@
         <icon>zoom-original</icon>
         </Action>
 
-        <Action name="Scroll brush rotation">
-        <activationFlags>1</activationFlags>
-        <icon>transform_icons_liquify_rotate</icon>
-        </Action>
-
     </Actions>
     <Actions category="Scripts">
         <text>Shortcut Composer: Pie Menus</text>
-
-        <Action name="Pick brush rotation">
-        <activationFlags>1</activationFlags>
-        <icon>transform_icons_liquify_rotate</icon>
-        </Action>
 
         <Action name="Pick misc tools">
         <activationFlags>1</activationFlags>
@@ -148,6 +138,20 @@
         <Action name="Create painting layer with blending mode">
         <activationFlags>1</activationFlags>
         <icon>addlayer</icon>
+        </Action>
+
+    </Actions>
+    <Actions category="Scripts">
+        <text>Shortcut Composer: Rotation Menus</text>
+
+        <Action name="Rotate canvas">
+        <activationFlags>1</activationFlags>
+        <icon>transform_icons_rotate_cw</icon>
+        </Action>
+
+        <Action name="Rotate brush">
+        <activationFlags>1</activationFlags>
+        <icon>transform_icons_rotate_cw</icon>
         </Action>
 
     </Actions>
