@@ -2,6 +2,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import List, Optional
+
+from PyQt5.QtGui import QColor
+
 from core_components import Controller, Instruction
 from .raw_instructions import RawInstructions
 from .rotation_menu_utils import (
@@ -23,6 +26,7 @@ class RotationMenu(RawInstructions):
         inner_zone_scale: float = 1.0,
         divisions: int = 24,
         inverse_zones: bool = False,
+        active_color: Optional[QColor] = None,
         short_vs_long_press_time: Optional[float] = None,
     ) -> None:
         super().__init__(name, instructions, short_vs_long_press_time)
@@ -33,7 +37,8 @@ class RotationMenu(RawInstructions):
             deadzone_scale=deadzone_scale,
             inner_zone_scale=inner_zone_scale,
             divisions=divisions,
-            inverse_zones=inverse_zones)
+            inverse_zones=inverse_zones,
+            active_color=active_color)
 
         self._rotation_widget = RotationWidget(config=self._config)
 

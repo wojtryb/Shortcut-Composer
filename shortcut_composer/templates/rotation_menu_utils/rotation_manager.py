@@ -12,8 +12,7 @@ from composer_utils import Config
 from templates.pie_menu_utils.pie_widget_utils import CirclePoints
 from .rotation_widget import RotationWidget
 from .rotation_config import RotationConfig
-
-Zone = RotationWidget.Zone
+from .zone import Zone
 
 
 class RotationManager:
@@ -75,8 +74,9 @@ class RotationManager:
             angle = self._snap_degree(
                 value=angle,
                 step_size=360//self._config.DIVISIONS.read())
-
         self._rotation_widget.selected_angle = angle
+
+        self._rotation_widget.repaint()
 
     @staticmethod
     def _snap_degree(value: int, step_size: int) -> int:

@@ -1,8 +1,12 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Generic, TypeVar
 
+from typing import Generic, TypeVar, Optional
+
+from PyQt5.QtGui import QColor
+
+from api_krita import Krita
 from config_system import FieldGroup
 
 T = TypeVar("T")
@@ -17,6 +21,7 @@ class RotationConfig(FieldGroup, Generic[T]):
         inner_zone_scale: float,
         divisions: int,
         inverse_zones: bool,
+        active_color: Optional[QColor]
     ) -> None:
         super().__init__(name)
 
@@ -35,6 +40,12 @@ class RotationConfig(FieldGroup, Generic[T]):
         self.INVERSE_ZONES = self.field(
             name="Inverse zones",
             default=inverse_zones)
+
+        if active_color is None:
+            active_color = Krita.get_active_color_from_theme()
+        self.ACTIVE_COLOR = self.field(
+            name="Active color",
+            default=active_color)
 
     @property
     def deadzone_radius(self) -> int:

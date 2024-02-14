@@ -10,8 +10,7 @@ from composer_utils import Config
 # FIXME: move to common
 from shortcut_composer.core_components.controller_base import Controller
 from .rotation_widget import RotationWidget
-
-Zone = RotationWidget.Zone
+from .zone import Zone
 
 
 class RotationActuator:
