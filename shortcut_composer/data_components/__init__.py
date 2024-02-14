@@ -9,14 +9,15 @@ They can perform simple operations in krita, but shouldn't hold any
 complex logic.
 """
 
+from .deadzone_strategy import DeadzoneStrategy, RotationDeadzoneStrategy
 from .current_layer_stack import CurrentLayerStack
-from .deadzone_strategy import DeadzoneStrategy
 from .pick_strategy import PickStrategy
 from .slider import Slider
 from .range import Range
 from .tag import Tag
 
 __all__ = [
+    "RotationDeadzoneStrategy",
     "CurrentLayerStack",
     "DeadzoneStrategy",
     "PickStrategy",

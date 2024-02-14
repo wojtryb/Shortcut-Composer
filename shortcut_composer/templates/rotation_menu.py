@@ -10,6 +10,7 @@ from PyQt5.QtGui import QColor
 from api_krita import Krita
 from api_krita.pyqt import RoundButton
 from core_components import Controller, Instruction
+from data_components import RotationDeadzoneStrategy
 from .raw_instructions import RawInstructions
 from .rotation_menu_utils import (
     RotationSettings,
@@ -26,13 +27,14 @@ class RotationMenu(RawInstructions):
         name: str,
         controller: Controller[int],
         instructions: Optional[List[Instruction]] = None,
-        is_counterclockwise: bool = False,
-        offset: int = 0,
         deadzone_scale: float = 1.0,
         inner_zone_scale: float = 1.0,
-        divisions: int = 24,
+        is_counterclockwise: bool = False,
+        offset: int = 0,
         inverse_zones: bool = False,
+        divisions: int = 24,
         active_color: Optional[QColor] = None,
+        deadzone_strategy=RotationDeadzoneStrategy.KEEP_CHANGE,
         short_vs_long_press_time: Optional[float] = None,
     ) -> None:
         super().__init__(name, instructions, short_vs_long_press_time)
@@ -40,13 +42,14 @@ class RotationMenu(RawInstructions):
 
         self._config = RotationConfig(
             name=self.name,
-            is_counterclockwise=is_counterclockwise,
-            offset=offset,
             deadzone_scale=deadzone_scale,
             inner_zone_scale=inner_zone_scale,
-            divisions=divisions,
+            is_counterclockwise=is_counterclockwise,
+            offset=offset,
             inverse_zones=inverse_zones,
+            divisions=divisions,
             active_color=active_color,
+            deadzone_strategy=deadzone_strategy,
         )
 
         self._style = RotationStyle(
@@ -67,7 +70,8 @@ class RotationMenu(RawInstructions):
         self._rotation_actuator = RotationActuator(
             rotation_widget=self._rotation_widget,
             controller=controller,
-            config=self._config)
+            config=self._config,
+            strategy_field=self._config.DEADZONE_STRATEGY)
 
     @cached_property
     def settings_button(self):

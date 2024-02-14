@@ -5,12 +5,14 @@ from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import QVBoxLayout
 
 from composer_utils import ButtonsLayout
-from .rotation_config import RotationConfig
 from config_system.ui import (
     ConfigFormWidget,
+    EnumComboBox,
     ColorButton,
     Checkbox,
     SpinBox)
+from data_components import RotationDeadzoneStrategy
+from .rotation_config import RotationConfig
 
 
 class RotationSettings(BaseWidget):
@@ -43,6 +45,11 @@ class RotationSettings(BaseWidget):
                 max_value=4),
 
             "Behavior",
+            EnumComboBox(
+                config_field=config.DEADZONE_STRATEGY,
+                parent=self,
+                pretty_name="On deadzone",
+                enum_type=RotationDeadzoneStrategy),
             Checkbox(
                 config_field=config.INVERSE_ZONES,
                 parent=self,

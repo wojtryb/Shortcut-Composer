@@ -13,3 +13,9 @@ class DeadzoneStrategy(Enum):
     DO_NOTHING = "Do nothing"
     PICK_TOP = "Pick top"
     PICK_PREVIOUS = "Pick previous"
+
+
+class RotationDeadzoneStrategy(Enum):
+    KEEP_CHANGE = "Keep change"
+    DISCARD_CHANGE = "Discard change"
+    SET_ZERO = "Set zero"

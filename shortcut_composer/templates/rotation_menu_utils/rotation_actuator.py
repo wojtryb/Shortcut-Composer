@@ -2,9 +2,11 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from PyQt5.QtGui import QCursor
-
 from api_krita.pyqt import Timer
+
 from composer_utils import Config
+from config_system import Field
+from data_components import RotationDeadzoneStrategy
 from shortcut_composer.core_components.controller_base import Controller
 from .rotation_widget import RotationWidget
 from .rotation_widget_state import Zone
@@ -17,10 +19,17 @@ class RotationActuator:
         rotation_widget: RotationWidget,
         controller: Controller[int],
         config: RotationConfig,
+        strategy_field: Field,
     ) -> None:
         self._rotation_widget = rotation_widget
         self._controller = controller
         self._config = config
+
+        def update_strategy():
+            self._strategy = strategy_field.read()
+        self._strategy: RotationDeadzoneStrategy
+        strategy_field.register_callback(update_strategy)
+        update_strategy()
 
         self._timer = Timer(self._update, Config.get_sleep_time())
 
@@ -36,7 +45,13 @@ class RotationActuator:
 
     def _update(self) -> None:
         if self._rotation_widget.state.selected_zone == Zone.DEADZONE:
-            value = self._starting_value
+            if self._strategy == RotationDeadzoneStrategy.KEEP_CHANGE:
+                return
+            elif self._strategy == RotationDeadzoneStrategy.DISCARD_CHANGE:
+                value = self._starting_value
+            else:  # RotationDeadzoneStrategy.SET_ZERO
+                self._controller.set_value(0)
+                return
         else:
             value = self._rotation_widget.state.selected_angle
         modified = self._modifier(value)

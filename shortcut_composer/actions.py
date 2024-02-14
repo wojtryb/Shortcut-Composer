@@ -17,6 +17,7 @@ from PyQt5.QtGui import QColor
 from api_krita.enums import Action, Tool, Toggle, BlendingMode, TransformMode
 from core_components import instructions, controllers
 from data_components import (
+    RotationDeadzoneStrategy,
     CurrentLayerStack,
     DeadzoneStrategy,
     PickStrategy,
@@ -345,8 +346,9 @@ def create_actions() -> List[templates.RawInstructions]: return [
         controller=controllers.CanvasRotationController(),
         is_counterclockwise=False,
         offset=0,
-        divisions=24,
         inverse_zones=False,
+        divisions=24,
+        deadzone_strategy=RotationDeadzoneStrategy.KEEP_CHANGE,
     ),
 
     templates.RotationMenu(
@@ -354,8 +356,9 @@ def create_actions() -> List[templates.RawInstructions]: return [
         controller=controllers.BrushRotationController(),
         is_counterclockwise=True,
         offset=90,
-        divisions=24,
         inverse_zones=False,
+        divisions=24,
+        deadzone_strategy=RotationDeadzoneStrategy.KEEP_CHANGE,
     ),
 
     # .......................................

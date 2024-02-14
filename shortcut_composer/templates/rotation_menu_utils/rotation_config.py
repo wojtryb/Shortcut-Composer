@@ -8,6 +8,7 @@ from PyQt5.QtGui import QColor
 
 from api_krita import Krita
 from config_system import FieldGroup
+from data_components import RotationDeadzoneStrategy
 
 T = TypeVar("T")
 
@@ -23,6 +24,7 @@ class RotationConfig(FieldGroup, Generic[T]):
         inverse_zones: bool,
         active_color: Optional[QColor],
         is_counterclockwise: bool,
+        deadzone_strategy: RotationDeadzoneStrategy,
         offset: int,
     ) -> None:
         super().__init__(name)
@@ -35,9 +37,21 @@ class RotationConfig(FieldGroup, Generic[T]):
             name="Inner zone scale",
             default=inner_zone_scale)
 
+        self.DEADZONE_STRATEGY = self.field(
+            name="Deadzone strategy",
+            default=deadzone_strategy)
+
         self.DIVISIONS = self.field(
             name="Divisions",
             default=divisions)
+
+        self.IS_COUNTERCLOCKWISE = self.field(
+            name="Is counterclockwise",
+            default=is_counterclockwise)
+
+        self.OFFSET = self.field(
+            name="Offset",
+            default=offset)
 
         self.INVERSE_ZONES = self.field(
             name="Inverse zones",
@@ -48,11 +62,3 @@ class RotationConfig(FieldGroup, Generic[T]):
         self.ACTIVE_COLOR = self.field(
             name="Active color",
             default=active_color)
-
-        self.IS_COUNTERCLOCKWISE = self.field(
-            name="Is counterclockwise",
-            default=is_counterclockwise)
-
-        self.OFFSET = self.field(
-            name="Offset",
-            default=offset)
