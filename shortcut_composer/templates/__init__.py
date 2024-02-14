@@ -9,6 +9,7 @@ Available templates:
 - `CursorTracker`
 - `MultipleAssignment`
 - `TemporaryKey`
+- `RotationMenu`
 - `RawInstructions`
 
 All templates must implement ComplexAction interface, so that they can be
@@ -21,6 +22,7 @@ the related keys.
 from .multiple_assignment import MultipleAssignment
 from .raw_instructions import RawInstructions
 from .cursor_tracker import CursorTracker
+from .rotation_menu import RotationMenu
 from .temporary_key import TemporaryKey
 from .pie_menu import PieMenu
 
@@ -29,6 +31,7 @@ __all__ = [
     'MultipleAssignment',
     'RawInstructions',
     'CursorTracker',
+    'RotationMenu',
     'TemporaryKey',
     'PieMenu',
 ]
