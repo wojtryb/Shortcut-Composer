@@ -20,8 +20,9 @@ class RotationWidget(AnimatedWidget, BaseWidget, Generic[T]):
     def __init__(self, config: RotationConfig, parent=None) -> None:
         self._config = config
         AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())
-        diameter = self._radius * 2
-        self.setGeometry(0, 0, diameter, diameter)
+
+        self._config.register_callback(self._resize)
+        self._resize()
 
         self.setAcceptDrops(True)
         self.setWindowFlags((
@@ -36,8 +37,14 @@ class RotationWidget(AnimatedWidget, BaseWidget, Generic[T]):
     def paintEvent(self, event: QPaintEvent) -> None:
         """Paint the entire widget using the Painter wrapper."""
         with Painter(self, event) as painter:
-            RotationPainter(painter, self._radius)
+            RotationPainter(
+                painter=painter,
+                deadzone_radius=self._config.deadzone_radius,
+                widget_radius=self._config.free_zone_radius)
+
+    def _resize(self) -> None:
+        self.setGeometry(0, 0, self._diameter, self._diameter)
 
     @property
-    def _radius(self):
-        return round(self._config.DEADZONE_SCALE.read() * 100)
+    def _diameter(self):
+        return self._config.free_zone_radius * 2

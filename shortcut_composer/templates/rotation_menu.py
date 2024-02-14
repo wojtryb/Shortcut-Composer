@@ -16,6 +16,8 @@ class RotationMenu(RawInstructions):
         counterclockwise: bool = False,
         offset: int = 0,
         deadzone_scale: float = 1.0,
+        free_zone_scale: float = 1.0,
+        divisions: int = 24,
         short_vs_long_press_time: Optional[float] = None,
     ) -> None:
         super().__init__(name, instructions, short_vs_long_press_time)
@@ -23,7 +25,9 @@ class RotationMenu(RawInstructions):
 
         self._config = RotationConfig(
             name=self.name,
-            deadzone_scale=deadzone_scale)
+            deadzone_scale=deadzone_scale,
+            free_zone_scale=free_zone_scale,
+            divisions=divisions)
 
         sign = -1 if counterclockwise else 1
         self._rotation_manager = RotationManager(

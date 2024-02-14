@@ -14,6 +14,16 @@ from .rotation_widget import RotationWidget
 from .rotation_config import RotationConfig
 
 
+def snap_degree(value: int, step_size: int) -> int:
+    if not 0 < step_size <= 360:
+        raise RuntimeError("Step needs to be in range (0, 360>")
+
+    moved_by_half_of_step = value + step_size//2
+    snapped = moved_by_half_of_step // step_size * step_size
+
+    return snapped % 360
+
+
 class RotationManager:
     """
     Handles the passed PieWidget by tracking a mouse to find active label.
@@ -60,12 +70,12 @@ class RotationManager:
 
         cursor = QCursor().pos()
         circle = CirclePoints(self._center_global, 0)
-        if circle.distance(cursor) > self._deadzone:
-            to_set = self._modifier(int(circle.angle_from_point(cursor)))
+        if circle.distance(cursor) > self._config.free_zone_radius:
+            to_set = self._modifier(round(circle.angle_from_point(cursor)))
+        elif circle.distance(cursor) > self._config.deadzone_radius:
+            to_set = self._modifier(snap_degree(
+                value=round(circle.angle_from_point(cursor)),
+                step_size=360//self._config.DIVISIONS.read()))
         else:
             to_set = self._starting_value
         self._controller.set_value(to_set)
-
-    @property
-    def _deadzone(self):
-        return self._config.DEADZONE_SCALE.read() * 100
