@@ -47,10 +47,14 @@ class RotationConfig(FieldGroup, Generic[T]):
             name="Active color",
             default=active_color)
 
+        self._base_size = Krita.screen_size/2560
+
     @property
     def deadzone_radius(self) -> int:
-        return round(self.DEADZONE_SCALE.read() * 100)
+        return round(self.DEADZONE_SCALE.read() * 100 * self._base_size)
 
     @property
     def widget_radius(self) -> int:
-        return round(self.deadzone_radius + self.INNER_ZONE_SCALE.read() * 75)
+        free_zone = self.INNER_ZONE_SCALE.read() * 75 * self._base_size
+        return round(self.deadzone_radius + free_zone)
+
