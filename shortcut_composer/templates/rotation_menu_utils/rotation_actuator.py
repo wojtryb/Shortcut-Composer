@@ -7,10 +7,9 @@ from PyQt5.QtGui import QCursor
 
 from api_krita.pyqt import Timer
 from composer_utils import Config
-# FIXME: move to common
 from shortcut_composer.core_components.controller_base import Controller
 from .rotation_widget import RotationWidget
-from .zone import Zone
+from .rotation_widget_state import Zone
 
 
 class RotationActuator:
@@ -36,9 +35,9 @@ class RotationActuator:
         self._timer.stop()
 
     def _update(self) -> None:
-        if self._rotation_widget.selected_zone == Zone.DEADZONE:
+        if self._rotation_widget.state.selected_zone == Zone.DEADZONE:
             value = self._starting_value
         else:
-            value = self._rotation_widget.selected_angle
+            value = self._rotation_widget.state.selected_angle
         modified = self._modifier(value)
         self._controller.set_value(modified)

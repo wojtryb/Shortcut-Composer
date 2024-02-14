@@ -8,11 +8,10 @@ from PyQt5.QtGui import QCursor
 from api_krita.pyqt import Timer
 from composer_utils import Config
 # FIXME: move to common
-# from shortcut_composer.core_components.controller_base import Controller
 from templates.pie_menu_utils.pie_widget_utils import CirclePoints
 from .rotation_widget import RotationWidget
 from .rotation_config import RotationConfig
-from .zone import Zone
+from .rotation_widget_state import Zone
 
 
 class RotationManager:
@@ -39,7 +38,7 @@ class RotationManager:
         self._rotation_widget.show()
 
         self._center_global = QCursor().pos()
-        self._rotation_widget.reset_state()
+        self._rotation_widget.state.reset()
 
         self._timer.start()
 
@@ -67,14 +66,14 @@ class RotationManager:
             zone = Zone.CONTIGUOUS_ZONE if is_inverse else Zone.DISCRETE_ZONE
         else:
             zone = Zone.DISCRETE_ZONE if is_inverse else Zone.CONTIGUOUS_ZONE
-        self._rotation_widget.selected_zone = zone
+        self._rotation_widget.state.selected_zone = zone
 
         angle = round(circle.angle_from_point(cursor))
         if zone == Zone.DISCRETE_ZONE:
             angle = self._snap_degree(
                 value=angle,
                 step_size=360//self._config.DIVISIONS.read())
-        self._rotation_widget.selected_angle = angle
+        self._rotation_widget.state.selected_angle = angle
 
         self._rotation_widget.repaint()
 

@@ -7,22 +7,16 @@ from PyQt5.QtGui import QColor
 from api_krita.pyqt import Painter
 
 from .rotation_style import RotationStyle
-from .zone import Zone
+from .rotation_widget_state import Zone, WidgetState
 
 
 class RotationPainter:
     def __init__(self, style: RotationStyle):
         self._style = style
 
-    def paint(
-        self,
-        painter: Painter,
-        selected_angle: int,
-        selected_zone: Zone
-    ):
+    def paint(self, painter: Painter, state: WidgetState):
         self._painter = painter
-        self._selected_angle = selected_angle
-        self._selected_zone = selected_zone
+        self._state = state
 
         self._paint_deadzone_indicator()
         self._paint_free_zone_indicator()
@@ -68,10 +62,10 @@ class RotationPainter:
             thickness=1)
 
     def _paint_active_angle(self) -> None:
-        if self._selected_zone == Zone.DEADZONE:
+        if self._state.selected_zone == Zone.DEADZONE:
             return
 
-        if self._selected_zone == Zone.DISCRETE_ZONE:
+        if self._state.selected_zone == Zone.DISCRETE_ZONE:
             span = 360//self._style.divisions
         else:
             span = 10
@@ -79,7 +73,7 @@ class RotationPainter:
         self._painter.paint_pie(
             center=self._center,
             outer_radius=self._style.widget_radius,
-            angle=self._selected_angle,
+            angle=self._state.selected_angle,
             span=span,
             color=self._style.active_color,
             thickness=self._style.widget_radius-self._style.deadzone_radius+2)
