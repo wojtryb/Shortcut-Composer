@@ -2,10 +2,10 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import TypeVar, Generic
+from enum import Enum
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import (
-    QPaintEvent)
+from PyQt5.QtGui import QPaintEvent
 
 from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
 from composer_utils import Config
@@ -17,8 +17,17 @@ T = TypeVar('T')
 
 class RotationWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
+    class Zone(Enum):
+        DEADZONE = 0
+        INNER_ZONE = 1
+        OUTER_ZONE = 2
+
     def __init__(self, config: RotationConfig, parent=None) -> None:
         self._config = config
+
+        self.selected_angle = 0
+        self.selected_zone = self.Zone.DEADZONE
+
         AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())
 
         self._config.register_callback(self._resize)
@@ -33,6 +42,10 @@ class RotationWidget(AnimatedWidget, BaseWidget, Generic[T]):
             Qt.NoDropShadowWindowHint))
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setStyleSheet("background: transparent;")
+
+    def reset_state(self):
+        self.selected_angle = 0
+        self.selected_zone = self.Zone.DEADZONE
 
     def paintEvent(self, event: QPaintEvent) -> None:
         """Paint the entire widget using the Painter wrapper."""

@@ -1,14 +1,14 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Callable
+# from typing import Callable
 
 from PyQt5.QtGui import QCursor
 
 from api_krita.pyqt import Timer
 from composer_utils import Config
 # FIXME: move to common
-from shortcut_composer.core_components.controller_base import Controller
+# from shortcut_composer.core_components.controller_base import Controller
 from templates.pie_menu_utils.pie_widget_utils import CirclePoints
 from .rotation_widget import RotationWidget
 from .rotation_config import RotationConfig
@@ -34,25 +34,23 @@ class RotationManager:
 
     def __init__(
         self,
-        config: RotationConfig,
-        controller: Controller[int],
-        modifier: Callable[[int], int] = lambda x: x,
-    ):
-        self._timer = Timer(self._handle_cursor, Config.get_sleep_time())
-        self._controller = controller
-        self._modifier = modifier
+        rotation_widget: RotationWidget,
+        config: RotationConfig
+    ) -> None:
+        self._rotation_widget = rotation_widget
         self._config = config
 
-        self._rotation_widget = RotationWidget(config=self._config)
+        self._timer = Timer(self._handle_cursor, Config.get_sleep_time())
 
     def start(self) -> None:
         """Show widget under the mouse and start the mouse tracking loop."""
         self._rotation_widget.move_center(QCursor().pos())
         self._rotation_widget.show()
 
-        self._timer.start()
         self._center_global = QCursor().pos()
-        self._starting_value = self._controller.get_value()
+        self._rotation_widget.reset_state()
+
+        self._timer.start()
 
     def stop(self, hide: bool = True) -> None:
         """Hide the widget and stop the mouse tracking loop."""
@@ -71,24 +69,14 @@ class RotationManager:
         cursor = QCursor().pos()
         circle = CirclePoints(self._center_global, 0)
 
-        def snap_angle():
-            return self._modifier(snap_degree(
-                value=round(circle.angle_from_point(cursor)),
-                step_size=360//self._config.DIVISIONS.read()))
-
-        def free_angle():
-            return self._modifier(round(circle.angle_from_point(cursor)))
-
-        inner_zone = snap_angle
-        outer_zone = free_angle
-        if self._config.INVERSE_ZONES.read():
-            inner_zone, outer_zone = outer_zone, inner_zone
+        self._rotation_widget.selected_angle = round(
+            circle.angle_from_point(cursor))
 
         if circle.distance(cursor) < self._config.deadzone_radius:
-            to_set = self._starting_value
+            zone = RotationWidget.Zone.DEADZONE
         elif circle.distance(cursor) < self._config.widget_radius:
-            to_set = inner_zone()
+            zone = RotationWidget.Zone.INNER_ZONE
         else:
-            to_set = outer_zone()
+            zone = RotationWidget.Zone.OUTER_ZONE
 
-        self._controller.set_value(to_set)
+        self._rotation_widget.selected_zone = zone

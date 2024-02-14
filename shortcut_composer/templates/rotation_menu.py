@@ -4,7 +4,11 @@
 from typing import List, Optional
 from core_components import Controller, Instruction
 from .raw_instructions import RawInstructions
-from .rotation_menu_utils import RotationManager, RotationConfig
+from .rotation_menu_utils import (
+    RotationActuator,
+    RotationManager,
+    RotationConfig,
+    RotationWidget)
 
 
 class RotationMenu(RawInstructions):
@@ -31,8 +35,15 @@ class RotationMenu(RawInstructions):
             divisions=divisions,
             inverse_zones=inverse_zones)
 
-        sign = -1 if counterclockwise else 1
+        self._rotation_widget = RotationWidget(config=self._config)
+
         self._rotation_manager = RotationManager(
+            rotation_widget=self._rotation_widget,
+            config=self._config)
+
+        sign = -1 if counterclockwise else 1
+        self._rotation_actuator = RotationActuator(
+            rotation_widget=self._rotation_widget,
             config=self._config,
             controller=controller,
             modifier=lambda x: sign*x + offset)
@@ -42,8 +53,10 @@ class RotationMenu(RawInstructions):
         super().on_key_press()
         self._controller.refresh()
         self._rotation_manager.start()
+        self._rotation_actuator.start()
 
     def on_every_key_release(self) -> None:
         """Handle the key release event."""
         super().on_every_key_release()
+        self._rotation_actuator.stop()
         self._rotation_manager.stop()
