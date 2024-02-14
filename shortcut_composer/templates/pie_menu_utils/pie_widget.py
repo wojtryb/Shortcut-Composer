@@ -11,16 +11,13 @@ from PyQt5.QtGui import (
     QPaintEvent)
 
 from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
-from composer_utils import Config
+from composer_utils import CirclePoints, Config
 from composer_utils.label import LabelWidget
 from .pie_edit_mode import PieEditMode
 from .pie_label import PieLabel
 from .pie_style_holder import PieStyleHolder
 from .pie_config import PieConfig
-from .pie_widget_utils import (
-    CirclePoints,
-    OrderHandler,
-    PiePainter)
+from .pie_widget_utils import OrderHandler, PiePainter
 
 T = TypeVar('T')
 

@@ -5,13 +5,13 @@ from typing import List
 from functools import partial
 
 from api_krita.pyqt import BaseWidget
+from composer_utils import CirclePoints
 from composer_utils.label import LabelWidget
 from composer_utils.label.label_widget_impl import dispatch_label_widget
 from ..pie_label import PieLabel
 from ..pie_config import PieConfig
 from ..pie_style_holder import PieStyleHolder
 from .widget_holder import WidgetHolder
-from .circle_points import CirclePoints
 
 
 class OrderHandler:

@@ -4,9 +4,7 @@
 from PyQt5.QtGui import QCursor
 
 from api_krita.pyqt import Timer
-from composer_utils import Config
-# FIXME: move to common
-from templates.pie_menu_utils.pie_widget_utils import CirclePoints
+from composer_utils import CirclePoints, Config
 from .rotation_widget import RotationWidget
 from .rotation_config import RotationConfig
 from .rotation_style import RotationStyle

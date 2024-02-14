@@ -3,13 +3,11 @@
 
 """Additional classes used by pie widget components."""
 
-from .circle_points import CirclePoints
 from .widget_holder import WidgetHolder
 from .order_handler import OrderHandler
 from .pie_painter import PiePainter
 
 __all__ = [
-    "CirclePoints",
     "WidgetHolder",
     "OrderHandler",
     "PiePainter",

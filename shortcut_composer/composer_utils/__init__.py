@@ -6,11 +6,13 @@
 from .animation_progress import AnimationProgress
 from .settings_dialog import SettingsDialog
 from .buttons_layout import ButtonsLayout
+from .circle_points import CirclePoints
 from .global_config import Config
 
 __all__ = [
     "AnimationProgress",
     "SettingsDialog",
     "ButtonsLayout",
+    "CirclePoints",
     "Config",
 ]
