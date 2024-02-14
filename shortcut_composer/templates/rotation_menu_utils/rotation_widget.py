@@ -8,6 +8,7 @@ from PyQt5.QtGui import QPaintEvent
 
 from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
 from composer_utils import Config
+from .rotation_style_holder import RotationStyleHolder
 from .rotation_painter import RotationPainter
 from .rotation_config import RotationConfig
 from .zone import Zone
@@ -17,8 +18,14 @@ T = TypeVar('T')
 
 class RotationWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
-    def __init__(self, config: RotationConfig, parent=None) -> None:
+    def __init__(
+        self,
+        config: RotationConfig,
+        style_holder: RotationStyleHolder,
+        parent=None
+    ) -> None:
         self._config = config
+        self._style_holder = style_holder
 
         self.selected_angle = 0
         self.selected_zone = Zone.DEADZONE
@@ -38,6 +45,9 @@ class RotationWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setStyleSheet("background: transparent;")
 
+        self._rotation_painter = RotationPainter(
+            style=self._style_holder.rotation_style)
+
     def reset_state(self):
         self.selected_angle = 0
         self.selected_zone = Zone.DEADZONE
@@ -45,15 +55,10 @@ class RotationWidget(AnimatedWidget, BaseWidget, Generic[T]):
     def paintEvent(self, event: QPaintEvent) -> None:
         """Paint the entire widget using the Painter wrapper."""
         with Painter(self, event) as painter:
-            RotationPainter(
+            self._rotation_painter.paint(
                 painter=painter,
-                deadzone_radius=self._config.deadzone_radius,
-                widget_radius=self._config.widget_radius,
                 selected_angle=self.selected_angle,
-                selected_zone=self.selected_zone,
-                divisions=self._config.DIVISIONS.read(),
-                active_color=self._config.ACTIVE_COLOR.read()
-            )
+                selected_zone=self.selected_zone)
 
     def _resize(self) -> None:
         self.setGeometry(0, 0, self._diameter, self._diameter)

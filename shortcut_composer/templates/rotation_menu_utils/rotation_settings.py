@@ -21,7 +21,7 @@ class RotationSettings(BaseWidget):
             self.windowFlags() | Qt.WindowStaysOnTopHint)  # type: ignore
 
         self.setMinimumSize(QSize(300, 200))
-        self.setWindowTitle("Rotation settings")
+        self.setWindowTitle(f"Rotation settings: {config.name}")
 
         self._config = config
 

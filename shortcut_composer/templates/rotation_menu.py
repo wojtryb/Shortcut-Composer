@@ -12,6 +12,7 @@ from api_krita.pyqt import RoundButton
 from core_components import Controller, Instruction
 from .raw_instructions import RawInstructions
 from .rotation_menu_utils import (
+    RotationStyleHolder,
     RotationSettings,
     RotationActuator,
     RotationManager,
@@ -45,7 +46,10 @@ class RotationMenu(RawInstructions):
             inverse_zones=inverse_zones,
             active_color=active_color)
 
-        self._rotation_widget = RotationWidget(config=self._config)
+        self._style_holder = RotationStyleHolder(config=self._config)
+        self._rotation_widget = RotationWidget(
+            config=self._config,
+            style_holder=self._style_holder)
 
         self._rotation_manager = RotationManager(
             rotation_widget=self._rotation_widget,
