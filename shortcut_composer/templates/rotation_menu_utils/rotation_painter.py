@@ -62,19 +62,30 @@ class RotationPainter:
             thickness=1)
 
     def _paint_active_angle(self) -> None:
-        if self._state.selected_zone == Zone.DEADZONE:
-            return
+        thickness = self._style.widget_radius-self._style.deadzone_radius+2
+        span = 360//self._style.divisions
+        for angle, progress in self._state.animations_in_progress.items():
 
-        if self._state.selected_zone == Zone.DISCRETE_ZONE:
-            span = 360//self._style.divisions
-        else:
-            span = 10
+            thickness_change = round(progress.value * 15)
 
-        self._painter.paint_pie(
-            center=self._center,
-            outer_radius=self._style.widget_radius,
-            angle=self._state.selected_angle,
-            span=span,
-            color=self._style.active_color,
-            thickness=self._style.widget_radius-self._style.deadzone_radius+2)
+            color = self._style.active_color
+            color.setAlpha(round(progress.value * 255))
+
+            self._painter.paint_pie(
+                center=self._center,
+                outer_radius=self._style.widget_radius+thickness_change,
+                angle=angle,
+                span=span,
+                color=color,
+                thickness=thickness+thickness_change)
+
+        if self._state.selected_zone == Zone.CONTIGUOUS_ZONE:
+            self._painter.paint_pie(
+                center=self._center,
+                outer_radius=self._style.widget_radius,
+                angle=self._state.selected_angle,
+                span=10,
+                color=self._style.active_color,
+                thickness=thickness)
+
         # +2 allows the indicator to cover the deadzone circle

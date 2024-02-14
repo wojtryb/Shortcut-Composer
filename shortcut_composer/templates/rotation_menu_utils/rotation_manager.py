@@ -75,6 +75,7 @@ class RotationManager:
                 step_size=360//self._config.DIVISIONS.read())
         self._rotation_widget.state.selected_angle = angle
 
+        self._rotation_widget.state.tick_animations()
         self._rotation_widget.repaint()
 
     @staticmethod
