@@ -66,6 +66,8 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self._config = config
         self._edit_mode = edit_mode
 
+        self._painter = PiePainter(self._style_holder.pie_style)
+
         self._config.PIE_RADIUS_SCALE.register_callback(self._reset)
         self._config.ICON_RADIUS_SCALE.register_callback(self._reset)
         Config.PIE_GLOBAL_SCALE.register_callback(self._reset)
@@ -99,8 +101,8 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
     def paintEvent(self, event: QPaintEvent) -> None:
         """Paint the entire widget using the Painter wrapper."""
-        with Painter(self, event) as painter:
-            PiePainter(painter, self._labels, self._style_holder.pie_style)
+        with Painter(self, event) as qt_painter:
+            self._painter.paint(qt_painter, self._labels)
 
     def dragEnterEvent(self, e: QDragEnterEvent) -> None:
         """Allow dragging the widgets while in edit mode."""

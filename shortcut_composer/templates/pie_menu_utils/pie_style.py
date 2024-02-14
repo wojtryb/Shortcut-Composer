@@ -9,15 +9,6 @@ from composer_utils.label import LabelWidgetStyle
 
 
 class PieStyle:
-    """
-    Holds and calculates configuration of displayed elements.
-
-    Style elements are calculated based on passed local config and
-    imported global config.
-
-    They are also affected by length of passed items list which size can
-    change over time.
-    """
 
     def __init__(
         self,

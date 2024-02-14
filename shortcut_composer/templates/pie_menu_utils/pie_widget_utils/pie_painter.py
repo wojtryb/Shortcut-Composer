@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import List
-from dataclasses import dataclass
 
 from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QColor
@@ -12,16 +11,17 @@ from ..pie_style import PieStyle
 from ..pie_label import PieLabel
 
 
-@dataclass
 class PiePainter:
     """Uses provided painter and parts of widget information to paint it."""
 
-    painter: Painter
-    labels: List[PieLabel]
-    style: PieStyle
+    def __init__(self, style: PieStyle):
+        self._style = style
 
-    def __post_init__(self):
+    def paint(self, painter: Painter, labels: List[PieLabel]):
         """Paint the widget which created the passed painter."""
+        self._painter = painter
+        self._labels = labels
+
         self._paint_deadzone_indicator()
         self._paint_base_wheel()
         self._paint_active_pie()
@@ -29,22 +29,22 @@ class PiePainter:
     @property
     def _center(self) -> QPoint:
         """Return point with center widget's point in its coordinates."""
-        return QPoint(self.style.widget_radius, self.style.widget_radius)
+        return QPoint(self._style.widget_radius, self._style.widget_radius)
 
     def _paint_deadzone_indicator(self) -> None:
         """Paint the circle representing deadzone, when its valid."""
-        if self.style.deadzone_radius == float("inf"):
+        if self._style.deadzone_radius == float("inf"):
             return
 
-        self.painter.paint_wheel(
+        self._painter.paint_wheel(
             center=self._center,
-            outer_radius=self.style.deadzone_radius,
+            outer_radius=self._style.deadzone_radius,
             color=QColor(128, 255, 128, 120),
             thickness=1)
 
-        self.painter.paint_wheel(
+        self._painter.paint_wheel(
             center=self._center,
-            outer_radius=self.style.deadzone_radius-1,
+            outer_radius=self._style.deadzone_radius-1,
             color=QColor(255, 128, 128, 120),
             thickness=1)
 
@@ -52,77 +52,78 @@ class PiePainter:
         """Paint a base circle."""
         # NOTE: Windows10 does not treat the transparent center as part
         # of the widget, so a low opacity circle allows to trick it.
-        self.painter.paint_wheel(
+        self._painter.paint_wheel(
             center=self._center,
-            outer_radius=self.style.widget_radius,
+            outer_radius=self._style.widget_radius,
             color=QColor(128, 128, 128, 1))
 
         # base wheel
-        self.painter.paint_wheel(
+        self._painter.paint_wheel(
             center=self._center,
-            outer_radius=self.style.pie_radius,
-            color=self.style.background_color,
-            thickness=self.style.area_thickness+self.style.border_thickness//2)
+            outer_radius=self._style.pie_radius,
+            color=self._style.background_color,
+            thickness=self._style.area_thickness
+            + self._style.border_thickness//2)
 
         # base wheel border
-        self.painter.paint_wheel(
+        self._painter.paint_wheel(
             center=self._center,
-            outer_radius=self.style.inner_edge_radius,
-            color=self.style.border_color,
-            thickness=self.style.border_thickness)
+            outer_radius=self._style.inner_edge_radius,
+            color=self._style.border_color,
+            thickness=self._style.border_thickness)
 
         # base wheel decorator
-        self.painter.paint_wheel(
+        self._painter.paint_wheel(
             center=self._center,
             outer_radius=(
-                self.style.inner_edge_radius
-                + self.style.decorator_thickness),
-            color=self.style.background_decorator_color,
-            thickness=self.style.decorator_thickness)
+                self._style.inner_edge_radius
+                + self._style.decorator_thickness),
+            color=self._style.background_decorator_color,
+            thickness=self._style.decorator_thickness)
 
     def _paint_active_pie(self) -> None:
         """Paint a pie behind a label which is active or during animation."""
-        for label in self.labels:
+        for label in self._labels:
             if not label.activation_progress.value:
                 continue
 
             thickness_addition = round(
                 0.15 * label.activation_progress.value
-                * self.style.area_thickness)
+                * self._style.area_thickness)
 
             # active pie
-            self.painter.paint_pie(
+            self._painter.paint_pie(
                 center=self._center,
-                outer_radius=self.style.pie_radius + thickness_addition,
+                outer_radius=self._style.pie_radius + thickness_addition,
                 angle=label.angle,
-                span=360//len(self.labels),
+                span=360//len(self._labels),
                 color=self._pick_pie_color(label),
-                thickness=self.style.area_thickness + thickness_addition)
+                thickness=self._style.area_thickness + thickness_addition)
 
             # pie decorator
-            self.painter.paint_pie(
+            self._painter.paint_pie(
                 center=self._center,
-                outer_radius=self.style.pie_radius + thickness_addition,
+                outer_radius=self._style.pie_radius + thickness_addition,
                 angle=label.angle,
-                span=360//len(self.labels),
-                color=self.style.pie_decorator_color,
-                thickness=self.style.border_thickness*4)
+                span=360//len(self._labels),
+                color=self._style.pie_decorator_color,
+                thickness=self._style.border_thickness*4)
 
             # active pie border
-            self.painter.paint_pie(
+            self._painter.paint_pie(
                 center=self._center,
-                outer_radius=self.style.pie_radius +
-                thickness_addition + self.style.border_thickness//2,
+                outer_radius=self._style.pie_radius +
+                thickness_addition + self._style.border_thickness//2,
                 angle=label.angle,
-                span=360//len(self.labels),
-                color=self.style.active_color_dark,
-                thickness=self.style.border_thickness)
+                span=360//len(self._labels),
+                color=self._style.active_color_dark,
+                thickness=self._style.border_thickness)
 
     def _pick_pie_color(self, label: PieLabel) -> QColor:
         """Pick color of pie based on widget mode and animation progress."""
         return self._overlay_colors(
-            self.style.active_color_dark,
-            self.style.active_color,
+            self._style.active_color_dark,
+            self._style.active_color,
             opacity=label.activation_progress.value)
 
     @staticmethod
