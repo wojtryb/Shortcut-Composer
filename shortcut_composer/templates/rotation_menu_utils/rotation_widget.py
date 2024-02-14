@@ -8,7 +8,7 @@ from PyQt5.QtGui import QPaintEvent
 
 from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
 from composer_utils import Config
-from .rotation_style_holder import RotationStyleHolder
+from .rotation_style import RotationStyle
 from .rotation_widget_state import WidgetState
 from .rotation_painter import RotationPainter
 from .rotation_config import RotationConfig
@@ -21,11 +21,11 @@ class RotationWidget(AnimatedWidget, BaseWidget, Generic[T]):
     def __init__(
         self,
         config: RotationConfig,
-        style_holder: RotationStyleHolder,
+        style: RotationStyle,
         parent=None
     ) -> None:
         self._config = config
-        self._style_holder = style_holder
+        self._style = style
 
         self.state = WidgetState()
 
@@ -44,8 +44,7 @@ class RotationWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setStyleSheet("background: transparent;")
 
-        self._rotation_painter = RotationPainter(
-            style=self._style_holder.rotation_style)
+        self._rotation_painter = RotationPainter(style=self._style)
 
     def paintEvent(self, event: QPaintEvent) -> None:
         """Paint the entire widget using the Painter wrapper."""
@@ -59,6 +58,6 @@ class RotationWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
     @property
     def _diameter(self):
-        diameter = self._config.widget_radius * 2
+        diameter = self._style.widget_radius * 2
         # make sure there is a place for settings button
-        return max(diameter, self._config.settings_button_radius*2)
+        return max(diameter, self._style.settings_button_radius*2)

@@ -46,43 +46,43 @@ class RotationPainter:
 
     def _paint_free_zone_indicator(self) -> None:
         """Paint the circle representing deadzone, when its valid."""
-        if self._style.deadzone_radius == self._style.widget_radius:
+        if self._style.deadzone_radius == self._style.inner_zone_radius:
             return
 
         self._painter.paint_wheel(
             center=self._center,
-            outer_radius=self._style.widget_radius,
+            outer_radius=self._style.inner_zone_radius,
             color=QColor(128, 255, 128, 120),
             thickness=1)
 
         self._painter.paint_wheel(
             center=self._center,
-            outer_radius=self._style.widget_radius-1,
+            outer_radius=self._style.inner_zone_radius-1,
             color=QColor(255, 128, 128, 120),
             thickness=1)
 
     def _paint_active_angle(self) -> None:
-        thickness = self._style.widget_radius-self._style.deadzone_radius+2
-        span = 360//self._style.divisions
+        thickness = self._style.inner_zone_radius-self._style.deadzone_radius+2
         for angle, progress in self._state.animations_in_progress.items():
 
-            thickness_change = round(progress.value * 15)
+            thickness_change = round(
+                (1-progress.value) * self._style.transparent_border)
 
             color = self._style.active_color
             color.setAlpha(round(progress.value * 255))
 
             self._painter.paint_pie(
                 center=self._center,
-                outer_radius=self._style.widget_radius+thickness_change,
+                outer_radius=self._style.inner_zone_radius+thickness_change,
                 angle=angle,
-                span=span,
+                span=self._style.discrete_pie_span,
                 color=color,
                 thickness=thickness+thickness_change)
 
         if self._state.selected_zone == Zone.CONTIGUOUS_ZONE:
             self._painter.paint_pie(
                 center=self._center,
-                outer_radius=self._style.widget_radius,
+                outer_radius=self._style.inner_zone_radius,
                 angle=self._state.selected_angle,
                 span=10,
                 color=self._style.active_color,

@@ -11,6 +11,7 @@ from composer_utils import Config
 from templates.pie_menu_utils.pie_widget_utils import CirclePoints
 from .rotation_widget import RotationWidget
 from .rotation_config import RotationConfig
+from .rotation_style import RotationStyle
 from .rotation_widget_state import Zone
 
 
@@ -25,10 +26,12 @@ class RotationManager:
     def __init__(
         self,
         rotation_widget: RotationWidget,
-        config: RotationConfig
+        config: RotationConfig,
+        style: RotationStyle,
     ) -> None:
         self._rotation_widget = rotation_widget
         self._config = config
+        self._style = style
 
         self._timer = Timer(self._handle_cursor, Config.get_sleep_time())
 
@@ -60,9 +63,9 @@ class RotationManager:
         circle = CirclePoints(self._center_global, 0)
 
         is_inverse = self._config.INVERSE_ZONES.read()
-        if circle.distance(cursor) < self._config.deadzone_radius:
+        if circle.distance(cursor) < self._style.deadzone_radius:
             zone = Zone.DEADZONE
-        elif circle.distance(cursor) < self._config.widget_radius:
+        elif circle.distance(cursor) < self._style.inner_zone_radius:
             zone = Zone.CONTIGUOUS_ZONE if is_inverse else Zone.DISCRETE_ZONE
         else:
             zone = Zone.DISCRETE_ZONE if is_inverse else Zone.CONTIGUOUS_ZONE
@@ -72,7 +75,7 @@ class RotationManager:
         if zone == Zone.DISCRETE_ZONE:
             angle = self._snap_degree(
                 value=angle,
-                step_size=360//self._config.DIVISIONS.read())
+                step_size=self._style.discrete_pie_span)
         self._rotation_widget.state.selected_angle = angle
 
         self._rotation_widget.state.tick_animations()

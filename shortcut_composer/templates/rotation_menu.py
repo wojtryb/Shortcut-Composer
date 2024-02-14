@@ -12,12 +12,12 @@ from api_krita.pyqt import RoundButton
 from core_components import Controller, Instruction
 from .raw_instructions import RawInstructions
 from .rotation_menu_utils import (
-    RotationStyleHolder,
     RotationSettings,
     RotationActuator,
     RotationManager,
     RotationConfig,
-    RotationWidget)
+    RotationWidget,
+    RotationStyle)
 
 
 class RotationMenu(RawInstructions):
@@ -46,14 +46,20 @@ class RotationMenu(RawInstructions):
             inverse_zones=inverse_zones,
             active_color=active_color)
 
-        self._style_holder = RotationStyleHolder(config=self._config)
+        self._style = RotationStyle(
+            inner_zone_scale_callback=self._config.INNER_ZONE_SCALE.read,
+            deadzone_scale_callback=self._config.DEADZONE_SCALE.read,
+            active_color_callback=self._config.ACTIVE_COLOR.read,
+            divisions_callback=self._config.DIVISIONS.read)
+
         self._rotation_widget = RotationWidget(
             config=self._config,
-            style_holder=self._style_holder)
+            style=self._style)
 
         self._rotation_manager = RotationManager(
             rotation_widget=self._rotation_widget,
-            config=self._config)
+            config=self._config,
+            style=self._style)
 
         sign = -1 if counterclockwise else 1
         self._rotation_actuator = RotationActuator(
@@ -66,7 +72,7 @@ class RotationMenu(RawInstructions):
         """Create button with which user can enter the edit mode."""
 
         settings_button = RoundButton(
-            radius_callback=lambda: self._config.settings_button_radius,
+            radius_callback=lambda: self._style.settings_button_radius,
             background_color_callback=Krita.get_main_color_from_theme,
             active_color_callback=Krita.get_active_color_from_theme,
             icon=Krita.get_icon("properties"),
