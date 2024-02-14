@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 from api_krita.pyqt import BaseWidget
 
 from PyQt5.QtCore import Qt, QSize
@@ -24,7 +27,7 @@ class RotationSettings(BaseWidget):
             self.windowFlags() | Qt.WindowStaysOnTopHint)  # type: ignore
 
         self.setMinimumSize(QSize(300, 200))
-        self.setWindowTitle(f"Rotation settings: {config.name}")
+        self.setWindowTitle(f"Settings: {config.name}")
 
         self._config = config
 

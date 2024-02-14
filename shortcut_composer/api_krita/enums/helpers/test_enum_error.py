@@ -1,10 +1,5 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
-# SPDX-License-Identifier: GPL-3.0-or-later
 
-from krita import Krita as Api
-
-from PyQt5.QtGui import QIcon
-from .helpers import EnumGroup, Group
+from enum_group import EnumGroup, Group
 
 
 class Tool(EnumGroup):
@@ -64,19 +59,6 @@ class Tool(EnumGroup):
             return PRETTY_NAMES[self]
         return f"{self.name.replace('_', ' ').title()} Tool"
 
-    def activate(self):
-        Api.instance().action(self.value).trigger()
-
-    @classmethod
-    def is_paintable(cls, tool: 'Tool') -> bool:
-        """Is the user able to paint when the given tool is activated."""
-        return tool in cls._painting  # type: ignore
-
-    @property
-    def icon(self) -> QIcon:
-        """Return the icon of this tool."""
-        return Api.instance().action(self.value).icon()
-
 
 PRETTY_NAMES = {
     Tool.SHAPE_SELECT: "Select Shapes Tool",
@@ -86,3 +68,5 @@ PRETTY_NAMES = {
     Tool.ASSISTANTS: "Assistant Tool",
     Tool.REFERENCE: "Reference Images Tool",
 }
+
+print(Tool("KritaSelected/KisToolColorSampler"))
