@@ -60,4 +60,6 @@ class RotationWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
     @property
     def _diameter(self):
-        return self._config.widget_radius * 2
+        diameter = self._config.widget_radius * 2
+        # make sure there is a place for settings button
+        return max(diameter, self._config.settings_button_radius*2)

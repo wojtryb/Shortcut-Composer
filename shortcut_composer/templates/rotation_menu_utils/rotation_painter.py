@@ -39,21 +39,25 @@ class RotationPainter:
 
     def _paint_deadzone_indicator(self) -> None:
         """Paint the circle representing deadzone, when its valid."""
+        if not self._deadzone_radius:
+            return
 
         self._painter.paint_wheel(
             center=self._center,
-            outer_radius=self._deadzone_radius+2,
+            outer_radius=self._deadzone_radius,
             color=QColor(128, 255, 128, 120),
             thickness=1)
 
         self._painter.paint_wheel(
             center=self._center,
-            outer_radius=self._deadzone_radius+1,
+            outer_radius=self._deadzone_radius-1,
             color=QColor(255, 128, 128, 120),
             thickness=1)
 
     def _paint_free_zone_indicator(self) -> None:
         """Paint the circle representing deadzone, when its valid."""
+        if self._deadzone_radius == self._widget_radius:
+            return
 
         self._painter.paint_wheel(
             center=self._center,
@@ -68,7 +72,6 @@ class RotationPainter:
             thickness=1)
 
     def _paint_active_angle(self) -> None:
-
         if self._selected_zone == Zone.DEADZONE:
             return
 
@@ -83,4 +86,5 @@ class RotationPainter:
             angle=self._selected_angle,
             span=span,
             color=self._active_color,
-            thickness=self._widget_radius-self._deadzone_radius)
+            thickness=self._widget_radius-self._deadzone_radius+2)
+        # +2 allows the indicator to cover the deadzone circle
