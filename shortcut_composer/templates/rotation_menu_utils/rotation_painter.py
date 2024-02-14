@@ -63,6 +63,8 @@ class RotationPainter:
 
     def _paint_active_angle(self) -> None:
         for angle, progress in self._state.animations_in_progress.items():
+            if progress.value == 0:
+                continue
             self._paint_decorated_pie(
                 angle=angle,
                 span=self._style.discrete_pie_span,
@@ -70,7 +72,7 @@ class RotationPainter:
 
         if self._state.selected_zone == Zone.CONTIGUOUS_ZONE:
             self._paint_decorated_pie(
-                angle=angle,
+                angle=self._state.selected_angle,
                 span=10,
                 animation_value=1.0)
 
