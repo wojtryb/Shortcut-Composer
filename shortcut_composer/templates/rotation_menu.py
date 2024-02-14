@@ -26,7 +26,7 @@ class RotationMenu(RawInstructions):
         name: str,
         controller: Controller[int],
         instructions: Optional[List[Instruction]] = None,
-        counterclockwise: bool = False,
+        is_counterclockwise: bool = False,
         offset: int = 0,
         deadzone_scale: float = 1.0,
         inner_zone_scale: float = 1.0,
@@ -40,11 +40,14 @@ class RotationMenu(RawInstructions):
 
         self._config = RotationConfig(
             name=self.name,
+            is_counterclockwise=is_counterclockwise,
+            offset=offset,
             deadzone_scale=deadzone_scale,
             inner_zone_scale=inner_zone_scale,
             divisions=divisions,
             inverse_zones=inverse_zones,
-            active_color=active_color)
+            active_color=active_color,
+        )
 
         self._style = RotationStyle(
             inner_zone_scale_callback=self._config.INNER_ZONE_SCALE.read,
@@ -61,11 +64,10 @@ class RotationMenu(RawInstructions):
             config=self._config,
             style=self._style)
 
-        sign = -1 if counterclockwise else 1
         self._rotation_actuator = RotationActuator(
             rotation_widget=self._rotation_widget,
             controller=controller,
-            modifier=lambda x: sign*x + offset)
+            config=self._config)
 
     @cached_property
     def settings_button(self):

@@ -53,6 +53,16 @@ class RotationSettings(BaseWidget):
                 pretty_name="Divisions",
                 step=1,
                 max_value=360),
+            Checkbox(
+                config_field=config.IS_COUNTERCLOCKWISE,
+                parent=self,
+                pretty_name="Is counterclockwise"),
+            SpinBox(
+                config_field=config.OFFSET,
+                parent=self,
+                pretty_name="Offset",
+                step=1,
+                max_value=360),
 
             "Style",
             ColorButton(

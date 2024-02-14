@@ -21,7 +21,9 @@ class RotationConfig(FieldGroup, Generic[T]):
         inner_zone_scale: float,
         divisions: int,
         inverse_zones: bool,
-        active_color: Optional[QColor]
+        active_color: Optional[QColor],
+        is_counterclockwise: bool,
+        offset: int,
     ) -> None:
         super().__init__(name)
 
@@ -46,3 +48,11 @@ class RotationConfig(FieldGroup, Generic[T]):
         self.ACTIVE_COLOR = self.field(
             name="Active color",
             default=active_color)
+
+        self.IS_COUNTERCLOCKWISE = self.field(
+            name="Is counterclockwise",
+            default=is_counterclockwise)
+
+        self.OFFSET = self.field(
+            name="Offset",
+            default=offset)

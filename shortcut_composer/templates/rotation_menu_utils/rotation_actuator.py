@@ -1,8 +1,6 @@
 # SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Callable
-
 from PyQt5.QtGui import QCursor
 
 from api_krita.pyqt import Timer
@@ -10,6 +8,7 @@ from composer_utils import Config
 from shortcut_composer.core_components.controller_base import Controller
 from .rotation_widget import RotationWidget
 from .rotation_widget_state import Zone
+from .rotation_config import RotationConfig
 
 
 class RotationActuator:
@@ -17,17 +16,18 @@ class RotationActuator:
         self,
         rotation_widget: RotationWidget,
         controller: Controller[int],
-        modifier: Callable[[int], int] = lambda x: x,
+        config: RotationConfig,
     ) -> None:
         self._rotation_widget = rotation_widget
         self._controller = controller
-        self._modifier = modifier
+        self._config = config
 
         self._timer = Timer(self._update, Config.get_sleep_time())
 
     def start(self):
         self._center_global = QCursor().pos()
-        self._starting_value = self._controller.get_value()
+        self._starting_value = self._reverse_modifier(
+            self._controller.get_value())
 
         self._timer.start()
 
@@ -41,3 +41,11 @@ class RotationActuator:
             value = self._rotation_widget.state.selected_angle
         modified = self._modifier(value)
         self._controller.set_value(modified)
+
+    def _modifier(self, value: int):
+        sign = -1 if self._config.IS_COUNTERCLOCKWISE.read() else 1
+        return sign*(value - self._config.OFFSET.read())
+
+    def _reverse_modifier(self, value: int):
+        sign = -1 if self._config.IS_COUNTERCLOCKWISE.read() else 1
+        return sign*value + self._config.OFFSET.read()

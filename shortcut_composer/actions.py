@@ -343,7 +343,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
     templates.RotationMenu(
         name="Rotate canvas",
         controller=controllers.CanvasRotationController(),
-        counterclockwise=False,
+        is_counterclockwise=False,
         offset=0,
         divisions=24,
         inverse_zones=False,
@@ -352,7 +352,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
     templates.RotationMenu(
         name="Rotate brush",
         controller=controllers.BrushRotationController(),
-        counterclockwise=True,
+        is_counterclockwise=True,
         offset=90,
         divisions=24,
         inverse_zones=False,
