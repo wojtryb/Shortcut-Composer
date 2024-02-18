@@ -28,5 +28,5 @@ class RotationDeadzoneStrategy(Enum):
     """Does nothing when moving into deadzone."""
     DISCARD_CHANGE = "Discard change"
     """Sets initial value when moving into deadzone."""
-    SET_ZERO = "Set zero"
+    SET_TO_ZERO = "Set to zero"
     """Sets 0 when inside the deadzone."""

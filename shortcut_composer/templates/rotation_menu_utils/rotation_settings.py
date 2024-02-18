@@ -31,23 +31,7 @@ class RotationSettings(BaseWidget):
 
         self._config = config
 
-        config.DIVISIONS
-        config.INVERSE_ZONES
         self._general_tab = ConfigFormWidget([
-            "Size",
-            SpinBox(
-                config_field=config.DEADZONE_SCALE,
-                parent=self,
-                pretty_name="Deadzone scale",
-                step=0.05,
-                max_value=4),
-            SpinBox(
-                config_field=config.INNER_ZONE_SCALE,
-                parent=self,
-                pretty_name="Inner zone scale",
-                step=0.05,
-                max_value=4),
-
             "Behavior",
             EnumComboBox(
                 config_field=config.DEADZONE_STRATEGY,
@@ -64,6 +48,28 @@ class RotationSettings(BaseWidget):
                 pretty_name="Divisions",
                 step=1,
                 max_value=360),
+
+            "Size",
+            SpinBox(
+                config_field=config.DEADZONE_SCALE,
+                parent=self,
+                pretty_name="Deadzone scale",
+                step=0.05,
+                max_value=4),
+            SpinBox(
+                config_field=config.INNER_ZONE_SCALE,
+                parent=self,
+                pretty_name="Inner zone scale",
+                step=0.05,
+                max_value=4),
+
+            "Style",
+            ColorButton(
+                config_field=config.ACTIVE_COLOR,
+                parent=self,
+                pretty_name="Active color"),
+
+            "Values",
             Checkbox(
                 config_field=config.IS_COUNTERCLOCKWISE,
                 parent=self,
@@ -74,12 +80,6 @@ class RotationSettings(BaseWidget):
                 pretty_name="Offset",
                 step=1,
                 max_value=360),
-
-            "Style",
-            ColorButton(
-                config_field=config.ACTIVE_COLOR,
-                parent=self,
-                pretty_name="Active color"),
         ])
 
         full_layout = QVBoxLayout(self)

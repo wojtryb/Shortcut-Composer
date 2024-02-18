@@ -59,7 +59,7 @@ class RotationActuator:
                 return
             elif self._strategy == RotationDeadzoneStrategy.DISCARD_CHANGE:
                 value = self._starting_value
-            else:  # RotationDeadzoneStrategy.SET_ZERO
+            else:  # RotationDeadzoneStrategy.SET_TO_ZERO
                 self._controller.set_value(0)
                 return
         else:
