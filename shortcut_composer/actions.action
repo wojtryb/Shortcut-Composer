@@ -142,7 +142,7 @@
 
     </Actions>
     <Actions category="Scripts">
-        <text>Shortcut Composer: Rotation Menus</text>
+        <text>Shortcut Composer: Rotation Selectors</text>
 
         <Action name="Rotate canvas">
         <activationFlags>1</activationFlags>
@@ -151,7 +151,7 @@
 
         <Action name="Rotate brush">
         <activationFlags>1</activationFlags>
-        <icon>transform_icons_rotate_cw</icon>
+        <icon>transform_icons_rotate_ccw</icon>
         </Action>
 
     </Actions>

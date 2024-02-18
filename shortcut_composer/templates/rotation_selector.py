@@ -46,6 +46,23 @@ class RotationSelector(RawInstructions):
     - `deadzone strategy` -- (optional) default strategy what to do,
                               when mouse does not leave deadzone
     - `active_color`      -- (optional) default rgba color of active pie
+
+    ### Action implementation example:
+
+    Example action is meant to open a widget for rotating a brush.
+
+    ```python
+    templates.RotationSelector(
+        name="Rotate brush",
+        controller=controllers.BrushRotationController(),
+        is_counterclockwise=True,  # Rotation is done counter-clockwise
+        offset=90,                 # Zero degree is on the right
+        inverse_zones=False,       # Discrete zone is before the contiguous
+        divisions=24,              # Steps every 15 degrees (360/24)
+        deadzone_strategy=RotationDeadzoneStrategy.KEEP_CHANGE,
+            # Going back to deadzone will keep the changed value
+    )
+    ```
     """
 
     def __init__(
