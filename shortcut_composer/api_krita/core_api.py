@@ -15,6 +15,7 @@ from PyQt5.QtCore import QTimer
 from .wrappers import (
     ToolDescriptor,
     Document,
+    Version,
     Canvas,
     Cursor,
     View,
@@ -142,6 +143,20 @@ class KritaInstance:
         """Return if currently set theme is light using it's main color."""
         main_color = self.get_main_color_from_theme()
         return main_color.value() > 128
+
+    @property
+    def version(self) -> Version:
+        """Get version of krita."""
+        raw_string: str = self.instance.version()
+        version, *additional_info = raw_string.split("-")
+
+        major, minor, fix = version.split(".")
+
+        version = Version(int(major), int(minor), int(fix))
+        if additional_info:
+            version.additional_info = additional_info[0]
+
+        return version
 
 
 class KritaWindow(Protocol):

@@ -10,6 +10,7 @@ Adds typing, docstrings and changes the interface to be PEP8 compatible.
 from .tool_descriptor import ToolDescriptor
 from .database import Database
 from .document import Document
+from .version import Version
 from .canvas import Canvas
 from .cursor import Cursor
 from .node import Node
@@ -19,6 +20,7 @@ __all__ = [
     "ToolDescriptor",
     "Database",
     "Document",
+    "Version",
     "Canvas",
     "Cursor",
     "Node",
