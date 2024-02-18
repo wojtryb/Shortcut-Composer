@@ -8,7 +8,7 @@ from composer_utils import CirclePoints, Config
 from .rotation_widget import RotationWidget
 from .rotation_config import RotationConfig
 from .rotation_style import RotationStyle
-from .rotation_widget_state import Zone
+from .rotation_widget_utils import Zone
 
 
 class RotationManager:

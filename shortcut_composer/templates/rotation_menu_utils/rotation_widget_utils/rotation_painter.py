@@ -6,7 +6,7 @@ from PyQt5.QtGui import QColor
 
 from api_krita.pyqt import Painter
 
-from .rotation_style import RotationStyle
+from ..rotation_style import RotationStyle
 from .rotation_widget_state import Zone, WidgetState
 
 

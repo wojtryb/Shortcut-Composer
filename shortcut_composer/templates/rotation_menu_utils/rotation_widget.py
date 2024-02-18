@@ -8,10 +8,9 @@ from PyQt5.QtGui import QPaintEvent
 
 from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
 from composer_utils import Config
-from .rotation_style import RotationStyle
-from .rotation_widget_state import WidgetState
-from .rotation_painter import RotationPainter
+from .rotation_widget_utils import RotationPainter, WidgetState
 from .rotation_config import RotationConfig
+from .rotation_style import RotationStyle
 
 T = TypeVar('T')
 

@@ -9,8 +9,8 @@ from config_system import Field
 from data_components import RotationDeadzoneStrategy
 from shortcut_composer.core_components.controller_base import Controller
 from .rotation_widget import RotationWidget
-from .rotation_widget_state import Zone
 from .rotation_config import RotationConfig
+from .rotation_widget_utils import Zone
 
 
 class RotationActuator:
