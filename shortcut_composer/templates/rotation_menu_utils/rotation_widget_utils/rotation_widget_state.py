@@ -13,10 +13,10 @@ class Zone(Enum):
 
     DEADZONE = 0
     """Zone in which angle is not red."""
-    DISCRETE_ZONE = 1
+    INTERVALLIC_ZONE = 1
     """Zone in which angles are being red with intervals."""
-    CONTIGUOUS_ZONE = 2
-    """Zone in which angles are being red contiguously."""
+    PRECISE_ZONE = 2
+    """Zone in which angles are being red precisely."""
 
 
 @dataclass
@@ -28,7 +28,7 @@ class WidgetState:
 
     def __post_init__(self) -> None:
         self.animations_in_progress = defaultdict(lambda: AnimationProgress())
-        """State of animations for each discrete pie."""
+        """State of animations for each intervallic pie."""
 
     def reset(self) -> None:
         """Reset the state to starting value."""
@@ -37,9 +37,9 @@ class WidgetState:
         self.animations_in_progress.clear()
 
     def tick_animations(self) -> None:
-        """Update animations of discrete pies."""
+        """Update animations of intervallic pies."""
         current_animation = self.animations_in_progress[self.selected_angle]
-        if self.selected_zone == Zone.DISCRETE_ZONE:
+        if self.selected_zone == Zone.INTERVALLIC_ZONE:
             current_animation.up()
 
         for animation in self.animations_in_progress.values():

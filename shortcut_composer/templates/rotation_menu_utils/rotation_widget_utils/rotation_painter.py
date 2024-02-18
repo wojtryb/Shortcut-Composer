@@ -71,13 +71,13 @@ class RotationPainter:
                 continue
             self._paint_decorated_pie(
                 angle=angle,
-                span=self._style.discrete_pie_span,
+                span=self._style.intervallic_pie_span,
                 animation_value=progress.value)
 
-        if self._state.selected_zone == Zone.CONTIGUOUS_ZONE:
+        if self._state.selected_zone == Zone.PRECISE_ZONE:
             self._paint_decorated_pie(
                 angle=self._state.selected_angle,
-                span=self._style.contiguous_pie_span,
+                span=self._style.precise_pie_span,
                 animation_value=1.0)
 
     def _paint_decorated_pie(

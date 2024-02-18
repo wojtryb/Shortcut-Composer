@@ -93,11 +93,11 @@ class RotationStyle:
         return round(30 * self._base_size)
 
     @property
-    def discrete_pie_span(self) -> int:
-        """Span of the pie in the discrete zone."""
+    def intervallic_pie_span(self) -> int:
+        """Span of the pie in the intervallic zone."""
         return 360//self._divisions_callback()
 
     @property
-    def contiguous_pie_span(self) -> int:
-        """Span of the pie in the contiguous zone."""
+    def precise_pie_span(self) -> int:
+        """Span of the pie in the precise zone."""
         return 10

@@ -26,7 +26,7 @@ class RotationSelector(RawInstructions):
 
     - Widget is displayed under the cursor between key press and release
     - Moving the mouse past deadzone contiguously sets a value
-    - Depending on the zone, value is discrete or contiguous
+    - Depending on the zone, value is precise or intervallic
     - When in deadzone, selected strategy is used to determine action
     - Edit button activates the setting widget
 
@@ -42,7 +42,7 @@ class RotationSelector(RawInstructions):
     - `is_counterclockwise` -- (optional) default rotation direction
     - `offset`              -- (optional) default offset of zero value
     - `inverse_zones`       -- (optional) default order of zones
-    - `divisions` -- (optional) default amount of values in discrete zone
+    - `divisions` -- (optional) default amount of values in intervallic zone
     - `deadzone strategy` -- (optional) default strategy what to do,
                               when mouse does not leave deadzone
     - `active_color`      -- (optional) default rgba color of active pie
@@ -57,7 +57,7 @@ class RotationSelector(RawInstructions):
         controller=controllers.BrushRotationController(),
         is_counterclockwise=True,  # Rotation is done counter-clockwise
         offset=90,                 # Zero degree is on the right
-        inverse_zones=False,       # Discrete zone is before the contiguous
+        inverse_zones=False,       # Intervallic zone is before the precise one
         divisions=24,              # Steps every 15 degrees (360/24)
         deadzone_strategy=RotationDeadzoneStrategy.KEEP_CHANGE,
             # Going back to deadzone will keep the changed value

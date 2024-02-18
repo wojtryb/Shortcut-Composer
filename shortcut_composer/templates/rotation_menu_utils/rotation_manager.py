@@ -59,16 +59,16 @@ class RotationManager:
         if circle.distance(cursor) < self._style.deadzone_radius:
             zone = Zone.DEADZONE
         elif circle.distance(cursor) < self._style.inner_zone_radius:
-            zone = Zone.CONTIGUOUS_ZONE if is_inverse else Zone.DISCRETE_ZONE
+            zone = Zone.PRECISE_ZONE if is_inverse else Zone.INTERVALLIC_ZONE
         else:
-            zone = Zone.DISCRETE_ZONE if is_inverse else Zone.CONTIGUOUS_ZONE
+            zone = Zone.INTERVALLIC_ZONE if is_inverse else Zone.PRECISE_ZONE
         self._rotation_widget.state.selected_zone = zone
 
         angle = round(circle.angle_from_point(cursor))
-        if zone == Zone.DISCRETE_ZONE:
+        if zone == Zone.INTERVALLIC_ZONE:
             angle = self._snap_degree(
                 value=angle,
-                step_size=self._style.discrete_pie_span)
+                step_size=self._style.intervallic_pie_span)
         self._rotation_widget.state.selected_angle = angle
 
         self._rotation_widget.state.tick_animations()

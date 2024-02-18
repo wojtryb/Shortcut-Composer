@@ -49,7 +49,7 @@ class RotationActuator:
         self._timer.start()
 
     def stop(self) -> None:
-        """Start the loop of contiguous value setting."""
+        """Stop the loop of contiguous value setting."""
         self._timer.stop()
 
     def _update(self) -> None:
