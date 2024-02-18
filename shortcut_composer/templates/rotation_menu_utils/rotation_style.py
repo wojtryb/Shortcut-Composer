@@ -18,16 +18,18 @@ class RotationStyle:
 
     def __init__(
         self,
-        inner_zone_scale_callback: Callable[[], float],
         deadzone_scale_callback: Callable[[], float],
-        active_color_callback: Callable[[], QColor],
+        inner_zone_scale_callback: Callable[[], float],
         divisions_callback: Callable[[], int],
+        active_color_callback: Callable[[], QColor],
+        outline_opacity_callback: Callable[[], int],
     ) -> None:
 
-        self._inner_zone_scale_callback = inner_zone_scale_callback
         self._deadzone_scale_callback = deadzone_scale_callback
-        self._active_color_callback = active_color_callback
+        self._inner_zone_scale_callback = inner_zone_scale_callback
         self._divisions_callback = divisions_callback
+        self._active_color_callback = active_color_callback
+        self._outline_opacity_callback = outline_opacity_callback
 
         self._base_size = Krita.screen_size/2560
 
@@ -101,3 +103,8 @@ class RotationStyle:
     def precise_pie_span(self) -> int:
         """Span of the pie in the precise zone."""
         return 10
+
+    @property
+    def outline_opacity(self) -> int:
+        """Opacity of the two color outline for deadzone, and inner zone."""
+        return self._outline_opacity_callback()

@@ -78,6 +78,7 @@ class RotationSelector(RawInstructions):
         divisions: int = 24,
         active_color: QColor | None = None,
         deadzone_strategy=RotationDeadzoneStrategy.KEEP_CHANGE,
+        outline_opacity: int = 200,
         short_vs_long_press_time: float | None = None,
     ) -> None:
         super().__init__(name, instructions, short_vs_long_press_time)
@@ -85,21 +86,22 @@ class RotationSelector(RawInstructions):
 
         self._config = RotationConfig(
             name=self.name,
-            deadzone_scale=deadzone_scale,
-            inner_zone_scale=inner_zone_scale,
-            is_counterclockwise=is_counterclockwise,
-            offset=offset,
+            deadzone_strategy=deadzone_strategy,
             inverse_zones=inverse_zones,
             divisions=divisions,
+            deadzone_scale=deadzone_scale,
+            inner_zone_scale=inner_zone_scale,
             active_color=active_color,
-            deadzone_strategy=deadzone_strategy,
-        )
+            outline_opacity=outline_opacity,
+            is_counterclockwise=is_counterclockwise,
+            offset=offset)
 
         self._style = RotationStyle(
-            inner_zone_scale_callback=self._config.INNER_ZONE_SCALE.read,
             deadzone_scale_callback=self._config.DEADZONE_SCALE.read,
+            inner_zone_scale_callback=self._config.INNER_ZONE_SCALE.read,
+            divisions_callback=self._config.DIVISIONS.read,
             active_color_callback=self._config.ACTIVE_COLOR.read,
-            divisions_callback=self._config.DIVISIONS.read)
+            outline_opacity_callback=self._config.OUTLINE_OPACITY.read)
 
         self._rotation_widget = RotationWidget(
             config=self._config,

@@ -68,6 +68,12 @@ class RotationSettings(BaseWidget):
                 config_field=config.ACTIVE_COLOR,
                 parent=self,
                 pretty_name="Active color"),
+            SpinBox(
+                config_field=config.OUTLINE_OPACITY,
+                parent=self,
+                pretty_name="Outline opacity",
+                step=1,
+                max_value=255),
 
             "Values",
             Checkbox(

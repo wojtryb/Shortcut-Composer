@@ -38,13 +38,13 @@ class RotationPainter:
         self._painter.paint_wheel(
             center=self._center,
             outer_radius=self._style.deadzone_radius,
-            color=QColor(255, 128, 128, 200),
+            color=QColor(255, 128, 128, self._style.outline_opacity),
             thickness=2)
 
         self._painter.paint_wheel(
             center=self._center,
             outer_radius=self._style.deadzone_radius-2,
-            color=QColor(128, 255, 128, 200),
+            color=QColor(128, 255, 128, self._style.outline_opacity),
             thickness=2)
 
     def _paint_free_zone_indicator(self) -> None:
@@ -55,13 +55,13 @@ class RotationPainter:
         self._painter.paint_wheel(
             center=self._center,
             outer_radius=self._style.inner_zone_radius,
-            color=QColor(128, 255, 128, 200),
+            color=QColor(128, 255, 128, self._style.outline_opacity),
             thickness=2)
 
         self._painter.paint_wheel(
             center=self._center,
             outer_radius=self._style.inner_zone_radius-2,
-            color=QColor(255, 128, 128, 200),
+            color=QColor(255, 128, 128, self._style.outline_opacity),
             thickness=2)
 
     def _paint_selection(self) -> None:
@@ -100,7 +100,8 @@ class RotationPainter:
             angle=angle,
             span=span+4,  # Add 2 degrees on each side
             color=self._scale_opacity(
-                QColor(255, 128, 128, 200), animation_value),
+                QColor(255, 128, 128, self._style.outline_opacity),
+                animation_value),
             thickness=thickness+thickness_change-2)
 
         self._painter.paint_pie(
@@ -109,7 +110,8 @@ class RotationPainter:
             angle=angle,
             span=span+2,  # Add 1 degree on each side
             color=self._scale_opacity(
-                QColor(128, 255, 128, 200), animation_value),
+                QColor(128, 255, 128, self._style.outline_opacity),
+                animation_value),
             thickness=thickness+thickness_change)
 
         # indicator base

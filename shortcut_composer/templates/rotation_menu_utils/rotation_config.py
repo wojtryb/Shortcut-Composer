@@ -19,16 +19,29 @@ class RotationConfig(FieldGroup, Generic[T]):
     def __init__(
         self,
         name: str,
+        deadzone_strategy: RotationDeadzoneStrategy,
+        inverse_zones: bool,
+        divisions: int,
         deadzone_scale: float,
         inner_zone_scale: float,
-        divisions: int,
-        inverse_zones: bool,
-        active_color: QColor | None,
+        active_color: QColor,
+        outline_opacity: int,
         is_counterclockwise: bool,
-        deadzone_strategy: RotationDeadzoneStrategy,
         offset: int,
     ) -> None:
         super().__init__(name)
+
+        self.DEADZONE_STRATEGY = self.field(
+            name="Deadzone strategy",
+            default=deadzone_strategy)
+
+        self.INVERSE_ZONES = self.field(
+            name="Inverse zones",
+            default=inverse_zones)
+
+        self.DIVISIONS = self.field(
+            name="Divisions",
+            default=divisions)
 
         self.DEADZONE_SCALE = self.field(
             name="Deadzone scale",
@@ -38,13 +51,15 @@ class RotationConfig(FieldGroup, Generic[T]):
             name="Inner zone scale",
             default=inner_zone_scale)
 
-        self.DEADZONE_STRATEGY = self.field(
-            name="Deadzone strategy",
-            default=deadzone_strategy)
+        if active_color is None:
+            active_color = Krita.get_active_color_from_theme()
+        self.ACTIVE_COLOR = self.field(
+            name="Active color",
+            default=active_color)
 
-        self.DIVISIONS = self.field(
-            name="Divisions",
-            default=divisions)
+        self.OUTLINE_OPACITY = self.field(
+            name="Outline opacity",
+            default=outline_opacity)
 
         self.IS_COUNTERCLOCKWISE = self.field(
             name="Is counterclockwise",
@@ -53,13 +68,3 @@ class RotationConfig(FieldGroup, Generic[T]):
         self.OFFSET = self.field(
             name="Offset",
             default=offset)
-
-        self.INVERSE_ZONES = self.field(
-            name="Inverse zones",
-            default=inverse_zones)
-
-        if active_color is None:
-            active_color = Krita.get_active_color_from_theme()
-        self.ACTIVE_COLOR = self.field(
-            name="Active color",
-            default=active_color)
