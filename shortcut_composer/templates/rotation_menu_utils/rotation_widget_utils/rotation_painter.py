@@ -38,14 +38,14 @@ class RotationPainter:
         self._painter.paint_wheel(
             center=self._center,
             outer_radius=self._style.deadzone_radius,
-            color=QColor(128, 255, 128, 120),
-            thickness=1)
+            color=QColor(128, 255, 128, 200),
+            thickness=2)
 
         self._painter.paint_wheel(
             center=self._center,
-            outer_radius=self._style.deadzone_radius-1,
-            color=QColor(255, 128, 128, 120),
-            thickness=1)
+            outer_radius=self._style.deadzone_radius-3,
+            color=QColor(255, 128, 128, 200),
+            thickness=2)
 
     def _paint_free_zone_indicator(self) -> None:
         """Paint the circle representing zone after deadzone."""
@@ -55,14 +55,14 @@ class RotationPainter:
         self._painter.paint_wheel(
             center=self._center,
             outer_radius=self._style.inner_zone_radius,
-            color=QColor(128, 255, 128, 120),
-            thickness=1)
+            color=QColor(128, 255, 128, 200),
+            thickness=2)
 
         self._painter.paint_wheel(
             center=self._center,
-            outer_radius=self._style.inner_zone_radius-1,
-            color=QColor(255, 128, 128, 120),
-            thickness=1)
+            outer_radius=self._style.inner_zone_radius-2,
+            color=QColor(255, 128, 128, 200),
+            thickness=2)
 
     def _paint_selection(self) -> None:
         """Paint pies representing selected value."""
