@@ -1,6 +1,6 @@
-# Shortcut composer **v1.4.2**
+# Shortcut composer **v1.5.0**
 
-[![python](https://img.shields.io/badge/Python-3.8-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
+[![python](https://img.shields.io/badge/Python-3.10-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
 [![Code style: black](https://img.shields.io/badge/code%20style-autopep8-333333.svg)](https://pypi.org/project/autopep8/)
 [![License: GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![wojtryb website](https://img.shields.io/badge/YouTube-wojtryb-ee0000.svg?style=flat&logo=youtube)](https://youtube.com/wojtryb)
@@ -17,6 +17,7 @@ The plugin adds new shortcuts of the following types:
 - [**`Canvas preview`**](https://github.com/wojtryb/Shortcut-Composer/wiki/Plugin-actions#canvas-previews) - Temporarily changes canvas elements while the key is pressed.
 - [**`Multiple assignment`**](https://github.com/wojtryb/Shortcut-Composer/wiki/Plugin-actions#multiple-assignments) - repeatedly pressing a key, cycles between multiple values of krita property.
 - [**`Temporary key`**](https://github.com/wojtryb/Shortcut-Composer/wiki/Plugin-actions#temporary-keys) - temporarily activates a krita property with long press or toggles it on/off with short press.
+- [**`Rotation selector`**](https://github.com/wojtryb/Shortcut-Composer/wiki/Plugin-actions#rotation-selectors) - while key is pressed, displays a widget, which allows to set an angle-based property.
 
 ## Important links
 > Download the [**`latest version`**](https://github.com/wojtryb/Shortcut-Composer/archive/refs/heads/main.zip) of the plugin, or visit its [**`github page`**](https://github.com/wojtryb/Shortcut-Composer).
@@ -39,8 +40,8 @@ The plugin adds new shortcuts of the following types:
 [![PIE MENUS - release video](https://github-production-user-asset-6210df.s3.amazonaws.com/51094047/238179887-87c00d86-0e65-46c2-94c4-52bb02c99501.png)](https://youtu.be/hrjBycVYFZM "PIE MENUS - introducing Shortcut Composer")
 
 ## Requirements
-- Version of krita on plugin release: **5.2.0**
-- Required version of krita: **5.1.0** or later
+- Version of krita on plugin release: **5.2.2**
+- Required version of krita: **5.2.2** or later
 
 OS support state:
 - [x] Windows (10, 11)
