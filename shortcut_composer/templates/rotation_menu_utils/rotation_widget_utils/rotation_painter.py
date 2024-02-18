@@ -38,13 +38,13 @@ class RotationPainter:
         self._painter.paint_wheel(
             center=self._center,
             outer_radius=self._style.deadzone_radius,
-            color=QColor(128, 255, 128, 200),
+            color=QColor(255, 128, 128, 200),
             thickness=2)
 
         self._painter.paint_wheel(
             center=self._center,
-            outer_radius=self._style.deadzone_radius-3,
-            color=QColor(255, 128, 128, 200),
+            outer_radius=self._style.deadzone_radius-2,
+            color=QColor(128, 255, 128, 200),
             thickness=2)
 
     def _paint_free_zone_indicator(self) -> None:
@@ -92,38 +92,59 @@ class RotationPainter:
 
         thickness_change = round(
             (1-animation_value) * self._style.transparent_border)
-        opacity = round(animation_value * 255)
+
+        # two outlines on both sides
+        self._painter.paint_pie(
+            center=self._center,
+            outer_radius=self._style.inner_zone_radius+thickness_change-2,
+            angle=angle,
+            span=span+4,  # Add 2 degrees on each side
+            color=self._scale_opacity(
+                QColor(255, 128, 128, 200), animation_value),
+            thickness=thickness+thickness_change-2)
 
         self._painter.paint_pie(
             center=self._center,
             outer_radius=self._style.inner_zone_radius+thickness_change,
             angle=angle,
-            span=span,
-            color=self._set_opacity(
-                self._style.active_color, opacity),
+            span=span+2,  # Add 1 degree on each side
+            color=self._scale_opacity(
+                QColor(128, 255, 128, 200), animation_value),
             thickness=thickness+thickness_change)
 
+        # indicator base
         self._painter.paint_pie(
             center=self._center,
             outer_radius=self._style.inner_zone_radius+thickness_change,
             angle=angle,
             span=span,
-            color=self._set_opacity(
-                self._style.active_color_dark, opacity),
+            color=self._scale_opacity(
+                self._style.active_color, animation_value),
+            thickness=thickness+thickness_change)
+
+        # indicator decorator
+        self._painter.paint_pie(
+            center=self._center,
+            outer_radius=self._style.inner_zone_radius+thickness_change,
+            angle=angle,
+            span=span,
+            color=self._scale_opacity(
+                self._style.active_color_dark, animation_value),
             thickness=self._style.decorator_thickness)
 
+        # indicator top border
         self._painter.paint_pie(
             center=self._center,
-            outer_radius=self._style.inner_zone_radius+thickness_change,
+            outer_radius=self._style.inner_zone_radius+thickness_change+1,
             angle=angle,
             span=span,
-            color=self._set_opacity(
-                self._style.border_color, opacity),
+            color=self._scale_opacity(
+                self._style.border_color, animation_value),
             thickness=self._style.border_thickness)
 
     @staticmethod
-    def _set_opacity(color: QColor, opacity: int) -> QColor:
+    def _scale_opacity(color: QColor, scale: float) -> QColor:
         """Return QColor with modified opacity."""
         returned_color = color
-        returned_color.setAlpha(opacity)
+        returned_color.setAlpha(round(scale * color.alpha()))
         return returned_color
