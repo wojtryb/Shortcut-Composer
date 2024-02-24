@@ -3,10 +3,8 @@
 
 from typing import Type, TypeVar
 
-from PyQt5.QtGui import (
-    QPixmap,
-    QIcon,
-)
+from PyQt5.QtGui import QPixmap, QIcon
+
 from ..label_text import LabelText
 from ..label_widget import LabelWidget
 from ..label_interface import LabelInterface

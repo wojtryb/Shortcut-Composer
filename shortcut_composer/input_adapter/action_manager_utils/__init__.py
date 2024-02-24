@@ -4,7 +4,7 @@
 """Utils used by core ActionManager."""
 
 from .api_krita import Krita
-from .release_key_event_filter import ReleaseKeyEventFilter
 from .shortcut_adapter import ShortcutAdapter
+from .release_key_event_filter import ReleaseKeyEventFilter
 
-__all__ = ["Krita", "ReleaseKeyEventFilter", "ShortcutAdapter"]
+__all__ = ["Krita", "ShortcutAdapter", "ReleaseKeyEventFilter"]

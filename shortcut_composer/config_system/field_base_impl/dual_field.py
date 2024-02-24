@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Callable, Generic, TypeVar
+
 from ..field import Field
 from ..field_group import FieldGroup
 

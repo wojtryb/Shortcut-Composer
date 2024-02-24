@@ -12,5 +12,4 @@ __all__ = [
     "NonListField",
     "ListField",
     "DualField",
-    "FieldWithEditableDefault"
-]
+    "FieldWithEditableDefault"]

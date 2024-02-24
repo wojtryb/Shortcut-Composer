@@ -3,14 +3,15 @@
 
 from enum import Enum
 from typing import Final, TypeVar, Generic, Protocol, Type
+
 from PyQt5.QtWidgets import (
     QWidget,
-    QDoubleSpinBox,
     QSpinBox,
     QComboBox,
     QCheckBox,
     QPushButton,
-    QColorDialog)
+    QColorDialog,
+    QDoubleSpinBox)
 from PyQt5.QtGui import QColor
 
 from ..field import Field

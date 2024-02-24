@@ -15,11 +15,11 @@ from .pie_menu_utils.pie_config_impl import dispatch_pie_config
 from .pie_menu_utils.pie_settings_impl import dispatch_pie_settings
 from .pie_menu_utils import (
     PieStyleHolder,
+    PieActuator,
     PieSettings,
+    PieEditMode,
     PieManager,
     PieWidget,
-    PieActuator,
-    PieEditMode,
     PieLabel)
 from .raw_instructions import RawInstructions
 

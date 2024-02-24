@@ -3,10 +3,10 @@
 
 """Required part of api_krita package, so that no dependency is needed."""
 
-from krita import Krita as Api
 from typing import Any, Protocol
 from dataclasses import dataclass
 
+from krita import Krita as Api
 from PyQt5.QtCore import QByteArray
 
 

@@ -16,5 +16,4 @@ __all__ = [
     "NodeType",
     "Action",
     "Toggle",
-    "Tool"
-]
+    "Tool"]

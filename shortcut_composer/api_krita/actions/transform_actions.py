@@ -8,8 +8,7 @@ from PyQt5.QtWidgets import (
     QWidgetAction,
     QToolButton,
     QPushButton,
-    QWidget,
-)
+    QWidget)
 
 from ..enums import Tool, TransformMode
 from ..core_api import KritaInstance

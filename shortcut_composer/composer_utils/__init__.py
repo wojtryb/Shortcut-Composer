@@ -14,5 +14,4 @@ __all__ = [
     "SettingsDialog",
     "ButtonsLayout",
     "CirclePoints",
-    "Config",
-]
+    "Config"]

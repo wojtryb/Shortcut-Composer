@@ -2,7 +2,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Generic, TypeVar, Type
+
 from PyQt5.QtGui import QPixmap, QIcon
+
 from composer_utils.label import LabelText
 
 T = TypeVar("T")

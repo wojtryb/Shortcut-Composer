@@ -5,11 +5,7 @@ from typing import Callable
 from dataclasses import dataclass
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (
-    QDialogButtonBox,
-    QAbstractButton,
-    QVBoxLayout,
-)
+from PyQt5.QtWidgets import QDialogButtonBox, QAbstractButton, QVBoxLayout
 
 EmptyCallback = Callable[[], None]
 

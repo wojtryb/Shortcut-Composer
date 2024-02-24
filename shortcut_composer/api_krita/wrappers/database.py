@@ -1,10 +1,10 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from krita import Krita as Api
 import os.path
 from typing import Any
 
+from krita import Krita as Api
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 
 

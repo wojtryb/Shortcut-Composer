@@ -12,5 +12,4 @@ __all__ = [
     "ActionValuesWindow",
     "SettingsHandler",
     "ActionValues",
-    "ValueList"
-]
+    "ValueList"]

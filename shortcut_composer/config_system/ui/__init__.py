@@ -23,8 +23,7 @@ from .widgets import (
     EnumComboBox,
     ColorButton,
     Checkbox,
-    SpinBox,
-)
+    SpinBox)
 
 __all__ = [
     "ConfigBasedWidget",
@@ -33,5 +32,4 @@ __all__ = [
     "EnumComboBox",
     "ColorButton",
     "Checkbox",
-    "SpinBox",
-]
+    "SpinBox"]

@@ -12,5 +12,4 @@ __all__ = [
     "LabelWidget",
     "LabelInterface",
     "LabelWidgetStyle",
-    "LabelTextColorizer"
-]
+    "LabelTextColorizer"]

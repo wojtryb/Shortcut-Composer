@@ -234,5 +234,4 @@ PRETTY_NAMES = {
     BlendingMode.HEAT_GLOW_FREEZE_REFLECT_HYBRID:
         "Heat-Glow & Freeze-Reflect Hybrid",
     BlendingMode.REFLECT_FREEZE: "Reflect-Freeze",
-
 }

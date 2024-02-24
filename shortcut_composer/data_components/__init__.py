@@ -23,5 +23,4 @@ __all__ = [
     "PickStrategy",
     "Slider",
     "Range",
-    "Tag",
-]
+    "Tag"]

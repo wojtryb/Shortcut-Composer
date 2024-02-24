@@ -3,7 +3,9 @@
 
 from dataclasses import dataclass
 from typing import Protocol
+
 from PyQt5.QtCore import QByteArray
+
 from ..enums import NodeType
 from .node import Node, KritaNode
 

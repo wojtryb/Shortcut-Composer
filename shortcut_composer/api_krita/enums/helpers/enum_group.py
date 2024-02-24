@@ -4,6 +4,7 @@
 import sys
 from typing import Tuple, TypeVar
 from enum import Enum, EnumMeta
+
 T = TypeVar("T", bound=Enum)
 
 

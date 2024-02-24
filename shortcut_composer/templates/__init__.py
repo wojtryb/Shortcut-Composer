@@ -33,5 +33,4 @@ __all__ = [
     'CursorTracker',
     'RotationSelector',
     'TemporaryKey',
-    'PieMenu',
-]
+    'PieMenu']

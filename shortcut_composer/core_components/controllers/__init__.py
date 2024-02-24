@@ -5,33 +5,32 @@
 
 from .document_controllers import (
     ActiveLayerController,
-    TimeController,
-)
+    TimeController)
+
 from .canvas_controllers import (
     CanvasRotationController,
-    CanvasZoomController,
-)
+    CanvasZoomController)
+
 from .view_controllers import (
     BrushRotationController,
     BlendingModeController,
     BrushSizeController,
     OpacityController,
     PresetController,
-    FlowController,
-)
+    FlowController)
+
 from .node_controllers import (
     CreateLayerWithBlendingController,
     LayerBlendingModeController,
     LayerVisibilityController,
-    LayerOpacityController,
-)
+    LayerOpacityController)
+
 from .core_controllers import (
     TransformModeController,
     ToggleController,
     ActionController,
     ToolController,
-    UndoController,
-)
+    UndoController)
 
 __all__ = [
     "CreateLayerWithBlendingController",
@@ -52,5 +51,4 @@ __all__ = [
     "TimeController",
     "ToolController",
     "UndoController",
-    "FlowController",
-]
+    "FlowController"]

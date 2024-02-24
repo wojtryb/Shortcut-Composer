@@ -6,8 +6,7 @@ from PyQt5.QtGui import (
     QPainter,
     QPixmap,
     QImage,
-    QBrush,
-)
+    QBrush)
 
 
 class PixmapTransform:
@@ -39,5 +38,4 @@ class PixmapTransform:
             size_px,
             size_px,
             Qt.KeepAspectRatio,
-            Qt.SmoothTransformation
-        )
+            Qt.SmoothTransformation)

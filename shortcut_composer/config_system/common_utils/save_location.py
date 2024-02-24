@@ -3,6 +3,7 @@
 
 from typing import Any, Protocol
 from enum import Enum
+
 from .api_krita import Krita
 
 

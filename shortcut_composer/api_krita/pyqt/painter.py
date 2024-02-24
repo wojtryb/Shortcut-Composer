@@ -74,8 +74,7 @@ class Painter:
             center.y() - pixmap.height()//2,
             pixmap.width(),
             pixmap.height(),
-            pixmap
-        )
+            pixmap)
 
     def _square(self, center: QPoint, width: int) -> QRectF:
         """Return a square of given `width` at `center` point."""

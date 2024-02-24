@@ -22,5 +22,4 @@ __all__ = [
     "PieConfig",
     "PieWidget",
     "PieLabel",
-    "PieStyle",
-]
+    "PieStyle"]

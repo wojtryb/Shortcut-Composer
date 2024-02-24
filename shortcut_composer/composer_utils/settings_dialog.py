@@ -5,8 +5,8 @@ from PyQt5.QtWidgets import QVBoxLayout, QDialog
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QCursor
 
-from INFO import __version__, __author__, __license__
 from api_krita import Krita
+from INFO import __version__, __author__, __license__
 from config_system.ui import ConfigFormWidget, SpinBox, ColorButton, Checkbox
 from .global_config import Config
 from .buttons_layout import ButtonsLayout

@@ -3,6 +3,7 @@
 
 from api_krita import Krita
 from composer_utils.label import LabelText
+
 from ..controller_base import NumericController
 
 

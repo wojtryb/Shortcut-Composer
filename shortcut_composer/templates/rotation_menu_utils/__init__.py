@@ -16,5 +16,4 @@ __all__ = [
     "RotationManager",
     "RotationConfig",
     "RotationWidget",
-    "RotationStyle",
-]
+    "RotationStyle"]

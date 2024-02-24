@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from PyQt5.QtGui import QCursor
-from api_krita.pyqt import Timer
 
+from api_krita.pyqt import Timer
 from composer_utils import Config
 from config_system import Field
 from data_components import RotationDeadzoneStrategy
@@ -33,8 +33,8 @@ class RotationActuator:
         self._config = config
 
         def update_strategy() -> None:
-            self._strategy = strategy_field.read()
-        self._strategy: RotationDeadzoneStrategy
+            self._deadzone_strategy = strategy_field.read()
+        self._deadzone_strategy: RotationDeadzoneStrategy
         strategy_field.register_callback(update_strategy)
         update_strategy()
 
@@ -54,23 +54,25 @@ class RotationActuator:
 
     def _update(self) -> None:
         """Set the angle considering deadzone strategy and value modifier."""
-        if self._rotation_widget.state.selected_zone == Zone.DEADZONE:
-            match self._strategy:
-                case RotationDeadzoneStrategy.KEEP_CHANGE:
-                    pass
-                case RotationDeadzoneStrategy.DISCARD_CHANGE:
-                    value = self._starting_value
-                    modified = self._modifier(value)
-                    self._controller.set_value(modified)
-                case RotationDeadzoneStrategy.SET_TO_ZERO:
-                    self._controller.set_value(0)
-                case _:
-                    raise RuntimeError(f"{self._strategy} not recognized.")
+        if self._rotation_widget.state.selected_zone != Zone.DEADZONE:
+            value = self._rotation_widget.state.selected_angle
+            modified = self._modifier(value)
+            self._controller.set_value(modified)
             return
 
-        value = self._rotation_widget.state.selected_angle
-        modified = self._modifier(value)
-        self._controller.set_value(modified)
+        match self._deadzone_strategy:
+            case RotationDeadzoneStrategy.KEEP_CHANGE:
+                pass
+            case RotationDeadzoneStrategy.DISCARD_CHANGE:
+                value = self._starting_value
+                modified = self._modifier(value)
+                self._controller.set_value(modified)
+            case RotationDeadzoneStrategy.SET_TO_ZERO:
+                self._controller.set_value(0)
+            case _:
+                raise RuntimeError(
+                    f"{self._deadzone_strategy} not recognized.")
+
 
     def _modifier(self, value: int) -> int:
         """Transforms angle to value considering sign and offset."""

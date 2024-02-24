@@ -6,14 +6,14 @@ from typing import Sequence, Protocol, Callable, TypeVar, Generic
 
 from PyQt5.QtCore import Qt, QTimer, pyqtSignal
 from PyQt5.QtWidgets import (
-    QWidget,
     QScrollArea,
-    QScroller,
-    QLabel,
-    QLineEdit,
     QVBoxLayout,
     QHBoxLayout,
-    QSizePolicy)
+    QSizePolicy,
+    QScroller,
+    QLineEdit,
+    QWidget,
+    QLabel)
 
 from composer_utils.label import LabelWidget, LabelWidgetStyle
 from composer_utils.label.label_widget_impl import dispatch_label_widget

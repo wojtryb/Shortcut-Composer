@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import TypeVar, Generic
+
 from ..field_base import FieldBase
 from .common_utils import dispatch_parser
 

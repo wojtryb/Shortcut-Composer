@@ -10,8 +10,7 @@ from PyQt5.QtWidgets import (
     QPushButton,
     QHBoxLayout,
     QWidget,
-    QLabel,
-)
+    QLabel)
 
 from api_krita import Krita
 from config_system import Field

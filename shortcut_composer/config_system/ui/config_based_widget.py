@@ -3,6 +3,7 @@
 
 from abc import ABC, abstractmethod
 from typing import Final, TypeVar, Generic
+
 from PyQt5.QtWidgets import QWidget
 
 from ..field import Field

@@ -1,9 +1,9 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from krita import Krita as Api, Extension, qApp
 from typing import Callable, Protocol, Any
 
+from krita import Krita as Api, Extension, qApp
 from PyQt5.QtWidgets import (
     QMainWindow,
     QDesktopWidget,
@@ -18,8 +18,7 @@ from .wrappers import (
     Version,
     Canvas,
     Cursor,
-    View,
-)
+    View)
 
 
 class KritaInstance:

@@ -1,6 +1,8 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from typing import Callable, TypeVar, Generic
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QAbstractSpinBox,
@@ -11,8 +13,6 @@ from PyQt5.QtWidgets import (
     QWidget,
     QLabel)
 
-from typing import Callable, TypeVar, Generic
-
 from composer_utils.label import LabelWidgetStyle, LabelWidget
 from composer_utils.label.label_widget_impl import dispatch_label_widget
 from ..label_interface import LabelInterface
@@ -21,6 +21,8 @@ T = TypeVar("T", bound=LabelInterface[int])
 
 
 class NumericValuePicker(QWidget, Generic[T]):
+    """Widget that displays draggable LabelWidget with value set in SpinBox."""
+
     def __init__(
         self,
         create_label_from_integer: Callable[[int], T],
@@ -51,6 +53,12 @@ class NumericValuePicker(QWidget, Generic[T]):
         self.setLayout(self._layout)
 
     def _init_layout(self) -> QHBoxLayout:
+        """
+        Return layout of the widget.
+
+        - On the left, there is a LabelWidget with set value.
+        - On the right, there is a spinbox to set a value in the label.
+        """
         right_side = QVBoxLayout()
         right_side.setAlignment(Qt.AlignTop)
         right_side.addWidget(QLabel("\nSet icon value:"))
@@ -64,6 +72,7 @@ class NumericValuePicker(QWidget, Generic[T]):
         return layout
 
     def _create_icon(self, value: int) -> LabelWidget[T]:
+        """Create LabelWidget with given value."""
         label = self._create_label_from_integer(value)
 
         icon = dispatch_label_widget(label)(
@@ -76,6 +85,7 @@ class NumericValuePicker(QWidget, Generic[T]):
         return icon
 
     def _init_spin_box(self) -> QSpinBox:
+        """Return spinbox."""
         def update_icon(a0: int) -> None:
             self._icon = self._create_icon(a0)
             self._icon_holder.setWidget(self._icon)
@@ -91,6 +101,7 @@ class NumericValuePicker(QWidget, Generic[T]):
         return spin_box
 
     def _init_icon_holder(self) -> QScrollArea:
+        """Return QScrollArea that can hold the LabelWidget."""
         icon_holder = QScrollArea()
         icon_holder.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         icon_holder.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)

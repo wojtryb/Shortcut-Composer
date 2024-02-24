@@ -24,5 +24,4 @@ __all__ = [
     "Canvas",
     "Cursor",
     "Node",
-    "View",
-]
+    "View"]

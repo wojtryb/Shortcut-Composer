@@ -17,5 +17,4 @@ __all__ = [
     "RoundButton",
     "BaseWidget",
     "Painter",
-    "Timer",
-]
+    "Timer"]
