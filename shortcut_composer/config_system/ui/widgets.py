@@ -42,10 +42,11 @@ class SpinBox(ConfigBasedWidget[F]):
         config_field: Field[F],
         parent: QWidget | None = None,
         pretty_name: str | None = None,
+        tooltip: str | None = None,
         step: F = 1,
         max_value: F = 100,
     ) -> None:
-        super().__init__(config_field, parent, pretty_name)
+        super().__init__(config_field, parent, pretty_name, tooltip)
         self._step = step
         self._max_value = max_value
         self._spin_box = self._init_spin_box()
@@ -70,6 +71,8 @@ class SpinBox(ConfigBasedWidget[F]):
         spin_box.setMinimum(0)
         spin_box.setSingleStep(self._step)
         spin_box.setMaximum(self._max_value)
+        if self.tooltip is not None:
+            spin_box.setToolTip(self.tooltip)
         return spin_box
 
 
@@ -81,9 +84,10 @@ class StringComboBox(ConfigBasedWidget[str]):
         config_field: Field[str],
         parent: QWidget | None = None,
         pretty_name: str | None = None,
+        tooltip: str | None = None,
         allowed_values: list[str] = [],
     ) -> None:
-        super().__init__(config_field, parent, pretty_name)
+        super().__init__(config_field, parent, pretty_name, tooltip)
         self._allowed_values = allowed_values
         self._combo_box = self._init_combo_box()
         self.widget: Final[QComboBox] = self._combo_box
@@ -107,6 +111,8 @@ class StringComboBox(ConfigBasedWidget[str]):
         """Return the combobox widget."""
         combo_box = QComboBox()
         combo_box.setObjectName(self.config_field.name)
+        if self.tooltip is not None:
+            combo_box.setToolTip(self.tooltip)
         return combo_box
 
 
@@ -123,8 +129,9 @@ class EnumComboBox(ConfigBasedWidget[E]):
         enum_type: Type[E],
         parent: QWidget | None = None,
         pretty_name: str | None = None,
+        tooltip: str | None = None,
     ) -> None:
-        super().__init__(config_field, parent, pretty_name)
+        super().__init__(config_field, parent, pretty_name, tooltip)
         self._enum_type = enum_type
         self._combo_box = self._init_combo_box()
         self.widget: Final[QComboBox] = self._combo_box
@@ -147,6 +154,9 @@ class EnumComboBox(ConfigBasedWidget[E]):
         """Return the combobox widget."""
         combo_box = QComboBox()
         combo_box.setObjectName(self.config_field.name)
+        combo_box.setObjectName(self.config_field.name)
+        if self.tooltip is not None:
+            combo_box.setToolTip(self.tooltip)
         return combo_box
 
 
@@ -163,8 +173,9 @@ class ColorButton(ConfigBasedWidget[QColor]):
         config_field: Field[QColor],
         parent: QWidget | None = None,
         pretty_name: str | None = None,
+        tooltip: str | None = None,
     ) -> None:
-        super().__init__(config_field, parent, pretty_name)
+        super().__init__(config_field, parent, pretty_name, tooltip)
         self._button = self._init_button()
         self._color = self.config_field.read()
         self.widget: Final[QPushButton] = self._button
@@ -178,11 +189,15 @@ class ColorButton(ConfigBasedWidget[QColor]):
     def set(self, value: QColor) -> None:
         """Remember given color, and replace current button color with it."""
         self._color = value
-        self._button.setStyleSheet(f"background-color: {self._color.name()}")
+        self._button.setStyleSheet(
+            r"QToolTip {} "
+            r"QPushButton {"
+            f"    background-color: {self._color.name()}"
+            r"}")
 
     def _init_button(self) -> QPushButton:
         """Return the QPushButton widget."""
-        def on_click():
+        def on_click() -> None:
             """Set the selected color, if the dialog was not cancelled."""
             fetched_color = QColorDialog.getColor(self._color)
             if fetched_color.isValid():
@@ -193,6 +208,8 @@ class ColorButton(ConfigBasedWidget[QColor]):
         policy.setRetainSizeWhenHidden(True)
         button.setSizePolicy(policy)
         button.clicked.connect(on_click)
+        if self.tooltip is not None:
+            button.setToolTip(self.tooltip)
         return button
 
 
@@ -204,9 +221,12 @@ class Checkbox(ConfigBasedWidget[bool]):
         config_field: Field[bool],
         parent: QWidget | None = None,
         pretty_name: str | None = None,
+        tooltip: str | None = None,
     ) -> None:
-        super().__init__(config_field, parent, pretty_name)
+        super().__init__(config_field, parent, pretty_name, tooltip)
         self._checkbox = QCheckBox()
+        if self.tooltip is not None:
+            self._checkbox.setToolTip(self.tooltip)
         self.widget: Final[QCheckBox] = self._checkbox
         self.reset()
 

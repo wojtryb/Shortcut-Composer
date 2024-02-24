@@ -13,9 +13,9 @@ class PieDeadzoneStrategy(Enum):
     DO_NOTHING = "Do nothing"
     """No action is needed."""
     PICK_TOP = "Pick top"
-    """First label in list is activated."""
+    """Label on the top is activated."""
     PICK_PREVIOUS = "Pick previous"
-    """Remembered label is activated."""
+    """Previously selected label is activated."""
 
 
 class RotationDeadzoneStrategy(Enum):

@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report so that the bug can be fixed in future relase.
+about: Create a report so that the bug can be fixed in future release.
 title: ''
 labels: bug
 assignees: wojtryb

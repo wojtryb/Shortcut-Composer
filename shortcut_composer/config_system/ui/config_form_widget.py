@@ -53,6 +53,7 @@ class ConfigFormWidget(QWidget):
         """Add a label with given text."""
         label = QLabel(text)
         label.setAlignment(Qt.AlignCenter)
+        label.setStyleSheet("font-weight: bold")
         self._layout.addRow(QSplitter(Qt.Horizontal))
         self._layout.addRow(label)
 

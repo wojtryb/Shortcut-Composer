@@ -26,12 +26,14 @@ class ConfigBasedWidget(ABC, Generic[T]):
     def __init__(
         self,
         config_field: Field,
-        parent: QWidget | None = None,
-        pretty_name: str | None = None,
+        parent: QWidget | None,
+        pretty_name: str | None,
+        tooltip: str | None,
     ) -> None:
-        self._parent = parent
         self.config_field: Final[Field] = config_field
+        self._parent = parent
         self.pretty_name = self._init_pretty_name(pretty_name)
+        self.tooltip = tooltip
         self.widget: QWidget
 
     @abstractmethod

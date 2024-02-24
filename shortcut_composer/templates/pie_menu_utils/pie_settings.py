@@ -65,7 +65,15 @@ class PieSettings(AnimatedWidget, BaseWidget):
                 config_field=config.DEADZONE_STRATEGY,
                 parent=self,
                 pretty_name="On deadzone",
-                enum_type=PieDeadzoneStrategy),
+                enum_type=PieDeadzoneStrategy,
+                tooltip=""
+                "What to do when the cursor is in deadzone.\n\n"
+                "Do nothing: No action is needed.\n"
+                "Pick top: Icon on the top is activated.\n"
+                "Pick previous: Previously selected icon is activated.\n"
+                "    This allows to go back to once selected icon,\n"
+                "    when its value is changed by another pie or from\n"
+                "    outside of this plugin."),
 
             "Size",
             SpinBox(
@@ -73,33 +81,41 @@ class PieSettings(AnimatedWidget, BaseWidget):
                 parent=self,
                 pretty_name="Pie scale",
                 step=0.05,
-                max_value=4),
+                max_value=4,
+                tooltip="Scale of the radius of the entire pie."),
             SpinBox(
                 config_field=config.ICON_RADIUS_SCALE,
                 parent=self,
                 pretty_name="Icon max scale",
                 step=0.05,
-                max_value=4),
+                max_value=4,
+                tooltip=""
+                "Scale of the icons maximal radius.\n\n"
+                "They can get smaller when there is no space."),
 
             "Style",
             theme_checkbox := Checkbox(
                 config_field=config.OVERRIDE_DEFAULT_THEME,
                 parent=self,
-                pretty_name="Override default theme"),
+                pretty_name="Override default theme",
+                tooltip="Should the colors be set manually."),
             bg_button := ColorButton(
                 config_field=config.BACKGROUND_COLOR,
                 parent=self,
-                pretty_name="Background color"),
+                pretty_name="Background color",
+                tooltip="Color of the pie background."),
             active_button := ColorButton(
                 config_field=config.ACTIVE_COLOR,
                 parent=self,
-                pretty_name="Active color"),
+                pretty_name="Active color",
+                tooltip="Color of the selected icon indicator."),
             opacity_picker := SpinBox(
                 config_field=config.PIE_OPACITY,
                 parent=self,
                 pretty_name="Pie opacity",
                 step=1,
-                max_value=100),
+                max_value=100,
+                tooltip="Opacity of the pie background."),
         ])
 
         def update_theme_state() -> None:

@@ -233,6 +233,6 @@ class PieMenu(RawInstructions, Generic[T]):
         self._actuator.activate(self.pie_widget.active_label)
         self.pie_manager.stop()
 
-    def _move_accept_button_to_center(self):
+    def _move_accept_button_to_center(self) -> None:
         """Ensure the accept button is in the center of the pie."""
         self.accept_button.move_center(self.pie_widget.center)

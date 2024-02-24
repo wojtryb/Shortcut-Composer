@@ -36,17 +36,24 @@ class RotationSettings(BaseWidget):
                 config_field=config.DEADZONE_STRATEGY,
                 parent=self,
                 pretty_name="On deadzone",
-                enum_type=RotationDeadzoneStrategy),
+                enum_type=RotationDeadzoneStrategy,
+                tooltip=""
+                "What to do when the cursor is in deadzone:\n\n"
+                "Keep change: Does nothing when moving into deadzone.\n"
+                "Discard change: Sets initial value when moving into deadzone."
+                "\nSet to zero: Sets 0 when inside the deadzone."),
             Checkbox(
                 config_field=config.INVERSE_ZONES,
                 parent=self,
-                pretty_name="Inverse zones"),
+                pretty_name="Inverse zones",
+                tooltip="Should the precise zone be before the intervallic."),
             SpinBox(
                 config_field=config.DIVISIONS,
                 parent=self,
                 pretty_name="Divisions",
                 step=1,
-                max_value=360),
+                max_value=360,
+                tooltip="Amount of steps in intervallic zone."),
 
             "Size",
             SpinBox(
@@ -54,37 +61,48 @@ class RotationSettings(BaseWidget):
                 parent=self,
                 pretty_name="Deadzone scale",
                 step=0.05,
-                max_value=4),
+                max_value=4,
+                tooltip="Scale of the deadzone radius. 0 turns it off."),
             SpinBox(
                 config_field=config.INNER_ZONE_SCALE,
                 parent=self,
                 pretty_name="Inner zone scale",
                 step=0.05,
-                max_value=4),
+                max_value=4,
+                tooltip="Scale of the inner zone radius. 0 turns it off."),
 
             "Style",
             ColorButton(
                 config_field=config.ACTIVE_COLOR,
                 parent=self,
-                pretty_name="Active color"),
+                pretty_name="Active color",
+                tooltip="Color of the selected angle indicator."),
             SpinBox(
                 config_field=config.OUTLINE_OPACITY,
                 parent=self,
                 pretty_name="Outline opacity",
                 step=1,
-                max_value=255),
+                max_value=255,
+                tooltip="Opacity of the widget outline."),
 
             "Values",
             Checkbox(
                 config_field=config.IS_COUNTERCLOCKWISE,
                 parent=self,
-                pretty_name="Is counterclockwise"),
+                pretty_name="Is counterclockwise",
+                tooltip="Should the values be ordered counterclockwise."),
             SpinBox(
                 config_field=config.OFFSET,
                 parent=self,
                 pretty_name="Offset",
                 step=1,
-                max_value=360),
+                max_value=360,
+                tooltip=""
+                "Position of 0°, counting clockwise from the top.\n\n"
+                "Examples:\n"
+                "0: 0° is on the top.\n"
+                "90: 0° is on the right.\n"
+                "180: 0° is on the bottom."),
         ])
 
         full_layout = QVBoxLayout(self)
