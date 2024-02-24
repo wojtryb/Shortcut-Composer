@@ -146,6 +146,5 @@ class RotationPainter:
     @staticmethod
     def _scale_opacity(color: QColor, scale: float) -> QColor:
         """Return QColor with modified opacity."""
-        returned_color = color
-        returned_color.setAlpha(round(scale * color.alpha()))
-        return returned_color
+        opacity = round(scale * color.alpha())
+        return QColor(color.red(), color.green(), color.blue(), opacity)
