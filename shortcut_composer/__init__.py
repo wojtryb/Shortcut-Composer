@@ -15,7 +15,7 @@ import os
 sys.path.append(directory := os.path.dirname(__file__))
 
 
-def main():
+def main() -> None:
     from PyQt5.QtWidgets import QMessageBox
     from .INFO import __version__, __required_krita_version__
     from .api_krita import Krita  # noqa

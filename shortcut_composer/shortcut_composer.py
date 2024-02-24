@@ -13,20 +13,18 @@ from input_adapter import ActionManager
 
 @dataclass
 class GarbageProtector:
-    """
-    Stores plugin objects, to protect them from garbage collector.
+    """Stores plugin objects, to protect them from garbage collector."""
 
-    - TransformModeActions which create and store actions for transform modes
-    - QDialog with plugin settings,
-    - Action for displaying the settings dialog above
-    - Manager for complex actions which which holds and binds them to krita
-    - Action for reloading the complex action implementations
-    """
     transform_modes: TransformModeActions
+    """Creates and stores actions for transform modes."""
     settings_dialog: SettingsDialog
+    """QDialog with plugin settings."""
     settings_action: QWidgetAction
+    """Displays the settings dialog."""
     action_manager: ActionManager
+    """Binds complex actions to krita and holds them."""
     reload_action: QWidgetAction
+    """Reloads complex action implementations."""
 
     def is_alive(self) -> bool:
         """Return False if the action was deleted by C++"""
@@ -59,12 +57,15 @@ class ShortcutComposer(Extension):
 
         self._reload_composer()
 
-    def _create_reload_action(self, window) -> QWidgetAction:
-        """Create krita action which reloads all core actions."""
-        return Krita.create_action(
-            window=window,
-            name="Reload Shortcut Composer",
-            callback=self._reload_composer)
+    def _reload_composer(self) -> None:
+        """Reload all core actions for every window."""
+        for protector in reversed(self._protectors):
+            if not protector.is_alive():
+                self._protectors.remove(protector)
+
+        for protector in self._protectors:
+            for action in create_actions():
+                protector.action_manager.bind_action(action)
 
     def _create_settings_action(
         self,
@@ -78,12 +79,9 @@ class ShortcutComposer(Extension):
             group="tools/scripts",
             callback=settings_dialog.show)
 
-    def _reload_composer(self) -> None:
-        """Reload all core actions for every window."""
-        for protector in reversed(self._protectors):
-            if not protector.is_alive():
-                self._protectors.remove(protector)
-
-        for protector in self._protectors:
-            for action in create_actions():
-                protector.action_manager.bind_action(action)
+    def _create_reload_action(self, window) -> QWidgetAction:
+        """Create krita action, which reloads all core actions."""
+        return Krita.create_action(
+            window=window,
+            name="Reload Shortcut Composer",
+            callback=self._reload_composer)

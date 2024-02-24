@@ -65,8 +65,8 @@ class PieMenu(RawInstructions, Generic[T]):
         name="Pick active layer opacity",
         controller=controllers.LayerOpacityController(),
         values=[100, 90, 80, 70, 60, 50, 40, 30, 20, 10],
-        pie_radius_scale=1.3   # 30% larger menu
-        icon_radius_scale=0.9  # 10% smaller icons
+        pie_radius_scale=1.3                     # 30% larger menu
+        icon_radius_scale=0.9                    # 10% smaller icons
         background_color=QColor(255, 0, 0, 128)  # 50% red
         active_color=QColor(0, 0, 255)           # 100% blue
     )
@@ -161,7 +161,7 @@ class PieMenu(RawInstructions, Generic[T]):
             icon_scale=1.5,
             parent=self.pie_widget)
 
-        # Work around the Qt bug where button resets to (0, 0) on config change
+        # Workaround for Qt bug, where button resets to (0, 0) on config change
         self._config.register_callback(self._move_accept_button_to_center)
 
         accept_button.clicked.connect(lambda: self._edit_mode.set(False))
@@ -221,10 +221,9 @@ class PieMenu(RawInstructions, Generic[T]):
         Handle the key release event.
 
         In normal mode:
-            close pie, and set selected value if deadzone was reached
+            Close pie, and set selected value if deadzone was reached.
         In edit mode:
-            ignore input
-
+            Ignore input.
         """
         super().on_every_key_release()
 

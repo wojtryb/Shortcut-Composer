@@ -10,7 +10,7 @@ class RawInstructions(ComplexActionInterface):
     """
     ShortcutComposer action base.
 
-    Handles passed instructions, fulfilling the ComplexActionInterface.
+    Handles passed instructions, implementing ComplexActionInterface.
 
     ### Arguments:
 

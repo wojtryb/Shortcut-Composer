@@ -55,15 +55,20 @@ class RotationActuator:
     def _update(self) -> None:
         """Set the angle considering deadzone strategy and value modifier."""
         if self._rotation_widget.state.selected_zone == Zone.DEADZONE:
-            if self._strategy == RotationDeadzoneStrategy.KEEP_CHANGE:
-                return
-            elif self._strategy == RotationDeadzoneStrategy.DISCARD_CHANGE:
-                value = self._starting_value
-            else:  # RotationDeadzoneStrategy.SET_TO_ZERO
-                self._controller.set_value(0)
-                return
-        else:
-            value = self._rotation_widget.state.selected_angle
+            match self._strategy:
+                case RotationDeadzoneStrategy.KEEP_CHANGE:
+                    pass
+                case RotationDeadzoneStrategy.DISCARD_CHANGE:
+                    value = self._starting_value
+                    modified = self._modifier(value)
+                    self._controller.set_value(modified)
+                case RotationDeadzoneStrategy.SET_TO_ZERO:
+                    self._controller.set_value(0)
+                case _:
+                    raise RuntimeError(f"{self._strategy} not recognized.")
+            return
+
+        value = self._rotation_widget.state.selected_angle
         modified = self._modifier(value)
         self._controller.set_value(modified)
 

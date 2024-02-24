@@ -24,7 +24,7 @@ class RotationConfig(FieldGroup, Generic[T]):
         divisions: int,
         deadzone_scale: float,
         inner_zone_scale: float,
-        active_color: QColor,
+        active_color: QColor | None,
         outline_opacity: int,
         is_counterclockwise: bool,
         offset: int,

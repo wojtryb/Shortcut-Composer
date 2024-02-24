@@ -4,9 +4,9 @@
 """
 Implementation of complex actions.
 
-Make sure that every complex action implemented here has a definition in
-`shortcut_composer.action` file. Otherwise the action will not be
-visible in `keyboard shortcuts` menu in krita settings.
+NOTE: Make sure that every complex action implemented here has a
+definition in `shortcut_composer.action` file. Otherwise the action
+will not be visible in `keyboard shortcuts` menu in krita settings.
 """
 
 import templates
@@ -22,9 +22,9 @@ from data_components import (
     PickStrategy,
     Slider,
     Range,
-    Tag,
-)
-infinity = float("inf")
+    Tag)
+
+INFINITY = float("inf")
 
 
 def create_actions() -> list[templates.RawInstructions]: return [
@@ -107,7 +107,7 @@ def create_actions() -> list[templates.RawInstructions]: return [
         instructions=[instructions.UndoOnPress()],
         horizontal_slider=Slider(
             controller=controllers.UndoController(),
-            values=Range(-infinity, infinity),
+            values=Range(-INFINITY, INFINITY),
             deadzone=100,
         ),
     ),
@@ -132,7 +132,7 @@ def create_actions() -> list[templates.RawInstructions]: return [
         instructions=[instructions.TemporaryOn(Toggle.ISOLATE_LAYER)],
         horizontal_slider=Slider(
             controller=controllers.TimeController(),
-            values=Range(0, infinity),
+            values=Range(0, INFINITY),
         ),
         vertical_slider=Slider(
             controller=controllers.ActiveLayerController(),
@@ -170,12 +170,12 @@ def create_actions() -> list[templates.RawInstructions]: return [
         name="Scroll canvas zoom or rotation",
         horizontal_slider=Slider(
             controller=controllers.CanvasRotationController(),
-            values=Range(-infinity, infinity),
+            values=Range(-INFINITY, INFINITY),
             sensitivity_scale=10,
         ),
         vertical_slider=Slider(
             controller=controllers.CanvasZoomController(),
-            values=Range(0, infinity),
+            values=Range(0, INFINITY),
             sensitivity_scale=10,
         ),
     ),
@@ -340,6 +340,7 @@ def create_actions() -> list[templates.RawInstructions]: return [
         active_color=QColor(234, 172, 0),
     ),
 
+    # Use rotation widget to rotate the canvas.
     templates.RotationSelector(
         name="Rotate canvas",
         controller=controllers.CanvasRotationController(),
@@ -350,6 +351,7 @@ def create_actions() -> list[templates.RawInstructions]: return [
         deadzone_strategy=RotationDeadzoneStrategy.KEEP_CHANGE,
     ),
 
+    # Use rotation widget to rotate current brush preset.
     templates.RotationSelector(
         name="Rotate brush",
         controller=controllers.BrushRotationController(),
