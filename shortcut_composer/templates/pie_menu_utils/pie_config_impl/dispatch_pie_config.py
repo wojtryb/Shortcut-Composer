@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 from typing import Type, TypeVar
 from core_components import Controller
 from ..pie_config import PieConfig

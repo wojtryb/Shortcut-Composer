@@ -1,26 +1,22 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
-
-from typing import Optional
 
 from PyQt5.QtGui import QCursor
 
 from api_krita.pyqt import Timer
-from composer_utils import Config
+from composer_utils import CirclePoints, Config
+from .pie_label import PieLabel
 from .pie_widget import PieWidget
-from .pie_widget_utils import CirclePoints
-from .label import Label
 
 
 class PieManager:
     """
     Handles the passed PieWidget by tracking a mouse to find active label.
 
-    - Displays the widget between start() and stop() calls.
-    - Starts a thread loop which checks for changes of active label.
+    Displays the widget between start() and stop() calls.
     """
 
-    def __init__(self, pie_widget: PieWidget):
+    def __init__(self, pie_widget: PieWidget) -> None:
         self._pie_widget = pie_widget
         self._timer = Timer(self._handle_cursor, Config.get_sleep_time())
         self._animator = LabelAnimator(pie_widget)
@@ -38,9 +34,9 @@ class PieManager:
 
     def stop(self, hide: bool = True) -> None:
         """Hide the widget and stop the mouse tracking loop."""
-        self._pie_widget.active = None
+        self._pie_widget.active_label = None
         self._timer.stop()
-        for label in self._pie_widget.label_holder:
+        for label in self._pie_widget.order_handler:
             label.activation_progress.reset()
         if hide:
             self._pie_widget.hide()
@@ -53,7 +49,7 @@ class PieManager:
         if not self._pie_widget.isVisible():
             return self.stop()
 
-        if self._pie_widget.edit_mode.get():
+        if self._pie_widget.is_in_edit_mode:
             return self.stop()
 
         cursor = QCursor().pos()
@@ -62,13 +58,13 @@ class PieManager:
             return self._set_active_label(None)
 
         angle = circle.angle_from_point(cursor)
-        holder = self._pie_widget.label_holder.widget_holder
+        holder = self._pie_widget.order_handler.widget_holder
         self._set_active_label(holder.on_angle(angle).label)
 
-    def _set_active_label(self, label: Optional[Label]) -> None:
+    def _set_active_label(self, label: PieLabel | None) -> None:
         """Mark label as active and start animating the change."""
-        if self._pie_widget.active != label:
-            self._pie_widget.active = label
+        if self._pie_widget.active_label != label:
+            self._pie_widget.active_label = label
             self._animator.start()
 
 
@@ -89,14 +85,14 @@ class LabelAnimator:
 
     def _update(self) -> None:
         """Move all labels to next animation state. End animation if needed."""
-        for label in self._pie_widget.label_holder:
-            if self._pie_widget.active == label:
+        for label in self._pie_widget.order_handler:
+            if self._pie_widget.active_label == label:
                 label.activation_progress.up()
             else:
                 label.activation_progress.down()
 
         self._pie_widget.repaint()
-        for label in self._pie_widget.label_holder:
+        for label in self._pie_widget.order_handler:
             if label.activation_progress.value not in (0, 1):
                 return
         self._timer.stop()

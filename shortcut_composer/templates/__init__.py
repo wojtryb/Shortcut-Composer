@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 """
@@ -9,6 +9,7 @@ Available templates:
 - `CursorTracker`
 - `MultipleAssignment`
 - `TemporaryKey`
+- `RotationSelector`
 - `RawInstructions`
 
 All templates must implement ComplexAction interface, so that they can be
@@ -19,6 +20,7 @@ the related keys.
 """
 
 from .multiple_assignment import MultipleAssignment
+from .rotation_selector import RotationSelector
 from .raw_instructions import RawInstructions
 from .cursor_tracker import CursorTracker
 from .temporary_key import TemporaryKey
@@ -29,6 +31,6 @@ __all__ = [
     'MultipleAssignment',
     'RawInstructions',
     'CursorTracker',
+    'RotationSelector',
     'TemporaryKey',
-    'PieMenu',
-]
+    'PieMenu']

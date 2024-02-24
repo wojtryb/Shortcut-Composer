@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from krita import Krita as Api
-
 from PyQt5.QtGui import QIcon
+
 from .helpers import EnumGroup, Group
 
 
@@ -553,7 +553,7 @@ class Action(EnumGroup):
     CUT_COLUMNS = "cut_columns_to_clipboard"
     PASTE_COLUMNS = "paste_columns_from_clipboard"
 
-    def activate(self):
+    def activate(self) -> None:
         """Activate the action."""
         try:
             Api.instance().action(self.value).trigger()

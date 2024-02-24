@@ -1,7 +1,5 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
-
-from typing import Optional
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSignal, QEvent
@@ -26,7 +24,7 @@ class SafeConfirmButton(QPushButton):
         icon: QIcon = QIcon(),
         text: str = "",
         confirm_text: str = "Confirm?",
-        parent: Optional[QWidget] = None
+        parent: QWidget | None = None
     ) -> None:
         super().__init__(icon, text, parent)
         super().clicked.connect(self._clicked)

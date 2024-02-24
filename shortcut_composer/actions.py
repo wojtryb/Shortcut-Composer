@@ -1,33 +1,33 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 """
 Implementation of complex actions.
 
-Make sure that every complex action implemented here has a definition in
-`shortcut_composer.action` file. Otherwise the action will not be
-visible in `keyboard shortcuts` menu in krita settings.
+NOTE: Make sure that every complex action implemented here has a
+definition in `shortcut_composer.action` file. Otherwise the action
+will not be visible in `keyboard shortcuts` menu in krita settings.
 """
 
 import templates
-from typing import List
 
 from PyQt5.QtGui import QColor
 
 from api_krita.enums import Action, Tool, Toggle, BlendingMode, TransformMode
 from core_components import instructions, controllers
 from data_components import (
+    RotationDeadzoneStrategy,
+    PieDeadzoneStrategy,
     CurrentLayerStack,
-    DeadzoneStrategy,
     PickStrategy,
     Slider,
     Range,
-    Tag,
-)
-infinity = float("inf")
+    Tag)
+
+INFINITY = float("inf")
 
 
-def create_actions() -> List[templates.RawInstructions]: return [
+def create_actions() -> list[templates.RawInstructions]: return [
     # Switch between FREEHAND BRUSH and the MOVE tool
     templates.TemporaryKey(
         name="Temporary move tool",
@@ -107,7 +107,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         instructions=[instructions.UndoOnPress()],
         horizontal_slider=Slider(
             controller=controllers.UndoController(),
-            values=Range(-infinity, infinity),
+            values=Range(-INFINITY, INFINITY),
             deadzone=100,
         ),
     ),
@@ -132,7 +132,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         instructions=[instructions.TemporaryOn(Toggle.ISOLATE_LAYER)],
         horizontal_slider=Slider(
             controller=controllers.TimeController(),
-            values=Range(0, infinity),
+            values=Range(0, INFINITY),
         ),
         vertical_slider=Slider(
             controller=controllers.ActiveLayerController(),
@@ -170,12 +170,12 @@ def create_actions() -> List[templates.RawInstructions]: return [
         name="Scroll canvas zoom or rotation",
         horizontal_slider=Slider(
             controller=controllers.CanvasRotationController(),
-            values=Range(-infinity, infinity),
+            values=Range(-INFINITY, INFINITY),
             sensitivity_scale=10,
         ),
         vertical_slider=Slider(
             controller=controllers.CanvasZoomController(),
-            values=Range(0, infinity),
+            values=Range(0, INFINITY),
             sensitivity_scale=10,
         ),
     ),
@@ -246,7 +246,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         name="Pick painting blending modes",
         controller=controllers.BlendingModeController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        deadzone_strategy=DeadzoneStrategy.PICK_TOP,
+        deadzone_strategy=PieDeadzoneStrategy.PICK_TOP,
         values=[
             BlendingMode.NORMAL,
             BlendingMode.OVERLAY,
@@ -280,7 +280,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
     templates.PieMenu(
         name="Pick transform tool modes",
         controller=controllers.TransformModeController(),
-        deadzone_strategy=DeadzoneStrategy.PICK_TOP,
+        deadzone_strategy=PieDeadzoneStrategy.PICK_TOP,
         values=[
             TransformMode.FREE,
             TransformMode.PERSPECTIVE,
@@ -297,7 +297,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         name="Pick brush presets (red)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        deadzone_strategy=DeadzoneStrategy.PICK_PREVIOUS,
+        deadzone_strategy=PieDeadzoneStrategy.PICK_PREVIOUS,
         values=Tag("★ My Favorites"),
         background_color=QColor(95, 65, 65, 190),
         active_color=QColor(200, 70, 70),
@@ -309,7 +309,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         name="Pick brush presets (green)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        deadzone_strategy=DeadzoneStrategy.PICK_PREVIOUS,
+        deadzone_strategy=PieDeadzoneStrategy.PICK_PREVIOUS,
         values=Tag("RGBA"),
         background_color=QColor(65, 95, 65, 190),
         active_color=QColor(70, 200, 70),
@@ -321,7 +321,7 @@ def create_actions() -> List[templates.RawInstructions]: return [
         name="Pick brush presets (blue)",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        deadzone_strategy=DeadzoneStrategy.PICK_PREVIOUS,
+        deadzone_strategy=PieDeadzoneStrategy.PICK_PREVIOUS,
         values=Tag("Erasers"),
         background_color=QColor(70, 70, 105, 190),
         active_color=QColor(110, 160, 235),
@@ -334,10 +334,32 @@ def create_actions() -> List[templates.RawInstructions]: return [
         name="Pick local brush presets",
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
-        deadzone_strategy=DeadzoneStrategy.PICK_PREVIOUS,
+        deadzone_strategy=PieDeadzoneStrategy.PICK_PREVIOUS,
         values=[],
         save_local=True,
         active_color=QColor(234, 172, 0),
+    ),
+
+    # Use rotation widget to rotate the canvas.
+    templates.RotationSelector(
+        name="Rotate canvas",
+        controller=controllers.CanvasRotationController(),
+        is_counterclockwise=False,
+        offset=0,
+        inverse_zones=False,
+        divisions=24,
+        deadzone_strategy=RotationDeadzoneStrategy.KEEP_CHANGE,
+    ),
+
+    # Use rotation widget to rotate current brush preset.
+    templates.RotationSelector(
+        name="Rotate brush",
+        controller=controllers.BrushRotationController(),
+        is_counterclockwise=True,
+        offset=90,
+        inverse_zones=False,
+        divisions=24,
+        deadzone_strategy=RotationDeadzoneStrategy.KEEP_CHANGE,
     ),
 
     # .......................................

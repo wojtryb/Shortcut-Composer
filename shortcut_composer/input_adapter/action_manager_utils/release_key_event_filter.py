@@ -1,7 +1,7 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Callable, List, Literal
+from typing import Callable, Literal
 
 from PyQt5.QtCore import QEvent
 from PyQt5.QtWidgets import QMdiArea
@@ -15,7 +15,7 @@ class ReleaseKeyEventFilter(QMdiArea):
     def __init__(self) -> None:
         """Create list to hold callbacks as they get registered."""
         super().__init__(None)
-        self._release_callbacks: List[EventCallback] = []
+        self._release_callbacks: list[EventCallback] = []
 
     def register_release_callback(self, callback: EventCallback) -> None:
         """Register callback, so it can get executed on each KeyRelease."""

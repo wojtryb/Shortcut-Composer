@@ -1,8 +1,9 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Any, Optional, Protocol
+from typing import Any, Protocol
 from enum import Enum
+
 from .api_krita import Krita
 
 
@@ -10,7 +11,7 @@ class SupportsReadWrite(Protocol):
     """Allows reading and writing configuration which groups its fields."""
 
     def write(self, group: str, name: str, value: Any) -> None: ...
-    def read(self, group: str, name: str, default: str) -> Optional[str]: ...
+    def read(self, group: str, name: str, default: str) -> str | None: ...
 
 
 class GlobalSettings(SupportsReadWrite):
@@ -26,7 +27,7 @@ class GlobalSettings(SupportsReadWrite):
         group: str,
         name: str,
         default: str = "Not stored"
-    ) -> Optional[str]:
+    ) -> str | None:
         """Write value from kritarc."""
         return Krita.read_setting(group=group, name=name, default=default)
 
@@ -46,7 +47,7 @@ class LocalSettings(SupportsReadWrite):
         group: str,
         name: str,
         default: str = "Not stored"
-    ) -> Optional[str]:
+    ) -> str | None:
         """Read value from .kra document stored in its annotation."""
         document = Krita.get_active_document()
         annotation_name = f"{group} {name}"
@@ -73,7 +74,7 @@ class SaveLocation(Enum):
         group: str,
         name: str,
         default: str = "Not stored"
-    ) -> Optional[str]:
+    ) -> str | None:
         """Read value from picked location."""
         return self.value.read(group, name, default)
 

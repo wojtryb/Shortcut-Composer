@@ -1,7 +1,7 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Type
+from typing import Type
 from enum import Enum
 
 from PyQt5.QtCore import Qt
@@ -10,8 +10,7 @@ from PyQt5.QtWidgets import (
     QPushButton,
     QHBoxLayout,
     QWidget,
-    QLabel,
-)
+    QLabel)
 
 from api_krita import Krita
 from config_system import Field
@@ -31,7 +30,7 @@ class ActionValues(QWidget):
     the list of selected values.
     """
 
-    def __init__(self, enum_type: Type[Enum], config: Field[List[Enum]]):
+    def __init__(self, enum_type: Type[Enum], config: Field[list[Enum]]):
         super().__init__()
 
         layout = QHBoxLayout()
@@ -90,7 +89,7 @@ class ActionValues(QWidget):
 
     def apply(self) -> None:
         """Save the right list into kritarc."""
-        to_write: List[Enum] = []
+        to_write: list[Enum] = []
         for row in range(self.current_list.count()):
             text = self.current_list.item(row).text()
             to_write.append(self.enum_type[text])
@@ -109,6 +108,6 @@ class ActionValues(QWidget):
         self.available_list.addItems(allowed_items)
 
     @property
-    def _allowed_values(self) -> List[str]:
+    def _allowed_values(self) -> list[str]:
         """Return list of all available values using the enum type."""
         return self.enum_type._member_names_

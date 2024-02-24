@@ -1,7 +1,5 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
-
-from typing import Optional, List
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QAbstractItemView, QListWidget, QWidget
@@ -14,7 +12,7 @@ class ValueList(QListWidget):
     When movable, elements of list can be reordered with drag and drop.
     """
 
-    def __init__(self, movable: bool, parent: Optional[QWidget] = None):
+    def __init__(self, movable: bool, parent: QWidget | None = None):
         super().__init__(parent)
         self.horizontalScrollBar().setStyleSheet("QScrollBar {height:0px;}")
         self.setMaximumWidth(200)
@@ -30,22 +28,22 @@ class ValueList(QListWidget):
         return self.currentRow()
 
     @property
-    def selected(self) -> List[str]:
+    def selected(self) -> list[str]:
         """Return a list of all selected string values."""
         selected = self.selectedIndexes()
         indices = [item.row() for item in selected]
         items = [self.item(index) for index in indices]
         return [item.text() for item in items]
 
-    def insert(self, position: int, value: str):
+    def insert(self, position: int, value: str) -> None:
         """Add new string `value` after the item at given `position`."""
         self.insertItem(position+1, value)
         self.clearSelection()
         self.setCurrentRow(position+1)
 
-    def get_all(self) -> List[str]:
+    def get_all(self) -> list[str]:
         """Get list of all the strings in the list."""
-        items: List[str] = []
+        items: list[str] = []
         for i in range(self.count()):
             items.append(self.item(i).text())
         return items

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 """
@@ -11,10 +11,11 @@ concrete implementations are stored in respective packages.
 """
 
 from .instruction_base import Instruction, InstructionHolder
-from .controller_base import Controller
+from .controller_base import Controller, NumericController
 
 __all__ = [
     'InstructionHolder',
     'Instruction',
     'Controller',
+    'NumericController',
 ]

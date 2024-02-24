@@ -1,9 +1,9 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from krita import Krita as Api
 from enum import Enum
 
+from krita import Krita as Api
 from PyQt5.QtGui import QIcon
 
 

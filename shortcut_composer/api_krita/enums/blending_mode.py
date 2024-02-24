@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from .helpers import EnumGroup, Group
@@ -234,5 +234,4 @@ PRETTY_NAMES = {
     BlendingMode.HEAT_GLOW_FREEZE_REFLECT_HYBRID:
         "Heat-Glow & Freeze-Reflect Hybrid",
     BlendingMode.REFLECT_FREEZE: "Reflect-Freeze",
-
 }

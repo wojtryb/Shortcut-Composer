@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 """
@@ -23,8 +23,7 @@ from .widgets import (
     EnumComboBox,
     ColorButton,
     Checkbox,
-    SpinBox,
-)
+    SpinBox)
 
 __all__ = [
     "ConfigBasedWidget",
@@ -33,5 +32,4 @@ __all__ = [
     "EnumComboBox",
     "ColorButton",
     "Checkbox",
-    "SpinBox",
-]
+    "SpinBox"]

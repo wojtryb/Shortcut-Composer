@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import TYPE_CHECKING
@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from ..pie_menu import PieMenu
 
 
-class EditMode:
+class PieEditMode:
     """
     Handles the edit mode of the PieMenu action.
 
@@ -35,20 +35,21 @@ class EditMode:
             self.set_edit_mode_false()
         self._edit_mode = mode_to_set
 
-    def set_edit_mode_true(self):
+    def set_edit_mode_true(self) -> None:
         """Set the edit mode on."""
         self._obj.pie_manager.stop(hide=False)
         self._obj.pie_widget.set_draggable(True)
-        self._obj.pie_widget.widget_holder.clear_forced_widgets()
+        self._obj.pie_widget.order_handler.widget_holder.clear_forced_widgets()
         self._obj.pie_widget.repaint()
         self._obj.pie_settings.show()
         self._obj.pie_settings.resize(self._obj.pie_settings.sizeHint())
         self._move_settings_next_to_pie()
         self._obj.accept_button.show()
+        self._obj.accept_button.move_center(self._obj.pie_widget.center)
         self._obj.settings_button.hide()
-        self._obj.pie_widget.active = None
+        self._obj.pie_widget.active_label = None
 
-    def _move_settings_next_to_pie(self):
+    def _move_settings_next_to_pie(self) -> None:
         """Move settings window so that it lies on right side of pie."""
         settings_offset = round(0.5*(
             self._obj.pie_widget.width()
@@ -58,7 +59,7 @@ class EditMode:
             self._obj.pie_widget.center_global
             + QPoint(settings_offset, 0))  # type: ignore
 
-    def set_edit_mode_false(self):
+    def set_edit_mode_false(self) -> None:
         """Set the edit mode off."""
         self._obj.pie_widget.hide()
         self._obj.pie_widget.set_draggable(False)
@@ -66,7 +67,7 @@ class EditMode:
         self._obj.accept_button.hide()
         self._obj.settings_button.show()
 
-    def swap_mode(self):
+    def swap_mode(self) -> None:
         """Change the edit mode to the other one."""
         self.set(not self._edit_mode)
 

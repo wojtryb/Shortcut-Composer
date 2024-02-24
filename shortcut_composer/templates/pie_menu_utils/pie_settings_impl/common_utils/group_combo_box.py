@@ -1,7 +1,5 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
-
-from typing import List, Optional
 
 from PyQt5.QtWidgets import QWidget
 
@@ -16,9 +14,9 @@ class GroupComboBox(StringComboBox):
         self,
         config_field: Field[str],
         group_fetcher: GroupManager,
-        parent: Optional[QWidget] = None,
-        pretty_name: Optional[str] = None,
-        additional_fields: List[str] = [],
+        parent: QWidget | None = None,
+        pretty_name: str | None = None,
+        additional_fields: list[str] = [],
     ) -> None:
         self._additional_fields = additional_fields
         self._group_fetcher = group_fetcher

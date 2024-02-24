@@ -1,42 +1,44 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 """Components that allow to get and set a specific property of krita."""
 
 from .document_controllers import (
     ActiveLayerController,
-    TimeController,
-)
+    TimeController)
+
 from .canvas_controllers import (
     CanvasRotationController,
-    CanvasZoomController,
-)
+    CanvasZoomController)
+
 from .view_controllers import (
+    BrushRotationController,
     BlendingModeController,
     BrushSizeController,
     OpacityController,
     PresetController,
-    FlowController,
-)
+    FlowController)
+
 from .node_controllers import (
+    CreateLayerWithBlendingController,
     LayerBlendingModeController,
     LayerVisibilityController,
-    LayerOpacityController,
-    CreateLayerWithBlendingController,
-)
+    LayerOpacityController)
+
 from .core_controllers import (
     TransformModeController,
     ToggleController,
     ActionController,
     ToolController,
-    UndoController,
-)
+    UndoController)
 
 __all__ = [
+    "CreateLayerWithBlendingController",
     "LayerBlendingModeController",
-    "TransformModeController",
     "LayerVisibilityController",
     "CanvasRotationController",
+    "TransformModeController",
+    "BrushRotationController",
     "BlendingModeController",
     "LayerOpacityController",
     "ActiveLayerController",
@@ -49,6 +51,4 @@ __all__ = [
     "TimeController",
     "ToolController",
     "UndoController",
-    "FlowController",
-    "CreateLayerWithBlendingController",
-]
+    "FlowController"]

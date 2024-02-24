@@ -1,28 +1,26 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
-
-from typing import Optional
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
-    QWidget,
-    QTabWidget,
     QVBoxLayout,
     QHBoxLayout,
-    QLabel,
-    QSizePolicy)
+    QSizePolicy,
+    QTabWidget,
+    QWidget,
+    QLabel)
 
 from api_krita import Krita
 from api_krita.pyqt import AnimatedWidget, BaseWidget, SafeConfirmButton
 from config_system.ui import (
     ConfigFormWidget,
-    SpinBox,
     EnumComboBox,
     ColorButton,
-    Checkbox)
+    Checkbox,
+    SpinBox)
 from composer_utils import Config
-from data_components import DeadzoneStrategy
-from .pie_style import PieStyle
+from data_components import PieDeadzoneStrategy
+from .pie_style_holder import PieStyleHolder
 from .pie_config import PieConfig
 
 
@@ -43,11 +41,11 @@ class PieSettings(AnimatedWidget, BaseWidget):
     def __init__(
         self,
         config: PieConfig,
-        style: PieStyle,
+        style_holder: PieStyleHolder,
         *args, **kwargs
     ) -> None:
         AnimatedWidget.__init__(self, None, Config.PIE_ANIMATION_TIME.read())
-        self.setMinimumHeight(round(style.widget_radius*2))
+        self.setMinimumHeight(round(style_holder.pie_style.widget_radius*2))
         self.setAcceptDrops(True)
         self.setWindowFlags((
             self.windowFlags() |  # type: ignore
@@ -56,7 +54,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
             Qt.FramelessWindowHint))
         self.setCursor(Qt.ArrowCursor)
 
-        self._style = style
+        self._style_holder = style_holder
         self._config = config
         self._config.register_to_order_related(self._reset)
 
@@ -67,7 +65,15 @@ class PieSettings(AnimatedWidget, BaseWidget):
                 config_field=config.DEADZONE_STRATEGY,
                 parent=self,
                 pretty_name="On deadzone",
-                enum_type=DeadzoneStrategy),
+                enum_type=PieDeadzoneStrategy,
+                tooltip=""
+                "What to do when the cursor is in deadzone.\n\n"
+                "Do nothing: No action is needed.\n"
+                "Pick top: Icon on the top is activated.\n"
+                "Pick previous: Previously selected icon is activated.\n"
+                "    This allows to go back to once selected icon,\n"
+                "    when its value is changed by another pie or from\n"
+                "    outside of this plugin."),
 
             "Size",
             SpinBox(
@@ -75,36 +81,44 @@ class PieSettings(AnimatedWidget, BaseWidget):
                 parent=self,
                 pretty_name="Pie scale",
                 step=0.05,
-                max_value=4),
+                max_value=4,
+                tooltip="Scale of the radius of the entire pie."),
             SpinBox(
                 config_field=config.ICON_RADIUS_SCALE,
                 parent=self,
                 pretty_name="Icon max scale",
                 step=0.05,
-                max_value=4),
+                max_value=4,
+                tooltip=""
+                "Scale of the icons maximal radius.\n\n"
+                "They can get smaller when there is no space."),
 
             "Style",
             theme_checkbox := Checkbox(
                 config_field=config.OVERRIDE_DEFAULT_THEME,
                 parent=self,
-                pretty_name="Override default theme"),
+                pretty_name="Override default theme",
+                tooltip="Should the colors be set manually."),
             bg_button := ColorButton(
                 config_field=config.BACKGROUND_COLOR,
                 parent=self,
-                pretty_name="Background color"),
+                pretty_name="Background color",
+                tooltip="Color of the pie background."),
             active_button := ColorButton(
                 config_field=config.ACTIVE_COLOR,
                 parent=self,
-                pretty_name="Active color"),
+                pretty_name="Active color",
+                tooltip="Color of the selected icon indicator."),
             opacity_picker := SpinBox(
                 config_field=config.PIE_OPACITY,
                 parent=self,
                 pretty_name="Pie opacity",
                 step=1,
-                max_value=100),
+                max_value=100,
+                tooltip="Opacity of the pie background."),
         ])
 
-        def update_theme_state():
+        def update_theme_state() -> None:
             """Hide color buttons when not taken into consideration."""
             enable_state = theme_checkbox.widget.isChecked()
             bg_button.widget.setVisible(enable_state)
@@ -147,9 +161,9 @@ class PieSettings(AnimatedWidget, BaseWidget):
 
     def _reset(self) -> None:
         """React to change in pie size."""
-        self.setMinimumHeight(self._style.widget_radius*2)
+        self.setMinimumHeight(self._style_holder.pie_style.widget_radius*2)
 
-    def _reset_config_to_default(self):
+    def _reset_config_to_default(self) -> None:
         """
         Reset widgets from preferences layout to default values.
 
@@ -165,7 +179,7 @@ class LocationTab(QWidget):
     def __init__(
         self,
         config: PieConfig,
-        parent: Optional[QWidget] = None
+        parent: QWidget | None = None
     ) -> None:
         """Tab that allows to switch location in which icon order is saved."""
         super().__init__(parent)
@@ -208,7 +222,7 @@ class LocationTab(QWidget):
 
     def _init_location_button(self) -> SafeConfirmButton:
         """Return button that switches between save locations."""
-        def switch_mode():
+        def switch_mode() -> None:
             values = self._config.ORDER.read()
 
             self.is_local_mode = not self.is_local_mode
@@ -237,10 +251,10 @@ class LocationTab(QWidget):
     def _init_mode_description(self) -> QLabel:
         """Return QLabel with one detailed description of the active mode."""
         label = QLabel()
+        label.setWordWrap(True)
         label.setSizePolicy(
             QSizePolicy.Ignored,
             QSizePolicy.Ignored)
-        label.setWordWrap(True)
         return label
 
     def _init_set_new_default_button(self) -> SafeConfirmButton:
@@ -301,7 +315,7 @@ class LocationTab(QWidget):
                 "remain useful regardless of which document is edited.")
         self._config.SAVE_LOCAL.write(value)
 
-    def _update_button_activity(self):
+    def _update_button_activity(self) -> None:
         """Disable location action buttons, when they won't do anything."""
         if not self._config.is_order_default():
             self._set_new_default_button.setEnabled(True)

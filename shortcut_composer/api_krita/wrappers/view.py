@@ -1,9 +1,9 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from krita import Krita as Api
 from dataclasses import dataclass
-from typing import Protocol, Dict
+from typing import Protocol
 from functools import cached_property
 
 from ..enums import BlendingMode
@@ -23,11 +23,13 @@ class KritaView(Protocol):
     def paintingOpacity(self) -> float: ...
     def paintingFlow(self) -> float: ...
     def brushSize(self) -> float: ...
+    def brushRotation(self) -> float: ...
     def setCurrentBrushPreset(self, preset: _KritaPreset) -> None: ...
     def setCurrentBlendingMode(self, blending_mode: str) -> None: ...
     def setPaintingOpacity(self, opacity: float) -> None: ...
     def setPaintingFlow(self, flow: float) -> None: ...
     def setBrushSize(self, size: float) -> None: ...
+    def setBrushRotation(self, rotation: float) -> None: ...
 
 
 @dataclass
@@ -37,7 +39,7 @@ class View:
     view: KritaView
 
     @cached_property
-    def preset_map(self) -> Dict[str, _KritaPreset]:
+    def preset_map(self) -> dict[str, _KritaPreset]:
         """Return dictionary mapping preset names to krita preset objects."""
         return Api.instance().resources('preset')
 
@@ -91,3 +93,13 @@ class View:
     def brush_size(self, brush_size: float) -> None:
         """Set brush size inside this `View`."""
         self.view.setBrushSize(brush_size)
+
+    @property
+    def brush_rotation(self) -> float:
+        """Settable property with brush rotation in deg between 0 and 360."""
+        return self.view.brushRotation()
+
+    @brush_rotation.setter
+    def brush_rotation(self, rotation: float) -> None:
+        """Set brush rotation with float representing angle in degrees."""
+        self.view.setBrushRotation(rotation % 360)

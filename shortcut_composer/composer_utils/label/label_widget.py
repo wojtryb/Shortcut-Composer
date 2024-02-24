@@ -1,7 +1,7 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Protocol
+from typing import Protocol, TypeVar, Generic
 
 from PyQt5.QtCore import Qt, QMimeData, QEvent
 from PyQt5.QtWidgets import QWidget
@@ -9,37 +9,38 @@ from PyQt5.QtGui import QDrag, QPixmap, QMouseEvent, QPaintEvent
 
 from api_krita import Krita
 from api_krita.pyqt import Painter, PixmapTransform, BaseWidget
-from .pie_style import PieStyle
-from .label import Label
+from .label_widget_style import LabelWidgetStyle
+from .label_interface import LabelInterface
+
+T = TypeVar("T", bound=LabelInterface, contravariant=True)
 
 
-class WidgetInstructions(Protocol):
+class WidgetInstructions(Protocol, Generic[T]):
     """Additional logic to do on entering and leaving a widget."""
 
-    def on_enter(self, label: Label) -> None:
+    def on_enter(self, label: T) -> None:
         """Logic to perform when mouse starts hovering over widget."""
 
-    def on_leave(self, label: Label) -> None:
+    def on_leave(self, label: T) -> None:
         """Logic to perform when mouse stops hovering over widget."""
 
 
-class LabelWidget(BaseWidget):
-    """Displays a `label` inside of `widget` using given `style`."""
+class LabelWidget(BaseWidget, Generic[T]):
+    """Displays a LabelInterface data using given style."""
 
     def __init__(
         self,
-        label: Label,
-        style: PieStyle,
+        label: T,
+        label_widget_style: LabelWidgetStyle,
         parent: QWidget,
-        is_unscaled: bool = False,
     ) -> None:
         super().__init__(parent)
-        self.setGeometry(0, 0, style.icon_radius*2, style.icon_radius*2)
-        self.setCursor(Qt.ArrowCursor)
 
         self.label = label
-        self._style = style
-        self._is_unscaled = is_unscaled
+        self._label_widget_style = label_widget_style
+
+        self.setGeometry(0, 0, self.icon_radius*2, self.icon_radius*2)
+        self.setCursor(Qt.ArrowCursor)
 
         self._draggable = True
         self._enabled = True
@@ -68,22 +69,22 @@ class LabelWidget(BaseWidget):
             outer_radius=(
                 self.icon_radius
                 - self._active_indicator_thickness
-                - self._style.border_thickness//2),
+                - self._label_widget_style.border_thickness//2),
             color=Krita.get_main_color_from_theme())
 
         # label thin border
         painter.paint_wheel(
             center=self.center,
             outer_radius=self.icon_radius-self._active_indicator_thickness,
-            color=self._style.border_color,
-            thickness=self._style.border_thickness)
+            color=self._label_widget_style.border_color,
+            thickness=self._label_widget_style.border_thickness)
 
         # label thick border when label when disabled
         if not self.enabled:
             painter.paint_wheel(
                 center=self.center,
                 outer_radius=self.icon_radius,
-                color=self._style.active_color_dark,
+                color=self._label_widget_style.active_color_dark,
                 thickness=self._active_indicator_thickness)
 
         # label thick border when hovered (or it is forced)
@@ -91,12 +92,12 @@ class LabelWidget(BaseWidget):
             painter.paint_wheel(
                 center=self.center,
                 outer_radius=self.icon_radius,
-                color=self._border_active_color,
+                color=self._label_widget_style.active_color,
                 thickness=self._active_indicator_thickness)
 
     @property
-    def _active_indicator_thickness(self):
-        return self._style.border_thickness*2
+    def _active_indicator_thickness(self) -> int:
+        return self._label_widget_style.border_thickness*2
 
     @property
     def draggable(self) -> bool:
@@ -114,7 +115,7 @@ class LabelWidget(BaseWidget):
         self.setCursor(Qt.CrossCursor)
 
     @property
-    def enabled(self):
+    def enabled(self) -> bool:
         """Return whether the label interacts with mouse hover and drag."""
         return self._enabled
 
@@ -129,7 +130,7 @@ class LabelWidget(BaseWidget):
         self.repaint()
 
     @property
-    def forced(self):
+    def forced(self) -> bool:
         """Return whether the widget has forced active color."""
         return self._forced
 
@@ -140,10 +141,6 @@ class LabelWidget(BaseWidget):
             return
         self._forced = value
         self.repaint()
-
-    def move_to_label(self) -> None:
-        """Move the widget according to current center of label it holds."""
-        self.move_center(self.label.center)
 
     def mousePressEvent(self, e: QMouseEvent) -> None:
         """Initiate a drag loop for this Widget, so Widgets can be swapped."""
@@ -176,14 +173,6 @@ class LabelWidget(BaseWidget):
         self.repaint()
 
     @property
-    def _border_active_color(self):
-        if self.forced:
-            return self._style.active_color
-        return self._style.active_color
-
-    @property
-    def icon_radius(self):
+    def icon_radius(self) -> int:
         """Return icon radius based flag passed on initialization."""
-        if self._is_unscaled:
-            return self._style.unscaled_icon_radius
-        return self._style.icon_radius
+        return self._label_widget_style.icon_radius

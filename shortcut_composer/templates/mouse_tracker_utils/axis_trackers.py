@@ -1,7 +1,5 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
-
-from typing import List, Optional
 
 from api_krita import Krita
 from api_krita.pyqt import Timer
@@ -23,8 +21,8 @@ class SingleAxisTracker(RawInstructions):
         self, *,
         name: str,
         slider_handler: SliderHandler,
-        instructions: List[Instruction] = [],
-        short_vs_long_press_time: Optional[float] = None
+        instructions: list[Instruction] = [],
+        short_vs_long_press_time: float | None = None
     ) -> None:
         super().__init__(name, instructions, short_vs_long_press_time)
 
@@ -55,8 +53,8 @@ class DoubleAxisTracker(RawInstructions):
         name: str,
         horizontal_handler: SliderHandler,
         vertical_handler: SliderHandler,
-        instructions: List[Instruction] = [],
-        short_vs_long_press_time: Optional[float] = None
+        instructions: list[Instruction] = [],
+        short_vs_long_press_time: float | None = None
     ) -> None:
         super().__init__(name, instructions, short_vs_long_press_time)
 
@@ -71,7 +69,7 @@ class DoubleAxisTracker(RawInstructions):
         self._timer.start()
 
     def _start_after_picking_slider(self) -> None:
-        """Wait for inital movement to activate the right handler."""
+        """Wait for initial movement to activate the right handler."""
         if self._comparator.delta_x <= 25 and self._comparator.delta_y <= 25:
             return
         self._timer.stop()

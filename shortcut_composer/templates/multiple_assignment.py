@@ -1,7 +1,7 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Iterator, TypeVar, Generic, Optional
+from typing import Iterator, TypeVar, Generic
 from itertools import cycle
 
 from core_components import Controller, Instruction
@@ -64,10 +64,10 @@ class MultipleAssignment(RawInstructions, Generic[T]):
         self, *,
         name: str,
         controller: Controller[T],
-        values: List[T],
-        default_value: Optional[T] = None,
-        instructions: Optional[List[Instruction]] = None,
-        short_vs_long_press_time: Optional[float] = None
+        values: list[T],
+        default_value: T | None = None,
+        instructions: list[Instruction] | None = None,
+        short_vs_long_press_time: float | None = None
     ) -> None:
         super().__init__(name, instructions, short_vs_long_press_time)
 
@@ -87,7 +87,7 @@ class MultipleAssignment(RawInstructions, Generic[T]):
         self._default_value = self._read_default_value(default_value)
         self._values_to_cycle = self._config.read()
         self._iterator = self._reset_iterator()
-        self._last_value: Optional[T] = None
+        self._last_value: T | None = None
 
     def on_key_press(self) -> None:
         """Switch to the next value when values are being cycled."""
@@ -123,7 +123,7 @@ class MultipleAssignment(RawInstructions, Generic[T]):
         """Return a new cyclic iterator for values to cycle."""
         return cycle(self._values_to_cycle)
 
-    def _read_default_value(self, value: Optional[T]) -> T:
+    def _read_default_value(self, value: T | None) -> T:
         """Read value from controller if it was not given."""
         if (default := self._controller.DEFAULT_VALUE) is None:
             raise ValueError(

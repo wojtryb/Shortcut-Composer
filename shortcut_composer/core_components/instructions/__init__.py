@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 """
@@ -10,13 +10,12 @@ press, release, or in a loop while the key is pressed.
 
 from .layer_hide import ToggleLayerVisibility, ToggleVisibilityAbove
 from .set_brush_strategy import SetBrush, SetBrushOnNonPaintable
+from .undo import UndoOnPress
 from .togglers import (
     TemporaryOff,
     TemporaryOn,
     EnsureOff,
-    EnsureOn,
-)
-from .undo import UndoOnPress
+    EnsureOn)
 
 __all__ = [
     'SetBrushOnNonPaintable',
@@ -27,5 +26,4 @@ __all__ = [
     'UndoOnPress',
     'EnsureOff',
     'EnsureOn',
-    'SetBrush',
-]
+    'SetBrush']

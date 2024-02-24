@@ -1,7 +1,7 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import TypeVar, Generic, Callable, List, Optional
+from typing import TypeVar, Generic, Callable
 from abc import ABC, abstractmethod
 from enum import Enum
 
@@ -10,7 +10,7 @@ from .field import Field
 
 T = TypeVar('T')
 E = TypeVar('E', bound=Enum)
-ListT = TypeVar('ListT', bound=List[Enum])
+ListT = TypeVar('ListT', bound=list[Enum])
 
 
 class FieldBase(ABC, Field, Generic[T]):
@@ -26,7 +26,7 @@ class FieldBase(ABC, Field, Generic[T]):
         config_group: str,
         name: str,
         default: T,
-        parser_type: Optional[type] = None,
+        parser_type: type | None = None,
         local: bool = False,
     ) -> None:
         self.config_group = config_group
@@ -34,7 +34,7 @@ class FieldBase(ABC, Field, Generic[T]):
         self.default = default
         self.parser_type = parser_type
         self.location = SaveLocation.LOCAL if local else SaveLocation.GLOBAL
-        self._on_change_callbacks: List[Callable[[], None]] = []
+        self._on_change_callbacks: list[Callable[[], None]] = []
 
     def register_callback(self, callback: Callable[[], None]) -> None:
         """Store callback in internal list."""

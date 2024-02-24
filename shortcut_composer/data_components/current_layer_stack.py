@@ -1,7 +1,5 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
-
-from typing import List
 
 from api_krita import Krita
 from api_krita.wrappers import Node
@@ -29,7 +27,7 @@ class CurrentLayerStack(list):
     def __init__(self, pick_strategy: PickStrategy = PickStrategy.ALL) -> None:
         self.pick_strategy = pick_strategy
 
-    def get_layers(self) -> List[Node]:
+    def get_layers(self) -> list[Node]:
         """Use PickStrategy to fetch and filter nodes from the document."""
         if document := Krita.get_active_document():
             return self.pick_strategy.value(document)

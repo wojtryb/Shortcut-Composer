@@ -1,8 +1,7 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import math
-from typing import Optional
 
 from PyQt5.QtGui import QPainter, QPainterPath, QColor, QPixmap, QPaintEvent
 from PyQt5.QtCore import QPoint, QRectF
@@ -31,7 +30,7 @@ class Painter:
         center: QPoint,
         outer_radius: float,
         color: QColor,
-        thickness: Optional[float] = None,
+        thickness: float | None = None,
     ) -> None:
         """
         Paint a wheel at center providing its radius, color and thickness.
@@ -52,7 +51,7 @@ class Painter:
         angle: int,
         span: int,
         color: QColor,
-        thickness: Optional[float] = None,
+        thickness: float | None = None,
     ) -> None:
         """Paint part of wheel a, that spans left and right by span/2."""
         angle = -angle + 90
@@ -75,8 +74,7 @@ class Painter:
             center.y() - pixmap.height()//2,
             pixmap.width(),
             pixmap.height(),
-            pixmap
-        )
+            pixmap)
 
     def _square(self, center: QPoint, width: int) -> QRectF:
         """Return a square of given `width` at `center` point."""

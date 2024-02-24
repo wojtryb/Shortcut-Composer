@@ -1,7 +1,7 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import TypeVar, Optional, Generic, List
+from typing import TypeVar, Generic
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import (
@@ -11,17 +11,13 @@ from PyQt5.QtGui import (
     QPaintEvent)
 
 from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
-from composer_utils import Config
-from .edit_mode import EditMode
-from .pie_style import PieStyle
-from .label import Label
-from .label_widget import LabelWidget
+from composer_utils import CirclePoints, Config
+from composer_utils.label import LabelWidget
+from .pie_edit_mode import PieEditMode
+from .pie_label import PieLabel
+from .pie_style_holder import PieStyleHolder
 from .pie_config import PieConfig
-from .pie_widget_utils import (
-    WidgetHolder,
-    CirclePoints,
-    LabelHolder,
-    PiePainter)
+from .pie_widget_utils import OrderHandler, PiePainter
 
 T = TypeVar('T')
 
@@ -30,7 +26,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     """
     PyQt5 widget with icons on ring that can be selected by hovering.
 
-    Uses LabelHolder to store children widgets representing available
+    Uses OrderHandler to store children widgets representing available
     values. When the pie enters the edit mode, its children become
     draggable.
 
@@ -41,14 +37,15 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
     def __init__(
         self,
-        style: PieStyle,
-        labels: List[Label[T]],
-        edit_mode: EditMode,
+        style_holder: PieStyleHolder,
+        labels: list[PieLabel[T]],
+        edit_mode: PieEditMode,
         config: PieConfig,
         parent=None
     ) -> None:
         AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())
-        self.setGeometry(0, 0, style.widget_radius*2, style.widget_radius*2)
+        diameter = 2*style_holder.pie_style.widget_radius
+        self.setGeometry(0, 0, diameter, diameter)
 
         self.setAcceptDrops(True)
         self.setWindowFlags((
@@ -61,45 +58,52 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self.setStyleSheet("background: transparent;")
         self.setCursor(Qt.CrossCursor)
 
-        self._style = style
+        self._style_holder = style_holder
         self._labels = labels
-        self.edit_mode = edit_mode
-        self.config = config
+        self._config = config
+        self._edit_mode = edit_mode
 
-        self.config.PIE_RADIUS_SCALE.register_callback(self._reset)
-        self.config.ICON_RADIUS_SCALE.register_callback(self._reset)
+        self._painter = PiePainter(self._style_holder.pie_style)
+
+        self._config.PIE_RADIUS_SCALE.register_callback(self._reset)
+        self._config.ICON_RADIUS_SCALE.register_callback(self._reset)
         Config.PIE_GLOBAL_SCALE.register_callback(self._reset)
         Config.PIE_ICON_GLOBAL_SCALE.register_callback(self._reset)
 
-        self.active: Optional[Label] = None
+        self.active_label: PieLabel | None = None
         self._last_widget = None
 
-        self.label_holder = LabelHolder(
+        self.order_handler = OrderHandler(
             labels=self._labels,
-            style=self._style,
-            config=self.config,
+            style_holder=self._style_holder,
+            config=self._config,
             owner=self)
 
         self.set_draggable(False)
 
-    def _reset(self):
-        """Set widget geometry according to style and refresh CirclePoints."""
-        widget_diameter = self._style.widget_radius*2
-        self.setGeometry(0, 0, widget_diameter, widget_diameter)
+    def set_draggable(self, draggable: bool) -> None:
+        """Change draggable state of all children."""
+        for widget in self.order_handler.widget_holder:
+            widget.draggable = draggable
 
     @property
     def deadzone(self) -> float:
         """Return the deadzone distance."""
-        return self._style.deadzone_radius
+        return self._style_holder.pie_style.deadzone_radius
+
+    @property
+    def is_in_edit_mode(self) -> bool:
+        """Return whether the pie widget is in edit mode."""
+        return self._edit_mode.get()
 
     def paintEvent(self, event: QPaintEvent) -> None:
         """Paint the entire widget using the Painter wrapper."""
-        with Painter(self, event) as painter:
-            PiePainter(painter, self._labels, self._style)
+        with Painter(self, event) as qt_painter:
+            self._painter.paint(qt_painter, self._labels)
 
     def dragEnterEvent(self, e: QDragEnterEvent) -> None:
         """Allow dragging the widgets while in edit mode."""
-        if self.edit_mode:
+        if self._edit_mode:
             return e.accept()
         e.ignore()
 
@@ -110,7 +114,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         label = source_widget.label
         circle_points = CirclePoints(
             center=self.center,
-            radius=self._style.pie_radius)
+            radius=self._style_holder.pie_style.pie_radius)
         distance = circle_points.distance(e.pos())
 
         if not isinstance(source_widget, LabelWidget):
@@ -122,54 +126,49 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             return
 
         self._last_widget = source_widget
-        if distance > self._style.widget_radius:
+        if distance > self._style_holder.pie_style.widget_radius:
             # Dragged out of the PieWidget
-            return self.label_holder.remove(label)
+            return self.order_handler.remove(label)
 
         if not self._labels:
             # First label dragged to empty pie
-            return self.label_holder.insert(0, label)
+            return self.order_handler.insert(0, label)
 
-        if distance < self._style.deadzone_radius:
+        if distance < self.deadzone:
             # Do nothing in deadzone
             return
 
         angle = circle_points.angle_from_point(e.pos())
-        _a = self.widget_holder.on_angle(angle)
+        _a = self.order_handler.widget_holder.on_angle(angle)
 
-        if label not in self.label_holder or not self._labels:
+        if label not in self.order_handler or not self._labels:
             # Dragged with unknown label
-            index = self.label_holder.index(_a.label)
-            return self.label_holder.insert(index, label)
+            index = self.order_handler.index(_a.label)
+            return self.order_handler.insert(index, label)
 
-        _b = self.widget_holder.on_label(label)
+        _b = self.order_handler.widget_holder.on_label(label)
         if _a == _b:
             # Dragged over the same widget
             return
 
         # Dragged existing label to a new location
-        self.label_holder.swap(_a.label, _b.label)
+        self.order_handler.swap(_a.label, _b.label)
         self.repaint()
 
     def dragLeaveEvent(self, e: QDragLeaveEvent) -> None:
         """Remove the label when its widget is dragged out."""
         if self._last_widget is not None:
-            self.label_holder.remove(self._last_widget.label)
+            self.order_handler.remove(self._last_widget.label)
         return super().dragLeaveEvent(e)
 
-    def set_draggable(self, draggable: bool):
-        """Change draggable state of all children."""
-        for widget in self.label_holder.widget_holder:
-            widget.draggable = draggable
-
     @property
-    def widget_holder(self) -> WidgetHolder:
-        """Return the holder with child widgets."""
-        return self.label_holder.widget_holder
-
-    @property
-    def _type(self) -> Optional[type]:
+    def _type(self) -> type | None:
         """Return type of values stored in labels. None if no labels."""
         if not self._labels:
             return None
         return type(self._labels[0].value)
+
+    def _reset(self) -> None:
+        """Set widget geometry according to style."""
+        diameter = 2*self._style_holder.pie_style.widget_radius
+        self.setGeometry(0, 0, diameter, diameter)

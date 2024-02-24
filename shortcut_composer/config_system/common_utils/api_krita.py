@@ -1,12 +1,12 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 """Required part of api_krita package, so that no dependency is needed."""
 
-from krita import Krita as Api
-from typing import Any, Optional, Protocol, List
+from typing import Any, Protocol
 from dataclasses import dataclass
 
+from krita import Krita as Api
 from PyQt5.QtCore import QByteArray
 
 
@@ -21,7 +21,7 @@ class KritaInstance:
         group: str,
         name: str,
         default: str = "Not stored"
-    ) -> Optional[str]:
+    ) -> str | None:
         """
         Read a setting from kritarc file.
 
@@ -36,7 +36,7 @@ class KritaInstance:
         """Write setting to kritarc file. Value type will be lost."""
         self.instance.writeSetting(group, name, str(value))
 
-    def get_active_document(self) -> Optional['Document']:
+    def get_active_document(self) -> 'Document | None':
         """Return wrapper of krita `Document`."""
         document = self.instance.activeDocument()
         if document is None:
@@ -54,7 +54,7 @@ class KritaDocument(Protocol):
         annotation: bytes) -> None: ...
 
     def annotation(self, type: str) -> QByteArray: ...
-    def annotationTypes(self) -> List[str]: ...
+    def annotationTypes(self) -> list[str]: ...
 
 
 @dataclass

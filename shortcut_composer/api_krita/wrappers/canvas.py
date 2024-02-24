@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from dataclasses import dataclass
@@ -23,7 +23,7 @@ class Canvas:
 
     canvas: KritaCanvas
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self._zoom_scale = Document(self.canvas.view().document()).dpi/7200
 
     @property

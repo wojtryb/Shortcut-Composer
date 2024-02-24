@@ -1,29 +1,32 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
+
+from typing import TypeVar
 
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QWidget
 
 from api_krita.pyqt import Painter, PixmapTransform
-from ..pie_style import PieStyle
-from ..label import Label
+from ..label_widget_style import LabelWidgetStyle
 from ..label_widget import LabelWidget
+from ..label_interface import LabelInterface
+
+T = TypeVar("T", bound=LabelInterface)
 
 
-class ImageLabelWidget(LabelWidget):
+class ImageLabelWidget(LabelWidget[T]):
     """Displays a `label` which holds an image."""
 
     def __init__(
         self,
-        label: Label,
-        style: PieStyle,
+        label: T,
+        label_widget_style: LabelWidgetStyle,
         parent: QWidget,
-        is_unscaled: bool = False,
     ) -> None:
-        super().__init__(label, style, parent, is_unscaled)
+        super().__init__(label, label_widget_style, parent)
         self.ready_image = self._prepare_image()
 
-    def paint(self, painter: Painter):
+    def paint(self, painter: Painter) -> None:
         super().paint(painter)
         painter.paint_pixmap(self.center, self.ready_image)
 
@@ -39,5 +42,5 @@ class ImageLabelWidget(LabelWidget):
             pixmap=rounded_image,
             size_px=round((
                 self.icon_radius
-                - self._style.border_thickness
+                - self._label_widget_style.border_thickness
                 - self._active_indicator_thickness)*2))

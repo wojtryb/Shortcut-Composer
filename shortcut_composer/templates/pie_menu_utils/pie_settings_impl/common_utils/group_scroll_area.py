@@ -1,27 +1,24 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List
-
 from config_system import Field
-from templates.pie_menu_utils import PieStyle
-from templates.pie_menu_utils.pie_settings_impl.common_utils import (
-    GroupComboBox,
-    GroupManager)
-from .scroll_area import ScrollArea
+from composer_utils.label import LabelWidgetStyle
+from shortcut_composer.composer_utils.label.complex_widgets import ScrollArea
+from .group_combo_box import GroupComboBox
+from .group_manager import GroupManager
 
 
 class GroupScrollArea(ScrollArea):
     def __init__(
         self,
         fetcher: GroupManager,
-        style: PieStyle,
+        unscaled_label_style: LabelWidgetStyle,
         columns: int,
         field: Field,
-        additional_fields: List[str] = [],
+        additional_fields: list[str] = [],
         parent=None
     ) -> None:
-        super().__init__(style, columns, parent)
+        super().__init__(unscaled_label_style, columns, parent)
         self._field = field
         self._fetcher = fetcher
         self._chooser = GroupComboBox(

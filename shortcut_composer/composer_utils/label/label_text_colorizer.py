@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from collections import defaultdict
@@ -7,7 +7,7 @@ from enum import Enum
 from PyQt5.QtGui import QColor
 
 from api_krita import Krita
-from ..enums import BlendingMode
+from api_krita.enums import BlendingMode
 
 
 class Color(Enum):
@@ -28,7 +28,7 @@ class Color(Enum):
     VIOLET = QColor(173, 133, 251)
 
 
-class Colorizer(QColor):
+class LabelTextColorizer(QColor):
     """Functions that return a color associated with value of property."""
 
     @classmethod

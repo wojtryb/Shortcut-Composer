@@ -1,9 +1,11 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from dataclasses import dataclass
-from typing import List, Protocol
+from typing import Protocol
+
 from PyQt5.QtCore import QByteArray
+
 from ..enums import NodeType
 from .node import Node, KritaNode
 
@@ -14,13 +16,13 @@ class KritaDocument(Protocol):
     def activeNode(self) -> KritaNode: ...
     def setActiveNode(self, node: KritaNode): ...
     def createNode(self, name: str, node_type: str) -> KritaNode: ...
-    def topLevelNodes(self) -> List[KritaNode]: ...
+    def topLevelNodes(self) -> list[KritaNode]: ...
     def resolution(self) -> int: ...
     def currentTime(self) -> int: ...
     def setCurrentTime(self, time: int) -> None: ...
     def refreshProjection(self) -> None: ...
     def annotation(self, type: str) -> QByteArray: ...
-    def annotationTypes(self) -> List[str]: ...
+    def annotationTypes(self) -> list[str]: ...
 
     def setAnnotation(
         self,
@@ -71,13 +73,13 @@ class Document:
         """Set current time using frame number"""
         self.document.setCurrentTime(round(time))
 
-    def get_top_nodes(self) -> List[Node]:
+    def get_top_nodes(self) -> list[Node]:
         """Return a list of `Nodes` without a parent."""
         return [Node(node) for node in self.document.topLevelNodes()]
 
-    def get_all_nodes(self, include_collapsed: bool = False) -> List[Node]:
+    def get_all_nodes(self, include_collapsed: bool = False) -> list[Node]:
         """Return a list of all `Nodes` in this document bottom to top."""
-        def recursive_search(nodes: List[Node], found_so_far: List[Node]):
+        def recursive_search(nodes: list[Node], found_so_far: list[Node]):
             for node in nodes:
                 if include_collapsed or not node.collapsed:
                     recursive_search(node.get_child_nodes(), found_so_far)

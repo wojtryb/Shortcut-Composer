@@ -142,6 +142,20 @@
 
     </Actions>
     <Actions category="Scripts">
+        <text>Shortcut Composer: Rotation Selectors</text>
+
+        <Action name="Rotate canvas">
+        <activationFlags>1</activationFlags>
+        <icon>transform_icons_rotate_cw</icon>
+        </Action>
+
+        <Action name="Rotate brush">
+        <activationFlags>1</activationFlags>
+        <icon>transform_icons_rotate_ccw</icon>
+        </Action>
+
+    </Actions>
+    <Actions category="Scripts">
         <text>Shortcut Composer: Utilities</text>
 
         <Action name="Configure Shortcut Composer">

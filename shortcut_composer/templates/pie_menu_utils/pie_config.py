@@ -1,13 +1,13 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from abc import ABC, abstractmethod
-from typing import List, Callable, Generic, TypeVar, Optional
+from typing import Callable, Generic, TypeVar
 from PyQt5.QtGui import QColor
 from api_krita import Krita
 from config_system import FieldGroup
 from config_system.field_base_impl import DualField, FieldWithEditableDefault
-from data_components import DeadzoneStrategy
+from data_components import PieDeadzoneStrategy
 
 T = TypeVar("T")
 U = TypeVar("U")
@@ -19,14 +19,14 @@ class PieConfig(FieldGroup, Generic[T], ABC):
     def __init__(
         self,
         name: str,
-        values: List[T],
+        values: list[T],
         pie_radius_scale: float,
         icon_radius_scale: float,
         save_local: bool,
-        background_color: Optional[QColor],
-        active_color: Optional[QColor],
+        background_color: QColor | None,
+        active_color: QColor | None,
         pie_opacity: int,
-        deadzone_strategy: DeadzoneStrategy
+        deadzone_strategy: PieDeadzoneStrategy
     ) -> None:
         super().__init__(name)
         self._values = values
@@ -68,16 +68,16 @@ class PieConfig(FieldGroup, Generic[T], ABC):
     """Is it allowed to remove elements in runtime. """
     name: str
     """Name of field group."""
-    ORDER: FieldWithEditableDefault[List[T], DualField[List[T]]]
+    ORDER: FieldWithEditableDefault[list[T], DualField[list[T]]]
     """Values displayed in the pie. Used to synchronize pie elements."""
 
     @abstractmethod
-    def values(self) -> List[T]:
+    def values(self) -> list[T]:
         """Return values to display as icons on the pie."""
         ...
 
     @abstractmethod
-    def set_values(self, values: List[T]) -> None:
+    def set_values(self, values: list[T]) -> None:
         """Change current values to new ones."""
         ...
 
@@ -114,7 +114,7 @@ class PieConfig(FieldGroup, Generic[T], ABC):
         self,
         field_name: str,
         default: U,
-        parser_type: Optional[type] = None
+        parser_type: type | None = None
     ) -> FieldWithEditableDefault[U, DualField[U]]:
         """Return field which can switch save location and default value."""
         return FieldWithEditableDefault(

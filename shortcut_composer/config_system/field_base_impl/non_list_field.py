@@ -1,7 +1,8 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import TypeVar, Generic, Optional
+from typing import TypeVar, Generic
+
 from ..field_base import FieldBase
 from .common_utils import dispatch_parser
 
@@ -16,7 +17,7 @@ class NonListField(FieldBase, Generic[T]):
         config_group: str,
         name: str,
         default: T,
-        parser_type: Optional[type] = None,
+        parser_type: type | None = None,
         local: bool = False,
     ) -> None:
         super().__init__(config_group, name, default, parser_type, local)

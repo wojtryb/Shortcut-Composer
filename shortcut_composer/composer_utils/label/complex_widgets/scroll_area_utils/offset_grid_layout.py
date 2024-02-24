@@ -1,12 +1,12 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, NamedTuple
+from typing import NamedTuple
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QGridLayout
 
-from templates.pie_menu_utils import LabelWidget
+from composer_utils.label import LabelWidget
 
 
 class GridPosition(NamedTuple):
@@ -34,10 +34,11 @@ class OffsetGridLayout(QGridLayout):
 
     def __init__(self, max_columns: int, owner: QWidget) -> None:
         super().__init__()
-        self._widgets: List[LabelWidget] = []
+        self._widgets: list[LabelWidget] = []
         self._max_columns = max_columns
         self._items_in_group = 2*max_columns - 1
         self._owner = owner
+
         self.setAlignment(Qt.AlignTop)  # type: ignore
         self.setVerticalSpacing(5)
         self.setHorizontalSpacing(5)
@@ -56,7 +57,8 @@ class OffsetGridLayout(QGridLayout):
         col = item-self._max_columns
         return GridPosition(grid_row=group*4+2, grid_col=col*2+1)
 
-    def _internal_insert(self, index: int, widget: LabelWidget) -> None:
+    def _internal_insert(self, index: int, widget: LabelWidget
+                         ) -> None:
         """Insert widget at given index if not stored already."""
         if widget in self._widgets:
             return
@@ -74,13 +76,13 @@ class OffsetGridLayout(QGridLayout):
         self._internal_insert(len(self), widget)
         self._refresh()
 
-    def extend(self, widgets: List[LabelWidget]) -> None:
+    def extend(self, widgets: list[LabelWidget]) -> None:
         """Extend layout with the given widgets and refresh the layout."""
         for widget in widgets:
             self._internal_insert(len(self), widget)
         self._refresh()
 
-    def replace(self, widgets: List[LabelWidget]) -> None:
+    def replace(self, widgets: list[LabelWidget]) -> None:
         """Replace all existing widgets with the ones provided."""
         if widgets == self._widgets:
             return

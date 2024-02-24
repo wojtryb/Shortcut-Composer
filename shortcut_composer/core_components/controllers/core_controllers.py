@@ -1,16 +1,16 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Optional, Union, NoReturn
+from typing import NoReturn
 from dataclasses import dataclass
 
 from PyQt5.QtGui import QIcon
 
 from api_krita import Krita
-from api_krita.pyqt import Text
 from api_krita.enums import Action, Tool, Toggle, TransformMode
 from api_krita.actions import TransformModeFinder
-from ..controller_base import Controller
+from composer_utils.label import LabelText
+from ..controller_base import Controller, NumericController
 
 
 class ToolController(Controller[Tool]):
@@ -63,12 +63,12 @@ class ActionController(Controller[Action]):
         """Set a passed tool."""
         value.activate()
 
-    def get_label(self, value: Tool) -> Union[QIcon, Text]:
+    def get_label(self, value: Tool) -> QIcon | LabelText:
         """Forward the tools' icon."""
         icon = value.icon
         if not icon.isNull():
             return value.icon
-        return Text(value.name[:3])
+        return LabelText(value.name[:3])
 
     def get_pretty_name(self, value: Action) -> str:
         """Forward enums' pretty name."""
@@ -89,14 +89,14 @@ class TransformModeController(Controller[TransformMode]):
     def __init__(self) -> None:
         self.button_finder = TransformModeFinder()
 
-    def get_value(self) -> Optional[TransformMode]:
+    def get_value(self) -> TransformMode | None:
         """Get currently active tool."""
         for mode in TransformMode._member_map_.values():
             self.button_finder.ensure_initialized(mode)  # type: ignore
         return self.button_finder.get_active_mode()
 
     @staticmethod
-    def set_value(value: Optional[TransformMode]) -> None:
+    def set_value(value: TransformMode | None) -> None:
         """Set a passed tool."""
         if value is not None:
             value.activate()
@@ -137,7 +137,7 @@ class ToggleController(Controller[bool]):
         return value.pretty_name
 
 
-class UndoController(Controller[float]):
+class UndoController(NumericController):
     """
     Gives access to `undo` and `redo` actions.
 
@@ -149,18 +149,23 @@ class UndoController(Controller[float]):
     - Each Undo and redo change remembered position by 1
     """
 
-    state = 0
-    TYPE = float
+    TYPE = int
     DEFAULT_VALUE = 0
+    MIN_VALUE = 0
+    MAX_VALUE = 10_000
+    STEP = 1
+    WRAPPING = False
+    ADAPTIVE = False
+
+    def __init__(self) -> None:
+        self.state = 0
 
     def get_value(self) -> int:
         """Return remembered position on undo stack"""
         return self.state
 
-    def set_value(self, value: float) -> None:
+    def set_value(self, value: int) -> None:
         """Compares value with remembered position and performs undo/redo."""
-        value = round(value)
-
         if value == self.state:
             return
         elif value > self.state:

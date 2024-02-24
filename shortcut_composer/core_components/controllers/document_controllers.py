@@ -1,17 +1,16 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Optional
 from api_krita import Krita
 from api_krita.wrappers import Node
-from api_krita.pyqt import Text
-from ..controller_base import Controller
+from composer_utils.label import LabelText
+from ..controller_base import Controller, NumericController
 
 
 class DocumentBasedController:
     """Family of controllers which operate on values from active document."""
 
-    def refresh(self):
+    def refresh(self) -> None:
         """Refresh currently stored active document."""
         document = Krita.get_active_document()
         if document is None:
@@ -30,7 +29,7 @@ class ActiveLayerController(DocumentBasedController, Controller[Node]):
 
     TYPE = Node
 
-    def get_value(self) -> Optional[Node]:
+    def get_value(self) -> Node | None:
         """Get current node."""
         return self.document.active_node
 
@@ -43,7 +42,7 @@ class ActiveLayerController(DocumentBasedController, Controller[Node]):
         return value.name
 
 
-class TimeController(DocumentBasedController, Controller[int]):
+class TimeController(DocumentBasedController, NumericController):
     """
     Gives access to animation timeline.
 
@@ -53,6 +52,11 @@ class TimeController(DocumentBasedController, Controller[int]):
 
     TYPE = int
     DEFAULT_VALUE = 0
+    MIN_VALUE = 0
+    MAX_VALUE = 10_000
+    STEP = 1
+    WRAPPING = False
+    ADAPTIVE = False
 
     def get_value(self) -> int:
         """Get current frame on animation timeline."""
@@ -62,6 +66,6 @@ class TimeController(DocumentBasedController, Controller[int]):
         """Set passed frame of animation timeline as active."""
         self.document.current_time = value
 
-    def get_label(self, value: int) -> Text:
-        """Return Text with frame id as string."""
-        return Text(self.get_pretty_name(value))
+    def get_label(self, value: int) -> LabelText:
+        """Return LabelText with frame id as string."""
+        return LabelText(self.get_pretty_name(value))

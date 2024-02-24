@@ -1,23 +1,26 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import re
-from typing import List, Protocol, Callable
+from typing import Sequence, Protocol, Callable, TypeVar, Generic
 
 from PyQt5.QtCore import Qt, QTimer, pyqtSignal
 from PyQt5.QtWidgets import (
-    QWidget,
     QScrollArea,
-    QScroller,
-    QLabel,
-    QLineEdit,
     QVBoxLayout,
     QHBoxLayout,
-    QSizePolicy)
+    QSizePolicy,
+    QScroller,
+    QLineEdit,
+    QWidget,
+    QLabel)
 
-from templates.pie_menu_utils import Label, LabelWidget, PieStyle
-from templates.pie_menu_utils.label_widget_impl import dispatch_label_widget
-from .offset_grid_layout import OffsetGridLayout
+from composer_utils.label import LabelWidget, LabelWidgetStyle
+from composer_utils.label.label_widget_impl import dispatch_label_widget
+from ..label_interface import LabelInterface
+from .scroll_area_utils import OffsetGridLayout
+
+T = TypeVar("T", bound=LabelInterface, contravariant=True)
 
 
 class EmptySignal(Protocol):
@@ -27,7 +30,7 @@ class EmptySignal(Protocol):
     def connect(self, method: Callable[[], None]) -> None: ...
 
 
-class ScrollArea(QWidget):
+class ScrollArea(QWidget, Generic[T]):
     """
     Widget containing a scrollable list of PieWidgets.
 
@@ -54,16 +57,16 @@ class ScrollArea(QWidget):
 
     def __init__(
         self,
-        style: PieStyle,
+        unscaled_label_style: LabelWidgetStyle,
         columns: int,
         parent=None
     ) -> None:
         super().__init__(parent)
-        self._style = style
+        self._unscaled_label_style = unscaled_label_style
         self._columns = columns
 
-        self._known_children: dict[Label, LabelWidget] = {}
-        self._children_list: List[LabelWidget] = []
+        self._known_children: dict[LabelInterface, LabelWidget[T]] = {}
+        self._children_list: list[LabelWidget[T]] = []
 
         self._grid = OffsetGridLayout(self._columns, self)
         self._active_label_display = self._init_active_label_display()
@@ -90,7 +93,7 @@ class ScrollArea(QWidget):
         layout.addLayout(footer)
         return layout
 
-    def _init_active_label_display(self):
+    def _init_active_label_display(self) -> QLabel:
         """Return a label displaying hovered label."""
         label = QLabel(self)
         label.setSizePolicy(
@@ -108,7 +111,7 @@ class ScrollArea(QWidget):
         area = QScrollArea()
         area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        radius = self._style.unscaled_icon_radius
+        radius = self._unscaled_label_style.icon_radius
         area.setMinimumWidth(round(radius*self._columns*2.3))
         area.setMinimumHeight(round(radius*9.2))
         area.setWidgetResizable(True)
@@ -138,13 +141,12 @@ class ScrollArea(QWidget):
         self._grid.replace(children)
         QTimer.singleShot(10, lambda: self.setUpdatesEnabled(True))
 
-    def _create_child(self, label: Label) -> LabelWidget:
-        """Create LabelWidget that represent the label."""
+    def _create_child(self, label: LabelInterface) -> LabelWidget[T]:
+        """Create LabelWidget[LabelInterface] that represent the label."""
         child = dispatch_label_widget(label)(
             label=label,
-            style=self._style,
-            parent=self,
-            is_unscaled=True)
+            label_widget_style=self._unscaled_label_style,
+            parent=self)
         child.setFixedSize(child.icon_radius*2, child.icon_radius*2)
         child.draggable = True
         child.add_instruction(ChildInstruction(self._active_label_display))
@@ -152,7 +154,7 @@ class ScrollArea(QWidget):
         self._known_children[label] = child
         return child
 
-    def replace_handled_labels(self, labels: List[Label]) -> None:
+    def replace_handled_labels(self, labels: Sequence[LabelInterface]) -> None:
         """Replace current list of widgets with new ones."""
         self.setUpdatesEnabled(False)
         self._children_list.clear()
@@ -184,10 +186,10 @@ class ChildInstruction:
     def __init__(self, display_label: QLabel) -> None:
         self._display_label = display_label
 
-    def on_enter(self, label: Label) -> None:
+    def on_enter(self, label: LabelInterface) -> None:
         """Set text of label which was entered with mouse."""
         self._display_label.setText(str(label.pretty_name))
 
-    def on_leave(self, label: Label) -> None:
+    def on_leave(self, label: LabelInterface) -> None:
         """Reset text after mouse leaves the widget."""
         self._display_label.setText("")

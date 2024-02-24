@@ -1,15 +1,14 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Optional, List
-from core_components import Controller
 from config_system import Field
-from data_components import DeadzoneStrategy
-from .label import Label
+from core_components import Controller
+from data_components import PieDeadzoneStrategy
+from .pie_label import PieLabel
 from .pie_widget_utils import WidgetHolder
 
 
-class Actuator:
+class PieActuator:
     """
     Activates the correct labels from the Pie.
 
@@ -22,30 +21,25 @@ class Actuator:
 
     Actuator tracks selected strategy using `strategy_field` passed on
     initialization. It can be changed in runtime.
-
-    Strategies:
-    DeadzoneStrategy.DO_NOTHING - no action is needed
-    DeadzoneStrategy.PICK_TOP - first label in list is activated
-    DeadzoneStrategy.PICK_PREVIOUS - remembered label is activated
     """
 
     def __init__(
         self,
         controller: Controller,
         strategy_field: Field,
-        labels: List[Label]
+        labels: list[PieLabel]
     ) -> None:
         self._controller = controller
-        self._last_label: Optional[Label] = None
+        self._last_label: PieLabel | None = None
         self._labels = labels
 
-        def update_strategy():
+        def update_strategy() -> None:
             self._current_strategy = strategy_field.read()
-        self._current_strategy: DeadzoneStrategy
+        self._current_strategy: PieDeadzoneStrategy
         strategy_field.register_callback(update_strategy)
         update_strategy()
 
-    def activate(self, active: Optional[Label]) -> None:
+    def activate(self, active: PieLabel | None) -> None:
         """Activate the correct label"""
         if active is not None:
             # Out of deadzone, label picked
@@ -58,20 +52,20 @@ class Actuator:
             self._controller.set_value(self.selected_label.value)
 
     @property
-    def selected_label(self) -> Optional[Label]:
+    def selected_label(self) -> PieLabel | None:
         """Return label which should be picked on deadzone."""
-        if self._current_strategy == DeadzoneStrategy.DO_NOTHING:
+        if self._current_strategy == PieDeadzoneStrategy.DO_NOTHING:
             return None
-        elif self._current_strategy == DeadzoneStrategy.PICK_TOP:
+        elif self._current_strategy == PieDeadzoneStrategy.PICK_TOP:
             if self._labels:
                 return self._labels[0]
             return None
-        elif self._current_strategy == DeadzoneStrategy.PICK_PREVIOUS:
+        elif self._current_strategy == PieDeadzoneStrategy.PICK_PREVIOUS:
             if self._last_label in self._labels:
                 return self._last_label
             return None
 
-    def mark_selected_widget(self, widget_holder: WidgetHolder):
+    def mark_selected_widget(self, widget_holder: WidgetHolder) -> None:
         """Force color of the label that is selected for being picked."""
         widget_holder.clear_forced_widgets()
 

@@ -1,7 +1,7 @@
-# SPDX-FileCopyrightText: © 2022-2023 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Optional, Generic, TypeVar
+from typing import Generic, TypeVar
 
 from core_components import Instruction
 from data_components import Slider
@@ -63,9 +63,9 @@ class CursorTracker(Generic[T, U]):
     def __new__(
         cls,
         name: str,
-        horizontal_slider: Optional[Slider[T]] = None,
-        vertical_slider: Optional[Slider[U]] = None,
-        instructions: List[Instruction] = [],
+        horizontal_slider: Slider[T] | None = None,
+        vertical_slider: Slider[U] | None = None,
+        instructions: list[Instruction] = [],
     ) -> RawInstructions:
         """
         Pick and create correct ActionPlugin based on provided sliders.
