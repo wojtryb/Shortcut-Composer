@@ -106,5 +106,5 @@ class RotationStyle:
 
     @property
     def outline_opacity(self) -> int:
-        """Opacity of the two color outline for deadzone, and inner zone."""
-        return self._outline_opacity_callback()
+        """Opacity [0-255] of the outline for deadzone, and inner zone."""
+        return round(self._outline_opacity_callback() * 255/100)
