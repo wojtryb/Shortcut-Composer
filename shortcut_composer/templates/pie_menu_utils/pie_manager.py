@@ -52,6 +52,9 @@ class PieManager:
         if self._pie_widget.is_in_edit_mode:
             return self.stop()
 
+        if not self._pie_widget.order_handler:
+            return
+
         cursor = QCursor().pos()
         circle = CirclePoints(self._pie_widget.center_global, 0)
         if circle.distance(cursor) < self._pie_widget.deadzone:

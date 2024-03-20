@@ -79,7 +79,7 @@ class PresetPieConfig(PieConfig[str]):
         self.TAG_NAME.field.refresh()
         self.ORDER.write(self.values())
 
-    def set_current_as_default(self):
+    def set_current_as_default(self) -> None:
         """Set current pie values as a new default list of values."""
         self.TAG_MODE.default = self.TAG_MODE.read()
         self.TAG_NAME.default = self.TAG_NAME.read()
