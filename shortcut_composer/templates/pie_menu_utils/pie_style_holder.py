@@ -34,7 +34,8 @@ class PieStyleHolder:
             pie_radius_callback=self._pie_radius,
             deadzone_radius_callback=self._deadzone_radius,
             settings_button_radius_callback=self._settings_button_radius,
-            accept_button_radius_callback=self._accept_button_radius)
+            accept_button_radius_callback=self._accept_button_radius,
+            background_opacity_callback=self._pie_config.PIE_OPACITY.read)
 
     def _pie_radius(self) -> int:
         """Return pie radius based on configured value."""
