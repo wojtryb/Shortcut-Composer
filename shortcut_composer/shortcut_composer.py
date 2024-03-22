@@ -4,7 +4,8 @@
 from dataclasses import dataclass
 from PyQt5.QtWidgets import QWidgetAction
 
-from api_krita import Krita, Extension  # type: ignore
+from krita import Extension
+from api_krita import Krita
 from api_krita.actions import TransformModeActions
 from actions import create_actions
 from composer_utils import SettingsDialog

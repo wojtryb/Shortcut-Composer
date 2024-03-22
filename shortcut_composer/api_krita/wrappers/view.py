@@ -1,10 +1,11 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from krita import Krita as Api
 from dataclasses import dataclass
 from typing import Protocol
 from functools import cached_property
+
+from krita import Krita as Api
 
 from ..enums import BlendingMode
 
