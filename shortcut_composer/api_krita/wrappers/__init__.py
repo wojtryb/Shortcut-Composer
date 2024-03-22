@@ -7,16 +7,17 @@ Wrappers of classes in krita API.
 Adds typing, docstrings and changes the interface to be PEP8 compatible.
 """
 
+from .version import Version, UnknownVersion
 from .tool_descriptor import ToolDescriptor
 from .database import Database
 from .document import Document
-from .version import Version
 from .canvas import Canvas
 from .cursor import Cursor
 from .node import Node
 from .view import View
 
 __all__ = [
+    "UnknownVersion",
     "ToolDescriptor",
     "Database",
     "Document",

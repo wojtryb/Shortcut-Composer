@@ -43,9 +43,12 @@ class RotationSelector(RawInstructions):
     - `offset`              -- (optional) default offset of zero value
     - `inverse_zones`       -- (optional) default order of zones
     - `divisions` -- (optional) default amount of values in intervallic zone
+    - `active_color`      -- (optional) default rgba color of active pie
     - `deadzone strategy` -- (optional) default strategy what to do,
                               when mouse does not leave deadzone
-    - `active_color`      -- (optional) default rgba color of active pie
+    - `outline_opacity`   -- (optional) opacity in %
+    - `short_vs_long_press_time` -- (optional) time [s] that specifies
+                                    if key press is short or long.
 
     ### Action implementation example:
 
@@ -78,7 +81,7 @@ class RotationSelector(RawInstructions):
         divisions: int = 24,
         active_color: QColor | None = None,
         deadzone_strategy=RotationDeadzoneStrategy.KEEP_CHANGE,
-        outline_opacity: int = 200,
+        outline_opacity: int = 75,
         short_vs_long_press_time: float | None = None,
     ) -> None:
         super().__init__(name, instructions, short_vs_long_press_time)

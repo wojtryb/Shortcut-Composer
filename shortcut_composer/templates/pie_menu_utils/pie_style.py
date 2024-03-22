@@ -23,6 +23,7 @@ class PieStyle:
         deadzone_radius_callback: Callable[[], float],
         settings_button_radius_callback: Callable[[], int],
         accept_button_radius_callback: Callable[[], int],
+        background_opacity_callback: Callable[[], int],
     ) -> None:
         self._unscaled_label_style = unscaled_label_style
 
@@ -30,6 +31,7 @@ class PieStyle:
         self._deadzone_radius_callback = deadzone_radius_callback
         self._settings_button_radius_callback = settings_button_radius_callback
         self._accept_button_radius_callback = accept_button_radius_callback
+        self._background_opacity_callback = background_opacity_callback
 
     @property
     def pie_radius(self) -> int:
@@ -84,7 +86,12 @@ class PieStyle:
     @property
     def background_color(self) -> QColor:
         """Color of the widget background."""
-        return self._unscaled_label_style.background_color
+        opaque = self._unscaled_label_style.background_color
+        return QColor(
+            opaque.red(),
+            opaque.green(),
+            opaque.blue(),
+            round(self._background_opacity_callback() * 255/100))
 
     @property
     def active_color_dark(self) -> QColor:
@@ -99,7 +106,7 @@ class PieStyle:
     @property
     def background_decorator_color(self) -> QColor:
         """Color of decorator near inner edge."""
-        color = self.background_color
+        color = self._unscaled_label_style.background_color
         color = QColor(color.red()-5, color.green()-5, color.blue()-5, 60)
         return color
 

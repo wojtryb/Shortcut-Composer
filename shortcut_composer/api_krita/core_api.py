@@ -13,6 +13,7 @@ from PyQt5.QtGui import QKeySequence, QColor, QIcon, QPalette
 from PyQt5.QtCore import QTimer
 
 from .wrappers import (
+    UnknownVersion,
     ToolDescriptor,
     Document,
     Version,
@@ -146,16 +147,18 @@ class KritaInstance:
     @property
     def version(self) -> Version:
         """Get version of krita."""
-        raw_string: str = self.instance.version()
-        version, *additional_info = raw_string.split("-")
+        try:
+            raw_string: str = self.instance.version()
+            version, *additional_info = raw_string.split("-")
 
-        major, minor, fix = version.split(".")
+            major, minor, fix = version.split(".")
 
-        version = Version(int(major), int(minor), int(fix))
-        if additional_info:
-            version.additional_info = additional_info[0]
-
-        return version
+            version = Version(int(major), int(minor), int(fix))
+            if additional_info:
+                version.additional_info = additional_info[0]
+            return version
+        except Exception:
+            return UnknownVersion()
 
 
 class KritaWindow(Protocol):

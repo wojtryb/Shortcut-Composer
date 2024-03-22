@@ -121,7 +121,7 @@ class RotationPainter:
             span=span,
             color=self._scale_opacity(
                 self._style.active_color, animation_value),
-            thickness=thickness+thickness_change)
+            thickness=thickness+thickness_change+2)
 
         # indicator decorator
         self._painter.paint_pie(

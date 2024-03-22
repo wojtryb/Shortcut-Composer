@@ -93,6 +93,10 @@ class OrderHandler:
         """Iterate over all labels in the holder."""
         return iter(self._labels)
 
+    def __bool__(self) -> bool:
+        """Return whether the label list is empty."""
+        return bool(self._labels)
+
     def reset(self, notify: bool = True) -> None:
         """
         Ensure the icon widgets properly represents this container.

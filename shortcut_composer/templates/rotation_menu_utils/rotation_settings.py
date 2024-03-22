@@ -82,8 +82,8 @@ class RotationSettings(BaseWidget):
                 parent=self,
                 pretty_name="Outline opacity",
                 step=1,
-                max_value=255,
-                tooltip="Opacity of the widget outline."),
+                max_value=100,
+                tooltip="Opacity [%] of the widget outline."),
 
             "Values",
             Checkbox(
