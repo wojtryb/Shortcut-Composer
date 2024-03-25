@@ -132,6 +132,8 @@ class BlendingMode(EnumGroup):
     HARD_OVERLAY = "hard overlay"
     INTERPOLATION = "interpolation"
     INTERPOLATION_2X = "interpolation 2x"
+    LAMBERT_lIGHTING_GAMMA_2_2 = "lambert_lighting_gamma2.2"
+    LAMBERT_lIGHTING_GAMMA_LINEAR = "lambert_lighting"
     NORMAL = "normal"
     OVERLAY = "overlay"
     PARALLEL = "parallel"
@@ -225,6 +227,8 @@ PRETTY_NAMES = {
     BlendingMode.HARD_MIX_PHOTOSHOP: "Hard Mix (Photoshop)",
     BlendingMode.HARD_MIX_SOFTER_PHOTOSHOP: "Hard Mix Softer (Photoshop)",
     BlendingMode.INTERPOLATION_2X: "Interpolation - 2X",
+    BlendingMode.LAMBERT_lIGHTING_GAMMA_2_2: "Lambert Lighting (Gamma 2.2)",
+    BlendingMode.LAMBERT_lIGHTING_GAMMA_LINEAR: "Lambert Lighting (Linear)",
     BlendingMode.DIVISIVE_MODULO_CONTINUOUS: "Divisive Modulo - Continuous",
     BlendingMode.MODULO_CONTINUOUS: "Modulo - Continuous",
     BlendingMode.MODULO_SHIFT_CONTINUOUS: "Modulo Shift - Continuous",
