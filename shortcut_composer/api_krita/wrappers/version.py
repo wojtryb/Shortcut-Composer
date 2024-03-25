@@ -29,7 +29,7 @@ class Version:
     def __str__(self) -> str:
         if not self.additional_info:
             return f"{self.major}.{self.minor}.{self.fix}"
-        return f"{self.major}.{self.minor}.{self.fix}-{self.additional_info}"
+        return f"{self.major}.{self.minor}.{self.fix} {self.additional_info}"
 
 
 class UnknownVersion(Version):
