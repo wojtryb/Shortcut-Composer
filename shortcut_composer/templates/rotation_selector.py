@@ -3,6 +3,7 @@
 
 from functools import cached_property
 
+from PyQt5.QtWidgets import QWidget
 from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QColor
 
@@ -37,6 +38,7 @@ class RotationSelector(RawInstructions):
     - `controller`    -- defines which krita property will be modified
     - `instructions`  -- (optional) list of additional instructions to
                          perform on key press and release
+    - `is_widget_hidden`    -- (optional) allows to hide the widget
     - `deadzone_scale`      -- (optional) default deadzone size multiplier
     - `inner_zone_scale`    -- (optional) default inner zone size multiplier
     - `is_counterclockwise` -- (optional) default rotation direction
@@ -46,7 +48,7 @@ class RotationSelector(RawInstructions):
     - `active_color`      -- (optional) default rgba color of active pie
     - `deadzone strategy` -- (optional) default strategy what to do,
                               when mouse does not leave deadzone
-    - `outline_opacity`   -- (optional) opacity in %
+    - `outline_opacity`   -- (optional) default opacity in %
     - `short_vs_long_press_time` -- (optional) time [s] that specifies
                                     if key press is short or long.
 
@@ -73,6 +75,7 @@ class RotationSelector(RawInstructions):
         name: str,
         controller: Controller[int],
         instructions: list[Instruction] | None = None,
+        is_widget_hidden: bool = False,
         deadzone_scale: float = 1.0,
         inner_zone_scale: float = 1.0,
         is_counterclockwise: bool = False,
@@ -89,6 +92,7 @@ class RotationSelector(RawInstructions):
 
         self._config = RotationConfig(
             name=self.name,
+            is_widget_hidden=is_widget_hidden,
             deadzone_strategy=deadzone_strategy,
             inverse_zones=inverse_zones,
             divisions=divisions,
@@ -121,8 +125,7 @@ class RotationSelector(RawInstructions):
             config=self._config,
             strategy_field=self._config.DEADZONE_STRATEGY)
 
-    @cached_property
-    def settings_button(self) -> RoundButton:
+    def _create_settings_button(self, parent: QWidget) -> RoundButton:
         """Create button with which user can enter the edit mode."""
 
         settings_button = RoundButton(
@@ -131,17 +134,26 @@ class RotationSelector(RawInstructions):
             active_color_callback=Krita.get_active_color_from_theme,
             icon=Krita.get_icon("properties"),
             icon_scale=1.1,
-            parent=self._rotation_widget)
+            parent=parent)
 
         def on_click() -> None:
             self._rotation_widget.hide()
-            self.rotation_settings.show()
+            self._rotation_settings.show()
+            self._global_settings_button.hide()
         settings_button.clicked.connect(on_click)
 
         return settings_button
 
     @cached_property
-    def rotation_settings(self) -> RotationSettings:
+    def _settings_button(self) -> RoundButton:
+        return self._create_settings_button(self._rotation_widget)
+
+    @cached_property
+    def _global_settings_button(self) -> RoundButton:
+        return self._create_settings_button(None)  # type: ignore
+
+    @cached_property
+    def _rotation_settings(self) -> RotationSettings:
         """Create a settings widget which configures the menu."""
         return RotationSettings(config=self._config)
 
@@ -152,12 +164,18 @@ class RotationSelector(RawInstructions):
         self._rotation_manager.start()
         self._rotation_actuator.start()
 
-        self.settings_button.move(QPoint(
-            self._rotation_widget.width()-self.settings_button.width(),
-            self._rotation_widget.height()-self.settings_button.height()))
+        self._settings_button.move(QPoint(
+            self._rotation_widget.width()-self._settings_button.width(),
+            self._rotation_widget.height()-self._settings_button.height()))
+
+        if (self._config.IS_WIDGET_HIDDEN.read()
+                and not self._rotation_settings.isVisible()):
+            self._global_settings_button.show()
 
     def on_every_key_release(self) -> None:
         """Handle the key release event."""
         super().on_every_key_release()
         self._rotation_actuator.stop()
         self._rotation_manager.stop()
+
+        self._global_settings_button.hide()

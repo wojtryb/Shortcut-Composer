@@ -31,6 +31,15 @@ class RotationSettings(BaseWidget):
         self._config = config
 
         self._general_tab = ConfigFormWidget([
+            Checkbox(
+                config_field=config.IS_WIDGET_HIDDEN,
+                parent=self,
+                pretty_name="Hide widget",
+                tooltip=""
+                "Hide the rotation widget entirely.\n\n"
+                "Option for those who prefer to preview the value directly\n"
+                "in krita. It works best with small deadzone scale and\n"
+                "inner zone scale set to zero."),
             "Behavior",
             EnumComboBox(
                 config_field=config.DEADZONE_STRATEGY,

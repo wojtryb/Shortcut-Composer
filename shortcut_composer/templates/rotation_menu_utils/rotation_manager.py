@@ -33,8 +33,9 @@ class RotationManager:
 
     def start(self) -> None:
         """Show widget under the mouse and start the mouse tracking loop."""
-        self._rotation_widget.move_center(QCursor().pos())
-        self._rotation_widget.show()
+        if not self._config.IS_WIDGET_HIDDEN.read():
+            self._rotation_widget.move_center(QCursor().pos())
+            self._rotation_widget.show()
 
         self._center_global = QCursor().pos()
         self._rotation_widget.state.reset()
@@ -49,9 +50,6 @@ class RotationManager:
 
     def _handle_cursor(self) -> None:
         """Calculate zone and angle of the cursor."""
-        if not self._rotation_widget.isVisible():
-            return self.stop()
-
         cursor = QCursor().pos()
         circle = CirclePoints(self._center_global, 0)
 
