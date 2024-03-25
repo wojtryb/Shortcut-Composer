@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+import re
 from typing import Callable, Protocol, Any
 
 from krita import Krita as Api, Extension, qApp
@@ -147,18 +148,22 @@ class KritaInstance:
     @property
     def version(self) -> Version:
         """Get version of krita."""
-        try:
-            raw_string: str = self.instance.version()
-            version, *additional_info = raw_string.split("-")
+        raw: str = self.instance.version()
 
-            major, minor, fix = version.split(".")
+        num = r"(0|[1-9]\d*)"
+        dot = r"\."
+        delimiter = r"[ -]?"
+        info = r"(.*)"
 
-            version = Version(int(major), int(minor), int(fix))
-            if additional_info:
-                version.additional_info = additional_info[0]
-            return version
-        except Exception:
+        regex = "^" + num + dot + num + dot + num + delimiter + info + "$"
+        result = re.search(regex, raw)
+
+        if result is None or len(result.groups()) != 4:
             return UnknownVersion()
+
+        major, minor, fix, additional_info = result.groups()
+
+        return Version(int(major), int(minor), int(fix), additional_info)
 
 
 class KritaWindow(Protocol):

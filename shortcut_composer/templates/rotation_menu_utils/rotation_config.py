@@ -19,6 +19,7 @@ class RotationConfig(FieldGroup, Generic[T]):
     def __init__(
         self,
         name: str,
+        is_widget_hidden: bool,
         deadzone_strategy: RotationDeadzoneStrategy,
         inverse_zones: bool,
         divisions: int,
@@ -30,6 +31,10 @@ class RotationConfig(FieldGroup, Generic[T]):
         offset: int,
     ) -> None:
         super().__init__(name)
+
+        self.IS_WIDGET_HIDDEN = self.field(
+            name="Is widget hidden",
+            default=is_widget_hidden)
 
         self.DEADZONE_STRATEGY = self.field(
             name="Deadzone strategy",
