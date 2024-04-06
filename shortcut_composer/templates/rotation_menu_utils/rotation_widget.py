@@ -55,7 +55,7 @@ class RotationWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
     def _resize(self) -> None:
         """Change the widget window to value required by its configuration."""
-        self.setGeometry(0, 0, self._diameter, self._diameter)
+        self.resize(self._diameter, self._diameter)
 
     @property
     def _diameter(self) -> int:

@@ -45,7 +45,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     ) -> None:
         AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())
         diameter = 2*style_holder.pie_style.widget_radius
-        self.setGeometry(0, 0, diameter, diameter)
+        self.resize(diameter, diameter)
 
         self.setAcceptDrops(True)
         self.setWindowFlags((
@@ -171,4 +171,4 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     def _reset(self) -> None:
         """Set widget geometry according to style."""
         diameter = 2*self._style_holder.pie_style.widget_radius
-        self.setGeometry(0, 0, diameter, diameter)
+        self.resize(diameter, diameter)

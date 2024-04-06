@@ -44,7 +44,7 @@ class RoundButton(QPushButton, BaseWidget):
     def show(self) -> None:
         """Change the size and repaint the button."""
         radius = self._radius_callback()
-        self.setGeometry(0, 0, radius*2, radius*2)
+        self.resize(radius*2, radius*2)
 
         active_color = self._active_color_callback()
         background_color = self._background_color_callback()
