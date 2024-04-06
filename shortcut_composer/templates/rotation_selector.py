@@ -171,6 +171,9 @@ class RotationSelector(RawInstructions):
         if (self._config.IS_WIDGET_HIDDEN.read()
                 and not self._rotation_settings.isVisible()):
             self._global_settings_button.show()
+            mdiArea = Krita.get_active_mdi_area()
+            self._global_settings_button.move(
+                mdiArea.mapToGlobal(mdiArea.pos()))
 
     def on_every_key_release(self) -> None:
         """Handle the key release event."""

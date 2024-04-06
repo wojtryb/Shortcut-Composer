@@ -40,7 +40,7 @@ class TextLabelWidget(LabelWidget[T]):
         label = QLabel(self)
         label.setText(to_display.value)
         label.setAlignment(Qt.AlignCenter)
-        label.setGeometry(0, 0, round(height*2), round(height))
+        label.resize(round(height*2), round(height))
         label.setFont(self._font)
         label.move(self.center.x()-height,
                    self.center.y()-height//2)
