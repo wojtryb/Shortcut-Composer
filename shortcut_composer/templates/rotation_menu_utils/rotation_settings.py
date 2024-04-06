@@ -1,11 +1,10 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from PyQt5.QtWidgets import QDialog
 from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import QVBoxLayout
 
-from api_krita.pyqt import BaseWidget
 from composer_utils import ButtonsLayout
 from config_system.ui import (
     ConfigFormWidget,
@@ -17,7 +16,7 @@ from data_components import RotationDeadzoneStrategy
 from .rotation_config import RotationConfig
 
 
-class RotationSettings(BaseWidget):
+class RotationSettings(QDialog):
     """Widget that allows to change values in passed config."""
 
     def __init__(self, config: RotationConfig) -> None:
@@ -127,7 +126,6 @@ class RotationSettings(BaseWidget):
     def show(self) -> None:
         """Show the dialog after refreshing all its elements."""
         self.refresh()
-        self.move_center(QCursor.pos())
         return super().show()
 
     def apply(self) -> None:
