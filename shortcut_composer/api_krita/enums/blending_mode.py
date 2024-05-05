@@ -145,6 +145,7 @@ class BlendingMode(EnumGroup):
     _modulo = Group("Modulo")
     DIVISIVE_MODULO = "divisive_modulo"
     DIVISIVE_MODULO_CONTINUOUS = "divisive_modulo_continuous"
+    MODULO = "modulo"
     MODULO_CONTINUOUS = "modulo_continuous"
     MODULO_SHIFT = "modulo_shift"
     MODULO_SHIFT_CONTINUOUS = "modulo_shift_continuous"
