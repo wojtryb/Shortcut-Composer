@@ -65,6 +65,11 @@ class TextLabelWidget(LabelWidget[T]):
         if last_line:
             output.append(last_line)
 
+        if len(output) > MAX_LINES:
+            remainder = " ".join(output[MAX_LINES:])
+            output[MAX_LINES-1] += " " + remainder
+            output[MAX_LINES-1] = output[MAX_LINES-1][:MAX_SIGNS-1] + "."
+
         return output[:MAX_LINES]
 
     def _create_pyqt_label(self) -> QLabel:
