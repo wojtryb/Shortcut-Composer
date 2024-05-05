@@ -26,7 +26,44 @@ class TextLabelWidget(LabelWidget[T]):
         parent: QWidget,
     ) -> None:
         super().__init__(label, label_widget_style, parent)
+
+        self._display_value = self._get_display_value()
         self._pyqt_label = self._create_pyqt_label()
+
+    def _get_display_value(self) -> list[str]:
+        to_display = self.label.display_value
+
+        if not isinstance(to_display, LabelText):
+            raise TypeError("Label supposed to be text.")
+
+        words = to_display.value.split("_")
+        if not words:
+            return []
+
+        changed_words = []
+        for word in words:
+            if len(word) <= 10:
+                changed_words.append(word)
+            else:
+                changed_words.append(word[:3]+".")
+        words = changed_words
+
+        longest_word = max(len(word) for word in words)
+
+        output = []
+        last_line = words[0]
+
+        for word in words[1:]:
+            if len(last_line + " " + word) <= longest_word:
+                last_line += " " + word
+            else:
+                output.append(last_line)
+                last_line = word
+
+        if last_line:
+            output.append(last_line)
+
+        return output[:3]
 
     def _create_pyqt_label(self) -> QLabel:
         """Create and show a new Qt5 label. Does not need redrawing."""
@@ -58,6 +95,7 @@ class TextLabelWidget(LabelWidget[T]):
         """Return font to use in pyqt label."""
         font = QFontDatabase.systemFont(QFontDatabase.SystemFont.TitleFont)
         font.setPointSize(round(
+            0.9 *
             self._label_widget_style.font_multiplier
             * self.width()
             * self._sign_amount_multiplier))
@@ -66,16 +104,27 @@ class TextLabelWidget(LabelWidget[T]):
 
     @property
     def _sign_amount_multiplier(self) -> float:
-        """Return multiplier (0-1) getting smaller the more signs are there."""
-        to_display = self.label.display_value
+        line_amount_multiplier = {
+            1: 1.2,
+            2: 1.1,
+            3: 0.9,
+        }[len(self._display_value)]
 
-        if not isinstance(to_display, LabelText):
-            raise TypeError("Label supposed to be text.")
+        longest_word = max(len(word) for word in self._display_value)
+        sign_amount_multiplier = {
+            1: 0.8,
+            2: 0.8,
+            3: 0.8,
+            4: 0.65,
+            5: 0.6,
+            6: 0.6,
+            7: 0.6,
+            8: 0.5,
+            9: 0.4,
+            10: 0.4,
+        }[longest_word]
 
-        signs_amount = len(to_display.value)
-        if signs_amount <= 4:
-            return 1
-        return 4/(signs_amount)
+        return line_amount_multiplier * sign_amount_multiplier
 
     @staticmethod
     def _color_to_str(color: QColor) -> str: return f'''
