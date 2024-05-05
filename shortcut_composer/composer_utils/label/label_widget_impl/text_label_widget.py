@@ -18,6 +18,7 @@ T = TypeVar("T", bound=LabelInterface)
 MAX_LINES = 2
 MAX_SIGNS = 8
 
+
 class TextLabelWidget(LabelWidget[T]):
     """Displays a `label` which holds text."""
 
@@ -38,39 +39,43 @@ class TextLabelWidget(LabelWidget[T]):
         if not isinstance(to_display, LabelText):
             raise TypeError("Label supposed to be text.")
 
-        words = to_display.value.split("_")
-        if not words:
+        if not to_display.value:
             return []
 
-        changed_words = []
-        for word in words:
-            if len(word) <= MAX_SIGNS:
-                changed_words.append(word)
-            else:
-                changed_words.append(word[:MAX_SIGNS-1]+".")
-        words = changed_words
+        words = to_display.value.split("_")
 
+        # Abbreviate words that are too long
+
+        def abbreviate(word: str) -> str:
+            if len(word) <= MAX_SIGNS:
+                return word
+            return word[:MAX_SIGNS-1] + "."
+        words = list(map(abbreviate, words))
+
+        # Merge short words into lines
+
+        lines = []
+        last_line = words[0]
         longest_word = max(len(word) for word in words)
 
-        output = []
-        last_line = words[0]
-
         for word in words[1:]:
-            if len(last_line + " " + word) <= longest_word:
+            if len(last_line + word) < longest_word:
                 last_line += " " + word
             else:
-                output.append(last_line)
+                lines.append(last_line)
                 last_line = word
 
         if last_line:
-            output.append(last_line)
+            lines.append(last_line)
 
-        if len(output) > MAX_LINES:
-            remainder = " ".join(output[MAX_LINES:])
-            output[MAX_LINES-1] += " " + remainder
-            output[MAX_LINES-1] = output[MAX_LINES-1][:MAX_SIGNS-1] + "."
+        # Remove lines at the end that do not fit into label
 
-        return output[:MAX_LINES]
+        if len(lines) > MAX_LINES:
+            remainder = " ".join(lines[MAX_LINES:])
+            last_line = lines[MAX_LINES-1] + " " + remainder
+            lines[MAX_LINES-1] = last_line[:MAX_SIGNS-1] + "."
+
+        return lines[:MAX_LINES]
 
     def _create_pyqt_label(self) -> QLabel:
         """Create and show a new Qt5 label. Does not need redrawing."""
