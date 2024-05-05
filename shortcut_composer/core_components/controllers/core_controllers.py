@@ -69,7 +69,7 @@ class ActionController(Controller[Action]):
         if not icon.isNull():
             return value.icon
         return LabelText(
-            value.name,
+            value=value.name,
             color=LabelTextColorizer.action())
 
     def get_pretty_name(self, value: Action) -> str:

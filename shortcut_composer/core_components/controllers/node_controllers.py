@@ -138,7 +138,7 @@ class CreateLayerWithBlendingController(NodeBasedController,
     def get_label(self, value: BlendingMode) -> LabelText:
         """Return Label of 3 first letters of mode name in correct color."""
         return LabelText(
-            value="+" + value.name[:3],
+            value="+" + value.name,
             color=LabelTextColorizer.blending_mode(value))
 
     def get_pretty_name(self, value: BlendingMode) -> str:
