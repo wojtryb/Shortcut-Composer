@@ -15,6 +15,8 @@ from ..label_widget_style import LabelWidgetStyle
 
 T = TypeVar("T", bound=LabelInterface)
 
+MAX_LINES = 2
+MAX_SIGNS = 8
 
 class TextLabelWidget(LabelWidget[T]):
     """Displays a `label` which holds text."""
@@ -42,10 +44,10 @@ class TextLabelWidget(LabelWidget[T]):
 
         changed_words = []
         for word in words:
-            if len(word) <= 10:
+            if len(word) <= MAX_SIGNS:
                 changed_words.append(word)
             else:
-                changed_words.append(word[:3]+".")
+                changed_words.append(word[:MAX_SIGNS-1]+".")
         words = changed_words
 
         longest_word = max(len(word) for word in words)
@@ -63,7 +65,7 @@ class TextLabelWidget(LabelWidget[T]):
         if last_line:
             output.append(last_line)
 
-        return output[:3]
+        return output[:MAX_LINES]
 
     def _create_pyqt_label(self) -> QLabel:
         """Create and show a new Qt5 label. Does not need redrawing."""
@@ -95,33 +97,32 @@ class TextLabelWidget(LabelWidget[T]):
         """Return font to use in pyqt label."""
         font = QFontDatabase.systemFont(QFontDatabase.SystemFont.TitleFont)
         font.setPointSize(round(
-            0.9 *
             self._label_widget_style.font_multiplier
             * self.width()
-            * self._sign_amount_multiplier))
+            * self._content_size_multiplier))
         font.setBold(True)
         return font
 
     @property
-    def _sign_amount_multiplier(self) -> float:
+    def _content_size_multiplier(self) -> float:
         line_amount_multiplier = {
-            1: 1.2,
-            2: 1.1,
-            3: 0.9,
+            1: 1.0,
+            2: 0.9,
+            3: 0.6,
         }[len(self._display_value)]
 
         longest_word = max(len(word) for word in self._display_value)
         sign_amount_multiplier = {
-            1: 0.8,
-            2: 0.8,
-            3: 0.8,
-            4: 0.65,
-            5: 0.6,
+            1: 1.0,
+            2: 1.0,
+            3: 0.9,
+            4: 0.8,
+            5: 0.7,
             6: 0.6,
-            7: 0.6,
-            8: 0.5,
+            7: 0.5,
+            8: 0.45,
             9: 0.4,
-            10: 0.4,
+            10: 0.35,
         }[longest_word]
 
         return line_amount_multiplier * sign_amount_multiplier
