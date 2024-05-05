@@ -54,7 +54,7 @@ class TextLabelWidget(LabelWidget[T]):
 
         # Merge short words into lines
 
-        lines = []
+        lines: list[str] = []
         last_line = words[0]
         longest_word = max(len(word) for word in words)
 
@@ -73,7 +73,7 @@ class TextLabelWidget(LabelWidget[T]):
         if len(lines) > MAX_LINES:
             remainder = " ".join(lines[MAX_LINES:])
             last_line = lines[MAX_LINES-1] + " " + remainder
-            lines[MAX_LINES-1] = last_line[:MAX_SIGNS-1] + "."
+            lines[MAX_LINES-1] = last_line[:MAX_SIGNS-1].rstrip(' ') + "."
 
         return lines[:MAX_LINES]
 
