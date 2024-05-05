@@ -31,9 +31,16 @@ class Color(Enum):
 class LabelTextColorizer(QColor):
     """Functions that return a color associated with value of property."""
 
+    @staticmethod
+    def action() -> QColor:
+        """Return a QColor associated with action."""
+        if Krita.is_light_theme_active:
+            return Color.BLACK.value
+        return Color.WHITE.value
+
     @classmethod
     def blending_mode(cls, mode: BlendingMode) -> QColor:
-        """Return a QColor associated with blending mode. Gray by default."""
+        """Return a QColor associated with blending mode."""
         if Krita.is_light_theme_active:
             return cls.BLENDING_MODES_LIGHT[mode].value
         return cls.BLENDING_MODES_DARK[mode].value
