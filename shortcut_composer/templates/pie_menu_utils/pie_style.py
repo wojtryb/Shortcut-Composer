@@ -18,14 +18,14 @@ class PieStyle:
 
     def __init__(
         self,
-        unscaled_label_style: LabelWidgetStyle,
+        label_style: LabelWidgetStyle,
         pie_radius_callback: Callable[[], int],
         deadzone_radius_callback: Callable[[], float],
         settings_button_radius_callback: Callable[[], int],
         accept_button_radius_callback: Callable[[], int],
         background_opacity_callback: Callable[[], int],
     ) -> None:
-        self._unscaled_label_style = unscaled_label_style
+        self._label_style = label_style
 
         self._pie_radius_callback = pie_radius_callback
         self._deadzone_radius_callback = deadzone_radius_callback
@@ -56,12 +56,12 @@ class PieStyle:
     @property
     def widget_radius(self) -> int:
         """Radius of the entire widget, including base and the icons."""
-        return self.pie_radius + self._unscaled_label_style.icon_radius
+        return self.pie_radius + self._label_style.icon_radius
 
     @property
     def border_thickness(self) -> int:
         """Thickness of border of the pie."""
-        return self._unscaled_label_style.border_thickness
+        return self._label_style.border_thickness
 
     @property
     def decorator_thickness(self) -> int:
@@ -81,12 +81,12 @@ class PieStyle:
     @property
     def active_color(self) -> QColor:
         """Color of active elements."""
-        return self._unscaled_label_style.active_color
+        return self._label_style.active_color
 
     @property
     def background_color(self) -> QColor:
         """Color of the widget background."""
-        opaque = self._unscaled_label_style.background_color
+        opaque = self._label_style.background_color
         return QColor(
             opaque.red(),
             opaque.green(),
@@ -96,17 +96,17 @@ class PieStyle:
     @property
     def active_color_dark(self) -> QColor:
         """Color variation of active element."""
-        return self._unscaled_label_style.active_color_dark
+        return self._label_style.active_color_dark
 
     @property
     def border_color(self) -> QColor:
         """Color of the active pie border."""
-        return self._unscaled_label_style.border_color
+        return self._label_style.border_color
 
     @property
     def background_decorator_color(self) -> QColor:
         """Color of decorator near inner edge."""
-        color = self._unscaled_label_style.background_color
+        color = self._label_style.background_color
         color = QColor(color.red()-5, color.green()-5, color.blue()-5, 60)
         return color
 
