@@ -9,7 +9,7 @@ from PyQt5.QtGui import QIcon
 from api_krita import Krita
 from api_krita.enums import Action, Tool, Toggle, TransformMode
 from api_krita.actions import TransformModeFinder
-from composer_utils.label import LabelText
+from composer_utils.label import LabelText, LabelTextColorizer
 from ..controller_base import Controller, NumericController
 
 
@@ -68,7 +68,9 @@ class ActionController(Controller[Action]):
         icon = value.icon
         if not icon.isNull():
             return value.icon
-        return LabelText(value.name[:3])
+        return LabelText(
+            value=value.name[:3],
+            color=LabelTextColorizer.action())
 
     def get_pretty_name(self, value: Action) -> str:
         """Forward enums' pretty name."""
@@ -141,7 +143,7 @@ class UndoController(NumericController):
     """
     Gives access to `undo` and `redo` actions.
 
-    - Operates on `int` representing position on undo stack
+    - Operates on `float` representing position on undo stack
     - Starts from `0`
     - Controller remembers its position on undo stack.
     - Setting a value smaller than currently remembered performs `undo`
@@ -149,7 +151,7 @@ class UndoController(NumericController):
     - Each Undo and redo change remembered position by 1
     """
 
-    TYPE = int
+    TYPE = float
     DEFAULT_VALUE = 0
     MIN_VALUE = 0
     MAX_VALUE = 10_000
@@ -160,15 +162,15 @@ class UndoController(NumericController):
     def __init__(self) -> None:
         self.state = 0
 
-    def get_value(self) -> int:
+    def get_value(self) -> float:
         """Return remembered position on undo stack"""
         return self.state
 
-    def set_value(self, value: int) -> None:
+    def set_value(self, value: float) -> None:
         """Compares value with remembered position and performs undo/redo."""
-        if value == self.state:
+        if round(value) == self.state:
             return
-        elif value > self.state:
+        elif round(value) > self.state:
             Krita.trigger_action("edit_redo")
             self.state += 1
         else:

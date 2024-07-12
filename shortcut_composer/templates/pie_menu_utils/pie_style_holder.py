@@ -30,7 +30,7 @@ class PieStyleHolder:
             active_color_callback=self._active_color,
             background_color_callback=self._background_color)
         self.pie_style = PieStyle(
-            unscaled_label_style=self.unscaled_label_style,
+            label_style=self.label_style,
             pie_radius_callback=self._pie_radius,
             deadzone_radius_callback=self._deadzone_radius,
             settings_button_radius_callback=self._settings_button_radius,
@@ -59,7 +59,11 @@ class PieStyleHolder:
             max_radius = round(
                 self.pie_style.pie_radius * math.pi / len(elements))
 
-        return min(self._unscaled_icon_radius(), max_radius)
+        desired_radius = round(
+            self._unscaled_icon_radius()
+            * self._pie_config.ICON_RADIUS_SCALE.read())
+
+        return min(desired_radius, max_radius)
 
     def _border_thickness(self) -> int:
         """Return border thickness based on configured value."""

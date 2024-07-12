@@ -3,7 +3,7 @@
 
 from typing import TypeVar, Generic
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import (
     QDragEnterEvent,
     QDragLeaveEvent,
@@ -67,6 +67,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
         self._config.PIE_RADIUS_SCALE.register_callback(self._reset)
         self._config.ICON_RADIUS_SCALE.register_callback(self._reset)
+        self._config.ORDER.register_callback(self._reset)
         Config.PIE_GLOBAL_SCALE.register_callback(self._reset)
         Config.PIE_ICON_GLOBAL_SCALE.register_callback(self._reset)
 
@@ -170,5 +171,10 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
     def _reset(self) -> None:
         """Set widget geometry according to style."""
-        diameter = 2*self._style_holder.pie_style.widget_radius
-        self.resize(diameter, diameter)
+        radius = self._style_holder.pie_style.widget_radius
+        difference = radius - self.width()//2
+        new_center = QPoint(
+            self.center_global.x() - difference,
+            self.center_global.y())
+        self.resize(2*radius, 2*radius)
+        self.move_center(new_center)

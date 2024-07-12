@@ -1,4 +1,4 @@
-# Shortcut composer **v1.5.3**
+# Shortcut composer **v1.5.4**
 
 [![python](https://img.shields.io/badge/Python-3.10-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
 [![Code style: black](https://img.shields.io/badge/code%20style-autopep8-333333.svg)](https://pypi.org/project/autopep8/)
@@ -40,7 +40,7 @@ The plugin adds new shortcuts of the following types:
 [![PIE MENUS - release video](https://github-production-user-asset-6210df.s3.amazonaws.com/51094047/238179887-87c00d86-0e65-46c2-94c4-52bb02c99501.png)](https://youtu.be/hrjBycVYFZM "PIE MENUS - introducing Shortcut Composer")
 
 ## Requirements
-- Version of krita on plugin release: **5.2.2**
+- Version of krita on plugin release: **5.2.3**
 - Required version of krita: **5.2.2** or later
 
 OS support state:
