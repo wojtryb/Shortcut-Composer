@@ -16,9 +16,10 @@ class ValueList(QListWidget):
         super().__init__(parent)
         self.horizontalScrollBar().setStyleSheet("QScrollBar {height:0px;}")
         self.setMaximumWidth(200)
-        self.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.setSelectionMode(
+            QAbstractItemView.SelectionMode.ExtendedSelection)
         if movable:
-            self.setDragDropMode(QAbstractItemView.InternalMove)
+            self.setDragDropMode(QAbstractItemView.DragDropMode.InternalMove)
 
     @property
     def current_row(self) -> int:
@@ -50,7 +51,7 @@ class ValueList(QListWidget):
 
     def remove(self, value: str) -> None:
         """Remove strings by passed value and select the previous one."""
-        for item in self.findItems(value, Qt.MatchExactly):
+        for item in self.findItems(value, Qt.MatchFlag.MatchExactly):
             index = self.row(item)
             self.takeItem(index)
             self.setCurrentRow(index-1)

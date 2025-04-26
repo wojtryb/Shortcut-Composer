@@ -66,7 +66,7 @@ class ActionValues(QWidget):
         """Adds a label on top of the list area."""
         layout = QVBoxLayout()
         label = QLabel(text)
-        label.setAlignment(Qt.AlignCenter)
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(label)
         layout.addWidget(value_list)
         return layout
