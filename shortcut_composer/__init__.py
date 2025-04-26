@@ -22,7 +22,7 @@ def main() -> None:
 
     if Krita.version < __required_krita_version__:
         warning_box = QMessageBox()
-        warning_box.setIcon(QMessageBox.Warning)
+        warning_box.setIcon(QMessageBox.Icon.Warning)
         warning_box.setWindowTitle("Shortcut composer version mismatch")
         warning_box.setText(
             "Shortcut Composer will not load.\n\n"
@@ -31,8 +31,8 @@ def main() -> None:
             f"Krita version: {Krita.version}\n"
             f"Required Krita version: {__required_krita_version__}\n\n"
             "Upgrade your Krita, or downgrade the plugin.")
-        warning_box.setStandardButtons(QMessageBox.Ok)
-        warning_box.exec_()
+        warning_box.setStandardButtons(QMessageBox.StandardButton.Ok)
+        warning_box.exec()
         return
 
     from .shortcut_composer import ShortcutComposer  # noqa

@@ -28,11 +28,13 @@ class ConfigFormWidget(QWidget):
     def __init__(self, elements: list[ConfigBasedWidget | str]) -> None:
         super().__init__()
         self._layout = QFormLayout()
-        self._layout.RowWrapPolicy(QFormLayout.DontWrapRows)
-        self._layout.setFieldGrowthPolicy(QFormLayout.FieldsStayAtSizeHint)
-        self._layout.setLabelAlignment(Qt.AlignRight)
+        self._layout.RowWrapPolicy(QFormLayout.RowWrapPolicy.DontWrapRows)
+        self._layout.setFieldGrowthPolicy(
+            QFormLayout.FieldGrowthPolicy.FieldsStayAtSizeHint)
+        self._layout.setLabelAlignment(Qt.AlignmentFlag.AlignRight)
         self._layout.setFormAlignment(
-            Qt.AlignHCenter | Qt.AlignTop)  # type: ignore
+            Qt.AlignmentFlag.AlignHCenter |
+            Qt.AlignmentFlag.AlignTop)  # type: ignore
         self.setLayout(self._layout)
 
         self.widgets: list[ConfigBasedWidget] = []
@@ -52,9 +54,9 @@ class ConfigFormWidget(QWidget):
     def add_title(self, text: str) -> None:
         """Add a label with given text."""
         label = QLabel(text)
-        label.setAlignment(Qt.AlignCenter)
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         label.setStyleSheet("font-weight: bold")
-        self._layout.addRow(QSplitter(Qt.Horizontal))
+        self._layout.addRow(QSplitter(Qt.Orientation.Horizontal))
         self._layout.addRow(label)
 
     def refresh(self) -> None:

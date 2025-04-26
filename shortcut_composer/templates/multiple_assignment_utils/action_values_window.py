@@ -18,7 +18,8 @@ class ActionValuesWindow(QDialog):
     def __init__(self, enum_type: Type[Enum], config: Field[list[Enum]]):
         super().__init__()
         self.setWindowFlags(
-            self.windowFlags() | Qt.WindowStaysOnTopHint)  # type: ignore
+            self.windowFlags() |
+            Qt.WindowType.WindowStaysOnTopHint)  # type: ignore
         layout = QVBoxLayout()
 
         self._config = config

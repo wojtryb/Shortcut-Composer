@@ -66,7 +66,7 @@ class Database:
             FROM tags t
             WHERE
                 t.active = 1
-                AND t.resource_type_id = 5
+                AND (t.resource_type_id = 5 OR t.resource_type_id = 6)
         '''
         presets = self._single_column_query(sql_query, "tag")
         return sorted(presets, key=str.lower)

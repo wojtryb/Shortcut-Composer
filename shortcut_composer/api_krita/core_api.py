@@ -4,13 +4,13 @@
 import re
 from typing import Callable, Protocol, Any
 
-from krita import Krita as Api, Extension, qApp
+from krita import Krita as Api, Extension
 from PyQt5.QtWidgets import (
-    QMainWindow,
-    QDesktopWidget,
     QWidgetAction,
+    QApplication,
+    QMainWindow,
     QMdiArea)
-from PyQt5.QtGui import QKeySequence, QColor, QIcon, QPalette
+from PyQt5.QtGui import QKeySequence, QColor, QIcon, QPalette, QGuiApplication
 from PyQt5.QtCore import QTimer
 
 from .wrappers import (
@@ -31,7 +31,8 @@ class KritaInstance:
 
     def __init__(self) -> None:
         self.instance = Api.instance()
-        self.screen_size = QDesktopWidget().screenGeometry(-1).width()
+        scr = QGuiApplication.primaryScreen()
+        self.screen_size = scr.size().width() if scr is not None else 1920
         self.main_window: Any = None
 
     def get_active_view(self) -> View:
@@ -133,11 +134,13 @@ class KritaInstance:
 
     def get_main_color_from_theme(self) -> QColor:
         """Return main color of the current theme."""
-        return qApp.palette().color(QPalette.Window)
+        return QApplication.instance().palette().color(
+            QPalette.ColorRole.Window)
 
     def get_active_color_from_theme(self) -> QColor:
         """Return active color of the current theme."""
-        return qApp.palette().color(QPalette.Highlight)
+        return QApplication.instance().palette().color(
+            QPalette.ColorRole.Highlight)
 
     @property
     def is_light_theme_active(self) -> bool:
@@ -148,6 +151,7 @@ class KritaInstance:
     @property
     def version(self) -> Version:
         """Get version of krita."""
+        # TODO: try to use QLibraryInfo.version() from QtCore
         raw: str = self.instance.version()
 
         num = r"(0|[1-9]\d*)"

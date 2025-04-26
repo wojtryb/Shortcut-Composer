@@ -49,10 +49,10 @@ class PieSettings(AnimatedWidget, BaseWidget):
         self.setAcceptDrops(True)
         self.setWindowFlags((
             self.windowFlags() |  # type: ignore
-            Qt.Tool |
-            Qt.WindowStaysOnTopHint |
-            Qt.FramelessWindowHint))
-        self.setCursor(Qt.ArrowCursor)
+            Qt.WindowType.Tool |
+            Qt.WindowType.WindowStaysOnTopHint |
+            Qt.WindowType.FramelessWindowHint))
+        self.setCursor(Qt.CursorShape.ArrowCursor)
 
         self._style_holder = style_holder
         self._config = config
@@ -208,7 +208,7 @@ class LocationTab(QWidget):
         """
         header = QHBoxLayout()
         header_label = QLabel(text="Change save location:")
-        header.addWidget(header_label, 2, Qt.AlignCenter)
+        header.addWidget(header_label, 2, Qt.AlignmentFlag.AlignCenter)
         header.addWidget(self._location_button, 1)
 
         layout = QVBoxLayout()
@@ -241,11 +241,11 @@ class LocationTab(QWidget):
         """Return QLabel with one-line description of the active mode."""
         label = QLabel()
         label.setStyleSheet("font-weight: bold")
-        label.setAlignment(Qt.AlignHCenter)
+        label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         label.setWordWrap(True)
         label.setSizePolicy(
-            QSizePolicy.Ignored,
-            QSizePolicy.Ignored)
+            QSizePolicy.Policy.Ignored,
+            QSizePolicy.Policy.Ignored)
         return label
 
     def _init_mode_description(self) -> QLabel:
@@ -253,8 +253,8 @@ class LocationTab(QWidget):
         label = QLabel()
         label.setWordWrap(True)
         label.setSizePolicy(
-            QSizePolicy.Ignored,
-            QSizePolicy.Ignored)
+            QSizePolicy.Policy.Ignored,
+            QSizePolicy.Policy.Ignored)
         return label
 
     def _init_set_new_default_button(self) -> SafeConfirmButton:

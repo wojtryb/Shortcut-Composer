@@ -60,13 +60,13 @@ class NumericValuePicker(QWidget, Generic[T]):
         - On the right, there is a spinbox to set a value in the label.
         """
         right_side = QVBoxLayout()
-        right_side.setAlignment(Qt.AlignTop)
+        right_side.setAlignment(Qt.AlignmentFlag.AlignTop)
         right_side.addWidget(QLabel("\nSet icon value:"))
         right_side.addWidget(self._spin_box)
 
         layout = QHBoxLayout()
-        layout.setAlignment(Qt.AlignTop)
-        layout.addWidget(self._icon_holder, 1, Qt.AlignTop)
+        layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        layout.addWidget(self._icon_holder, 1, Qt.AlignmentFlag.AlignTop)
         layout.addLayout(right_side, 1)
 
         return layout
@@ -96,18 +96,22 @@ class NumericValuePicker(QWidget, Generic[T]):
         spin_box.setSingleStep(self._step)
         spin_box.setWrapping(self._wrapping)
         if self._adaptive:
-            spin_box.setStepType(QAbstractSpinBox.AdaptiveDecimalStepType)
+            spin_box.setStepType(
+                QAbstractSpinBox.StepType.AdaptiveDecimalStepType)
         spin_box.valueChanged.connect(update_icon)
         return spin_box
 
     def _init_icon_holder(self) -> QScrollArea:
         """Return QScrollArea that can hold the LabelWidget."""
         icon_holder = QScrollArea()
-        icon_holder.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        icon_holder.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        icon_holder.setHorizontalScrollBarPolicy(
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        icon_holder.setVerticalScrollBarPolicy(
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         icon_holder.setWidget(self._icon)
-        icon_holder.setAlignment(Qt.AlignCenter)
-        icon_holder.setSizeAdjustPolicy(QScrollArea.AdjustIgnored)
+        icon_holder.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        icon_holder.setSizeAdjustPolicy(
+            QScrollArea.SizeAdjustPolicy.AdjustIgnored)
         icon_holder.setFixedSize(
             round(self._icon.width()*1.1),
             round(self._icon.height()*1.1))

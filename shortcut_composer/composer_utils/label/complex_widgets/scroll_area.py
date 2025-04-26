@@ -97,8 +97,8 @@ class ScrollArea(QWidget, Generic[T]):
         """Return a label displaying hovered label."""
         label = QLabel(self)
         label.setSizePolicy(
-            QSizePolicy.Ignored,
-            QSizePolicy.Expanding)
+            QSizePolicy.Policy.Ignored,
+            QSizePolicy.Policy.Expanding)
         label.setMaximumHeight(label.sizeHint().height()*2)
         label.setWordWrap(True)
         return label
@@ -109,15 +109,17 @@ class ScrollArea(QWidget, Generic[T]):
         internal.setLayout(self._grid)
 
         area = QScrollArea()
-        area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        area.setHorizontalScrollBarPolicy(
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         radius = self._unscaled_label_style.icon_radius
         area.setMinimumWidth(round(radius*self._columns*2.3))
         area.setMinimumHeight(round(radius*9.2))
         area.setWidgetResizable(True)
         area.setWidget(internal)
         QScroller.grabGesture(
-            area.viewport(), QScroller.MiddleMouseButtonGesture)
+            area.viewport(),
+            QScroller.ScrollerGestureType.MiddleMouseButtonGesture)
 
         return area
 

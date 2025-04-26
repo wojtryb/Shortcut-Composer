@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QMainWindow
 
 @dataclass
 class Cursor:
-    """Wraps Qt5 cursor for typing, documentation and PEP8 compatibility."""
+    """Wraps Qt cursor for typing, documentation and PEP8 compatibility."""
 
     q_win: QMainWindow
 

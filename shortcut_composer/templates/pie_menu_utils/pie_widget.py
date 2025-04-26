@@ -50,13 +50,13 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self.setAcceptDrops(True)
         self.setWindowFlags((
             self.windowFlags() |  # type: ignore
-            Qt.Tool |
-            Qt.FramelessWindowHint |
-            Qt.WindowStaysOnTopHint |
-            Qt.NoDropShadowWindowHint))
-        self.setAttribute(Qt.WA_TranslucentBackground)
+            Qt.WindowType.Tool |
+            Qt.WindowType.FramelessWindowHint |
+            Qt.WindowType.WindowStaysOnTopHint |
+            Qt.WindowType.NoDropShadowWindowHint))
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setStyleSheet("background: transparent;")
-        self.setCursor(Qt.CrossCursor)
+        self.setCursor(Qt.CursorShape.CrossCursor)
 
         self._style_holder = style_holder
         self._labels = labels

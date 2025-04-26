@@ -73,7 +73,6 @@ class RotationActuator:
                 raise RuntimeError(
                     f"{self._deadzone_strategy} not recognized.")
 
-
     def _modifier(self, value: int) -> int:
         """Transforms angle to value considering sign and offset."""
         sign = -1 if self._config.IS_COUNTERCLOCKWISE.read() else 1

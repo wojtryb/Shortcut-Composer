@@ -37,11 +37,11 @@ class RotationWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self.setAcceptDrops(True)
         self.setWindowFlags((
             self.windowFlags() |  # type: ignore
-            Qt.Tool |
-            Qt.FramelessWindowHint |
-            Qt.WindowStaysOnTopHint |
-            Qt.NoDropShadowWindowHint))
-        self.setAttribute(Qt.WA_TranslucentBackground)
+            Qt.WindowType.Tool |
+            Qt.WindowType.FramelessWindowHint |
+            Qt.WindowType.WindowStaysOnTopHint |
+            Qt.WindowType.NoDropShadowWindowHint))
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setStyleSheet("background: transparent;")
 
         self._rotation_painter = RotationPainter(style=self._style)

@@ -31,7 +31,7 @@ class ReleaseKeyEventFilter(QMdiArea):
         Always return False to let the event reach its desired
         destination.
         """
-        if event.type() == QEvent.KeyRelease:
+        if event.type() == QEvent.Type.KeyRelease:
             for callback in self._release_callbacks:
                 callback(event)
 

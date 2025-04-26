@@ -23,24 +23,24 @@ class ButtonsLayout(QVBoxLayout):
         super().__init__()
 
         self._button_box = QDialogButtonBox(
-            QDialogButtonBox.Ok |
-            QDialogButtonBox.Apply |
-            QDialogButtonBox.Reset |
-            QDialogButtonBox.Cancel  # type: ignore
+            QDialogButtonBox.StandardButton.Ok |
+            QDialogButtonBox.StandardButton.Apply |
+            QDialogButtonBox.StandardButton.Reset |
+            QDialogButtonBox.StandardButton.Cancel  # type: ignore
         )
         self._button_box.clicked.connect(self._handle_buttons)
 
         self.addWidget(self._button_box)
-        self.setAlignment(Qt.AlignBottom)
+        self.setAlignment(Qt.AlignmentFlag.AlignBottom)
 
     def _handle_buttons(self, button: QAbstractButton) -> None:
         """React to one of the buttons being pressed."""
         role = self._button_box.buttonRole(button)
-        if role == QDialogButtonBox.AcceptRole:
+        if role == QDialogButtonBox.ButtonRole.AcceptRole:
             self.ok_callback()
-        elif role == QDialogButtonBox.ApplyRole:
+        elif role == QDialogButtonBox.ButtonRole.ApplyRole:
             self.apply_callback()
-        elif role == QDialogButtonBox.ResetRole:
+        elif role == QDialogButtonBox.ButtonRole.ResetRole:
             self.reset_callback()
-        elif role == QDialogButtonBox.RejectRole:
+        elif role == QDialogButtonBox.ButtonRole.RejectRole:
             self.cancel_callback()
