@@ -6,7 +6,7 @@ from enum import Enum
 
 class PieDeadzoneStrategy(Enum):
     """
-    Enumeration of actions that can be done on deadzone key release in Pie.
+    Specifies actions that can be done on deadzone key release in Pie.
 
     Values are strings meant for being displayed in the UI.
     """
@@ -20,7 +20,7 @@ class PieDeadzoneStrategy(Enum):
 
 class RotationDeadzoneStrategy(Enum):
     """
-    Enumeration of actions that can be done on deadzone of RotationSelector.
+    Specifies actions that can be done on deadzone of RotationSelector.
 
     Values are strings meant for being displayed in the UI.
     """
@@ -30,3 +30,21 @@ class RotationDeadzoneStrategy(Enum):
     """Sets initial value when moving into deadzone."""
     SET_TO_ZERO = "Set to zero"
     """Sets 0 when inside the deadzone."""
+
+
+class PickLayerStrategy(Enum):
+    """
+    Specifies what layers to pick when scrolling through layers.
+
+    Values are strings meant for being displayed in the UI.
+    """
+    ALL = "Pick all"
+    """Pick all the nodes in the stack (layers, groups, masks...)."""
+    VISIBLE = "Visible"
+    """Pick active node and all the nodes that are visible."""
+    CURRENT_VISIBILITY = "Current visibility"
+    """Pick all the nodes with the same visibility as the active node."""
+    ANIMATED = "Animated"
+    """Pick active node and all the nodes that have animation frames."""
+    PINNED = "Pinned"
+    """Pick active node and all the nodes that are pinned to timeline."""

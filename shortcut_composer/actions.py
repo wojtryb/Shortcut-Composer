@@ -19,7 +19,7 @@ from data_components import (
     RotationDeadzoneStrategy,
     PieDeadzoneStrategy,
     CurrentLayerStack,
-    PickStrategy,
+    PickLayerStrategy,
     Slider,
     Range,
     Tag)
@@ -119,7 +119,7 @@ def create_actions() -> list[templates.RawInstructions]: return [
         instructions=[instructions.TemporaryOn(Toggle.ISOLATE_LAYER)],
         vertical_slider=Slider(
             controller=controllers.ActiveLayerController(),
-            values=CurrentLayerStack(PickStrategy.ALL),
+            values=CurrentLayerStack(PickLayerStrategy.ALL),
         ),
     ),
 
@@ -136,7 +136,7 @@ def create_actions() -> list[templates.RawInstructions]: return [
         ),
         vertical_slider=Slider(
             controller=controllers.ActiveLayerController(),
-            values=CurrentLayerStack(PickStrategy.PINNED),
+            values=CurrentLayerStack(PickLayerStrategy.PINNED),
         ),
     ),
 
