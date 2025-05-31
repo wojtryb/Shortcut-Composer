@@ -47,7 +47,7 @@ class ConfigBasedWidget(ABC, Generic[T]):
         ...
 
     def reset(self) -> None:
-        """Replace the value of the widget with the default one."""
+        """Replace the value of the widget with the value in config."""
         self.set(self.config_field.read())
 
     def save(self) -> None:

@@ -47,6 +47,7 @@ class PieEditMode:
         self._obj.accept_button.show()
         self._obj.accept_button.move_center(self._obj.pie_widget.center)
         self._obj.settings_button.hide()
+        self._obj.current_value_holder.show()
         self._obj.pie_widget.active_label = None
 
     def _move_settings_next_to_pie(self) -> None:
@@ -66,6 +67,7 @@ class PieEditMode:
         self._obj.pie_settings.hide()
         self._obj.accept_button.hide()
         self._obj.settings_button.show()
+        self._obj.current_value_holder.hide()
 
     def swap_mode(self) -> None:
         """Change the edit mode to the other one."""

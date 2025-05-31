@@ -29,6 +29,11 @@ class PieStyleHolder:
             border_thickness_callback=self._border_thickness,
             active_color_callback=self._active_color,
             background_color_callback=self._background_color)
+        self.button_size_label_style = LabelWidgetStyle(
+            icon_radius_callback=self._button_sized_icon_radius,
+            border_thickness_callback=self._border_thickness,
+            active_color_callback=self._active_color,
+            background_color_callback=self._background_color)
         self.pie_style = PieStyle(
             label_style=self.label_style,
             pie_radius_callback=self._pie_radius,
@@ -64,6 +69,10 @@ class PieStyleHolder:
             * self._pie_config.ICON_RADIUS_SCALE.read())
 
         return min(desired_radius, max_radius)
+
+    def _button_sized_icon_radius(self) -> int:
+        """Return icon radius that is visually the same as settings button."""
+        return self._settings_button_radius() + self._border_thickness()
 
     def _border_thickness(self) -> int:
         """Return border thickness based on configured value."""

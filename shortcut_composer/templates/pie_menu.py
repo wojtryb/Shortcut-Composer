@@ -14,6 +14,7 @@ from core_components import Controller, Instruction
 from .pie_menu_utils.pie_config_impl import dispatch_pie_config
 from .pie_menu_utils.pie_settings_impl import dispatch_pie_settings
 from .pie_menu_utils import (
+    PieCurrentValueHolder,
     PieStyleHolder,
     PieActuator,
     PieSettings,
@@ -168,6 +169,14 @@ class PieMenu(RawInstructions, Generic[T]):
         accept_button.hide()
         return accept_button
 
+    @cached_property
+    def current_value_holder(self) -> PieCurrentValueHolder:
+        """Create a LabelWidget holder with currently selected value."""
+        return PieCurrentValueHolder(
+            self._controller,
+            self._style_holder,
+            self.pie_widget)
+
     def on_key_press(self) -> None:
         """Handle the event of user pressing the action key."""
         super().on_key_press()
@@ -182,6 +191,7 @@ class PieMenu(RawInstructions, Generic[T]):
         self.settings_button.move(QPoint(
             self.pie_widget.width()-self.settings_button.width(),
             self.pie_widget.height()-self.settings_button.height()))
+        self.current_value_holder.refresh()
 
         self.pie_widget.order_handler.reset()  # HACK: should be automatic
 
