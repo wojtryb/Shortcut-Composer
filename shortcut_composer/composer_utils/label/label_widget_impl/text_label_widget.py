@@ -15,9 +15,6 @@ from ..label_widget_style import LabelWidgetStyle
 
 T = TypeVar("T", bound=LabelInterface)
 
-MAX_LINES = 2
-MAX_SIGNS = 8
-
 
 class TextLabelWidget(LabelWidget[T]):
     """Displays a `label` which holds text."""
@@ -33,7 +30,11 @@ class TextLabelWidget(LabelWidget[T]):
         self._display_value = self._get_display_value()
         self._pyqt_label = self._create_pyqt_label()
 
+    # TODO: to label_widget_style?
     def _get_display_value(self) -> list[str]:
+        MAX_LINES = self._label_widget_style.max_lines_amount
+        MAX_SIGNS = self._label_widget_style.max_signs_amount
+
         to_display = self.label.display_value
 
         if not isinstance(to_display, LabelText):
@@ -102,6 +103,7 @@ class TextLabelWidget(LabelWidget[T]):
         label.show()
         return label
 
+    # TODO: to label_widget_style?
     @property
     def _font(self) -> QFont:
         """Return font to use in pyqt label."""
@@ -113,6 +115,7 @@ class TextLabelWidget(LabelWidget[T]):
         font.setBold(True)
         return font
 
+    # TODO: to label_widget_style?
     @property
     def _content_size_multiplier(self) -> float:
         line_amount_multiplier = {

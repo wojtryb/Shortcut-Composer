@@ -63,6 +63,12 @@ class PieConfig(FieldGroup, Generic[T], ABC):
         self.PIE_OPACITY = self.field(
             name="Pie opacity",
             default=pie_opacity)
+        self.MAX_LINES_AMOUNT = self.field(
+            name="Max lines amount",
+            default=2)
+        self.MAX_SIGNS_AMOUNT = self.field(
+            name="Max letters amount",
+            default=8)
 
     allow_value_edit: bool
     """Is it allowed to remove elements in runtime. """

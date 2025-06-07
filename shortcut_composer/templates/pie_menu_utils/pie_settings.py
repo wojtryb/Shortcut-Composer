@@ -116,6 +116,24 @@ class PieSettings(AnimatedWidget, BaseWidget):
                 step=1,
                 max_value=100,
                 tooltip="Opacity of the pie background."),
+
+            # TODO: add it only if flag in controller requires it
+            # TODO: add min_value to SpinBox
+            "Label text",
+            SpinBox(
+                config_field=config.MAX_LINES_AMOUNT,
+                parent=self,
+                pretty_name="Max lines amount",
+                step=1,
+                max_value=3,
+                tooltip="Maximum number of lines in text label."),
+            SpinBox(
+                config_field=config.MAX_SIGNS_AMOUNT,
+                parent=self,
+                pretty_name="Max signs amount",
+                step=1,
+                max_value=8,
+                tooltip="Maximum number of signs in one line of text label.")
         ])
 
         def update_theme_state() -> None:

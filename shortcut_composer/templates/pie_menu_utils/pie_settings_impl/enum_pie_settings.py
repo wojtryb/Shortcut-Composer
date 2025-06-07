@@ -4,13 +4,14 @@
 from enum import Enum
 
 from core_components import Controller
+from composer_utils.label.complex_widgets import ScrollArea
 from templates.pie_menu_utils.pie_config_impl import NonPresetPieConfig
 from templates.pie_menu_utils import PieSettings
 from ..pie_style_holder import PieStyleHolder
 from ..pie_label import PieLabel
-from shortcut_composer.composer_utils.label.complex_widgets import ScrollArea
 
 
+# TODO: merging this with EnumGroupPieSettings would be great
 class EnumPieSettings(PieSettings):
     """
     Pie setting window for pie values being enums.

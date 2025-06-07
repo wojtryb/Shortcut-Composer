@@ -24,11 +24,15 @@ class LabelWidgetStyle:
         border_thickness_callback: Callable[[], int],
         active_color_callback: Callable[[], QColor],
         background_color_callback: Callable[[], QColor],
+        max_lines_amount_callback: Callable[[], int],
+        max_signs_amount_callback: Callable[[], int],
     ) -> None:
         self._icon_radius_callback = icon_radius_callback
         self._border_thickness_callback = border_thickness_callback
         self._active_color_callback = active_color_callback
         self._background_color_callback = background_color_callback
+        self._max_lines_amount_callback = max_lines_amount_callback
+        self._max_signs_amount_callback = max_signs_amount_callback
 
     @property
     def icon_radius(self) -> int:
@@ -66,6 +70,14 @@ class LabelWidgetStyle:
     def font_multiplier(self) -> float:
         """Multiplier to apply to the font depending on the used OS."""
         return self.SYSTEM_FONT_SIZE[platform.system()]
+
+    @property
+    def max_lines_amount(self) -> int:
+        return self._max_lines_amount_callback()
+
+    @property
+    def max_signs_amount(self) -> int:
+        return self._max_signs_amount_callback()
 
     SYSTEM_FONT_SIZE = {
         "Linux": 0.175,
