@@ -4,18 +4,17 @@
 import platform
 from typing import Callable
 
-from PyQt5.QtGui import QColor
+from PyQt5.QtGui import QFont, QColor, QFontDatabase
+from .label_text import LabelText
 
 
 class LabelWidgetStyle:
     """
     Holds and calculates configuration of displayed elements.
 
-    Style elements are calculated based on passed local config and
-    imported global config.
-
-    They are also affected by length of passed items list which size can
-    change over time.
+    Style elements are calculated based on passed callbacks.
+    Can trim given text based on limits imposed by those callbacks.
+    Creates font object with correct size based on amount of text.
     """
 
     def __init__(
@@ -67,11 +66,6 @@ class LabelWidgetStyle:
             min(self.background_color.blue()+15, 255))
 
     @property
-    def font_multiplier(self) -> float:
-        """Multiplier to apply to the font depending on the used OS."""
-        return self.SYSTEM_FONT_SIZE[platform.system()]
-
-    @property
     def max_lines_amount(self) -> int:
         return self._max_lines_amount_callback()
 
@@ -79,7 +73,82 @@ class LabelWidgetStyle:
     def max_signs_amount(self) -> int:
         return self._max_signs_amount_callback()
 
-    SYSTEM_FONT_SIZE = {
+    def trim_text(self, text: LabelText) -> list[str]:
+        MAX_LINES = self.max_lines_amount
+        MAX_SIGNS = self.max_signs_amount
+
+        if not text.value:
+            return []
+
+        words = text.value.split("_")
+
+        # Abbreviate words that are too long
+
+        def abbreviate(word: str) -> str:
+            if len(word) <= MAX_SIGNS:
+                return word
+            return word[:MAX_SIGNS-1] + "."
+        words = list(map(abbreviate, words))
+
+        # Merge short words into lines
+
+        lines: list[str] = []
+        last_line = words[0]
+        longest_word = max(len(word) for word in words)
+
+        for word in words[1:]:
+            if len(last_line + word) < longest_word:
+                last_line += " " + word
+            else:
+                lines.append(last_line)
+                last_line = word
+
+        if last_line:
+            lines.append(last_line)
+
+        # Remove lines at the end that do not fit into label
+
+        if len(lines) > MAX_LINES:
+            remainder = " ".join(lines[MAX_LINES:])
+            last_line = lines[MAX_LINES-1] + " " + remainder
+            lines[MAX_LINES-1] = last_line[:MAX_SIGNS-1].rstrip(' ') + "."
+
+        return lines[:MAX_LINES]
+
+    def get_font(self, widget_width: int, text_to_display: list[str]) -> QFont:
+        """Return font to use in pyqt label."""
+        font = QFontDatabase.systemFont(QFontDatabase.TitleFont)
+        font.setPointSize(round(
+            self.SYSTEM_FONT_MULTIPLIER[platform.system()]
+            * widget_width
+            * self._content_size_multiplier(text_to_display)))
+        font.setBold(True)
+        return font
+
+    def _content_size_multiplier(self, text_to_display: list[str]) -> float:
+        line_amount_multiplier = {
+            1: 1.0,
+            2: 0.9,
+            3: 0.6,
+        }[len(text_to_display)]
+
+        longest_word = max(len(word) for word in text_to_display)
+        sign_amount_multiplier = {
+            1: 1.0,
+            2: 1.0,
+            3: 0.9,
+            4: 0.8,
+            5: 0.7,
+            6: 0.6,
+            7: 0.5,
+            8: 0.45,
+            9: 0.4,
+            10: 0.35,
+        }[longest_word]
+
+        return line_amount_multiplier * sign_amount_multiplier
+
+    SYSTEM_FONT_MULTIPLIER = {
         "Linux": 0.175,
         "Windows": 0.11,
         "Darwin": 0.265,

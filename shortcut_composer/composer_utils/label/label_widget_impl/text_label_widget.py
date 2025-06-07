@@ -4,7 +4,7 @@
 from typing import TypeVar
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont, QColor, QFontDatabase
+from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QLabel, QWidget
 
 from api_krita import Krita
@@ -26,57 +26,7 @@ class TextLabelWidget(LabelWidget[T]):
         parent: QWidget,
     ) -> None:
         super().__init__(label, label_widget_style, parent)
-
-        self._display_value = self._get_display_value()
         self._pyqt_label = self._create_pyqt_label()
-
-    # TODO: to label_widget_style?
-    def _get_display_value(self) -> list[str]:
-        MAX_LINES = self._label_widget_style.max_lines_amount
-        MAX_SIGNS = self._label_widget_style.max_signs_amount
-
-        to_display = self.label.display_value
-
-        if not isinstance(to_display, LabelText):
-            raise TypeError("Label supposed to be text.")
-
-        if not to_display.value:
-            return []
-
-        words = to_display.value.split("_")
-
-        # Abbreviate words that are too long
-
-        def abbreviate(word: str) -> str:
-            if len(word) <= MAX_SIGNS:
-                return word
-            return word[:MAX_SIGNS-1] + "."
-        words = list(map(abbreviate, words))
-
-        # Merge short words into lines
-
-        lines: list[str] = []
-        last_line = words[0]
-        longest_word = max(len(word) for word in words)
-
-        for word in words[1:]:
-            if len(last_line + word) < longest_word:
-                last_line += " " + word
-            else:
-                lines.append(last_line)
-                last_line = word
-
-        if last_line:
-            lines.append(last_line)
-
-        # Remove lines at the end that do not fit into label
-
-        if len(lines) > MAX_LINES:
-            remainder = " ".join(lines[MAX_LINES:])
-            last_line = lines[MAX_LINES-1] + " " + remainder
-            lines[MAX_LINES-1] = last_line[:MAX_SIGNS-1].rstrip(' ') + "."
-
-        return lines[:MAX_LINES]
 
     def _create_pyqt_label(self) -> QLabel:
         """Create and show a new Qt5 label. Does not need redrawing."""
@@ -86,59 +36,24 @@ class TextLabelWidget(LabelWidget[T]):
             raise TypeError("Label supposed to be text.")
 
         height = round(self.icon_radius*0.75)
+        trimmed_text = self._label_widget_style.trim_text(to_display)
 
         label = QLabel(self)
-        label.setText(to_display.value)
+        label.setText("\n".join(trimmed_text))
         label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        label.resize(round(height*2), round(height))
-        label.setFont(self._font)
+        label.resize(height*2, height)
+        font = self._label_widget_style.get_font(height*2, trimmed_text)
+        label.setFont(font)
         label.move(self.center.x()-height,
                    self.center.y()-height//2)
         label.setStyleSheet(f'''
-            background-color:rgba({self._color_to_str(
-            Krita.get_main_color_from_theme())});
+            background-color:rgba({
+                self._color_to_str(Krita.get_main_color_from_theme())});
             color:rgba({self._color_to_str(to_display.color)});
         ''')
 
         label.show()
         return label
-
-    # TODO: to label_widget_style?
-    @property
-    def _font(self) -> QFont:
-        """Return font to use in pyqt label."""
-        font = QFontDatabase.systemFont(QFontDatabase.SystemFont.TitleFont)
-        font.setPointSize(round(
-            self._label_widget_style.font_multiplier
-            * self.width()
-            * self._content_size_multiplier))
-        font.setBold(True)
-        return font
-
-    # TODO: to label_widget_style?
-    @property
-    def _content_size_multiplier(self) -> float:
-        line_amount_multiplier = {
-            1: 1.0,
-            2: 0.9,
-            3: 0.6,
-        }[len(self._display_value)]
-
-        longest_word = max(len(word) for word in self._display_value)
-        sign_amount_multiplier = {
-            1: 1.0,
-            2: 1.0,
-            3: 0.9,
-            4: 0.8,
-            5: 0.7,
-            6: 0.6,
-            7: 0.5,
-            8: 0.45,
-            9: 0.4,
-            10: 0.35,
-        }[longest_word]
-
-        return line_amount_multiplier * sign_amount_multiplier
 
     @staticmethod
     def _color_to_str(color: QColor) -> str: return f'''
