@@ -126,31 +126,20 @@ class LabelWidgetStyle:
         return font
 
     def _content_size_multiplier(self, text_to_display: list[str]) -> float:
-        line_amount_multiplier = {
-            1: 1.0,
-            2: 0.9,
-            3: 0.6,
-        }[len(text_to_display)]
-
+        amount_of_lines = len(text_to_display)
         longest_word = max(len(word) for word in text_to_display)
-        sign_amount_multiplier = {
-            1: 1.0,
-            2: 1.0,
-            3: 0.9,
-            4: 0.8,
-            5: 0.7,
-            6: 0.6,
-            7: 0.5,
-            8: 0.45,
-            9: 0.4,
-            10: 0.35,
-        }[longest_word]
 
-        return line_amount_multiplier * sign_amount_multiplier
+        return self.CONTENT_FONT_MULTIPLIER[amount_of_lines-1][longest_word-1]
 
     SYSTEM_FONT_MULTIPLIER = {
         "Linux": 0.175,
         "Windows": 0.11,
         "Darwin": 0.265,
         "": 0.125}
-    """Scale to fix different font sizes each OS."""
+    """Font scale to apply on each OS."""
+
+    CONTENT_FONT_MULTIPLIER: list[list[float]] = [
+        [1, 1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.45, 0.4, 0.35],
+        [0.9, 0.9, 0.81, 0.72, 0.63, 0.54, 0.45, 0.41, 0.36, 0.32],
+        [0.6, 0.6, 0.54, 0.48, 0.42, 0.36, 0.3, 0.27, 0.24, 0.21]]
+    """Font scale dependent on amount of lines and signs in each line."""
