@@ -7,7 +7,6 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QLabel, QWidget
 
-from api_krita import Krita
 from ..label_text import LabelText
 from ..label_widget import LabelWidget
 from ..label_interface import LabelInterface
@@ -35,20 +34,19 @@ class TextLabelWidget(LabelWidget[T]):
         if not isinstance(to_display, LabelText):
             raise TypeError("Label supposed to be text.")
 
-        height = round(self.icon_radius*0.75)
+        height = round(self.icon_radius*1.5)
         trimmed_text = self._label_widget_style.trim_text(to_display)
 
         label = QLabel(self)
         label.setText("\n".join(trimmed_text))
         label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        label.resize(height*2, height)
-        font = self._label_widget_style.get_font(height*2, trimmed_text)
+        label.resize(height, height)
+        font = self._label_widget_style.get_font(height, trimmed_text)
         label.setFont(font)
-        label.move(self.center.x()-height,
+        label.move(self.center.x()-height//2,
                    self.center.y()-height//2)
         label.setStyleSheet(f'''
-            background-color:rgba({
-                self._color_to_str(Krita.get_main_color_from_theme())});
+            background-color:rgba(0, 0, 0, 0);
             color:rgba({self._color_to_str(to_display.color)});
         ''')
 
