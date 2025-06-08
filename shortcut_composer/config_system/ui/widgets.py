@@ -44,11 +44,13 @@ class SpinBox(ConfigBasedWidget[F]):
         pretty_name: str | None = None,
         tooltip: str | None = None,
         step: F = 1,
+        min_value: F = 0,
         max_value: F = 100,
     ) -> None:
         super().__init__(config_field, parent, pretty_name, tooltip)
         self._step = step
         self._max_value = max_value
+        self._min_value = min_value
         self._spin_box = self._init_spin_box()
         self.widget: Final[SpinBoxInterface[F]] = self._spin_box
         self.reset()
@@ -68,8 +70,8 @@ class SpinBox(ConfigBasedWidget[F]):
 
         spin_box.setMinimumWidth(90)
         spin_box.setObjectName(self.config_field.name)
-        spin_box.setMinimum(0)
         spin_box.setSingleStep(self._step)
+        spin_box.setMinimum(self._min_value)
         spin_box.setMaximum(self._max_value)
         if self.tooltip is not None:
             spin_box.setToolTip(self.tooltip)

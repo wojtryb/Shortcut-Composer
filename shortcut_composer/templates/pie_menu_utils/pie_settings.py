@@ -121,13 +121,13 @@ class PieSettings(AnimatedWidget, BaseWidget):
         ])
 
         if controller.REQUIRES_TEXT_SETTINGS:
-            # TODO: add min_value to SpinBox
             self._local_settings.add_title("Label text")
             self._local_settings.add_row(SpinBox(
                 config_field=config.MAX_LINES_AMOUNT,
                 parent=self,
                 pretty_name="Max lines amount",
                 step=1,
+                min_value=1,
                 max_value=3,
                 tooltip="Maximum number of lines in text label."))
             self._local_settings.add_row(SpinBox(
@@ -135,7 +135,8 @@ class PieSettings(AnimatedWidget, BaseWidget):
                 parent=self,
                 pretty_name="Max signs amount",
                 step=1,
-                max_value=8,
+                min_value=3,
+                max_value=10,
                 tooltip="Maximum number of signs in one line of text label."))
 
         def update_theme_state() -> None:
