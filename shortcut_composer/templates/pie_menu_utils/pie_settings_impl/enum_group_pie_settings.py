@@ -24,7 +24,7 @@ class EnumGroupPieSettings(PieSettings):
 
         self._action_values = GroupScrollArea(
             fetcher=EnumGroupManager(controller),
-            unscaled_label_style=self._style_holder.unscaled_label_style,
+            label_style=self._style_holder.settings_label_style,
             columns=3,
             field=self._config.field("Last tag selected", "All"),
             additional_fields=["All"])

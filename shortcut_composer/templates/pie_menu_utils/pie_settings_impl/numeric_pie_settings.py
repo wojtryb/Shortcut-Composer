@@ -30,7 +30,7 @@ class NumericPieSettings(PieSettings):
 
         self._numeric_picker = NumericValuePicker(
             create_label_from_integer=label_from_integer,
-            unscaled_label_style=style_holder.unscaled_label_style,
+            unscaled_label_style=style_holder.settings_label_style,
             min_value=controller.MIN_VALUE,
             max_value=controller.MAX_VALUE,
             step=controller.STEP,

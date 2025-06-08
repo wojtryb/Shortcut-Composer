@@ -57,12 +57,12 @@ class ScrollArea(QWidget, Generic[T]):
 
     def __init__(
         self,
-        unscaled_label_style: LabelWidgetStyle,
+        label_style: LabelWidgetStyle,
         columns: int,
         parent=None
     ) -> None:
         super().__init__(parent)
-        self._unscaled_label_style = unscaled_label_style
+        self._label_style = label_style
         self._columns = columns
 
         self._known_children: dict[LabelInterface, LabelWidget[T]] = {}
@@ -112,7 +112,7 @@ class ScrollArea(QWidget, Generic[T]):
         area.setHorizontalScrollBarPolicy(
             Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
-        radius = self._unscaled_label_style.icon_radius
+        radius = self._label_style.icon_radius
         area.setMinimumWidth(round(radius*self._columns*2.3))
         area.setMinimumHeight(round(radius*9.2))
         area.setWidgetResizable(True)
@@ -147,7 +147,7 @@ class ScrollArea(QWidget, Generic[T]):
         """Create LabelWidget[LabelInterface] that represent the label."""
         child = dispatch_label_widget(label)(
             label=label,
-            label_widget_style=self._unscaled_label_style,
+            label_widget_style=self._label_style,
             parent=self)
         child.setFixedSize(child.icon_radius*2, child.icon_radius*2)
         child.draggable = True

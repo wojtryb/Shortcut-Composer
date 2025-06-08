@@ -49,7 +49,7 @@ class PresetPieSettings(PieSettings):
         """Create preset scroll area which tracks which ones are used."""
         preset_scroll_area = GroupScrollArea(
             fetcher=PresetGroupManager(),
-            unscaled_label_style=self._style_holder.unscaled_label_style,
+            label_style=self._style_holder.settings_label_style,
             columns=3,
             field=self._config.field("Last tag selected", "---Select tag---"),
             additional_fields=["---Select tag---", "All"])

@@ -26,7 +26,7 @@ class PieStyleHolder:
             background_color_callback=self._background_color,
             max_lines_amount_callback=self._max_lines_amount,
             max_signs_amount_callback=self._max_signs_amount)
-        self.unscaled_label_style = LabelWidgetStyle(
+        self.settings_label_style = LabelWidgetStyle(
             icon_radius_callback=self._unscaled_icon_radius,
             border_thickness_callback=self._border_thickness,
             active_color_callback=self._active_color,
