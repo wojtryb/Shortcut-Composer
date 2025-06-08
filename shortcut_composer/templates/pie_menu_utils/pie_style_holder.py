@@ -25,21 +25,24 @@ class PieStyleHolder:
             active_color_callback=self._active_color,
             background_color_callback=self._background_color,
             max_lines_amount_callback=self._max_lines_amount,
-            max_signs_amount_callback=self._max_signs_amount)
+            max_signs_amount_callback=self._max_signs_amount,
+            abbreviate_with_dot_callback=self._abbreviate_with_dot)
         self.settings_label_style = LabelWidgetStyle(
             icon_radius_callback=self._unscaled_icon_radius,
             border_thickness_callback=self._border_thickness,
             active_color_callback=self._active_color,
             background_color_callback=self._background_color,
             max_lines_amount_callback=lambda: 3,
-            max_signs_amount_callback=lambda: 10)
+            max_signs_amount_callback=lambda: 10,
+            abbreviate_with_dot_callback=lambda: True)
         self.button_size_label_style = LabelWidgetStyle(
             icon_radius_callback=self._button_sized_icon_radius,
             border_thickness_callback=self._border_thickness,
             active_color_callback=self._active_color,
             background_color_callback=self._background_color,
             max_lines_amount_callback=lambda: 1,
-            max_signs_amount_callback=lambda: 3)
+            max_signs_amount_callback=lambda: 3,
+            abbreviate_with_dot_callback=lambda: False)
         self.pie_style = PieStyle(
             label_style=self.label_style,
             pie_radius_callback=self._pie_radius,
@@ -120,3 +123,7 @@ class PieStyleHolder:
     def _max_signs_amount(self) -> int:
         """Return maximal amount of signs in a line of text."""
         return self._pie_config.MAX_SIGNS_AMOUNT.read()
+
+    def _abbreviate_with_dot(self) -> bool:
+        """Return whether abbreviate words should end with '.' sign."""
+        return self._pie_config.ABBREVIATE_WITH_DOT.read()

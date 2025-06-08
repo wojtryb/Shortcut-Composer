@@ -25,6 +25,7 @@ class LabelWidgetStyle:
         background_color_callback: Callable[[], QColor],
         max_lines_amount_callback: Callable[[], int],
         max_signs_amount_callback: Callable[[], int],
+        abbreviate_with_dot_callback: Callable[[], bool],
     ) -> None:
         self._icon_radius_callback = icon_radius_callback
         self._border_thickness_callback = border_thickness_callback
@@ -32,6 +33,7 @@ class LabelWidgetStyle:
         self._background_color_callback = background_color_callback
         self._max_lines_amount_callback = max_lines_amount_callback
         self._max_signs_amount_callback = max_signs_amount_callback
+        self._abbreviate_with_dot_callback = abbreviate_with_dot_callback
 
     @property
     def icon_radius(self) -> int:
@@ -73,9 +75,14 @@ class LabelWidgetStyle:
     def max_signs_amount(self) -> int:
         return self._max_signs_amount_callback()
 
+    @property
+    def abbreviate_with_dot_callback(self) -> bool:
+        return self._abbreviate_with_dot_callback()
+
     def trim_text(self, text: LabelText) -> list[str]:
         MAX_LINES = self.max_lines_amount
         MAX_SIGNS = self.max_signs_amount
+        DOT = "." if self.abbreviate_with_dot_callback else ""
 
         if not text.value:
             return []
@@ -87,7 +94,7 @@ class LabelWidgetStyle:
         def abbreviate(word: str) -> str:
             if len(word) <= MAX_SIGNS:
                 return word
-            return word[:MAX_SIGNS-1] + "."
+            return word[:MAX_SIGNS] + DOT
         words = list(map(abbreviate, words))
 
         # Merge short words into lines
@@ -111,7 +118,7 @@ class LabelWidgetStyle:
         if len(lines) > MAX_LINES:
             remainder = " ".join(lines[MAX_LINES:])
             last_line = lines[MAX_LINES-1] + " " + remainder
-            lines[MAX_LINES-1] = last_line[:MAX_SIGNS-1].rstrip(' ') + "."
+            lines[MAX_LINES-1] = last_line[:MAX_SIGNS].rstrip(' ') + DOT
 
         return lines[:MAX_LINES]
 
@@ -139,7 +146,7 @@ class LabelWidgetStyle:
     """Font scale to apply on each OS."""
 
     CONTENT_FONT_MULTIPLIER: list[list[float]] = [
-        [1, 1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.45, 0.4, 0.35],
-        [0.9, 0.9, 0.81, 0.72, 0.63, 0.54, 0.45, 0.41, 0.36, 0.32],
-        [0.6, 0.6, 0.54, 0.48, 0.42, 0.36, 0.3, 0.27, 0.24, 0.21]]
+        [1, 1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.45, 0.4, 0.35, 0.3],
+        [0.9, 0.9, 0.81, 0.72, 0.63, 0.54, 0.45, 0.41, 0.36, 0.32, 0.28],
+        [0.6, 0.6, 0.54, 0.48, 0.42, 0.36, 0.3, 0.27, 0.24, 0.21, 0.18]]
     """Font scale dependent on amount of lines and signs in each line."""

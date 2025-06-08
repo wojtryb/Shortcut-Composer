@@ -69,6 +69,9 @@ class PieConfig(FieldGroup, Generic[T], ABC):
         self.MAX_SIGNS_AMOUNT = self.field(
             name="Max letters amount",
             default=8)
+        self.ABBREVIATE_WITH_DOT = self.field(
+            name="Abbreviate with dot",
+            default=True)
 
     allow_value_edit: bool
     """Is it allowed to remove elements in runtime. """

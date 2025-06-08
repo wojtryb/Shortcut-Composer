@@ -138,6 +138,11 @@ class PieSettings(AnimatedWidget, BaseWidget):
                 min_value=3,
                 max_value=10,
                 tooltip="Maximum number of signs in one line of text label."))
+            self._local_settings.add_row(Checkbox(
+                config_field=config.ABBREVIATE_WITH_DOT,
+                parent=self,
+                pretty_name="Abbreviate with dot",
+                tooltip="Use '.' sign at the end of abbreviated words."))
 
         def update_theme_state() -> None:
             """Hide color buttons when not taken into consideration."""
