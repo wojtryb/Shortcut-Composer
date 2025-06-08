@@ -140,7 +140,7 @@ class CreateLayerWithBlendingController(NodeBasedController,
         parent.add_child_node(layer, self.active_node)
 
     def get_label(self, value: BlendingMode) -> LabelText:
-        """Return Label of 3 first letters of mode name in correct color."""
+        """Return Label of full name with '+' sign prefix."""
         return LabelText(
             value="+" + value.name,
             color=LabelTextColorizer.blending_mode(value))

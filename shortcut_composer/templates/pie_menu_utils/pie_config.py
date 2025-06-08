@@ -26,7 +26,10 @@ class PieConfig(FieldGroup, Generic[T], ABC):
         background_color: QColor | None,
         active_color: QColor | None,
         pie_opacity: int,
-        deadzone_strategy: PieDeadzoneStrategy
+        deadzone_strategy: PieDeadzoneStrategy,
+        max_lines_amount: int,
+        max_signs_amount: int,
+        abbreviate_with_dot: bool,
     ) -> None:
         super().__init__(name)
         self._values = values
@@ -65,13 +68,13 @@ class PieConfig(FieldGroup, Generic[T], ABC):
             default=pie_opacity)
         self.MAX_LINES_AMOUNT = self.field(
             name="Max lines amount",
-            default=2)
+            default=max_lines_amount)
         self.MAX_SIGNS_AMOUNT = self.field(
             name="Max letters amount",
-            default=8)
+            default=max_signs_amount)
         self.ABBREVIATE_WITH_DOT = self.field(
             name="Abbreviate with dot",
-            default=True)
+            default=abbreviate_with_dot)
 
     allow_value_edit: bool
     """Is it allowed to remove elements in runtime. """

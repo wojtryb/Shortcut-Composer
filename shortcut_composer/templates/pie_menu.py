@@ -49,10 +49,14 @@ class PieMenu(RawInstructions, Generic[T]):
     - `icon_radius_scale` -- (optional) default icons size multiplier
     - `background_color`  -- (optional) default rgba color of background
     - `active_color`      -- (optional) default rgba color of active pie
-    - `pie opacity`       -- (optional) default opacity of the pie
-    - `save local`        -- (optional) default save location
-    - `deadzone strategy` -- (optional) default strategy what to do,
+    - `pie_opacity`       -- (optional) default opacity of the pie
+    - `save_local`        -- (optional) default save location
+    - `deadzone_strategy` -- (optional) default strategy what to do,
                               when mouse does not leave deadzone
+    - `max_lines_amount`  -- (optional) default limit of lines of text
+    - `max_signs_amount`  -- (optional) default limit of signs in line
+    - `abbreviate_with_dot` -- (optional) whether '.' sign should be
+                               used for abbreviating words
     - `short_vs_long_press_time` -- (optional) time [s] that specifies
                                     if key press is short or long
 
@@ -87,6 +91,9 @@ class PieMenu(RawInstructions, Generic[T]):
         pie_opacity: int = 75,
         save_local: bool = False,
         deadzone_strategy=PieDeadzoneStrategy.DO_NOTHING,
+        max_lines_amount: int = 2,
+        max_signs_amount: int = 8,
+        abbreviate_with_dot: bool = True,
         short_vs_long_press_time: float | None = None
     ) -> None:
         super().__init__(name, instructions, short_vs_long_press_time)
@@ -101,7 +108,10 @@ class PieMenu(RawInstructions, Generic[T]):
             background_color=background_color,
             active_color=active_color,
             pie_opacity=pie_opacity,
-            deadzone_strategy=deadzone_strategy)
+            deadzone_strategy=deadzone_strategy,
+            max_lines_amount=max_lines_amount,
+            max_signs_amount=max_signs_amount,
+            abbreviate_with_dot=abbreviate_with_dot)
         self._config.ORDER.register_callback(self._reset_labels)
 
         self._labels: list[PieLabel] = []

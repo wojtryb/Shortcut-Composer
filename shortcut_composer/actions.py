@@ -223,6 +223,9 @@ def create_actions() -> list[templates.RawInstructions]: return [
         ],
         background_color=QColor(65, 95, 65, 190),
         active_color=QColor(70, 200, 70),
+        max_lines_amount=2,
+        max_signs_amount=8,
+        abbreviate_with_dot=True,
     ),
 
     # Use pie menu to pick one of the actions
@@ -238,6 +241,9 @@ def create_actions() -> list[templates.RawInstructions]: return [
         ],
         background_color=QColor(70, 70, 105, 190),
         active_color=QColor(110, 160, 235),
+        max_lines_amount=2,
+        max_signs_amount=8,
+        abbreviate_with_dot=True,
     ),
 
     # Use pie menu to pick one of the brush blending modes.
@@ -257,6 +263,9 @@ def create_actions() -> list[templates.RawInstructions]: return [
             BlendingMode.DARKEN,
             BlendingMode.LIGHTEN,
         ],
+        max_lines_amount=1,
+        max_signs_amount=3,
+        abbreviate_with_dot=False,
     ),
 
     # Use pie menu to create painting layer with selected blending mode.
@@ -274,6 +283,9 @@ def create_actions() -> list[templates.RawInstructions]: return [
             BlendingMode.DARKEN,
             BlendingMode.LIGHTEN,
         ],
+        max_lines_amount=1,
+        max_signs_amount=3,
+        abbreviate_with_dot=False,
     ),
 
     # Pick one of the transform tool modes.

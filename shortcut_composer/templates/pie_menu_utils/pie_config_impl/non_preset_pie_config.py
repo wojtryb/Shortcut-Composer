@@ -23,7 +23,10 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
         background_color: QColor | None,
         active_color: QColor | None,
         pie_opacity: int,
-        deadzone_strategy: PieDeadzoneStrategy
+        deadzone_strategy: PieDeadzoneStrategy,
+        max_lines_amount: int,
+        max_signs_amount: int,
+        abbreviate_with_dot: bool,
     ) -> None:
         super().__init__(
             name=name,
@@ -34,7 +37,10 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
             background_color=background_color,
             active_color=active_color,
             pie_opacity=pie_opacity,
-            deadzone_strategy=deadzone_strategy)
+            deadzone_strategy=deadzone_strategy,
+            max_lines_amount=max_lines_amount,
+            max_signs_amount=max_signs_amount,
+            abbreviate_with_dot=abbreviate_with_dot)
 
         self.ORDER = self._create_editable_dual_field(
             field_name="Values",
