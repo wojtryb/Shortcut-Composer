@@ -32,6 +32,7 @@ class LayerOpacityController(NodeBasedController, NumericController):
     """
 
     TYPE = int
+    REQUIRES_TEXT_SETTINGS = False
     DEFAULT_VALUE = 100
     MIN_VALUE = 0
     MAX_VALUE = 100
@@ -70,6 +71,7 @@ class LayerBlendingModeController(NodeBasedController,
     """
 
     TYPE = BlendingMode
+    REQUIRES_TEXT_SETTINGS = True
     DEFAULT_VALUE = BlendingMode.NORMAL
 
     def get_value(self) -> BlendingMode:
@@ -102,6 +104,7 @@ class LayerVisibilityController(NodeBasedController, Controller[bool]):
     """
 
     TYPE = bool
+    REQUIRES_TEXT_SETTINGS = False
     DEFAULT_VALUE = True
 
     def get_value(self) -> bool:
@@ -120,6 +123,7 @@ class CreateLayerWithBlendingController(NodeBasedController,
     """Creates Paint Layer with set Blending Mode."""
 
     TYPE = BlendingMode
+    REQUIRES_TEXT_SETTINGS = True
     DEFAULT_VALUE = BlendingMode.NORMAL
 
     def get_value(self) -> BlendingMode:

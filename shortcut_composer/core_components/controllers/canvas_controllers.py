@@ -24,6 +24,7 @@ class CanvasZoomController(CanvasBasedController, NumericController):
     """
 
     TYPE = int
+    REQUIRES_TEXT_SETTINGS = False
     DEFAULT_VALUE = 100
     MIN_VALUE = 1
     MAX_VALUE = 6_400
@@ -58,6 +59,7 @@ class CanvasRotationController(CanvasBasedController, NumericController):
     """
 
     TYPE = int
+    REQUIRES_TEXT_SETTINGS = False
     DEFAULT_VALUE = 0
     MIN_VALUE = 0
     MAX_VALUE = 360

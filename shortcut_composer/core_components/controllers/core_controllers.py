@@ -22,6 +22,7 @@ class ToolController(Controller[Tool]):
     """
 
     TYPE = Tool
+    REQUIRES_TEXT_SETTINGS = False
     DEFAULT_VALUE: Tool = Tool.FREEHAND_BRUSH
 
     @staticmethod
@@ -52,6 +53,7 @@ class ActionController(Controller[Action]):
     """
 
     TYPE = Action
+    REQUIRES_TEXT_SETTINGS = True
 
     @staticmethod
     def get_value() -> NoReturn:
@@ -86,6 +88,7 @@ class TransformModeController(Controller[TransformMode]):
     """
 
     TYPE = TransformMode
+    REQUIRES_TEXT_SETTINGS = False
     DEFAULT_VALUE: TransformMode = TransformMode.FREE
 
     def __init__(self) -> None:
@@ -124,6 +127,7 @@ class ToggleController(Controller[bool]):
 
     toggle: Toggle
     TYPE = bool
+    REQUIRES_TEXT_SETTINGS = False
     DEFAULT_VALUE = False
 
     def get_value(self) -> bool:
@@ -152,6 +156,7 @@ class UndoController(NumericController):
     """
 
     TYPE = float
+    REQUIRES_TEXT_SETTINGS = False
     DEFAULT_VALUE = 0
     MIN_VALUE = 0
     MAX_VALUE = 10_000

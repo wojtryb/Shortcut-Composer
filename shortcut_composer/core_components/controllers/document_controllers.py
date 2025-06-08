@@ -28,6 +28,7 @@ class ActiveLayerController(DocumentBasedController, Controller[Node]):
     """
 
     TYPE = Node
+    REQUIRES_TEXT_SETTINGS = False
 
     def get_value(self) -> Node | None:
         """Get current node."""
@@ -51,6 +52,7 @@ class TimeController(DocumentBasedController, NumericController):
     """
 
     TYPE = int
+    REQUIRES_TEXT_SETTINGS = False
     DEFAULT_VALUE = 0
     MIN_VALUE = 0
     MAX_VALUE = 10_000

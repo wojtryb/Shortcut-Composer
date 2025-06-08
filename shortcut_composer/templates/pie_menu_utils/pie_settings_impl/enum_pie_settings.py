@@ -28,7 +28,7 @@ class EnumPieSettings(PieSettings):
         style_holder: PieStyleHolder,
         *args, **kwargs
     ) -> None:
-        super().__init__(config, style_holder)
+        super().__init__(controller, config, style_holder)
 
         names = controller.TYPE._member_names_
         values = [controller.TYPE[name] for name in names]

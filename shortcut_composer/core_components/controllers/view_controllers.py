@@ -27,6 +27,7 @@ class PresetController(ViewBasedController, Controller[str]):
     """
 
     TYPE = str
+    REQUIRES_TEXT_SETTINGS = False
 
     def get_value(self) -> str:
         """Get currently active preset."""
@@ -55,6 +56,7 @@ class BrushSizeController(ViewBasedController, NumericController):
     """
 
     TYPE = int
+    REQUIRES_TEXT_SETTINGS = False
     DEFAULT_VALUE: int = 100
     MIN_VALUE = 1
     MAX_VALUE = 10_000
@@ -89,6 +91,7 @@ class BrushRotationController(ViewBasedController, NumericController):
     """
 
     TYPE = int
+    REQUIRES_TEXT_SETTINGS = False
     DEFAULT_VALUE = 0
     MIN_VALUE = 0
     MAX_VALUE = 360
@@ -122,6 +125,7 @@ class BlendingModeController(ViewBasedController, Controller[BlendingMode]):
     """
 
     TYPE = BlendingMode
+    REQUIRES_TEXT_SETTINGS = True
     DEFAULT_VALUE = BlendingMode.NORMAL
 
     def get_value(self) -> BlendingMode:
@@ -152,6 +156,7 @@ class OpacityController(ViewBasedController, NumericController):
     """
 
     TYPE = int
+    REQUIRES_TEXT_SETTINGS = False
     DEFAULT_VALUE: int = 100
     MIN_VALUE = 0
     MAX_VALUE = 100
@@ -187,6 +192,7 @@ class FlowController(ViewBasedController, NumericController):
     """
 
     TYPE = int
+    REQUIRES_TEXT_SETTINGS = False
     DEFAULT_VALUE: int = 100
     MIN_VALUE = 0
     MAX_VALUE = 100

@@ -19,6 +19,7 @@ from config_system.ui import (
     Checkbox,
     SpinBox)
 from composer_utils import Config
+from core_components import Controller
 from data_components import PieDeadzoneStrategy
 from .pie_style_holder import PieStyleHolder
 from .pie_config import PieConfig
@@ -40,6 +41,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
 
     def __init__(
         self,
+        controller: Controller,
         config: PieConfig,
         style_holder: PieStyleHolder,
         *args, **kwargs
@@ -116,25 +118,25 @@ class PieSettings(AnimatedWidget, BaseWidget):
                 step=1,
                 max_value=100,
                 tooltip="Opacity of the pie background."),
+        ])
 
-            # TODO: add it only if flag in controller requires it
+        if controller.REQUIRES_TEXT_SETTINGS:
             # TODO: add min_value to SpinBox
-            "Label text",
-            SpinBox(
+            self._local_settings.add_title("Label text")
+            self._local_settings.add_row(SpinBox(
                 config_field=config.MAX_LINES_AMOUNT,
                 parent=self,
                 pretty_name="Max lines amount",
                 step=1,
                 max_value=3,
-                tooltip="Maximum number of lines in text label."),
-            SpinBox(
+                tooltip="Maximum number of lines in text label."))
+            self._local_settings.add_row(SpinBox(
                 config_field=config.MAX_SIGNS_AMOUNT,
                 parent=self,
                 pretty_name="Max signs amount",
                 step=1,
                 max_value=8,
-                tooltip="Maximum number of signs in one line of text label.")
-        ])
+                tooltip="Maximum number of signs in one line of text label."))
 
         def update_theme_state() -> None:
             """Hide color buttons when not taken into consideration."""

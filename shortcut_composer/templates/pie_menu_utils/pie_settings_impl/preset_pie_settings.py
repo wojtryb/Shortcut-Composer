@@ -28,11 +28,12 @@ class PresetPieSettings(PieSettings):
 
     def __init__(
         self,
+        controller: PresetController,
         config: PresetPieConfig,
         style_holder: PieStyleHolder,
         *args, **kwargs
     ) -> None:
-        super().__init__(config, style_holder)
+        super().__init__(controller, config, style_holder)
         self._config: PresetPieConfig
 
         self._preset_scroll_area = self._init_preset_scroll_area()

@@ -20,7 +20,7 @@ class NumericPieSettings(PieSettings):
         style_holder: PieStyleHolder,
         *args, **kwargs
     ) -> None:
-        super().__init__(config, style_holder)
+        super().__init__(controller, config, style_holder)
 
         def label_from_integer(value: int) -> PieLabel[int]:
             label = PieLabel.from_value(value, controller)

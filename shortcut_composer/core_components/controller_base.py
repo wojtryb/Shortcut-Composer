@@ -14,6 +14,7 @@ class Controller(Generic[T]):
     """Component that allows to get and set a specific property of krita."""
 
     TYPE: Type[T]
+    REQUIRES_TEXT_SETTINGS: bool = False
     DEFAULT_VALUE: T | None = None
 
     def refresh(self) -> None:
@@ -39,6 +40,7 @@ class Controller(Generic[T]):
 
 class NumericController(Controller[int]):
     TYPE = int
+    REQUIRES_TEXT_SETTINGS: bool = False
 
     DEFAULT_VALUE: int
     MIN_VALUE: int

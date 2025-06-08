@@ -20,7 +20,7 @@ class EnumGroupPieSettings(PieSettings):
         style_holder: PieStyleHolder,
         *args, **kwargs
     ) -> None:
-        super().__init__(config, style_holder)
+        super().__init__(controller, config, style_holder)
 
         self._action_values = GroupScrollArea(
             fetcher=EnumGroupManager(controller),
