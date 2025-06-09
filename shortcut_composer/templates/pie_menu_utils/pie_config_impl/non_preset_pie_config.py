@@ -5,6 +5,7 @@ from typing import Callable, Generic, TypeVar
 from PyQt5.QtGui import QColor
 
 from data_components import PieDeadzoneStrategy
+from core_components import Controller
 from ..pie_config import PieConfig
 
 T = TypeVar("T")
@@ -17,6 +18,7 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
         self,
         name: str,
         values: list[T],
+        controller: Controller,
         pie_radius_scale: float,
         icon_radius_scale: float,
         save_local: bool,
@@ -31,6 +33,7 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
         super().__init__(
             name=name,
             values=values,
+            controller=controller,
             pie_radius_scale=pie_radius_scale,
             icon_radius_scale=icon_radius_scale,
             save_local=save_local,
@@ -44,7 +47,8 @@ class NonPresetPieConfig(PieConfig[T], Generic[T]):
 
         self.ORDER = self._create_editable_dual_field(
             field_name="Values",
-            default=self._values)
+            default=self._values,
+            parser_type=controller.TYPE)
         self.allow_value_edit = True
 
     def values(self) -> list[T]:

@@ -6,6 +6,7 @@ from PyQt5.QtGui import QColor
 
 from config_system import Field
 from data_components import Tag, PieDeadzoneStrategy
+from core_components import Controller
 from ..pie_config import PieConfig
 
 
@@ -21,6 +22,7 @@ class PresetPieConfig(PieConfig[str]):
         self,
         name: str,
         values: Tag | list[str],
+        controller: Controller,
         pie_radius_scale: float,
         icon_radius_scale: float,
         save_local: bool,
@@ -35,6 +37,7 @@ class PresetPieConfig(PieConfig[str]):
         super().__init__(
             name=name,
             values=values,
+            controller=controller,
             pie_radius_scale=pie_radius_scale,
             icon_radius_scale=icon_radius_scale,
             save_local=save_local,

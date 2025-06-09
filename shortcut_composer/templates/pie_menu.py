@@ -102,6 +102,7 @@ class PieMenu(RawInstructions, Generic[T]):
         self._config = dispatch_pie_config(self._controller)(
             name=f"ShortcutComposer: {name}",
             values=values,
+            controller=controller,
             pie_radius_scale=pie_radius_scale,
             icon_radius_scale=icon_radius_scale,
             save_local=save_local,

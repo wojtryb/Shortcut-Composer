@@ -8,6 +8,7 @@ from api_krita import Krita
 from config_system import FieldGroup
 from config_system.field_base_impl import DualField, FieldWithEditableDefault
 from data_components import PieDeadzoneStrategy
+from core_components import Controller
 
 T = TypeVar("T")
 U = TypeVar("U")
@@ -20,6 +21,7 @@ class PieConfig(FieldGroup, Generic[T], ABC):
         self,
         name: str,
         values: list[T],
+        controller: Controller,
         pie_radius_scale: float,
         icon_radius_scale: float,
         save_local: bool,
@@ -33,6 +35,7 @@ class PieConfig(FieldGroup, Generic[T], ABC):
     ) -> None:
         super().__init__(name)
         self._values = values
+        self._controller = controller
 
         self.PIE_RADIUS_SCALE = self.field(
             name="Pie scale",
