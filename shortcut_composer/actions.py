@@ -352,6 +352,16 @@ def create_actions() -> list[templates.RawInstructions]: return [
         active_color=QColor(234, 172, 0),
     ),
 
+    templates.PieMenu(
+        name="Pick foreground color",
+        controller=controllers.ForegroundColorController(),
+        instructions=[],
+        deadzone_strategy=PieDeadzoneStrategy.DO_NOTHING,
+        values=[QColor(255, 0, 0), QColor(0, 255, 0), QColor(0, 0, 255)],
+        save_local=True,
+        active_color=QColor(234, 172, 0),
+    ),
+
     # Use rotation widget to rotate the canvas.
     templates.RotationSelector(
         name="Rotate canvas",

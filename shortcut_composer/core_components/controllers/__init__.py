@@ -12,6 +12,7 @@ from .canvas_controllers import (
     CanvasZoomController)
 
 from .view_controllers import (
+    ForegroundColorController,
     BrushRotationController,
     BlendingModeController,
     BrushSizeController,
@@ -36,6 +37,7 @@ __all__ = [
     "CreateLayerWithBlendingController",
     "LayerBlendingModeController",
     "LayerVisibilityController",
+    "ForegroundColorController",
     "CanvasRotationController",
     "TransformModeController",
     "BrushRotationController",

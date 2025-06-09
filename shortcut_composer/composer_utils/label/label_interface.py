@@ -3,7 +3,7 @@
 
 from typing import Generic, TypeVar, Protocol
 
-from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtGui import QPixmap, QIcon, QColor
 
 from .label_text import LabelText
 
@@ -15,11 +15,11 @@ class LabelInterface(Protocol, Generic[T]):
     Data of any type with its graphical and string representation.
 
     - `value` -- Value to set using the controller
-    - `display_value` -- `value` representation to display. Can be
-                         either a colored text or an image
+    - `display_value` -- `value` representation to display.
+                         Multiple types are supported.
     - `pretty_name` -- String to use when displaying the label to user
     """
 
     value: T
-    display_value: QPixmap | QIcon | LabelText | None
+    display_value: QPixmap | QIcon | LabelText | QColor | None
     pretty_name: str

@@ -3,7 +3,7 @@
 
 from typing import Type, TypeVar
 
-from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtGui import QPixmap, QIcon, QColor
 
 from ..label_text import LabelText
 from ..label_widget import LabelWidget
@@ -11,6 +11,7 @@ from ..label_interface import LabelInterface
 from .icon_label_widget import IconLabelWidget
 from .text_label_widget import TextLabelWidget
 from .image_label_widget import ImageLabelWidget
+from .qcolor_label_widget import QColorLabelWidget
 
 T = TypeVar("T", bound=LabelInterface)
 
@@ -24,4 +25,5 @@ def dispatch_label_widget(label: T) -> Type[LabelWidget[T]]:
         QPixmap: ImageLabelWidget,
         LabelText: TextLabelWidget,
         QIcon: IconLabelWidget,
+        QColor: QColorLabelWidget,
     }[type(label.display_value)]

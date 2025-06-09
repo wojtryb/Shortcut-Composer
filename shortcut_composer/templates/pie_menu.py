@@ -210,7 +210,7 @@ class PieMenu(RawInstructions, Generic[T]):
 
         self.pie_manager.start()
 
-    INVALID_VALUES: 'set[T]' = set()
+    INVALID_VALUES: 'list[T]' = []
 
     def _reset_labels(self) -> None:
         """Replace list values with newly created labels."""
@@ -232,7 +232,7 @@ class PieMenu(RawInstructions, Generic[T]):
             if label is not None:
                 self._labels.append(label)
             else:
-                self.INVALID_VALUES.add(value)
+                self.INVALID_VALUES.append(value)
 
         self._config.refresh_order()
 

@@ -66,7 +66,7 @@ class ActionController(Controller[Action]):
         value.activate()
 
     def get_label(self, value: Tool) -> QIcon | LabelText:
-        """Forward the tools' icon."""
+        """Forward the action icon."""
         icon = value.icon
         if not icon.isNull():
             return value.icon

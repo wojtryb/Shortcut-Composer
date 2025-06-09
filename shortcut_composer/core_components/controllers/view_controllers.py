@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtGui import QPixmap, QImage, QColor
 from api_krita import Krita
 from api_krita.enums import BlendingMode
 from composer_utils.label import LabelText, LabelTextColorizer
@@ -217,3 +217,32 @@ class FlowController(ViewBasedController, NumericController):
     def get_pretty_name(self, value: float) -> str:
         """Format the flow like: `100%`"""
         return f"{value}%"
+
+
+class ForegroundColorController(ViewBasedController, Controller[QColor]):
+    """
+    Gives access ForeGround painting color.
+
+    - Operates on `QColor` class.
+    - Defaults to black.
+    """
+
+    TYPE = QColor
+    REQUIRES_TEXT_SETTINGS = False
+    DEFAULT_VALUE: QColor = QColor(0, 0, 0, 255)
+
+    def get_value(self) -> QColor:
+        """Get current foreground color."""
+        return self.view.foreground_color
+
+    def set_value(self, value: QColor) -> None:
+        """Set passed foreground color."""
+        self.view.foreground_color = value
+
+    def get_label(self, value: QColor) -> QColor:
+        """Return the color itself, as QColor is a supported label."""
+        return value
+
+    def get_pretty_name(self, value: QColor) -> str:
+        """Format the color like 'RGB(0, 0, 0)'."""
+        return f"RGB({value.red()}, {value.green()}, {value.blue()})"

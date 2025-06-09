@@ -4,6 +4,8 @@
 from typing import Type
 from enum import Enum
 
+from PyQt5.QtGui import QColor
+
 from api_krita.enums.helpers import EnumGroup
 from core_components import Controller, NumericController
 from ..pie_settings import PieSettings
@@ -23,4 +25,6 @@ def dispatch_pie_settings(controller: Controller) -> Type[PieSettings]:
         return EnumGroupPieSettings
     elif issubclass(controller.TYPE, Enum):
         return EnumPieSettings
+    elif issubclass(controller.TYPE, QColor):
+        return PieSettings
     raise ValueError(f"No known pie settings for type of `{controller.TYPE}`")

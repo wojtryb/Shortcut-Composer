@@ -135,6 +135,11 @@
         <icon>config-popup-palette</icon>
         </Action>
 
+        <Action name="Pick foreground color">
+        <activationFlags>1</activationFlags>
+        <icon>config-popup-palette</icon>
+        </Action>
+
         <Action name="Create painting layer with blending mode">
         <activationFlags>1</activationFlags>
         <icon>addlayer</icon>
