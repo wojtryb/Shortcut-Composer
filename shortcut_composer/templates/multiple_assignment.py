@@ -1,8 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Iterator, TypeVar, Generic
-from itertools import cycle
+from typing import TypeVar, Generic
 
 from core_components import Controller, Instruction
 from config_system import Field
@@ -77,7 +76,7 @@ class MultipleAssignment(RawInstructions, Generic[T]):
             config_group=f"ShortcutComposer: {self.name}",
             name="Values",
             default=values)
-        self._config.register_callback(self._reset)
+        self._config.register_callback(self._reset_values_to_cycle)
 
         self._settings = SettingsHandler(
             self.name,
@@ -85,43 +84,40 @@ class MultipleAssignment(RawInstructions, Generic[T]):
             self._instructions)
 
         self._default_value = self._read_default_value(default_value)
-        self._values_to_cycle = self._config.read()
-        self._iterator = self._reset_iterator()
-        self._last_value: T | None = None
+        self._values_to_cycle: list[T]
+        self._reset_values_to_cycle()
 
     def on_key_press(self) -> None:
-        """Switch to the next value when values are being cycled."""
+        """Switch to the next value or start over when value is not in list."""
         super().on_key_press()
 
-        # NOTE: When there are no values to cycle, iterator is invalid
         if not self._values_to_cycle:
             return
 
         self._controller.refresh()
-        if self._controller.get_value() != self._last_value:
-            self._iterator = self._reset_iterator()
+        current = self._controller.get_value()
 
-        self._set_value(next(self._iterator))
+        if current in self._values_to_cycle:
+            id = self._values_to_cycle.index(current) + 1
+            self._controller.set_value(self._values_to_cycle[id])
+        else:
+            self._controller.set_value(self._values_to_cycle[0])
 
     def on_long_key_release(self) -> None:
         """Set default value."""
         super().on_long_key_release()
-        self._set_value(self._default_value)
-        self._iterator = self._reset_iterator()
+        self._controller.set_value(self._default_value)
 
-    def _set_value(self, value: T) -> None:
-        """Set the value using the controller, and remember it."""
-        self._last_value = value
-        self._controller.set_value(value)
-
-    def _reset(self) -> None:
-        """Reload values from config and start cycling from beginning."""
+    def _reset_values_to_cycle(self) -> None:
+        """Reload values from config and validate them."""
         self._values_to_cycle = self._config.read()
-        self._iterator = self._reset_iterator()
 
-    def _reset_iterator(self) -> Iterator[T]:
-        """Return a new cyclic iterator for values to cycle."""
-        return cycle(self._values_to_cycle)
+        if len(set(self._values_to_cycle)) != len(self._values_to_cycle):
+            raise ValueError("Values to cycle does not support duplicates.")
+
+        # Duplicate first value at the end, to allow cycling
+        if self._values_to_cycle:
+            self._values_to_cycle.append(self._values_to_cycle[0])
 
     def _read_default_value(self, value: T | None) -> T:
         """Read value from controller if it was not given."""
