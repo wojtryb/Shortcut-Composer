@@ -284,7 +284,7 @@ def create_actions() -> list[templates.RawInstructions]: return [
             BlendingMode.LIGHTEN,
         ],
         max_lines_amount=1,
-        max_signs_amount=3,
+        max_signs_amount=4,
         abbreviate_with_dot=False,
     ),
 
@@ -357,9 +357,8 @@ def create_actions() -> list[templates.RawInstructions]: return [
         controller=controllers.ForegroundColorController(),
         instructions=[],
         deadzone_strategy=PieDeadzoneStrategy.DO_NOTHING,
-        values=[QColor(255, 0, 0), QColor(0, 255, 0), QColor(0, 0, 255)],
+        values=[],
         save_local=True,
-        active_color=QColor(234, 172, 0),
     ),
 
     # Use rotation widget to rotate the canvas.
