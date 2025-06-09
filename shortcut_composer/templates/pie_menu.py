@@ -250,6 +250,9 @@ class PieMenu(RawInstructions, Generic[T]):
         if self._edit_mode:
             return
 
+        # Hide the widget before activation, in case it opens a new
+        # window which would mess with the hiding
+        self.pie_widget.hide()
         self._actuator.activate(self.pie_widget.active_label)
         self.pie_manager.stop()
 

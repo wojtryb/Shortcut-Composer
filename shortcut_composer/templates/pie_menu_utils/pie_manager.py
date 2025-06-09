@@ -32,14 +32,12 @@ class PieManager:
         # broken by pie settings reloading the widgets.
         self._pie_widget.set_draggable(False)
 
-    def stop(self, hide: bool = True) -> None:
-        """Hide the widget and stop the mouse tracking loop."""
+    def stop(self) -> None:
+        """Stop the mouse tracking loop and reset internal label values."""
         self._pie_widget.active_label = None
         self._timer.stop()
         for label in self._pie_widget.order_handler:
             label.activation_progress.reset()
-        if hide:
-            self._pie_widget.hide()
 
     def _handle_cursor(self) -> None:
         """Calculate zone of the cursor and mark which child is active."""
@@ -47,9 +45,11 @@ class PieManager:
         # released during the drag&drop operation or when user clicked
         # outside the pie widget.
         if not self._pie_widget.isVisible():
+            self._pie_widget.hide()
             return self.stop()
 
         if self._pie_widget.is_in_edit_mode:
+            self._pie_widget.hide()
             return self.stop()
 
         if not self._pie_widget.order_handler:

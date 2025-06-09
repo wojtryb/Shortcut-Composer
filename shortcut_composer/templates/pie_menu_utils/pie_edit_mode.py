@@ -37,7 +37,7 @@ class PieEditMode:
 
     def set_edit_mode_true(self) -> None:
         """Set the edit mode on."""
-        self._obj.pie_manager.stop(hide=False)
+        self._obj.pie_manager.stop()
         self._obj.pie_widget.set_draggable(True)
         self._obj.pie_widget.order_handler.widget_holder.clear_forced_widgets()
         self._obj.pie_widget.repaint()
