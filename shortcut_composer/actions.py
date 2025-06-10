@@ -143,18 +143,13 @@ def create_actions() -> list[templates.RawInstructions]: return [
     # Scroll brush sizes by sliding the cursor horizontally or
     # brush opacity layers by sliding it vertically
     #
-    # Opacity is contiguous from 10% to 100%, sizes come from a list
+    # Opacity is contiguous from 10% to 100%
     # Switch 1% of opacity every 5 px (instead of default 50 px)
     templates.CursorTracker(
         name="Scroll brush size or opacity",
         horizontal_slider=Slider(
             controller=controllers.BrushSizeController(),
-            values=[
-                1, 2, 3, 4, 5, 6, 7, 8, 9,
-                10, 12, 14, 16, 20, 25, 30, 35, 40, 50, 60, 70, 80,
-                100, 120, 160, 200, 250, 300, 350, 400, 450,
-                500, 600, 700, 800, 900, 1000
-            ],
+            values=Range(1, INFINITY, exponent=2),
             sensitivity_scale=2,
         ),
         vertical_slider=Slider(
@@ -175,8 +170,8 @@ def create_actions() -> list[templates.RawInstructions]: return [
         ),
         vertical_slider=Slider(
             controller=controllers.CanvasZoomController(),
-            values=Range(0, INFINITY),
-            sensitivity_scale=10,
+            values=Range(0, INFINITY, exponent=3),
+            sensitivity_scale=0.7,
         ),
     ),
 

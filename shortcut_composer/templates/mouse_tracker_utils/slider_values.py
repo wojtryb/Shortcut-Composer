@@ -41,26 +41,28 @@ class RangeSliderValues(SliderValues):
     """
     Allows to fetch values from Range object defined by the user.
 
-    Moving from interpreted to controller domain require no calculation,
-    apart from restricting it to the range `min` and `max` values.
+    The output is restricted between `min` and `max` parameters.
+    `exponent` parameter turns linear output to exponential.
     """
 
     def __init__(self, values: Range) -> None:
         self.min = Interpreted(values.min)
         self.max = Interpreted(values.max)
         self._default = Interpreted((self.min + self.max)*0.5)
+        self._exponent = values.exponent
+        self._inverted_exponent = 1/self._exponent
 
     def at(self, value: Interpreted) -> float:
-        """Check if element belongs to the range, and return it as is."""
+        """Convert interpreted value to controller value with exponentation."""
         if not self.min <= value <= self.max:
             return self._default
-        return value
+        return value ** self._exponent
 
     def index(self, value: float) -> Interpreted:
-        """Check if element belongs to the range, and return it as is."""
+        """Convert controller value to interpreted value with exponentation."""
         if not self.min <= value <= self.max:
             return self._default
-        return Interpreted(value)
+        return Interpreted(value ** self._inverted_exponent)
 
 
 class ListSliderValues(SliderValues, Generic[Controlled]):
