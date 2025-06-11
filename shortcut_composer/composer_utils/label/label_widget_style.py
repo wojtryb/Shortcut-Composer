@@ -1,10 +1,11 @@
 # SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import platform
 from typing import Callable
 
 from PyQt5.QtGui import QFont, QColor, QFontDatabase
+
+from composer_utils import Config
 from .label_text import LabelText
 
 
@@ -126,22 +127,17 @@ class LabelWidgetStyle:
         """Return font to use in pyqt label."""
         font = QFontDatabase.systemFont(QFontDatabase.TitleFont)
         font.setPointSize(round(
-            self.SYSTEM_FONT_MULTIPLIER[platform.system()]
+            0.175
             * widget_width
+            * Config.TEXT_LABEL_GLOBAL_SCALE.read()
             * self._content_size_multiplier(text_to_display)))
         font.setBold(True)
         return font
 
     def _content_size_multiplier(self, text_to_display: list[str]) -> float:
+        """Return text scale based on amount of signs in the longest line."""
         longest_word = max(len(word) for word in text_to_display)
         return self.CONTENT_FONT_MULTIPLIER[longest_word-1]
-
-    SYSTEM_FONT_MULTIPLIER = {
-        "Linux": 0.175,
-        "Windows": 0.16,
-        "Darwin": 0.265,
-        "": 0.125}
-    """Font scale to apply on each OS."""
 
     CONTENT_FONT_MULTIPLIER: list[float] = [
         1, 1, 1, 0.9, 0.8, 0.7, 0.6, 0.55, 0.5, 0.4, 0.4]

@@ -84,6 +84,14 @@ class SettingsDialog(QDialog):
                 step=0.05,
                 max_value=4,
                 tooltip="Scale of deadzone of all the pie menus."),
+            SpinBox(
+                config_field=Config.TEXT_LABEL_GLOBAL_SCALE,
+                parent=self,
+                pretty_name="Text label global scale",
+                step=0.05,
+                max_value=4,
+                tooltip=""
+                "Scale applied to every text label on top of local scale."),
 
             "Pie menu style",
             bg_checkbox := Checkbox(
