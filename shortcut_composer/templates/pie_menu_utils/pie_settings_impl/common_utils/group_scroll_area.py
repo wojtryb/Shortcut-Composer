@@ -25,8 +25,12 @@ class GroupScrollArea(ScrollArea):
             config_field=self._field,
             group_fetcher=self._fetcher,
             additional_fields=additional_fields)
+
+        # Do not display combobox with groups, when there is only one group
+        if len(self._fetcher.fetch_groups()) > 1:
+            self._layout.insertWidget(0, self._chooser.widget)
+
         self._chooser.widget.currentTextChanged.connect(self._display_group)
-        self._layout.insertWidget(0, self._chooser.widget)
         self._display_group()
 
     def _display_group(self) -> None:

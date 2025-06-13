@@ -1,15 +1,16 @@
 # SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from enum import Enum
-
 from krita import Krita as Api
 from PyQt5.QtGui import QIcon
 
+from .helpers import EnumGroup, Group
 
-class TransformMode(Enum):
+
+class TransformMode(EnumGroup):
     """Contains all known modes of transform tool."""
 
+    _vectors = Group("All")
     FREE = "Transform tool: free"
     PERSPECTIVE = "Transform tool: perspective"
     WARP = "Transform tool: warp"

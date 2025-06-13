@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Type
-from enum import Enum
 
 from PyQt5.QtGui import QColor
 
@@ -12,7 +11,6 @@ from ..pie_settings import PieSettings
 from .enum_group_pie_settings import EnumGroupPieSettings
 from .numeric_pie_settings import NumericPieSettings
 from .preset_pie_settings import PresetPieSettings
-from .enum_pie_settings import EnumPieSettings
 
 
 def dispatch_pie_settings(controller: Controller) -> Type[PieSettings]:
@@ -23,8 +21,6 @@ def dispatch_pie_settings(controller: Controller) -> Type[PieSettings]:
         return PresetPieSettings
     elif issubclass(controller.TYPE, EnumGroup):
         return EnumGroupPieSettings
-    elif issubclass(controller.TYPE, Enum):
-        return EnumPieSettings
     elif issubclass(controller.TYPE, QColor):
         return PieSettings
     raise ValueError(f"No known pie settings for type of `{controller.TYPE}`")
