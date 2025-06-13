@@ -56,6 +56,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
             Qt.WindowType.FramelessWindowHint))
         self.setCursor(Qt.CursorShape.ArrowCursor)
 
+        self._controller = controller
         self._style_holder = style_holder
         self._config = config
         self._config.register_to_order_related(self._reset)

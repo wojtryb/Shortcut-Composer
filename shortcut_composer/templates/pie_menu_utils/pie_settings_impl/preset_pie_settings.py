@@ -8,13 +8,14 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 from api_krita import Krita
 from api_krita.wrappers import Database
 from api_krita.pyqt import SafeConfirmButton
+from composer_utils.label.complex_widgets import ScrollArea
 from core_components.controllers import PresetController
 from data_components import Tag
 from templates.pie_menu_utils.pie_config_impl import PresetPieConfig
 from templates.pie_menu_utils import PieSettings
 from ..pie_label import PieLabel
 from ..pie_style_holder import PieStyleHolder
-from .common_utils import GroupManager, GroupComboBox, GroupScrollArea
+from .common_utils import GroupManager, GroupComboBox
 
 
 class PresetPieSettings(PieSettings):
@@ -36,36 +37,33 @@ class PresetPieSettings(PieSettings):
         super().__init__(controller, config, style_holder)
         self._config: PresetPieConfig
 
-        self._preset_scroll_area = self._init_preset_scroll_area()
+        self._scroll_area = self._init_scroll_area()
         self._mode_button = self._init_mode_button()
         self._auto_combobox = self._init_auto_combobox()
-        self._manual_combobox = self._preset_scroll_area._chooser
+        self._manual_combobox = self._init_manual_combobox()
 
         self.set_tag_mode(self._config.TAG_MODE.read())
         action_values = self._init_action_values()
         self._tab_holder.insertTab(1, action_values, "Values")
         self._tab_holder.setCurrentIndex(1)
 
-    def _init_preset_scroll_area(self) -> GroupScrollArea:
+    def _init_scroll_area(self) -> ScrollArea:
         """Create preset scroll area which tracks which ones are used."""
-        preset_scroll_area = GroupScrollArea(
-            fetcher=PresetGroupManager(),
+        scroll_area = ScrollArea(
             label_style=self._style_holder.settings_label_style,
-            columns=3,
-            field=self._config.field("Last tag selected", "---Select tag---"),
-            additional_fields=["---Select tag---", "All"])
-        policy = preset_scroll_area.sizePolicy()
+            columns=3)
+        policy = scroll_area.sizePolicy()
         policy.setRetainSizeWhenHidden(True)
-        preset_scroll_area.setSizePolicy(policy)
+        scroll_area.setSizePolicy(policy)
 
         def refresh_draggable() -> None:
             """Mark which pies are currently used in the pie."""
-            preset_scroll_area.mark_used_values(self._config.values())
+            scroll_area.mark_used_values(self._config.values())
 
         self._config.ORDER.register_callback(refresh_draggable)
-        preset_scroll_area.widgets_changed.connect(refresh_draggable)
+        scroll_area.widgets_changed.connect(refresh_draggable)
         refresh_draggable()
-        return preset_scroll_area
+        return scroll_area
 
     def _init_mode_button(self) -> SafeConfirmButton:
         """Create button which switches between tag and manual mode."""
@@ -99,12 +97,40 @@ class PresetPieSettings(PieSettings):
             self._config.refresh_order()
 
         auto_combobox = GroupComboBox(
-            config_field=self._config.TAG_NAME,
-            group_fetcher=PresetGroupManager(),
+            last_value_field=self._config.TAG_NAME,
+            group_manager=PresetGroupManager(),
             pretty_name="Tag name")
 
         auto_combobox.widget.currentTextChanged.connect(handle_picked_tag)
         return auto_combobox
+
+    def _init_manual_combobox(self) -> GroupComboBox:
+        manager = PresetGroupManager()
+
+        def _display_group() -> None:
+            """Update preset widgets according to tag selected in combobox."""
+            picked_group = manual_combobox.widget.currentText()
+            values = manager.get_values(picked_group)
+            self._scroll_area.replace_handled_labels(
+                manager.create_labels(values))
+            self._scroll_area._apply_search_bar_filter()
+            manual_combobox.save()
+
+        manual_combobox = GroupComboBox(
+            last_value_field=self._config.field(
+                "Last tag selected",
+                "---Select tag---"),
+            group_manager=manager,
+            additional_fields=["---Select tag---", "All"])
+
+        # Do not display combobox with groups, when there is only one group
+        if len(manager.fetch_groups()) > 1:
+            self._scroll_area._layout.insertWidget(0, manual_combobox.widget)
+
+        manual_combobox.widget.currentTextChanged.connect(_display_group)
+        _display_group()
+
+        return manual_combobox
 
     def _init_action_values(self) -> QWidget:
         """
@@ -123,7 +149,7 @@ class PresetPieSettings(PieSettings):
 
         action_layout = QVBoxLayout()
         action_layout.addLayout(top_layout)
-        action_layout.addWidget(self._preset_scroll_area)
+        action_layout.addWidget(self._scroll_area)
         action_layout.addStretch()
 
         action_values_tab = QWidget()
@@ -143,14 +169,14 @@ class PresetPieSettings(PieSettings):
             # moving to tag mode
             self._mode_button.main_text = "Tag mode"
             self._mode_button.icon = Krita.get_icon("tag")
-            self._preset_scroll_area.hide()
+            self._scroll_area.hide()
             self._manual_combobox.widget.hide()
             self._auto_combobox.widget.show()
         else:
             # moving to manual mode
             self._mode_button.main_text = "Manual mode"
             self._mode_button.icon = Krita.get_icon("color-to-alpha")
-            self._preset_scroll_area.show()
+            self._scroll_area.show()
             self._manual_combobox.widget.show()
             self._auto_combobox.widget.hide()
 
