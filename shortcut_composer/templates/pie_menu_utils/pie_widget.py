@@ -49,7 +49,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
         self.setAcceptDrops(True)
         self.setWindowFlags((
-            self.windowFlags() |  # type: ignore
+            self.windowFlags() |
             Qt.WindowType.Tool |
             Qt.WindowType.FramelessWindowHint |
             Qt.WindowType.WindowStaysOnTopHint |
@@ -112,15 +112,16 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         """Handle all children actions - order change, add and remove."""
         e.accept()
         source_widget = e.source()
+
+        if not isinstance(source_widget, LabelWidget):
+            # Drag incoming from outside the PieWidget ecosystem
+            return
+
         label = source_widget.label
         circle_points = CirclePoints(
             center=self.center,
             radius=self._style_holder.pie_style.pie_radius)
         distance = circle_points.distance(e.pos())
-
-        if not isinstance(source_widget, LabelWidget):
-            # Drag incoming from outside the PieWidget ecosystem
-            return
 
         if self._type and not isinstance(label.value, self._type):
             # Label type does not match the type of pie menu

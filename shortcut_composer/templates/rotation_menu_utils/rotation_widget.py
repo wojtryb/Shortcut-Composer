@@ -36,7 +36,7 @@ class RotationWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
         self.setAcceptDrops(True)
         self.setWindowFlags((
-            self.windowFlags() |  # type: ignore
+            self.windowFlags() |
             Qt.WindowType.Tool |
             Qt.WindowType.FramelessWindowHint |
             Qt.WindowType.WindowStaysOnTopHint |

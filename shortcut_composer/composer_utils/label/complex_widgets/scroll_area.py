@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import re
-from typing import Sequence, Protocol, Callable, TypeVar, Generic
+from typing import Sequence, TypeVar, Generic
 
 from PyQt5.QtCore import Qt, QTimer, pyqtSignal
 from PyQt5.QtWidgets import (
@@ -21,13 +21,6 @@ from ..label_interface import LabelInterface
 from .scroll_area_utils import OffsetGridLayout
 
 T = TypeVar("T", bound=LabelInterface, contravariant=True)
-
-
-class EmptySignal(Protocol):
-    """Protocol fixing the wrong PyQt typing."""
-
-    def emit(self) -> None: ...
-    def connect(self, method: Callable[[], None]) -> None: ...
 
 
 class ScrollArea(QWidget, Generic[T]):
@@ -53,7 +46,7 @@ class ScrollArea(QWidget, Generic[T]):
     available under children_list.
     """
 
-    widgets_changed: EmptySignal = pyqtSignal()  # type: ignore
+    widgets_changed = pyqtSignal()
 
     def __init__(
         self,

@@ -58,7 +58,7 @@ class PieEditMode:
         ))
         self._obj.pie_settings.move_center(
             self._obj.pie_widget.center_global
-            + QPoint(settings_offset, 0))  # type: ignore
+            + QPoint(settings_offset, 0))
 
     def set_edit_mode_false(self) -> None:
         """Set the edit mode off."""

@@ -19,7 +19,7 @@ class SettingsDialog(QDialog):
         super().__init__()
         self.setWindowFlags(
             self.windowFlags() |
-            Qt.WindowType.WindowStaysOnTopHint)  # type: ignore
+            Qt.WindowType.WindowStaysOnTopHint)
 
         self.setMinimumSize(QSize(300, 200))
         self.setWindowTitle("Configure Shortcut Composer")

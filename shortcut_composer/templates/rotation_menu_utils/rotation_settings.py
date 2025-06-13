@@ -23,7 +23,7 @@ class RotationSettings(QDialog):
         super().__init__(None)
         self.setWindowFlags(
             self.windowFlags() |
-            Qt.WindowType.WindowStaysOnTopHint)  # type: ignore
+            Qt.WindowType.WindowStaysOnTopHint)
 
         self.setMinimumSize(QSize(300, 200))
         self.setWindowTitle(f"Settings: {config.name}")

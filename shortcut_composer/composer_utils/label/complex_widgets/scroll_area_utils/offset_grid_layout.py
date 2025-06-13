@@ -39,7 +39,7 @@ class OffsetGridLayout(QGridLayout):
         self._items_in_group = 2*max_columns - 1
         self._owner = owner
 
-        self.setAlignment(Qt.AlignmentFlag.AlignTop)  # type: ignore
+        self.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.setVerticalSpacing(5)
         self.setHorizontalSpacing(5)
 

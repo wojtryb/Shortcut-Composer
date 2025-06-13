@@ -50,7 +50,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
         self.setMinimumHeight(round(style_holder.pie_style.widget_radius*2))
         self.setAcceptDrops(True)
         self.setWindowFlags((
-            self.windowFlags() |  # type: ignore
+            self.windowFlags() |
             Qt.WindowType.Tool |
             Qt.WindowType.WindowStaysOnTopHint |
             Qt.WindowType.FramelessWindowHint))
@@ -171,6 +171,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
         self.setLayout(layout)
 
     def _init_full_reset_button(self) -> SafeConfirmButton:
+        """Create button which resets config (except order) to default."""
         button = SafeConfirmButton(
             text="Reset pie preferences",
             icon=Krita.get_icon("edit-delete"))

@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from enum import Enum
+from enum import Enum, auto
 from dataclasses import dataclass
 from collections import defaultdict
 
@@ -11,11 +11,11 @@ from composer_utils import AnimationProgress
 class Zone(Enum):
     """Zones in the widget."""
 
-    DEADZONE = 0
+    DEADZONE = auto()
     """Zone in which angle is not red."""
-    INTERVALLIC_ZONE = 1
+    INTERVALLIC_ZONE = auto()
     """Zone in which angles are being red with intervals."""
-    PRECISE_ZONE = 2
+    PRECISE_ZONE = auto()
     """Zone in which angles are being red precisely."""
 
 

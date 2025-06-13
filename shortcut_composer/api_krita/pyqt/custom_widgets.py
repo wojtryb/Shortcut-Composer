@@ -21,11 +21,11 @@ class BaseWidget(QWidget):
     @property
     def center_global(self) -> QPoint:
         """Return point with center widget's point in screen coordinates."""
-        return self.pos() + self.center  # type: ignore
+        return self.pos() + self.center
 
     def move_center(self, new_center: QPoint) -> None:
         """Move the widget by providing a new center point."""
-        self.move(new_center-self.center)  # type: ignore
+        self.move(new_center-self.center)
 
 
 class AnimatedWidget(QWidget):

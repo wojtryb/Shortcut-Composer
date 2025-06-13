@@ -19,7 +19,7 @@ class ActionValuesWindow(QDialog):
         super().__init__()
         self.setWindowFlags(
             self.windowFlags() |
-            Qt.WindowType.WindowStaysOnTopHint)  # type: ignore
+            Qt.WindowType.WindowStaysOnTopHint)
         layout = QVBoxLayout()
 
         self._config = config

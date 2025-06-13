@@ -32,7 +32,7 @@ class RoundButton(QPushButton, BaseWidget):
 
         if parent is None:
             self.setWindowFlags((
-                self.windowFlags() |  # type: ignore
+                self.windowFlags() |
                 Qt.WindowType.Tool |
                 Qt.WindowType.FramelessWindowHint |
                 Qt.WindowType.NoDropShadowWindowHint))
