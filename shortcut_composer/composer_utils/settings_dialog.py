@@ -31,6 +31,7 @@ class SettingsDialog(QDialog):
                 parent=self,
                 pretty_name="Short vs long press time",
                 step=0.05,
+                min_value=0,
                 max_value=4,
                 tooltip="Time after which the key press is considered long."),
             SpinBox(
@@ -38,7 +39,8 @@ class SettingsDialog(QDialog):
                 parent=self,
                 pretty_name="FPS limit",
                 step=5,
-                max_value=50,
+                min_value=5,
+                max_value=200,
                 tooltip="Maximal amount of widget repaints in one second."),
 
             "Cursor trackers",
@@ -47,14 +49,16 @@ class SettingsDialog(QDialog):
                 parent=self,
                 pretty_name="Tracker sensitivity scale",
                 step=0.05,
-                max_value=400,
+                min_value=0.05,
+                max_value=100,
                 tooltip="Higher values make the trackers more sensitive."),
             SpinBox(
                 config_field=Config.TRACKER_DEADZONE,
                 parent=self,
                 pretty_name="Tracker deadzone",
                 step=1,
-                max_value=20,
+                min_value=0,
+                max_value=100,
                 tooltip=""
                 "Amount of pixels that the cursor needs to be moved\n"
                 "for a tracker to snap to horizontal or vertical axis.\n\n"
@@ -66,6 +70,7 @@ class SettingsDialog(QDialog):
                 parent=self,
                 pretty_name="Pie global scale",
                 step=0.05,
+                min_value=0.25,
                 max_value=4,
                 tooltip=""
                 "Scale applied to every pie menu on top of local scale."),
@@ -74,6 +79,7 @@ class SettingsDialog(QDialog):
                 parent=self,
                 pretty_name="Pie icon global scale",
                 step=0.05,
+                min_value=0.25,
                 max_value=4,
                 tooltip=""
                 "Scale applied to every pie icons on top of local scale."),
@@ -82,6 +88,7 @@ class SettingsDialog(QDialog):
                 parent=self,
                 pretty_name="Pie deadzone global scale",
                 step=0.05,
+                min_value=0,
                 max_value=4,
                 tooltip="Scale of deadzone of all the pie menus."),
             SpinBox(
@@ -89,6 +96,7 @@ class SettingsDialog(QDialog):
                 parent=self,
                 pretty_name="Text label global scale",
                 step=0.05,
+                min_value=0.25,
                 max_value=4,
                 tooltip=""
                 "Scale applied to every text label on top of local scale."),
@@ -119,6 +127,7 @@ class SettingsDialog(QDialog):
                 parent=self,
                 pretty_name="Default pie opacity",
                 step=1,
+                min_value=0,
                 max_value=100,
                 tooltip="Default opacity of the pie background."),
             SpinBox(
@@ -126,6 +135,7 @@ class SettingsDialog(QDialog):
                 parent=self,
                 pretty_name="Pie animation time",
                 step=0.01,
+                min_value=0,
                 max_value=1,
                 tooltip="Time of the pie opening animation."),
 

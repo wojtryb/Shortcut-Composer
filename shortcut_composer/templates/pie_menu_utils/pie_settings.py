@@ -83,6 +83,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
                 parent=self,
                 pretty_name="Pie scale",
                 step=0.05,
+                min_value=0.25,
                 max_value=4,
                 tooltip="Scale of the radius of the entire pie."),
             SpinBox(
@@ -90,6 +91,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
                 parent=self,
                 pretty_name="Icon max scale",
                 step=0.05,
+                min_value=0.25,
                 max_value=4,
                 tooltip=""
                 "Scale of the icons maximal radius.\n\n"
@@ -116,6 +118,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
                 parent=self,
                 pretty_name="Pie opacity",
                 step=1,
+                min_value=0,
                 max_value=100,
                 tooltip="Opacity of the pie background."),
         ])

@@ -61,6 +61,7 @@ class RotationSettings(QDialog):
                 parent=self,
                 pretty_name="Divisions",
                 step=1,
+                min_value=1,
                 max_value=360,
                 tooltip="Amount of steps in intervallic zone."),
 
@@ -70,6 +71,7 @@ class RotationSettings(QDialog):
                 parent=self,
                 pretty_name="Deadzone scale",
                 step=0.05,
+                min_value=0,
                 max_value=4,
                 tooltip="Scale of the deadzone radius. 0 turns it off."),
             SpinBox(
@@ -77,6 +79,7 @@ class RotationSettings(QDialog):
                 parent=self,
                 pretty_name="Inner zone scale",
                 step=0.05,
+                min_value=0,
                 max_value=4,
                 tooltip="Scale of the inner zone radius. 0 turns it off."),
 
@@ -91,6 +94,7 @@ class RotationSettings(QDialog):
                 parent=self,
                 pretty_name="Outline opacity",
                 step=1,
+                min_value=0,
                 max_value=100,
                 tooltip="Opacity [%] of the widget outline."),
 
@@ -105,6 +109,7 @@ class RotationSettings(QDialog):
                 parent=self,
                 pretty_name="Offset",
                 step=1,
+                min_value=0,
                 max_value=360,
                 tooltip=""
                 "Position of 0°, counting clockwise from the top.\n\n"
