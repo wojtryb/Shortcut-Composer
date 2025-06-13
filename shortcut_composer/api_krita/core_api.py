@@ -71,9 +71,15 @@ class KritaInstance:
         return self.instance.activeWindow().qwindow()
 
     def get_active_mdi_area(self) -> QMdiArea:
+        """Get kritas center widget."""
         return self.get_active_qwindow().findChild(QMdiArea)  # type: ignore
 
     def get_icon(self, icon_name: str) -> QIcon:
+        """
+        Get icon defined in krita from its name.
+
+        https://scripting.krita.org/icon-library
+        """
         return self.instance.icon(icon_name)
 
     def read_setting(
@@ -133,12 +139,12 @@ class KritaInstance:
 
     def get_main_color_from_theme(self) -> QColor:
         """Return main color of the current theme."""
-        return QApplication.instance().palette().color(
+        return QApplication.instance().palette().color(  # type: ignore
             QPalette.ColorRole.Window)
 
     def get_active_color_from_theme(self) -> QColor:
         """Return active color of the current theme."""
-        return QApplication.instance().palette().color(
+        return QApplication.instance().palette().color(  # type: ignore
             QPalette.ColorRole.Highlight)
 
     @property
@@ -149,7 +155,7 @@ class KritaInstance:
 
     @property
     def version(self) -> Version:
-        """Get version of krita."""
+        """Get version of krita as a custom object."""
         raw: str = self.instance.version()
 
         num = r"(0|[1-9]\d*)"

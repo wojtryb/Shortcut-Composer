@@ -7,11 +7,7 @@ from krita import Krita as Api
 
 
 class Toggle(Enum):
-    """
-    Contains all known actions that toggle (can be activated and deactivated).
-
-    Example usage: `Toggle.ERASER`
-    """
+    """Contains all known actions that toggle (can be (de)activated)."""
 
     ERASER = "erase_action"
     PRESERVE_ALPHA = "preserve_alpha"

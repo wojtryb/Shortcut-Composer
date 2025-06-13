@@ -8,6 +8,7 @@ from .helpers import EnumGroup, Group
 
 
 class Tool(EnumGroup):
+    """Contains all known tools from krita toolbox."""
 
     _vectors = Group("Vectors")
     SHAPE_SELECT = "InteractionTool"

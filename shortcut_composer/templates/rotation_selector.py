@@ -146,10 +146,12 @@ class RotationSelector(RawInstructions):
 
     @cached_property
     def _settings_button(self) -> RoundButton:
+        """Create a settings button inside the widget."""
         return self._create_settings_button(self._rotation_widget)
 
     @cached_property
     def _global_settings_button(self) -> RoundButton:
+        """Create a settings button on canvas, for when widget is hidden."""
         return self._create_settings_button(None)  # type: ignore
 
     @cached_property

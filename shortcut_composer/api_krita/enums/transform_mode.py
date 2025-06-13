@@ -8,13 +8,7 @@ from PyQt5.QtGui import QIcon
 
 
 class TransformMode(Enum):
-    """
-    Contains all known tools from krita toolbox.
-
-    Extended with modes of the transform tool.
-
-    Example usage: `Tool.FREEHAND_BRUSH`
-    """
+    """Contains all known modes of transform tool."""
 
     FREE = "Transform tool: free"
     PERSPECTIVE = "Transform tool: perspective"

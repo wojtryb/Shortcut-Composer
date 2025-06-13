@@ -347,6 +347,8 @@ def create_actions() -> list[templates.RawInstructions]: return [
         active_color=QColor(234, 172, 0),
     ),
 
+    # Use pie menu to pick a previously added color.
+    # By default, colors are stored in .kra document.
     templates.PieMenu(
         name="Pick foreground color",
         controller=controllers.ForegroundColorController(),

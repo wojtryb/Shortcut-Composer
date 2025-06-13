@@ -8,11 +8,7 @@ from PyQt5.QtGui import QIcon
 
 
 class NodeType(Enum):
-    """
-    Contains all known node types in krita.
-
-    Example usage: `NodeType.PAINT_LAYER`
-    """
+    """Contains all known node types in krita."""
 
     PAINT_LAYER = "paintlayer"
     GROUP_LAYER = "grouplayer"

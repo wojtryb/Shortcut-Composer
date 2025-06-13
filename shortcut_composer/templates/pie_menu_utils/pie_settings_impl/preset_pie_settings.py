@@ -156,8 +156,14 @@ class PresetPieSettings(PieSettings):
 
 
 class PresetGroupManager(GroupManager):
+    """TODO"""
 
     known_labels: dict[str, PieLabel | None] = {}
+    """
+    Dictionary of known preset labels mapped to their names.
+
+    Allows to avoid creating the same labels multiple times.
+    """
 
     def __init__(self) -> None:
         self._controller = PresetController()

@@ -5,11 +5,7 @@ from .helpers import EnumGroup, Group
 
 
 class BlendingMode(EnumGroup):
-    """
-    Contains all known blending modes in krita.
-
-    Example usage: `BlendingMode.NORMAL`
-    """
+    """Contains all known blending modes in krita."""
 
     _arithmetic = Group("Arithmetic")
     ADD = "add"

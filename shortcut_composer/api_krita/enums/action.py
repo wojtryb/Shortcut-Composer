@@ -8,11 +8,7 @@ from .helpers import EnumGroup, Group
 
 
 class Action(EnumGroup):
-    """
-    Contains actions of Krita exposed to the plugin.
-
-    Example usage: `Action.UNDO`
-    """
+    """Contains actions of Krita exposed to the plugin."""
 
     _file = Group("File")
     NEW = "file_new"
