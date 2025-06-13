@@ -35,7 +35,8 @@ class TextLabelWidget(LabelWidget[T]):
             raise TypeError("Label supposed to be text.")
 
         height = round(self.icon_radius*1.5)
-        trimmed_text = self._label_widget_style.trim_text(to_display)
+        trimmed_text = self._label_widget_style.split_text_to_lines(
+            to_display.value)
 
         label = QLabel(self)
         label.setText("\n".join(trimmed_text))

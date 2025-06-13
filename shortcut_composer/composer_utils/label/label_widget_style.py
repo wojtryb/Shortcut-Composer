@@ -1,12 +1,12 @@
 # SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+import re
 from typing import Callable
 
 from PyQt5.QtGui import QFont, QColor, QFontDatabase
 
 from composer_utils import Config
-from .label_text import LabelText
 
 
 class LabelWidgetStyle:
@@ -14,7 +14,7 @@ class LabelWidgetStyle:
     Holds and calculates configuration of displayed elements.
 
     Style elements are calculated based on passed callbacks.
-    Can trim given text based on limits imposed by those callbacks.
+    Can split given text based on limits imposed by those callbacks.
     Creates font object with correct size based on amount of text.
     """
 
@@ -26,7 +26,7 @@ class LabelWidgetStyle:
         background_color_callback: Callable[[], QColor],
         max_lines_amount_callback: Callable[[], int],
         max_signs_amount_callback: Callable[[], int],
-        abbreviate_with_dot_callback: Callable[[], bool],
+        abbreviation_sign_callback: Callable[[], str],
     ) -> None:
         self._icon_radius_callback = icon_radius_callback
         self._border_thickness_callback = border_thickness_callback
@@ -34,7 +34,7 @@ class LabelWidgetStyle:
         self._background_color_callback = background_color_callback
         self._max_lines_amount_callback = max_lines_amount_callback
         self._max_signs_amount_callback = max_signs_amount_callback
-        self._abbreviate_with_dot_callback = abbreviate_with_dot_callback
+        self._abbreviation_sign_callback = abbreviation_sign_callback
 
     @property
     def icon_radius(self) -> int:
@@ -68,34 +68,43 @@ class LabelWidgetStyle:
             min(self.background_color.green()+15, 255),
             min(self.background_color.blue()+15, 255))
 
-    @property
-    def max_lines_amount(self) -> int:
-        return self._max_lines_amount_callback()
+    def split_text_to_lines(self, text: str) -> list[str]:
+        """
+        Split the text into lines, according to limits from this class.
 
-    @property
-    def max_signs_amount(self) -> int:
-        return self._max_signs_amount_callback()
+        On initialization, this object received callbacks parametrizing
+        the split:
+        - maximal amount of lines the text can consist of
+        - maximal amount of signs in every line of text
+        - sign to mark that the word or line got abbreviated
 
-    @property
-    def abbreviate_with_dot_callback(self) -> bool:
-        return self._abbreviate_with_dot_callback()
+        Passed string is split to words on whitespaces and underscores.
+        If the word is too long to fit in single line it gets shortened.
+        Then those words are getting concatenated.
+        If a line gets too long, next word is placed in the next line.
+        After the line limit is met, the rest of text gets discarded.
 
-    def trim_text(self, text: LabelText) -> list[str]:
-        MAX_LINES = self.max_lines_amount
-        MAX_SIGNS = self.max_signs_amount
-        DOT = "." if self.abbreviate_with_dot_callback else ""
+        Abbreviation sign is not counted towards signs limit.
 
-        if not text.value:
+        Example usage: (3 lines, 8 signs, '.' as abbreviation sign):
+        Input: 'This is inscription with text that is too long'
+        Output ['This is', 'inscript.' 'with text.']
+        """
+        MAX_LINES = self._max_lines_amount_callback()
+        MAX_SIGNS = self._max_signs_amount_callback()
+        ABBR_SIGN = self._abbreviation_sign_callback()
+
+        if not text:
             return []
 
-        words = text.value.split("_")
+        words = re.split(r"\W+|_", text)
 
         # Abbreviate words that are too long
 
         def abbreviate(word: str) -> str:
             if len(word) <= MAX_SIGNS:
                 return word
-            return word[:MAX_SIGNS] + DOT
+            return word[:MAX_SIGNS] + ABBR_SIGN
         words = list(map(abbreviate, words))
 
         # Merge short words into lines
@@ -119,7 +128,7 @@ class LabelWidgetStyle:
         if len(lines) > MAX_LINES:
             remainder = " ".join(lines[MAX_LINES:])
             last_line = lines[MAX_LINES-1] + " " + remainder
-            lines[MAX_LINES-1] = last_line[:MAX_SIGNS].rstrip(' ') + DOT
+            lines[MAX_LINES-1] = last_line[:MAX_SIGNS].rstrip(' ') + ABBR_SIGN
 
         return lines[:MAX_LINES]
 

@@ -19,6 +19,9 @@ class PieStyleHolder:
         self._pie_config = pie_config
         self._base_size = Krita.screen_size/2560
 
+        def abbreviation_sign_callback():
+            return "." if self._pie_config.ABBREVIATE_WITH_DOT.read() else ""
+
         self.label_style = LabelWidgetStyle(
             icon_radius_callback=self._icon_radius,
             border_thickness_callback=self._border_thickness,
@@ -26,8 +29,7 @@ class PieStyleHolder:
             background_color_callback=self._background_color,
             max_lines_amount_callback=self._pie_config.MAX_LINES_AMOUNT.read,
             max_signs_amount_callback=self._pie_config.MAX_SIGNS_AMOUNT.read,
-            abbreviate_with_dot_callback=self.
-            _pie_config.ABBREVIATE_WITH_DOT.read)
+            abbreviation_sign_callback=abbreviation_sign_callback)
         self.settings_label_style = LabelWidgetStyle(
             icon_radius_callback=self._unscaled_icon_radius,
             border_thickness_callback=self._border_thickness,
@@ -35,7 +37,7 @@ class PieStyleHolder:
             background_color_callback=self._background_color,
             max_lines_amount_callback=lambda: 3,
             max_signs_amount_callback=lambda: 10,
-            abbreviate_with_dot_callback=lambda: True)
+            abbreviation_sign_callback=lambda: ".")
         self.button_size_label_style = LabelWidgetStyle(
             icon_radius_callback=self._button_sized_icon_radius,
             border_thickness_callback=self._border_thickness,
@@ -43,7 +45,7 @@ class PieStyleHolder:
             background_color_callback=self._background_color,
             max_lines_amount_callback=lambda: 1,
             max_signs_amount_callback=lambda: 3,
-            abbreviate_with_dot_callback=lambda: False)
+            abbreviation_sign_callback=lambda: "")
         self.pie_style = PieStyle(
             label_style=self.label_style,
             pie_radius_callback=self._pie_radius,
