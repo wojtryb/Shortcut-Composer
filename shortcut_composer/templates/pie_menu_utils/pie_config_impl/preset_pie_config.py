@@ -1,16 +1,19 @@
 # SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Callable
+from typing import Callable, TypeVar
 from PyQt5.QtGui import QColor
 
+from api_krita.enums.helpers import EnumGroup
 from config_system import Field
 from data_components import Tag, PieDeadzoneStrategy
 from core_components import Controller
 from ..pie_config import PieConfig
 
+T = TypeVar("T")
 
-class PresetPieConfig(PieConfig[str]):
+
+class PresetPieConfig(PieConfig[T]):
     """
     FieldGroup representing config of PieMenu of presets.
 
@@ -21,7 +24,7 @@ class PresetPieConfig(PieConfig[str]):
     def __init__(
         self,
         name: str,
-        values: Tag | list[str],
+        values: Tag | list[T],
         controller: Controller,
         pie_radius_scale: float,
         icon_radius_scale: float,
@@ -57,23 +60,39 @@ class PresetPieConfig(PieConfig[str]):
         self.TAG_NAME = self._create_editable_dual_field(
             field_name="Tag",
             default=tag_name)
-        self.ORDER = self._create_editable_dual_field(
-            field_name="Values",
-            default=[],
-            parser_type=str)
+
+        # TODO:  manager
+        if issubclass(self._controller.TYPE, EnumGroup):
+            self.ORDER = self._create_editable_dual_field(
+                field_name="Values",
+                default=self._values,
+                parser_type=controller.TYPE)
+        else:
+            self.ORDER = self._create_editable_dual_field(
+                field_name="Values",
+                default=[],
+                parser_type=str)
 
     @property
     def allow_value_edit(self) -> bool:
         """Return whether user can add and remove items from the pie."""
         return not self.TAG_MODE.read()
 
-    def values(self) -> list[str]:
+    def values(self) -> list[T]:
         """Return all presets based on mode and stored order."""
         if not self.TAG_MODE.read():
             return self.ORDER.read()
-        return Tag(self.TAG_NAME.read())
 
-    def set_values(self, values: list[str]) -> None:
+        # TODO:  manager
+        if self._controller.TYPE == str:
+            return Tag(self.TAG_NAME.read())
+        elif issubclass(self._controller.TYPE, EnumGroup):
+            if not self.TAG_NAME.read():
+                return []
+            return self._controller.TYPE._groups_[self.TAG_NAME.read()]
+        raise RuntimeError("Shouldnt be here")
+
+    def set_values(self, values: list[T]) -> None:
         """When in tag mode, remember the tag order. Then write normally."""
         if self.TAG_MODE.read():
             group = "ShortcutComposer: Tag order"

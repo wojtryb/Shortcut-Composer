@@ -8,6 +8,8 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 from api_krita import Krita
 from api_krita.wrappers import Database
 from api_krita.pyqt import SafeConfirmButton
+from api_krita.enums.helpers import EnumGroup
+from core_components import Controller
 from composer_utils.label.complex_widgets import ScrollArea
 from core_components.controllers import PresetController
 from data_components import Tag
@@ -36,6 +38,14 @@ class PresetPieSettings(PieSettings):
     ) -> None:
         super().__init__(controller, config, style_holder)
         self._config: PresetPieConfig
+
+        # TODO: manager
+        if issubclass(controller.TYPE, str):
+            self._manager = PresetGroupManager()
+        elif issubclass(controller.TYPE, EnumGroup):
+            self._manager = EnumGroupManager(controller)
+        else:
+            raise ValueError(f"No known manager for `{controller.TYPE}`")
 
         self._scroll_area = self._init_scroll_area()
         self._mode_button = self._init_mode_button()
@@ -98,21 +108,19 @@ class PresetPieSettings(PieSettings):
 
         auto_combobox = GroupComboBox(
             last_value_field=self._config.TAG_NAME,
-            group_manager=PresetGroupManager(),
+            group_manager=self._manager,
             pretty_name="Tag name")
 
         auto_combobox.widget.currentTextChanged.connect(handle_picked_tag)
         return auto_combobox
 
     def _init_manual_combobox(self) -> GroupComboBox:
-        manager = PresetGroupManager()
-
         def _display_group() -> None:
             """Update preset widgets according to tag selected in combobox."""
             picked_group = manual_combobox.widget.currentText()
-            values = manager.get_values(picked_group)
+            values = self._manager.get_values(picked_group)
             self._scroll_area.replace_handled_labels(
-                manager.create_labels(values))
+                self._manager.create_labels(values))  # type: ignore #FIXME
             self._scroll_area._apply_search_bar_filter()
             manual_combobox.save()
 
@@ -120,11 +128,12 @@ class PresetPieSettings(PieSettings):
             last_value_field=self._config.field(
                 "Last tag selected",
                 "---Select tag---"),
-            group_manager=manager,
+            group_manager=self._manager,
             additional_fields=["---Select tag---", "All"])
 
+        # TODO: not working - remove whole section instead of combobox
         # Do not display combobox with groups, when there is only one group
-        if len(manager.fetch_groups()) > 1:
+        if len(self._manager.fetch_groups()) > 1:
             self._scroll_area._layout.insertWidget(0, manual_combobox.widget)
 
         manual_combobox.widget.currentTextChanged.connect(_display_group)
@@ -215,4 +224,28 @@ class PresetGroupManager(GroupManager):
                 self.known_labels[preset] = label
             labels.append(label)
 
+        return [label for label in labels if label is not None]
+
+
+class EnumGroupManager(GroupManager):
+    def __init__(self, controller: Controller) -> None:
+        self._controller = controller
+        self._enum_type = self._controller.TYPE
+
+    def fetch_groups(self) -> list[str]:
+        return list(self._enum_type._groups_.keys())
+
+    def get_values(self, group: str) -> list[EnumGroup]:
+        if group not in self._enum_type._groups_:
+            return []
+        elif group == "All":
+            return list(self._enum_type._member_map_.values())
+        return self._enum_type._groups_[group]
+
+    def create_labels(
+        self,
+        values: list[EnumGroup]
+    ) -> list[PieLabel[EnumGroup]]:
+        """Create labels from list of preset names."""
+        labels = [PieLabel.from_value(v, self._controller) for v in values]
         return [label for label in labels if label is not None]

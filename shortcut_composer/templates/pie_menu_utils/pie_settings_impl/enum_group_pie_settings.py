@@ -48,14 +48,13 @@ class EnumGroupPieSettings(PieSettings):
         return scroll_area
 
     def _init_manual_combobox(self) -> GroupComboBox:
-        manager = EnumGroupManager(self._controller)
 
         def _display_group() -> None:
             """Update preset widgets according to tag selected in combobox."""
             picked_group = manual_combobox.widget.currentText()
-            values = manager.get_values(picked_group)
+            values = self.manager.get_values(picked_group)
             self._scroll_area.replace_handled_labels(
-                manager.create_labels(values))
+                self.manager.create_labels(values))
             self._scroll_area._apply_search_bar_filter()
             manual_combobox.save()
 
@@ -63,11 +62,11 @@ class EnumGroupPieSettings(PieSettings):
             last_value_field=self._config.field(
                 "Last tag selected",
                 "---Select tag---"),
-            group_manager=manager,
+            group_manager=self.manager,
             additional_fields=["---Select tag---", "All"])
 
         # Do not display combobox with groups, when there is only one group
-        if len(manager.fetch_groups()) > 1:
+        if len(self.manager.fetch_groups()) > 1:
             self._scroll_area._layout.insertWidget(0, manual_combobox.widget)
 
         manual_combobox.widget.currentTextChanged.connect(_display_group)

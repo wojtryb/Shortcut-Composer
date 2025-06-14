@@ -10,8 +10,10 @@ from .non_preset_pie_config import NonPresetPieConfig
 T = TypeVar('T')
 
 
+# TODO: remove this entirely
 def dispatch_pie_config(controller: Controller[T]) -> Type[PieConfig[T]]:
     """Return type of PieConfig specialization based on controller type."""
+    return PresetPieConfig
     if issubclass(controller.TYPE, str):
         return PresetPieConfig   # type: ignore
     return NonPresetPieConfig

@@ -13,6 +13,7 @@ from .numeric_pie_settings import NumericPieSettings
 from .preset_pie_settings import PresetPieSettings
 
 
+# TODO: or
 def dispatch_pie_settings(controller: Controller) -> Type[PieSettings]:
     """Return the right settings type based on value type."""
     if isinstance(controller, NumericController):
@@ -20,7 +21,7 @@ def dispatch_pie_settings(controller: Controller) -> Type[PieSettings]:
     elif issubclass(controller.TYPE, str):
         return PresetPieSettings
     elif issubclass(controller.TYPE, EnumGroup):
-        return EnumGroupPieSettings
+        return PresetPieSettings
     elif issubclass(controller.TYPE, QColor):
         return PieSettings
     raise ValueError(f"No known pie settings for type of `{controller.TYPE}`")
