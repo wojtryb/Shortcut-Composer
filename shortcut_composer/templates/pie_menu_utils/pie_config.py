@@ -95,6 +95,10 @@ class PieConfig(FieldGroup, Generic[T]):
             default=default_values,
             parser_type=controller.TYPE)
 
+        self.LAST_TAG_SELECTED = self.field(
+            name="Last tag selected",
+            default="---Select tag---")
+
     @property
     def allow_value_edit(self) -> bool:
         """Return whether user can add and remove items from the pie."""

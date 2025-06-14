@@ -111,9 +111,7 @@ class PresetPieSettings(PieSettings):
             manual_combobox.save()
 
         manual_combobox = GroupComboBox(
-            last_value_field=self._config.field(  # TODO: field in config?
-                "Last tag selected",
-                "---Select tag---"),
+            last_value_field=self._config.LAST_TAG_SELECTED,
             group_manager=self._manager,
             additional_fields=["---Select tag---", "All"])
 
