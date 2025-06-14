@@ -3,19 +3,19 @@
 
 from typing import Callable, Generic, TypeVar
 from PyQt5.QtGui import QColor
-from api_krita.enums.helpers import EnumGroup
 from api_krita import Krita
 from config_system import Field, FieldGroup
 from config_system.field_base_impl import DualField, FieldWithEditableDefault
 from data_components import Tag, PieDeadzoneStrategy
 from core_components import Controller
+from .group_manager_impl import dispatch_group_manager
 
 T = TypeVar("T")
 U = TypeVar("U")
 
 
 class PieConfig(FieldGroup, Generic[T]):
-    """Abstract FieldGroup representing config of PieMenu."""
+    """FieldGroup representing config of PieMenu."""
 
     def __init__(
         self,
@@ -34,8 +34,8 @@ class PieConfig(FieldGroup, Generic[T]):
         abbreviate_with_dot: bool,
     ) -> None:
         super().__init__(name)
-        self._values = values
         self._controller = controller
+        self._manager = dispatch_group_manager(controller)
 
         self.PIE_RADIUS_SCALE = self.field(
             name="Pie scale",
@@ -89,7 +89,7 @@ class PieConfig(FieldGroup, Generic[T]):
             field_name="Tag",
             default=tag_name)
 
-        default_values = [] if isinstance(values, Tag) else self._values
+        default_values = [] if isinstance(values, Tag) else values
         self.ORDER = self._create_editable_dual_field(
             field_name="Values",
             default=default_values,
@@ -105,15 +105,7 @@ class PieConfig(FieldGroup, Generic[T]):
         if not self.TAG_MODE.read():
             return self.ORDER.read()
 
-        # TODO:  manager
-        if self._controller.TYPE == str:
-            return Tag(self.TAG_NAME.read())
-        elif issubclass(self._controller.TYPE, EnumGroup):
-            if not self.TAG_NAME.read():
-                return []
-            return self._controller.TYPE._groups_[self.TAG_NAME.read()]
-
-        raise RuntimeError("Shouldnt be here")
+        return self._manager.get_values(self.TAG_NAME.read())
 
     def set_values(self, values: list[T]) -> None:
         """When in tag mode, remember the tag order. Then write normally."""

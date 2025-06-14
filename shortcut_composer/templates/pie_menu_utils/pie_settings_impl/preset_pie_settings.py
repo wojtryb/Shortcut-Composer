@@ -1,22 +1,16 @@
 # SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Iterable
-
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 
 from api_krita import Krita
-from api_krita.wrappers import Database
 from api_krita.pyqt import SafeConfirmButton
-from api_krita.enums.helpers import EnumGroup
-from core_components import Controller
 from composer_utils.label.complex_widgets import ScrollArea
 from core_components.controllers import PresetController
-from data_components import Tag
 from templates.pie_menu_utils import PieSettings, PieConfig
-from ..pie_label import PieLabel
 from ..pie_style_holder import PieStyleHolder
-from .common_utils import GroupManager, GroupComboBox
+from ..group_manager_impl import dispatch_group_manager
+from .common_utils import GroupComboBox
 
 
 class PresetPieSettings(PieSettings):
@@ -38,14 +32,7 @@ class PresetPieSettings(PieSettings):
         super().__init__(controller, config, style_holder)
         self._config: PieConfig
 
-        # TODO: dispatch manager
-        if issubclass(controller.TYPE, str):
-            self._manager = PresetGroupManager()
-        elif issubclass(controller.TYPE, EnumGroup):
-            self._manager = EnumGroupManager(controller)
-        else:
-            raise ValueError(f"No known manager for `{controller.TYPE}`")
-
+        self._manager = dispatch_group_manager(controller)
         self._scroll_area = self._init_scroll_area()
         self._mode_button = self._init_mode_button()
         self._auto_combobox = self._init_auto_combobox()
@@ -119,7 +106,7 @@ class PresetPieSettings(PieSettings):
             picked_group = manual_combobox.widget.currentText()
             values = self._manager.get_values(picked_group)
             self._scroll_area.replace_handled_labels(
-                self._manager.create_labels(values))  # type: ignore #FIXME
+                self._manager.create_labels(values))
             self._scroll_area._apply_search_bar_filter()
             manual_combobox.save()
 
@@ -187,64 +174,3 @@ class PresetPieSettings(PieSettings):
             self._scroll_area.show()
             self._manual_combobox.widget.show()
             self._auto_combobox.widget.hide()
-
-
-class PresetGroupManager(GroupManager):
-    """TODO"""
-
-    known_labels: dict[str, PieLabel | None] = {}
-    """
-    Dictionary of known preset labels mapped to their names.
-
-    Allows to avoid creating the same labels multiple times.
-    """
-
-    def __init__(self) -> None:
-        self._controller = PresetController()
-
-    def fetch_groups(self) -> list[str]:
-        with Database() as database:
-            return database.get_brush_tags()
-
-    def get_values(self, group: str) -> list[str]:
-        if group == "All":
-            return list(Krita.get_presets().keys())
-        return Tag(group)
-
-    def create_labels(self, values: Iterable[str]) -> list[PieLabel[str]]:
-        """Create labels from list of preset names."""
-        labels: list[PieLabel | None] = []
-
-        for preset in values:
-            if preset in self.known_labels:
-                label = self.known_labels[preset]
-            else:
-                label = PieLabel.from_value(preset, self._controller)
-                self.known_labels[preset] = label
-            labels.append(label)
-
-        return [label for label in labels if label is not None]
-
-
-class EnumGroupManager(GroupManager):
-    def __init__(self, controller: Controller) -> None:
-        self._controller = controller
-        self._enum_type = self._controller.TYPE
-
-    def fetch_groups(self) -> list[str]:
-        return list(self._enum_type._groups_.keys())
-
-    def get_values(self, group: str) -> list[EnumGroup]:
-        if group not in self._enum_type._groups_:
-            return []
-        elif group == "All":
-            return list(self._enum_type._member_map_.values())
-        return self._enum_type._groups_[group]
-
-    def create_labels(
-        self,
-        values: list[EnumGroup]
-    ) -> list[PieLabel[EnumGroup]]:
-        """Create labels from list of preset names."""
-        labels = [PieLabel.from_value(v, self._controller) for v in values]
-        return [label for label in labels if label is not None]

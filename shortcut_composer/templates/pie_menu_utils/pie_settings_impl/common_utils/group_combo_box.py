@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QWidget
 
 from config_system import Field
 from config_system.ui import StringComboBox
-from .group_manager import GroupManager
+from ...group_manager import GroupManager
 
 
 class GroupComboBox(StringComboBox):
