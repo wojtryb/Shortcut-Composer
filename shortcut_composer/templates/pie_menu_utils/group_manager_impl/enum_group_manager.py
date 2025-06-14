@@ -4,7 +4,7 @@
 from api_krita.enums.helpers import EnumGroup
 from core_components import Controller
 from ..pie_label import PieLabel
-from .group_manager import GroupManager
+from ..group_manager import GroupManager
 
 
 class EnumGroupManager(GroupManager):

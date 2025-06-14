@@ -2,6 +2,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from .dispatch_group_manager import dispatch_group_manager
-from .group_manager import GroupManager
+from ..group_manager import GroupManager
 
 __all__ = ["dispatch_group_manager", "GroupManager"]

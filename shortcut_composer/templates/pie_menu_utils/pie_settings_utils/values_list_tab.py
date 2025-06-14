@@ -10,7 +10,8 @@ from config_system.ui import StringComboBox
 from composer_utils.label.complex_widgets import ScrollArea
 from core_components import Controller
 from ..pie_config import PieConfig
-from ..group_manager_impl import GroupManager, dispatch_group_manager
+from ..group_manager import GroupManager
+from ..group_manager_impl import dispatch_group_manager
 from ..pie_style_holder import PieStyleHolder
 
 
