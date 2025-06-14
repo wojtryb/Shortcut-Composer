@@ -5,12 +5,14 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QVBoxLayout, QTabWidget
 
 from api_krita.pyqt import AnimatedWidget, BaseWidget
-
+from api_krita.enums.helpers import EnumGroup
 from composer_utils import Config
-from core_components import Controller
+from composer_utils.label.complex_widgets import NumericValuePicker
+from core_components import Controller, NumericController
 from .pie_style_holder import PieStyleHolder
 from .pie_config import PieConfig
-from .pie_settings_utils import PreferencesTab, LocationTab
+from .pie_settings_utils import PreferencesTab, ValuesListTab, LocationTab
+from .pie_label import PieLabel
 
 
 class PieSettings(AnimatedWidget, BaseWidget):
@@ -32,7 +34,6 @@ class PieSettings(AnimatedWidget, BaseWidget):
         controller: Controller,
         config: PieConfig,
         style_holder: PieStyleHolder,
-        *args, **kwargs
     ) -> None:
         AnimatedWidget.__init__(self, None, Config.PIE_ANIMATION_TIME.read())
         self.setMinimumHeight(round(style_holder.pie_style.widget_radius*2))
@@ -47,14 +48,35 @@ class PieSettings(AnimatedWidget, BaseWidget):
         self._style_holder = style_holder
         self._config = config
         self._config.register_to_order_related(self._reset)
-
         self._tab_holder = QTabWidget()
 
         self._preferences_tab = PreferencesTab(
-            self._config,
-            controller.REQUIRES_TEXT_SETTINGS)
-
+            config=self._config,
+            requires_text_settings=controller.REQUIRES_TEXT_SETTINGS)
         self._tab_holder.addTab(self._preferences_tab, "Preferences")
+
+        if issubclass(controller.TYPE, (str, EnumGroup)):
+            self._tab_holder.addTab(
+                ValuesListTab(self._config, controller, self._style_holder),
+                "Values")
+            self._tab_holder.setCurrentIndex(1)
+        elif isinstance(controller, NumericController):
+            def label_from_integer(value: int) -> PieLabel[int]:
+                label = PieLabel.from_value(value, controller)
+                if label is None:
+                    raise RuntimeError(f"Could not create label from {value}")
+                return label
+
+            self._numeric_picker = NumericValuePicker(
+                create_label_from_integer=label_from_integer,
+                unscaled_label_style=style_holder.settings_label_style,
+                min_value=controller.MIN_VALUE,
+                max_value=controller.MAX_VALUE,
+                step=controller.STEP,
+                wrapping=controller.WRAPPING,
+                adaptive=controller.ADAPTIVE)
+            self._tab_holder.setCurrentIndex(1)
+
         self._tab_holder.addTab(LocationTab(self._config), "Save location")
 
         layout = QVBoxLayout(self)

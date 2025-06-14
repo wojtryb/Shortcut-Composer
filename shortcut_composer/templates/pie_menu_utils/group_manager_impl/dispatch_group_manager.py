@@ -5,7 +5,7 @@ from PyQt5.QtGui import QColor
 
 from api_krita.enums.helpers import EnumGroup
 from core_components import Controller
-from ..group_manager import GroupManager
+from .group_manager import GroupManager
 from .enum_group_manager import EnumGroupManager
 from .preset_group_manager import PresetGroupManager
 

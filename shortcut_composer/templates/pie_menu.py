@@ -12,7 +12,6 @@ from api_krita.pyqt import RoundButton
 from data_components import PieDeadzoneStrategy
 from core_components import Controller, Instruction
 from .pie_menu_utils import PieConfig
-from .pie_menu_utils.pie_settings_impl import dispatch_pie_settings
 from .pie_menu_utils import (
     PieCurrentValueHolder,
     PieStyleHolder,
@@ -135,7 +134,7 @@ class PieMenu(RawInstructions, Generic[T]):
     @cached_property
     def pie_settings(self) -> PieSettings:
         """Create QWidget with pie settings right for given type of labels."""
-        return dispatch_pie_settings(self._controller)(
+        return PieSettings(
             config=self._config,
             style_holder=self._style_holder,
             controller=self._controller)

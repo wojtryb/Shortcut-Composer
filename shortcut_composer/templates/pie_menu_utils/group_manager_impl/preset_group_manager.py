@@ -8,7 +8,7 @@ from api_krita.wrappers import Database
 from core_components.controllers import PresetController
 from data_components import Tag
 from ..pie_label import PieLabel
-from ..group_manager import GroupManager
+from .group_manager import GroupManager
 
 
 class PresetGroupManager(GroupManager):
