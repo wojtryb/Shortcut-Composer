@@ -115,11 +115,6 @@ class PresetPieSettings(PieSettings):
             group_manager=self._manager,
             additional_fields=["---Select tag---", "All"])
 
-        # TODO: not working - remove whole section instead of combobox
-        # Do not display combobox with groups, when there is only one group
-        if len(self._manager.fetch_groups()) > 1:
-            self._scroll_area._layout.insertWidget(0, manual_combobox.widget)
-
         manual_combobox.widget.currentTextChanged.connect(_display_group)
         _display_group()
 
@@ -139,6 +134,11 @@ class PresetPieSettings(PieSettings):
         top_layout.addWidget(self._mode_button, 1)
         top_layout.addWidget(self._auto_combobox.widget, 2)
         top_layout.addWidget(self._manual_combobox.widget, 2)
+        # Do not display picker, when there is only one group
+        if len(self._manager.fetch_groups()) <= 1:
+            self._mode_button.hide()
+            self._auto_combobox.widget.hide()
+            self._manual_combobox.widget.hide()
 
         action_layout = QVBoxLayout()
         action_layout.addLayout(top_layout)
