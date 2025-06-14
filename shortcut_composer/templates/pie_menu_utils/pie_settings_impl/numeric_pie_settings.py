@@ -4,8 +4,7 @@
 from core_components import NumericController
 from composer_utils.label.complex_widgets import NumericValuePicker
 
-from templates.pie_menu_utils.pie_config_impl import NonPresetPieConfig
-from templates.pie_menu_utils import PieSettings
+from templates.pie_menu_utils import PieSettings, PieConfig
 from ..pie_style_holder import PieStyleHolder
 from ..pie_label import PieLabel
 
@@ -16,7 +15,7 @@ class NumericPieSettings(PieSettings):
     def __init__(
         self,
         controller: NumericController,
-        config: NonPresetPieConfig,
+        config: PieConfig,
         style_holder: PieStyleHolder,
         *args, **kwargs
     ) -> None:

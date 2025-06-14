@@ -11,7 +11,7 @@ from api_krita import Krita
 from api_krita.pyqt import RoundButton
 from data_components import PieDeadzoneStrategy
 from core_components import Controller, Instruction
-from .pie_menu_utils.pie_config_impl import dispatch_pie_config
+from .pie_menu_utils import PieConfig
 from .pie_menu_utils.pie_settings_impl import dispatch_pie_settings
 from .pie_menu_utils import (
     PieCurrentValueHolder,
@@ -99,7 +99,7 @@ class PieMenu(RawInstructions, Generic[T]):
         super().__init__(name, instructions, short_vs_long_press_time)
         self._controller = controller
 
-        self._config = dispatch_pie_config(self._controller)(
+        self._config = PieConfig(
             name=f"ShortcutComposer: {name}",
             values=values,
             controller=controller,

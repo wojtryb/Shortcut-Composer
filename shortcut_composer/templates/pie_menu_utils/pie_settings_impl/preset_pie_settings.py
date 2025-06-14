@@ -13,8 +13,7 @@ from core_components import Controller
 from composer_utils.label.complex_widgets import ScrollArea
 from core_components.controllers import PresetController
 from data_components import Tag
-from templates.pie_menu_utils.pie_config_impl import PresetPieConfig
-from templates.pie_menu_utils import PieSettings
+from templates.pie_menu_utils import PieSettings, PieConfig
 from ..pie_label import PieLabel
 from ..pie_style_holder import PieStyleHolder
 from .common_utils import GroupManager, GroupComboBox
@@ -32,14 +31,14 @@ class PresetPieSettings(PieSettings):
     def __init__(
         self,
         controller: PresetController,
-        config: PresetPieConfig,
+        config: PieConfig,
         style_holder: PieStyleHolder,
         *args, **kwargs
     ) -> None:
         super().__init__(controller, config, style_holder)
-        self._config: PresetPieConfig
+        self._config: PieConfig
 
-        # TODO: manager
+        # TODO: dispatch manager
         if issubclass(controller.TYPE, str):
             self._manager = PresetGroupManager()
         elif issubclass(controller.TYPE, EnumGroup):
@@ -125,7 +124,7 @@ class PresetPieSettings(PieSettings):
             manual_combobox.save()
 
         manual_combobox = GroupComboBox(
-            last_value_field=self._config.field(
+            last_value_field=self._config.field(  # TODO: field in config?
                 "Last tag selected",
                 "---Select tag---"),
             group_manager=self._manager,
