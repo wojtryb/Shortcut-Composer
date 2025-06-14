@@ -80,25 +80,20 @@ class PieConfig(FieldGroup, Generic[T]):
             default=abbreviate_with_dot)
 
         tag_mode = isinstance(values, Tag)
-        tag_name = values.tag_name if isinstance(values, Tag) else ""
         self.TAG_MODE = self._create_editable_dual_field(
             field_name="Tag mode",
             default=tag_mode)
+
+        tag_name = values.tag_name if isinstance(values, Tag) else ""
         self.TAG_NAME = self._create_editable_dual_field(
             field_name="Tag",
             default=tag_name)
 
-        # TODO:  manager
-        if issubclass(self._controller.TYPE, EnumGroup):
-            self.ORDER = self._create_editable_dual_field(
-                field_name="Values",
-                default=self._values,
-                parser_type=controller.TYPE)
-        else:
-            self.ORDER = self._create_editable_dual_field(
-                field_name="Values",
-                default=[],
-                parser_type=str)
+        default_values = [] if isinstance(values, Tag) else self._values
+        self.ORDER = self._create_editable_dual_field(
+            field_name="Values",
+            default=default_values,
+            parser_type=controller.TYPE)
 
     @property
     def allow_value_edit(self) -> bool:
@@ -117,13 +112,15 @@ class PieConfig(FieldGroup, Generic[T]):
             if not self.TAG_NAME.read():
                 return []
             return self._controller.TYPE._groups_[self.TAG_NAME.read()]
+
         raise RuntimeError("Shouldnt be here")
 
     def set_values(self, values: list[T]) -> None:
         """When in tag mode, remember the tag order. Then write normally."""
         if self.TAG_MODE.read():
             group = "ShortcutComposer: Tag order"
-            field = Field(group, self.TAG_NAME.read(), [], str)
+            field = Field(
+                group, self.TAG_NAME.read(), [], self._controller.TYPE)
             field.write(values)
 
         self.ORDER.write(values)
