@@ -11,7 +11,7 @@ from composer_utils.label.complex_widgets import NumericValuePicker
 from core_components import Controller, NumericController
 from .pie_style_holder import PieStyleHolder
 from .pie_config import PieConfig
-from .pie_settings_utils import PreferencesTab, ValuesListTab, LocationTab
+from .pie_settings_tabs import PreferencesTab, ValuesListTab, LocationTab
 from .pie_label import PieLabel
 
 
