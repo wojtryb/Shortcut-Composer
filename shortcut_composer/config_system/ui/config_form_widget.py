@@ -25,8 +25,12 @@ class ConfigFormWidget(QWidget):
     save values to config of all stored ones.
     """
 
-    def __init__(self, elements: list[ConfigBasedWidget | str]) -> None:
-        super().__init__()
+    def __init__(
+        self,
+        elements: list[ConfigBasedWidget | str],
+        parent: QWidget | None = None
+    ) -> None:
+        super().__init__(parent)
         self._layout = QFormLayout()
         self._layout.RowWrapPolicy(QFormLayout.RowWrapPolicy.DontWrapRows)
         self._layout.setFieldGrowthPolicy(
