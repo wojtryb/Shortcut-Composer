@@ -172,9 +172,6 @@ class PieMenu(RawInstructions, Generic[T]):
             icon_scale=1.5,
             parent=self.pie_widget)
 
-        # Workaround for Qt bug, where button resets to (0, 0) on config change
-        self._config.register_callback(self._move_accept_button_to_center)
-
         accept_button.clicked.connect(
             self._edit_mode_handler.set_edit_mode_false)
         accept_button.hide()
@@ -198,7 +195,6 @@ class PieMenu(RawInstructions, Generic[T]):
         self._controller.refresh()
         self._reset_labels()
 
-        self._move_accept_button_to_center()
         self.settings_button.move(QPoint(
             self.pie_widget.width()-self.settings_button.width(),
             self.pie_widget.height()-self.settings_button.height()))
@@ -256,7 +252,3 @@ class PieMenu(RawInstructions, Generic[T]):
         self.pie_widget.hide()
         self._actuator.activate(self.pie_widget.active_label)
         self.pie_mouse_tracker.stop()
-
-    def _move_accept_button_to_center(self) -> None:
-        """Ensure the accept button is in the center of the pie."""
-        self.accept_button.move_center(self.pie_widget.center)
