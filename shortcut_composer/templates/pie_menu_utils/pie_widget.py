@@ -43,7 +43,11 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         config: PieConfig,
         parent=None
     ) -> None:
-        AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())
+        AnimatedWidget.__init__(
+            self,
+            animation_time_s=Config.PIE_ANIMATION_TIME.read(),
+            fps_limit=Config.FPS_LIMIT.read(),
+            parent=parent)
         diameter = 2*style_holder.pie_style.widget_radius
         self.resize(diameter, diameter)
 

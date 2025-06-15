@@ -24,12 +24,16 @@ class RotationWidget(AnimatedWidget, BaseWidget, Generic[T]):
         style: RotationStyle,
         parent=None
     ) -> None:
+        AnimatedWidget.__init__(
+            self,
+            animation_time_s=Config.PIE_ANIMATION_TIME.read(),
+            fps_limit=Config.FPS_LIMIT.read(),
+            parent=parent)
+
         self._config = config
         self._style = style
 
         self.state = WidgetState()
-
-        AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())
 
         self._config.register_callback(self._resize)
         self._resize()

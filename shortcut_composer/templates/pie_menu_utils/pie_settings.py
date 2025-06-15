@@ -35,7 +35,11 @@ class PieSettings(AnimatedWidget, BaseWidget):
         config: PieConfig,
         style_holder: PieStyleHolder,
     ) -> None:
-        AnimatedWidget.__init__(self, None, Config.PIE_ANIMATION_TIME.read())
+        AnimatedWidget.__init__(
+            self,
+            animation_time_s=Config.PIE_ANIMATION_TIME.read(),
+            fps_limit=Config.FPS_LIMIT.read(),
+            parent=None)
         self.setMinimumHeight(round(style_holder.pie_style.widget_radius*2))
         self.setAcceptDrops(True)
         self.setWindowFlags((
