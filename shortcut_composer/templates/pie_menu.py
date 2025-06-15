@@ -14,11 +14,11 @@ from core_components import Controller, Instruction
 from .pie_menu_utils import PieConfig
 from .pie_menu_utils import (
     PieCurrentValueHolder,
+    PieEditModeHandler,
+    PieMouseTracker,
     PieStyleHolder,
     PieActuator,
     PieSettings,
-    PieEditMode,
-    PieMouseTracker,
     PieWidget,
     PieLabel)
 from .raw_instructions import RawInstructions
@@ -115,7 +115,7 @@ class PieMenu(RawInstructions, Generic[T]):
         self._config.ORDER.register_callback(self._reset_labels)
 
         self._labels: list[PieLabel] = []
-        self._edit_mode = PieEditMode(self)
+        self._edit_mode_handler = PieEditModeHandler(self)
         self._style_holder = PieStyleHolder(pie_config=self._config)
         self._actuator = PieActuator(
             controller=self._controller,
@@ -128,7 +128,6 @@ class PieMenu(RawInstructions, Generic[T]):
         return PieWidget(
             style_holder=self._style_holder,
             labels=self._labels,
-            edit_mode=self._edit_mode,
             config=self._config)
 
     @cached_property
@@ -156,7 +155,8 @@ class PieMenu(RawInstructions, Generic[T]):
             icon=Krita.get_icon("properties"),
             icon_scale=1.1,
             parent=self.pie_widget)
-        settings_button.clicked.connect(lambda: self._edit_mode.set(True))
+        settings_button.clicked.connect(
+            self._edit_mode_handler.set_edit_mode_true)
         return settings_button
 
     @cached_property
@@ -175,7 +175,8 @@ class PieMenu(RawInstructions, Generic[T]):
         # Workaround for Qt bug, where button resets to (0, 0) on config change
         self._config.register_callback(self._move_accept_button_to_center)
 
-        accept_button.clicked.connect(lambda: self._edit_mode.set(False))
+        accept_button.clicked.connect(
+            self._edit_mode_handler.set_edit_mode_false)
         accept_button.hide()
         return accept_button
 
@@ -247,7 +248,7 @@ class PieMenu(RawInstructions, Generic[T]):
         """
         super().on_every_key_release()
 
-        if self._edit_mode:
+        if self._edit_mode_handler.is_in_edit_mode:
             return
 
         # Hide the widget before activation, in case it opens a new

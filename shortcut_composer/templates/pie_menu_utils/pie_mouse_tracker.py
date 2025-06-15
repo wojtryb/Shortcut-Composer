@@ -53,7 +53,7 @@ class PieMouseTracker:
             self._pie_widget.hide()
             return self.stop()
 
-        if self._pie_widget.is_in_edit_mode:
+        if self._pie_widget._is_draggable:
             return self.stop()
 
         if not self._pie_widget.order_handler:

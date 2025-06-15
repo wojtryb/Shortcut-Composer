@@ -16,7 +16,7 @@ T = TypeVar('T')
 
 
 class RotationWidget(AnimatedWidget, BaseWidget, Generic[T]):
-    """PyQt5 widget for selecting an angle."""
+    """PyQt widget for selecting an angle."""
 
     def __init__(
         self,

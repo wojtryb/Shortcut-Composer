@@ -13,7 +13,6 @@ from PyQt5.QtGui import (
 from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
 from composer_utils import CirclePoints, Config
 from composer_utils.label import LabelWidget
-from .pie_edit_mode import PieEditMode
 from .pie_label import PieLabel
 from .pie_style_holder import PieStyleHolder
 from .pie_config import PieConfig
@@ -24,7 +23,7 @@ T = TypeVar('T')
 
 class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     """
-    PyQt widget with icons on ring that can be selected by hovering.
+    PyQt widget with icons on ring, that can be selected by hovering.
 
     Uses OrderHandler to store children widgets representing available
     values. When the pie enters the edit mode, its children become
@@ -39,7 +38,6 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self,
         style_holder: PieStyleHolder,
         labels: list[PieLabel[T]],
-        edit_mode: PieEditMode,
         config: PieConfig,
         parent=None
     ) -> None:
@@ -65,7 +63,6 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self._style_holder = style_holder
         self._labels = labels
         self._config = config
-        self._edit_mode = edit_mode
 
         self._painter = PiePainter(self._style_holder.pie_style)
 
@@ -77,6 +74,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
         self.active_label: PieLabel | None = None
         self._last_widget = None
+        self._is_draggable = False
 
         self.order_handler = OrderHandler(
             labels=self._labels,
@@ -90,16 +88,12 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         """Change draggable state of all children."""
         for widget in self.order_handler.widget_holder:
             widget.draggable = draggable
+        self._is_draggable = draggable
 
     @property
     def deadzone(self) -> float:
         """Return the deadzone distance."""
         return self._style_holder.pie_style.deadzone_radius
-
-    @property
-    def is_in_edit_mode(self) -> bool:
-        """Return whether the pie widget is in edit mode."""
-        return self._edit_mode.get()
 
     def paintEvent(self, event: QPaintEvent) -> None:
         """Paint the entire widget using the Painter wrapper."""
@@ -108,7 +102,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
     def dragEnterEvent(self, e: QDragEnterEvent) -> None:
         """Allow dragging the widgets while in edit mode."""
-        if self._edit_mode:
+        if self._is_draggable:
             return e.accept()
         e.ignore()
 
