@@ -24,7 +24,7 @@ T = TypeVar('T')
 
 class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     """
-    PyQt5 widget with icons on ring that can be selected by hovering.
+    PyQt widget with icons on ring that can be selected by hovering.
 
     Uses OrderHandler to store children widgets representing available
     values. When the pie enters the edit mode, its children become

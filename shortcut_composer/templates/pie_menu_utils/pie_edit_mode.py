@@ -8,6 +8,9 @@ if TYPE_CHECKING:
     from ..pie_menu import PieMenu
 
 
+# TODO: PieWidget should be the owner. Pie menu should add current
+# `set_edit_mode_true` as a callback, to allow PieWidget be used outside
+# the context of PieMenu.
 class PieEditMode:
     """
     Handles the edit mode of the PieMenu action.
@@ -37,7 +40,7 @@ class PieEditMode:
 
     def set_edit_mode_true(self) -> None:
         """Set the edit mode on."""
-        self._obj.pie_manager.stop()
+        self._obj.pie_mouse_tracker.stop()
         self._obj.pie_widget.set_draggable(True)
         self._obj.pie_widget.order_handler.widget_holder.clear_forced_widgets()
         self._obj.pie_widget.repaint()

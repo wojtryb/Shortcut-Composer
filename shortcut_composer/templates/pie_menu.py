@@ -18,7 +18,7 @@ from .pie_menu_utils import (
     PieActuator,
     PieSettings,
     PieEditMode,
-    PieManager,
+    PieMouseTracker,
     PieWidget,
     PieLabel)
 from .raw_instructions import RawInstructions
@@ -140,9 +140,9 @@ class PieMenu(RawInstructions, Generic[T]):
             controller=self._controller)
 
     @cached_property
-    def pie_manager(self) -> PieManager:
+    def pie_mouse_tracker(self) -> PieMouseTracker:
         """Create Manager which shows, hides and moves the Pie."""
-        return PieManager(pie_widget=self.pie_widget)
+        return PieMouseTracker(pie_widget=self.pie_widget)
 
     @cached_property
     def settings_button(self) -> RoundButton:
@@ -208,7 +208,7 @@ class PieMenu(RawInstructions, Generic[T]):
         self._actuator.mark_selected_widget(
             self.pie_widget.order_handler.widget_holder)
 
-        self.pie_manager.start()
+        self.pie_mouse_tracker.start()
 
     INVALID_VALUES: 'list[T]' = []
 
@@ -254,7 +254,7 @@ class PieMenu(RawInstructions, Generic[T]):
         # window which would mess with the hiding
         self.pie_widget.hide()
         self._actuator.activate(self.pie_widget.active_label)
-        self.pie_manager.stop()
+        self.pie_mouse_tracker.stop()
 
     def _move_accept_button_to_center(self) -> None:
         """Ensure the accept button is in the center of the pie."""

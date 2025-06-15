@@ -15,7 +15,14 @@ U = TypeVar("U")
 
 
 class PieConfig(FieldGroup, Generic[T]):
-    """FieldGroup representing config of PieMenu."""
+    """
+    FieldGroup representing config of PieMenu.
+
+    Most of PieMenu components can read and modify this object to
+    personalize it and remember its state between sessions.
+
+    It contains conveniance methods that affect multiple fields at once.
+    """
 
     def __init__(
         self,
@@ -40,18 +47,23 @@ class PieConfig(FieldGroup, Generic[T]):
         self.PIE_RADIUS_SCALE = self.field(
             name="Pie scale",
             default=pie_radius_scale)
+        """Local scale of the pie applied on top of global one."""
         self.ICON_RADIUS_SCALE = self.field(
             name="Icon scale",
             default=icon_radius_scale)
+        """Local scale of the labels applied on top of global one."""
 
         self.SAVE_LOCAL = self.field(
             name="Save local",
             default=save_local)
+        """If true, the values are stored in .kra instead of .kritarc."""
         self.DEADZONE_STRATEGY = self.field(
             name="deadzone",
             default=deadzone_strategy)
+        """Specifies what to do, when pie is closed with mouse on deadzone."""
 
-        override_default = bool(active_color or background_color)
+        # override the krita theme if at least one color is given.
+        override_krita_theme = bool(active_color or background_color)
         if background_color is None:
             background_color = Krita.get_main_color_from_theme()
         if active_color is None:
@@ -59,45 +71,61 @@ class PieConfig(FieldGroup, Generic[T]):
 
         self.OVERRIDE_DEFAULT_THEME = self.field(
             name="Override default theme",
-            default=override_default)
+            default=override_krita_theme)
+        """If true, given colors are used instead of those from krita theme."""
         self.BACKGROUND_COLOR = self.field(
             name="Background color",
             default=background_color)
+        """Color of pie background if theme is overridden."""
         self.ACTIVE_COLOR = self.field(
             name="Active color",
             default=active_color)
+        """Color of active label if theme is overridden."""
         self.PIE_OPACITY = self.field(
             name="Pie opacity",
             default=pie_opacity)
+        """Opacity of the pie background."""
         self.MAX_LINES_AMOUNT = self.field(
             name="Max lines amount",
             default=max_lines_amount)
+        """Limit of lines of text inside labels."""
         self.MAX_SIGNS_AMOUNT = self.field(
             name="Max letters amount",
             default=max_signs_amount)
+        """Limit of signs in the longest line of text inside labels."""
         self.ABBREVIATE_WITH_DOT = self.field(
             name="Abbreviate with dot",
             default=abbreviate_with_dot)
+        """Sign used to show that text was trimmed."""
 
         tag_mode = isinstance(values, Tag)
         self.TAG_MODE = self._create_editable_dual_field(
             field_name="Tag mode",
             default=tag_mode)
+        """If true, the pie operates on groups, not individual values."""
 
         tag_name = values.tag_name if isinstance(values, Tag) else ""
         self.TAG_NAME = self._create_editable_dual_field(
             field_name="Tag",
             default=tag_name)
+        """Name of selected group if in group mode."""
+
+        self.LAST_TAG_SELECTED = self.field(
+            name="Last tag selected",
+            default="---Select tag---")
+        """Last selected value group remembered between sessions"""
 
         default_values = [] if isinstance(values, Tag) else values
         self.ORDER = self._create_editable_dual_field(
             field_name="Values",
             default=default_values,
             parser_type=controller.TYPE)
+        """
+        Selected values in specific order.
 
-        self.LAST_TAG_SELECTED = self.field(
-            name="Last tag selected",
-            default="---Select tag---")
+        - In group mode, specifies the order of the values.
+        - In manual mode, specifies both the values and their order.
+        """
 
     @property
     def allow_value_edit(self) -> bool:

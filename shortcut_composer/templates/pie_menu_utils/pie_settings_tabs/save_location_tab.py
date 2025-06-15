@@ -14,7 +14,7 @@ from api_krita.pyqt import SafeConfirmButton
 from ..pie_config import PieConfig
 
 
-class LocationTab(QWidget):
+class SaveLocationTab(QWidget):
     """PieSettings tab for changing location in which values are saved."""
 
     def __init__(

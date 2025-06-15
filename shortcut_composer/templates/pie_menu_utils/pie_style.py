@@ -13,7 +13,7 @@ class PieStyle:
     Style which allows to paint a PieWidget.
 
     Callbacks passed in init determine base values. Rest of the values
-    is calculated using those base values.
+    are calculated using those base values.
     """
 
     def __init__(

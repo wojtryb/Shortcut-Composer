@@ -16,9 +16,9 @@ class PieCurrentValueHolder:
     """
     Holds the LabelWidget with the current value.
 
-    Allows to quickly drag current value to PieMenu.
-    If controller cannot fatch a value, this object is not displayed.
-    Can be hidden and shown similarily to QWidget.
+    - Allows to quickly drag current value to PieMenu.
+    - If controller cannot fatch a value, this object is not displayed.
+    - Can be hidden and shown similarily to QWidget.
     """
 
     def __init__(
@@ -32,11 +32,12 @@ class PieCurrentValueHolder:
         self._pie_widget = pie_widget
         self._widget: LabelWidget | None = None
         self._is_hidden = True
+
         self.refresh()
         self.hide()
 
     def refresh(self):
-        """Replace rememberd LabelWidget with the current value."""
+        """Replace remembered LabelWidget with the current value."""
         # Leave the widget empty if controller does not get values.
         try:
             current_value = self._controller.get_value()

@@ -30,6 +30,8 @@ class PieStyleHolder:
             max_lines_amount_callback=self._pie_config.MAX_LINES_AMOUNT.read,
             max_signs_amount_callback=self._pie_config.MAX_SIGNS_AMOUNT.read,
             abbreviation_sign_callback=abbreviation_sign_callback)
+        """Style of labels inside the pie."""
+
         self.settings_label_style = LabelWidgetStyle(
             icon_radius_callback=self._unscaled_icon_radius,
             border_thickness_callback=self._border_thickness,
@@ -38,6 +40,8 @@ class PieStyleHolder:
             max_lines_amount_callback=lambda: 3,
             max_signs_amount_callback=lambda: 10,
             abbreviation_sign_callback=lambda: ".")
+        """Style of labels in the settings."""
+
         self.button_size_label_style = LabelWidgetStyle(
             icon_radius_callback=self._button_sized_icon_radius,
             border_thickness_callback=self._border_thickness,
@@ -46,6 +50,8 @@ class PieStyleHolder:
             max_lines_amount_callback=lambda: 1,
             max_signs_amount_callback=lambda: 3,
             abbreviation_sign_callback=lambda: "")
+        """Style of label, being the size of button activating settings."""
+
         self.pie_style = PieStyle(
             label_style=self.label_style,
             pie_radius_callback=self._pie_radius,
@@ -53,6 +59,7 @@ class PieStyleHolder:
             settings_button_radius_callback=self._settings_button_radius,
             accept_button_radius_callback=self._accept_button_radius,
             background_opacity_callback=self._pie_config.PIE_OPACITY.read)
+        """Style of the pie widget."""
 
     def _pie_radius(self) -> int:
         """Return pie radius based on configured value."""

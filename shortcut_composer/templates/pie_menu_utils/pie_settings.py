@@ -9,24 +9,24 @@ from api_krita.enums.helpers import EnumGroup
 from composer_utils import Config
 from composer_utils.label.complex_widgets import NumericValuePicker
 from core_components import Controller, NumericController
-from .pie_style_holder import PieStyleHolder
 from .pie_config import PieConfig
-from .pie_settings_tabs import PreferencesTab, ValuesListTab, LocationTab
 from .pie_label import PieLabel
+from .pie_settings_tabs import PreferencesTab, ValuesListTab, SaveLocationTab
+from .pie_style_holder import PieStyleHolder
 
 
 class PieSettings(AnimatedWidget, BaseWidget):
     """
-    Abstract widget that allows to change values in passed config.
+    Widget that allows to change values in passed config.
 
     Meant to be displayed next to the pie menu when it enters edit mode.
 
-    Consists of two obligatory tabs:
-    - form with general configuration values.
-    - tab for switching location in which values are saved.
+    Consists of tabs, that may depend on the passed controller:
+    - preferences - form with general configuration values.
+    - values - (depends on controller) allows to change values in pie.
+    - save location - allows to save values in .kritarc or in .kra.
 
-    Subclasses can add their own tabs - they should do so with the tab
-    with available values to drag into the pie.
+    Refreshes settings on show, and applies them on hide.
     """
 
     def __init__(
@@ -40,6 +40,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
             animation_time_s=Config.PIE_ANIMATION_TIME.read(),
             fps_limit=Config.FPS_LIMIT.read(),
             parent=None)
+
         self.setMinimumHeight(round(style_holder.pie_style.widget_radius*2))
         self.setAcceptDrops(True)
         self.setWindowFlags((
@@ -49,16 +50,19 @@ class PieSettings(AnimatedWidget, BaseWidget):
             Qt.WindowType.FramelessWindowHint))
         self.setCursor(Qt.CursorShape.ArrowCursor)
 
-        self._style_holder = style_holder
         self._config = config
-        self._config.register_to_order_related(self._reset)
+        self._style_holder = style_holder
         self._tab_holder = QTabWidget()
 
+        self._config.register_to_order_related(self._reset)
+
+        # First tab
         self._preferences_tab = PreferencesTab(
             config=self._config,
             requires_text_settings=controller.REQUIRES_TEXT_SETTINGS)
         self._tab_holder.addTab(self._preferences_tab, "Preferences")
 
+        # Second tab (optional, depend on controller type)
         if issubclass(controller.TYPE, (str, EnumGroup)):
             self._tab_holder.addTab(
                 ValuesListTab(self._config, controller, self._style_holder),
@@ -81,7 +85,8 @@ class PieSettings(AnimatedWidget, BaseWidget):
                 adaptive=controller.ADAPTIVE)
             self._tab_holder.setCurrentIndex(1)
 
-        self._tab_holder.addTab(LocationTab(self._config), "Save location")
+        # Third tab
+        self._tab_holder.addTab(SaveLocationTab(self._config), "Save location")
 
         layout = QVBoxLayout(self)
         layout.addWidget(self._tab_holder)

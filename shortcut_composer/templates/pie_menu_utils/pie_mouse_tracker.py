@@ -9,17 +9,22 @@ from .pie_label import PieLabel
 from .pie_widget import PieWidget
 
 
-class PieManager:
+class PieMouseTracker:
     """
     Handles the passed PieWidget by tracking a mouse to find active label.
 
-    Displays the widget between start() and stop() calls.
+    - Starts tracking on `start()`, and ensures the pie is shown under
+      the cursor.
+    - During tracking, marks the label under the cursor as active.
+    - Stops tracking on `stop()`.
+
+    Tracking is done by timer that calls `_handle_cursor` repeatedly.
     """
 
     def __init__(self, pie_widget: PieWidget) -> None:
         self._pie_widget = pie_widget
         self._timer = Timer(self._handle_cursor, Config.get_sleep_time())
-        self._animator = LabelAnimator(pie_widget)
+        self._animator = _LabelAnimator(pie_widget)
 
     def start(self) -> None:
         """Show widget under the mouse and start the mouse tracking loop."""
@@ -49,7 +54,6 @@ class PieManager:
             return self.stop()
 
         if self._pie_widget.is_in_edit_mode:
-            self._pie_widget.hide()
             return self.stop()
 
         if not self._pie_widget.order_handler:
@@ -71,7 +75,7 @@ class PieManager:
             self._animator.start()
 
 
-class LabelAnimator:
+class _LabelAnimator:
     """
     Controls the animation of background under pie labels.
 

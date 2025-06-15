@@ -8,7 +8,7 @@ from .pie_style_holder import PieStyleHolder
 from .pie_edit_mode import PieEditMode
 from .pie_settings import PieSettings
 from .pie_actuator import PieActuator
-from .pie_manager import PieManager
+from .pie_mouse_tracker import PieMouseTracker
 from .pie_config import PieConfig
 from .pie_widget import PieWidget
 from .pie_style import PieStyle
@@ -20,7 +20,7 @@ __all__ = [
     "PieEditMode",
     "PieSettings",
     "PieActuator",
-    "PieManager",
+    "PieMouseTracker",
     "PieConfig",
     "PieWidget",
     "PieLabel",
