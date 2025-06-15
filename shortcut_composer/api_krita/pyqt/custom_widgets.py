@@ -47,6 +47,7 @@ class AnimatedWidget(QWidget):
         """Add interval to current opacity, stop the timer when full."""
         current_opacity = self.windowOpacity()
         self.setWindowOpacity(current_opacity+self._animation_interval)
+        self.repaint()
         if current_opacity >= 1:
             self._animation_timer.stop()
 
