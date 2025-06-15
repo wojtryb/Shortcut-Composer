@@ -70,16 +70,14 @@ class PieStyleHolder:
     def _icon_radius(self) -> int:
         """Return scaled icon radius based on configured value."""
         elements = self._pie_config.ORDER.read()
-        if not elements:
-            max_radius = 1
-        else:
-            max_radius = round(
-                self.pie_style.pie_radius * math.pi / len(elements))
-
         desired_radius = round(
             self._unscaled_icon_radius()
             * self._pie_config.ICON_RADIUS_SCALE.read())
 
+        if not elements:
+            return desired_radius
+
+        max_radius = round(self.pie_style.pie_radius * math.pi / len(elements))
         return min(desired_radius, max_radius)
 
     def _button_sized_icon_radius(self) -> int:
