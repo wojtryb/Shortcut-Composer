@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from enum import Enum
-from typing import Final, TypeVar, Generic, Protocol, Type
+from typing import Final, TypeVar, Generic, Protocol
 
 from PyQt5.QtWidgets import (
     QWidget,
@@ -128,7 +128,7 @@ class EnumComboBox(ConfigBasedWidget[E]):
     def __init__(
         self,
         config_field: Field[E],
-        enum_type: Type[E],
+        enum_type: type[E],
         parent: QWidget | None = None,
         pretty_name: str | None = None,
         tooltip: str | None = None,

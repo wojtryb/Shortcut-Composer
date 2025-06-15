@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Type, TypeVar
+from typing import TypeVar
 
 from PyQt5.QtGui import QPixmap, QIcon, QColor
 
@@ -16,7 +16,7 @@ from .qcolor_label_widget import QColorLabelWidget
 T = TypeVar("T", bound=LabelInterface)
 
 
-def dispatch_label_widget(label: T) -> Type[LabelWidget[T]]:
+def dispatch_label_widget(label: T) -> type[LabelWidget[T]]:
     """Return type of LabelWidget proper for given label."""
     if label.display_value is None:
         raise ValueError(f"Label {label} is not valid")
