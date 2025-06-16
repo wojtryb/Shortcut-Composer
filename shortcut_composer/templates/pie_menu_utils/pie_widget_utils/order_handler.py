@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Iterator
-from functools import partial
 
 from api_krita.pyqt import BaseWidget
 from composer_utils import CirclePoints
@@ -25,22 +24,26 @@ class OrderHandler:
 
     def __init__(
         self,
-        labels: list[PieLabel],
         style_holder: PieStyleHolder,
         config: PieConfig,
         owner: BaseWidget,
     ) -> None:
-        self._labels = labels
+        self._labels: list[PieLabel] = []
         self._style_holder = style_holder
         self._config = config
-        # Refresh itself when config changed, but do not notify change
-        # in config as holder was not their cause
-        self._config.register_callback(partial(self.reset, notify=False))
         self._owner = owner
         self._locked = False
 
         self.widget_holder = WidgetHolder()
         self.reset(notify=False)
+
+    @property
+    def labels(self) -> list[PieLabel]:
+        return self._labels.copy()
+
+    def change_labels(self, labels: list[PieLabel]) -> None:
+        self._labels = labels
+        self.reset()
 
     def append(self, label: PieLabel) -> None:
         """Append the new label to the holder."""
@@ -64,7 +67,7 @@ class OrderHandler:
         """Return the index at which the label is stored."""
         return self._labels.index(label)
 
-    def swap(self, _a: PieLabel, _b: PieLabel) -> None:
+    def swap(self, _a: PieLabel, _b: PieLabel, /) -> None:
         """
         Swap positions of two labels from the holder.
 

@@ -27,11 +27,10 @@ class PieActuator:
         self,
         controller: Controller,
         strategy_field: Field,
-        labels: list[PieLabel]
     ) -> None:
         self._controller = controller
         self._last_label: PieLabel | None = None
-        self._labels = labels
+        self._labels = []
 
         def update_strategy() -> None:
             self._current_strategy = strategy_field.read()
@@ -39,8 +38,13 @@ class PieActuator:
         strategy_field.register_callback(update_strategy)
         update_strategy()
 
-    def activate(self, active: PieLabel | None) -> None:
+    def activate(
+            self,
+            active: PieLabel | None,
+            labels: list[PieLabel]) -> None:
         """Activate the correct label"""
+        self._labels = labels
+
         if active is not None:
             # Out of deadzone, label picked
             self._controller.set_value(active.value)
@@ -48,11 +52,11 @@ class PieActuator:
             return
 
         # In deadzone
-        if self.selected_label is not None:
-            self._controller.set_value(self.selected_label.value)
+        if self._selected_label is not None:
+            self._controller.set_value(self._selected_label.value)
 
     @property
-    def selected_label(self) -> PieLabel | None:
+    def _selected_label(self) -> PieLabel | None:
         """Return label which should be picked on deadzone."""
         if self._current_strategy == PieDeadzoneStrategy.DO_NOTHING:
             return None
@@ -65,15 +69,19 @@ class PieActuator:
                 return self._last_label
             return None
 
-    def mark_selected_widget(self, widget_holder: WidgetHolder) -> None:
+    def mark_selected_widget(
+            self,
+            widget_holder: WidgetHolder,
+            labels: list[PieLabel]) -> None:
         """Force color of the label that is selected for being picked."""
+        self._labels = labels
         widget_holder.clear_forced_widgets()
 
-        if self.selected_label is None:
+        if self._selected_label is None:
             return
 
         try:
-            widget = widget_holder.on_label(self.selected_label)
+            widget = widget_holder.on_label(self._selected_label)
         except ValueError:
             return
         widget.forced = True

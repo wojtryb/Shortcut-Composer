@@ -23,7 +23,7 @@ T = TypeVar('T')
 
 class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     """
-    PyQt widget with icons on ring, that can be selected by hovering.
+    Custom, circular widget with LabelWidgets on the edge.
 
     Uses OrderHandler to store children widgets representing available
     values. When the pie enters the edit mode, its children become
@@ -37,7 +37,6 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     def __init__(
         self,
         style_holder: PieStyleHolder,
-        labels: list[PieLabel[T]],
         config: PieConfig,
         parent=None
     ) -> None:
@@ -61,7 +60,6 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self.setCursor(Qt.CursorShape.CrossCursor)
 
         self._style_holder = style_holder
-        self._labels = labels
         self._config = config
 
         self._painter = PiePainter(self._style_holder.pie_style)
@@ -77,13 +75,20 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self._is_draggable = False
 
         self.order_handler = OrderHandler(
-            labels=self._labels,
             style_holder=self._style_holder,
             config=self._config,
             owner=self)
 
         self.set_draggable(False)
 
+    def change_labels(self, labels: list[PieLabel]) -> None:
+        self.order_handler.change_labels(labels)
+
+    @property
+    def labels(self):
+        return self.order_handler.labels
+
+    # TODO: to widget holder?
     def set_draggable(self, draggable: bool) -> None:
         """Change draggable state of all children."""
         for widget in self.order_handler.widget_holder:
@@ -98,7 +103,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     def paintEvent(self, event: QPaintEvent) -> None:
         """Paint the entire widget using the Painter wrapper."""
         with Painter(self, event) as qt_painter:
-            self._painter.paint(qt_painter, self._labels)
+            self._painter.paint(qt_painter, self.labels)
 
     def dragEnterEvent(self, e: QDragEnterEvent) -> None:
         """Allow dragging the widgets while in edit mode."""
@@ -130,7 +135,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             # Dragged out of the PieWidget
             return self.order_handler.remove(label)
 
-        if not self._labels:
+        if not self.order_handler:
             # First label dragged to empty pie
             return self.order_handler.insert(0, label)
 
@@ -141,7 +146,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         angle = circle_points.angle_from_point(e.pos())
         _a = self.order_handler.widget_holder.on_angle(angle)
 
-        if label not in self.order_handler or not self._labels:
+        if label not in self.order_handler or not self.order_handler:
             # Dragged with unknown label
             index = self.order_handler.index(_a.label)
             return self.order_handler.insert(index, label)
@@ -164,9 +169,9 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     @property
     def _type(self) -> type | None:
         """Return type of values stored in labels. None if no labels."""
-        if not self._labels:
+        if not self.order_handler:
             return None
-        return type(self._labels[0].value)
+        return type(self.order_handler.labels[0].value)
 
     def _reset(self) -> None:
         """Set widget geometry according to style."""

@@ -112,22 +112,20 @@ class PieMenu(RawInstructions, Generic[T]):
             max_lines_amount=max_lines_amount,
             max_signs_amount=max_signs_amount,
             abbreviate_with_dot=abbreviate_with_dot)
+        # allow reset button to reset the labels
         self._config.ORDER.register_callback(self._reset_labels)
 
-        self._labels: list[PieLabel] = []
         self._edit_mode_handler = PieEditModeHandler(self)
         self._style_holder = PieStyleHolder(pie_config=self._config)
         self._actuator = PieActuator(
             controller=self._controller,
-            strategy_field=self._config.DEADZONE_STRATEGY,
-            labels=self._labels)
+            strategy_field=self._config.DEADZONE_STRATEGY)
 
     @cached_property
     def pie_widget(self) -> PieWidget:
         """Create Qwidget of the Pie for selecting values."""
         return PieWidget(
             style_holder=self._style_holder,
-            labels=self._labels,
             config=self._config)
 
     @cached_property
@@ -200,14 +198,13 @@ class PieMenu(RawInstructions, Generic[T]):
             self.pie_widget.height()-self.settings_button.height()))
         self.current_value_holder.refresh()
 
-        self.pie_widget.order_handler.reset()  # HACK: should be automatic
-
         self._actuator.mark_selected_widget(
-            self.pie_widget.order_handler.widget_holder)
+            widget_holder=self.pie_widget.order_handler.widget_holder,
+            labels=self.pie_widget.labels)
 
         self.pie_mouse_tracker.start()
 
-    INVALID_VALUES: 'list[T]' = []
+    INVALID_VALUES: list[T] = []
 
     def _reset_labels(self) -> None:
         """Replace list values with newly created labels."""
@@ -216,22 +213,25 @@ class PieMenu(RawInstructions, Generic[T]):
         # Workaround of krita tags sometimes returning invalid presets
         # Bad values are remembered in class attribute and filtered out
         filtered_values = [v for v in values if v not in self.INVALID_VALUES]
-        current_values = [label.value for label in self._labels]
+        current_values = [
+            label.value for label in self.pie_widget.order_handler]
 
         # Method is expensive, and should not be performed when values
         # did not in fact change.
         if filtered_values == current_values:
             return
 
-        self._labels.clear()
+        labels: list[PieLabel] = []
+        # self._labels.clear()
         for value in values:
             label = PieLabel.from_value(value, self._controller)
             if label is not None:
-                self._labels.append(label)
+                labels.append(label)
             else:
                 self.INVALID_VALUES.append(value)
 
         self._config.refresh_order()
+        self.pie_widget.change_labels(labels)
 
     def on_every_key_release(self) -> None:
         """
@@ -250,5 +250,6 @@ class PieMenu(RawInstructions, Generic[T]):
         # Hide the widget before activation, in case it opens a new
         # window which would mess with the hiding
         self.pie_widget.hide()
-        self._actuator.activate(self.pie_widget.active_label)
+        self._actuator.activate(
+            self.pie_widget.active_label, self.pie_widget.labels)
         self.pie_mouse_tracker.stop()
