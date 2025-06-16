@@ -54,6 +54,7 @@ class PieStyleHolder:
 
         self.pie_style = PieStyle(
             label_style=self.label_style,
+            desired_icon_radius_callback=self._desired_icon_radius,
             pie_radius_callback=self._pie_radius,
             deadzone_radius_callback=self._deadzone_radius,
             settings_button_radius_callback=self._settings_button_radius,
@@ -74,12 +75,15 @@ class PieStyleHolder:
             50 * self._base_size
             * Config.PIE_ICON_GLOBAL_SCALE.read())
 
+    def _desired_icon_radius(self) -> int:
+        return round(
+            self._unscaled_icon_radius()
+            * self._pie_config.ICON_RADIUS_SCALE.read())
+
     def _icon_radius(self) -> int:
         """Return scaled icon radius based on configured value."""
         elements = self._pie_config.ORDER.read()
-        desired_radius = round(
-            self._unscaled_icon_radius()
-            * self._pie_config.ICON_RADIUS_SCALE.read())
+        desired_radius = self._desired_icon_radius()
 
         if not elements:
             return desired_radius
