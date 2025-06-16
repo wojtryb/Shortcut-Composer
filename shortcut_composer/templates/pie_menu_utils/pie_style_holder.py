@@ -122,4 +122,7 @@ class PieStyleHolder:
 
     def _settings_button_radius(self) -> int:
         """Return radius of settings button based on configured value."""
-        return round(30 * self._base_size)
+        return round(
+            30 * self._base_size
+            * Config.PIE_GLOBAL_SCALE.read()
+            * self._pie_config.PIE_RADIUS_SCALE.read())
