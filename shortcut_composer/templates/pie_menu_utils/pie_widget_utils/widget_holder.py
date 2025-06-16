@@ -29,35 +29,18 @@ class WidgetHolder:
         self._owner = owner
 
         self._widgets: dict[int, PieLabelWidget] = {}
-        self._locked = False
 
     def reset(
         self,
         labels: list[PieLabel],
-        notify: bool = True
     ) -> None:
         """
         Ensure the icon widgets properly represents this container.
-
-        If notify flag is set to True, saves the new order to config.
         """
-        if self._locked:
-            return
-        # Reset is not needed when labels did not change from last reset
-        current_labels = [widget.label for widget in self]
-        # HACK: Labels need to be reset after config was changed, even
-        # when the values are still the same
-        if current_labels == labels and notify:
-            return
-
-        self._locked = True
-        if notify:
-            self._config.set_values([label.value for label in labels])
-        self._locked = False
 
         for child in self:
             child.setParent(None)  # type: ignore
-        self._clear()
+        self._widgets = {}
 
         children_widgets: list[LabelWidget[PieLabel]] = []
         for label in labels:
@@ -69,12 +52,12 @@ class WidgetHolder:
             radius=self._style_holder.pie_style.pie_radius)
         angles = circle_points.iterate_over_circle(len(labels))
         for child, (angle, point) in zip(children_widgets, angles):
-            child.setParent(self._owner)
-            child.show()
             child.label.angle = angle
             child.label.center = point
             child.draggable = True
+            child.setParent(self._owner)
             self._add(child)
+            child.show()
 
     def on_angle(self, angle: float) -> PieLabelWidget:
         """Return LabelWidget which is the closest to given `angle`."""
@@ -102,10 +85,6 @@ class WidgetHolder:
         """Add a new LabelWidget[Label] to the holder."""
         self._widgets[widget.label.angle] = widget
         widget.move_center(widget.label.center)
-
-    def _clear(self) -> None:
-        """Remove all widgets from the holder."""
-        self._widgets = {}
 
     # Other name?
     def _angles(self) -> Iterator[int]:

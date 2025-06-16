@@ -170,8 +170,11 @@ class PieMenu(RawInstructions, Generic[T]):
             icon_scale=1.5,
             parent=self.pie_widget)
 
-        accept_button.clicked.connect(
-            self._edit_mode_handler.set_edit_mode_false)
+        def on_click():
+            self._config.set_values(
+                [label.value for label in self.pie_widget.order_handler])
+            self._edit_mode_handler.set_edit_mode_false()
+        accept_button.clicked.connect(on_click)
         accept_button.hide()
         return accept_button
 
