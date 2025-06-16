@@ -66,7 +66,6 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
         self._config.PIE_RADIUS_SCALE.register_callback(self._reset)
         self._config.ICON_RADIUS_SCALE.register_callback(self._reset)
-        self._config.ORDER.register_callback(self._reset)
         Config.PIE_GLOBAL_SCALE.register_callback(self._reset)
         Config.PIE_ICON_GLOBAL_SCALE.register_callback(self._reset)
 
