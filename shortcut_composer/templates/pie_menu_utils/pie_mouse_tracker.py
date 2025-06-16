@@ -41,7 +41,7 @@ class PieMouseTracker:
         """Stop the mouse tracking loop and reset internal label values."""
         self._pie_widget.active_label = None
         self._timer.stop()
-        for label in self._pie_widget.labels:
+        for label in self._pie_widget.order_handler:
             label.activation_progress.reset()
 
     def _handle_cursor(self) -> None:
@@ -56,7 +56,7 @@ class PieMouseTracker:
         if self._pie_widget._is_draggable:
             return self.stop()
 
-        if not self._pie_widget.labels:
+        if not self._pie_widget.order_handler:
             return
 
         cursor = QCursor().pos()
@@ -65,7 +65,7 @@ class PieMouseTracker:
             return self._set_active_label(None)
 
         angle = circle.angle_from_point(cursor)
-        holder = self._pie_widget.order_handler.widget_holder  # TODO
+        holder = self._pie_widget.widget_holder
         self._set_active_label(holder.on_angle(angle).label)
 
     def _set_active_label(self, label: PieLabel | None) -> None:
@@ -92,14 +92,14 @@ class _LabelAnimator:
 
     def _update(self) -> None:
         """Move all labels to next animation state. End animation if needed."""
-        for label in self._pie_widget.labels:
+        for label in self._pie_widget.order_handler:
             if self._pie_widget.active_label == label:
                 label.activation_progress.up()
             else:
                 label.activation_progress.down()
 
         self._pie_widget.repaint()
-        for label in self._pie_widget.labels:
+        for label in self._pie_widget.order_handler:
             if label.activation_progress.value not in (0, 1):
                 return
         self._timer.stop()

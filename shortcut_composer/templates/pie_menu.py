@@ -199,8 +199,8 @@ class PieMenu(RawInstructions, Generic[T]):
         self.current_value_holder.refresh()
 
         self._actuator.mark_selected_widget(
-            widget_holder=self.pie_widget.order_handler.widget_holder,
-            labels=self.pie_widget.labels)
+            widget_holder=self.pie_widget.widget_holder,
+            labels=self.pie_widget.order_handler.labels)
 
         self.pie_mouse_tracker.start()
 
@@ -222,7 +222,6 @@ class PieMenu(RawInstructions, Generic[T]):
             return
 
         labels: list[PieLabel] = []
-        # self._labels.clear()
         for value in values:
             label = PieLabel.from_value(value, self._controller)
             if label is not None:
@@ -231,7 +230,7 @@ class PieMenu(RawInstructions, Generic[T]):
                 self.INVALID_VALUES.append(value)
 
         self._config.refresh_order()
-        self.pie_widget.change_labels(labels)
+        self.pie_widget.order_handler.replace_labels(labels)
 
     def on_every_key_release(self) -> None:
         """
@@ -251,5 +250,6 @@ class PieMenu(RawInstructions, Generic[T]):
         # window which would mess with the hiding
         self.pie_widget.hide()
         self._actuator.activate(
-            self.pie_widget.active_label, self.pie_widget.labels)
+            self.pie_widget.active_label,
+            self.pie_widget.order_handler.labels)
         self.pie_mouse_tracker.stop()

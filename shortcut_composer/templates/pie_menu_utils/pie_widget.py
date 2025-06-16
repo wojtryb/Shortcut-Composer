@@ -16,7 +16,7 @@ from composer_utils.label import LabelWidget
 from .pie_label import PieLabel
 from .pie_style_holder import PieStyleHolder
 from .pie_config import PieConfig
-from .pie_widget_utils import OrderHandler, PiePainter
+from .pie_widget_utils import OrderHandler, PiePainter, WidgetHolder
 
 T = TypeVar('T')
 
@@ -74,24 +74,15 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self._last_widget = None
         self._is_draggable = False
 
-        self.order_handler = OrderHandler(
-            style_holder=self._style_holder,
-            config=self._config,
-            owner=self)
+        self.widget_holder = WidgetHolder(config, style_holder, self)
+        self.order_handler = OrderHandler(self._config, self.widget_holder)
 
         self.set_draggable(False)
-
-    def change_labels(self, labels: list[PieLabel]) -> None:
-        self.order_handler.change_labels(labels)
-
-    @property
-    def labels(self):
-        return self.order_handler.labels
 
     # TODO: to widget holder?
     def set_draggable(self, draggable: bool) -> None:
         """Change draggable state of all children."""
-        for widget in self.order_handler.widget_holder:
+        for widget in self.widget_holder:
             widget.draggable = draggable
         self._is_draggable = draggable
 
@@ -103,7 +94,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     def paintEvent(self, event: QPaintEvent) -> None:
         """Paint the entire widget using the Painter wrapper."""
         with Painter(self, event) as qt_painter:
-            self._painter.paint(qt_painter, self.labels)
+            self._painter.paint(qt_painter, self.order_handler.labels)
 
     def dragEnterEvent(self, e: QDragEnterEvent) -> None:
         """Allow dragging the widgets while in edit mode."""
@@ -144,14 +135,14 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             return
 
         angle = circle_points.angle_from_point(e.pos())
-        _a = self.order_handler.widget_holder.on_angle(angle)
+        _a = self.widget_holder.on_angle(angle)
 
         if label not in self.order_handler or not self.order_handler:
             # Dragged with unknown label
             index = self.order_handler.index(_a.label)
             return self.order_handler.insert(index, label)
 
-        _b = self.order_handler.widget_holder.on_label(label)
+        _b = self.widget_holder.on_label(label)
         if _a == _b:
             # Dragged over the same widget
             return
