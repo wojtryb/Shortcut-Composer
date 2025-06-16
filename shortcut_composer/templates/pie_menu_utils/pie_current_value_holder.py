@@ -49,6 +49,8 @@ class PieCurrentValueHolder:
         if label is None:
             return
 
+        if self._widget is not None:
+            self._widget.setParent(None)  # type: ignore
         self._widget = dispatch_label_widget(label)(
             label=label,
             label_widget_style=self._style.button_size_label_style,
