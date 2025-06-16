@@ -59,16 +59,18 @@ class OrderHandler:
         return self._labels.index(label)
 
     def swap(self, _a: PieLabel, _b: PieLabel, /) -> None:
-        """
-        Swap positions of two labels from the holder.
-        """
+        """TODO: swap without removing widgets is faster and does not blink"""
+
         idx_a = self._labels.index(_a)
         idx_b = self._labels.index(_b)
 
         self._labels[idx_b] = _a
         self._labels[idx_a] = _b
 
-        self._widget_holder.reset(self._labels)
+        widget_a = self._widget_holder.on_label(self._labels[idx_a])
+        widget_b = self._widget_holder.on_label(self._labels[idx_b])
+
+        self._widget_holder.swap(widget_a, widget_b)
 
     def __iter__(self) -> Iterator[PieLabel]:
         """Iterate over all labels in the holder."""

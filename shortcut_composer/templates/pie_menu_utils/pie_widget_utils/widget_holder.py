@@ -37,10 +37,8 @@ class WidgetHolder:
         """
         Ensure the icon widgets properly represents this container.
         """
-
-        for child in self:
-            child.setParent(None)  # type: ignore
-        self._widgets = {}
+        # values need to be saved for labels to scale properly
+        self._config.set_values([label.value for label in labels])
 
         children_widgets: list[LabelWidget[PieLabel]] = []
         for label in labels:
@@ -51,6 +49,11 @@ class WidgetHolder:
             center=self._owner.center,
             radius=self._style_holder.pie_style.pie_radius)
         angles = circle_points.iterate_over_circle(len(labels))
+
+        for child in self:
+            child.setParent(None)  # type: ignore
+        self._widgets = {}
+
         for child, (angle, point) in zip(children_widgets, angles):
             child.label.angle = angle
             child.label.center = point
@@ -58,6 +61,18 @@ class WidgetHolder:
             child.setParent(self._owner)
             self._add(child)
             child.show()
+
+    def swap(self, w_a: PieLabelWidget, w_b: PieLabelWidget, /) -> None:
+        """Swap position of two widgets."""
+        a_angle = w_a.label.angle
+        b_angle = w_b.label.angle
+
+        self._widgets[a_angle] = w_b
+        self._widgets[b_angle] = w_a
+
+        w_a.label.swap_locations(w_b.label)
+        w_a.move_center(w_a.label.center)
+        w_b.move_center(w_b.label.center)
 
     def on_angle(self, angle: float) -> PieLabelWidget:
         """Return LabelWidget which is the closest to given `angle`."""
