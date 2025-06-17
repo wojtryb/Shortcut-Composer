@@ -213,16 +213,28 @@ class PieMenu(RawInstructions, Generic[T]):
 
         self.pie_mouse_tracker.start()
 
+    INVALID_VALUES: list[T] = []
+
     def _reset_labels(self) -> None:
         """Replace list values with newly created labels."""
         self._controller.refresh()
         values = self._config.values()
+
+        # Method is expensive, and should not be performed when values
+        # did not in fact change.
+        filtered_values = [v for v in values if v not in self.INVALID_VALUES]
+        current = [label.value for label in self.pie_widget.order_handler]
+
+        if filtered_values == current:
+            return
 
         labels: list[PieLabel] = []
         for value in values:
             label = PieLabel.from_value(value, self._controller)
             if label is not None:
                 labels.append(label)
+            else:
+                self.INVALID_VALUES.append(value)
 
         self.pie_widget.order_handler.replace_labels(labels)
 
