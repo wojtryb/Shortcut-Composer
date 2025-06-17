@@ -2,6 +2,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Iterator, Callable
+from itertools import zip_longest
+
+from PyQt5.QtCore import QPoint
 
 from api_krita.pyqt import BaseWidget
 from composer_utils import CirclePoints
@@ -68,27 +71,26 @@ class OrderHandler:
 
     def swap(self, _a: PieLabel, _b: PieLabel, /) -> None:
         """TODO: swap without removing widgets is faster and does not blink"""
-
         idx_a = self._labels.index(_a)
         idx_b = self._labels.index(_b)
-
-        self._labels[idx_b] = _a
-        self._labels[idx_a] = _b
 
         w_a = self.widget_on_label(self._labels[idx_a])
         w_b = self.widget_on_label(self._labels[idx_b])
 
-        # =============== #
+        label_a = w_a.label
+        label_b = w_b.label
 
-        a_angle = w_a.label.angle
-        b_angle = w_b.label.angle
+        self._labels[idx_b] = label_a
+        self._labels[idx_a] = label_b
 
-        self._widgets[a_angle] = w_b
-        self._widgets[b_angle] = w_a
+        self._widgets[label_a.angle] = w_b
+        self._widgets[label_b.angle] = w_a
 
-        w_a.label.swap_locations(w_b.label)
-        w_a.move_center(w_a.label.center)
-        w_b.move_center(w_b.label.center)
+        label_a.angle, label_b.angle = label_b.angle, label_a.angle
+        label_a.center, label_b.center = label_b.center, label_a.center
+
+        w_a.move_center(label_a.center)
+        w_b.move_center(label_b.center)
 
     def label_on_angle(self, angle: float) -> PieLabel:
         """Return Label, which widget is the closest to given `angle`."""
@@ -132,22 +134,33 @@ class OrderHandler:
             radius=self._pie_style.pie_radius)
         angles = circle_points.iterate_over_circle(len(labels))
 
-        for child in self._widgets.values():
-            child.setParent(None)  # type: ignore
-        self._widgets = {}
+        old_widgets = self._widgets.copy()
+        self._widgets.clear()
 
-        for child, (angle, point) in zip(new_widgets, angles):
-            child.label.angle = angle
-            child.label.center = point
-            child.draggable = True
-            child.setParent(self._owner)
-            self._add_widget(child)
-            child.show()
+        # Add new and remove widgets at the same time to minimize blinking
+        iterator = zip_longest(old_widgets.values(), new_widgets, angles)
+        for old_widget, new_widget, angle_and_point in iterator:
+            if angle_and_point is not None and new_widget is not None:
+                angle, point = angle_and_point
+                self._add_widget(new_widget, angle, point)
 
-    def _add_widget(self, widget: PieLabelWidget) -> None:
+            if old_widget is not None:
+                old_widget.setParent(None)  # type: ignore
+
+    def _add_widget(
+        self,
+        widget: PieLabelWidget,
+        angle: int,
+        center: QPoint,
+    ) -> None:
         """Add a new LabelWidget[Label] to the holder."""
+        widget.label.angle = angle
+        widget.label.center = center
+        widget.draggable = True
+        widget.setParent(self._owner)
         self._widgets[widget.label.angle] = widget
         widget.move_center(widget.label.center)
+        widget.show()
 
     def _angles(self) -> Iterator[int]:
         """Iterate over all angles at which LabelWidgets are."""

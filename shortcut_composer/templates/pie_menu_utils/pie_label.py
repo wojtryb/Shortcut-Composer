@@ -38,11 +38,6 @@ class PieLabel(LabelInterface, Generic[T]):
     def __post_init__(self) -> None:
         self.activation_progress = AnimationProgress(speed_scale=1, steep=1)
 
-    def swap_locations(self, other: 'PieLabel[T]') -> None:
-        """Change position data with information Label."""
-        self.angle, other.angle = other.angle, self.angle
-        self.center, other.center = other.center, self.center
-
     def __eq__(self, other: T) -> bool:
         """Consider two labels with the same value and position - equal."""
         if not isinstance(other, PieLabel):
