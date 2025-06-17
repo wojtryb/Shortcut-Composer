@@ -10,6 +10,7 @@ from PyQt5.QtGui import QColor
 from api_krita import Krita
 from api_krita.pyqt import RoundButton
 from data_components import PieDeadzoneStrategy
+from composer_utils import Config
 from core_components import Controller, Instruction
 from .pie_menu_utils import PieConfig
 from .pie_menu_utils import (
@@ -124,9 +125,16 @@ class PieMenu(RawInstructions, Generic[T]):
     @cached_property
     def pie_widget(self) -> PieWidget:
         """Create Qwidget of the Pie for selecting values."""
-        return PieWidget(
-            style_holder=self._style_holder,
-            config=self._config)
+        pie_widget = PieWidget(
+            pie_style=self._style_holder.pie_style,
+            allow_value_edit_callback=lambda: self._config.allow_value_edit)
+
+        self._config.PIE_RADIUS_SCALE.register_callback(pie_widget.reset_size)
+        self._config.ICON_RADIUS_SCALE.register_callback(pie_widget.reset_size)
+        Config.PIE_GLOBAL_SCALE.register_callback(pie_widget.reset_size)
+        Config.PIE_ICON_GLOBAL_SCALE.register_callback(pie_widget.reset_size)
+
+        return pie_widget
 
     @cached_property
     def pie_settings(self) -> PieSettings:

@@ -9,8 +9,7 @@ from composer_utils.label import LabelWidget
 from composer_utils.label.label_widget_impl import dispatch_label_widget
 
 from ..pie_label import PieLabel
-from ..pie_config import PieConfig
-from ..pie_style_holder import PieStyleHolder
+from ..pie_style import PieStyle
 
 PieLabelWidget = LabelWidget[PieLabel]
 
@@ -20,12 +19,10 @@ class WidgetHolder:
 
     def __init__(
         self,
-        config: PieConfig,
-        style_holder: PieStyleHolder,
+        pie_style: PieStyle,
         owner: BaseWidget,
     ) -> None:
-        self._config = config
-        self._style_holder = style_holder
+        self._pie_style = pie_style
         self._owner = owner
 
         self._widgets: dict[int, PieLabelWidget] = {}
@@ -38,16 +35,16 @@ class WidgetHolder:
         Ensure the icon widgets properly represents this container.
         """
         # values need to be saved for labels to scale properly
-        self._style_holder.pie_style.amount_of_labels = len(labels)
+        self._pie_style.amount_of_labels = len(labels)
 
         children_widgets: list[LabelWidget[PieLabel]] = []
         for label in labels:
             children_widgets.append(dispatch_label_widget(label)(
-                label, self._style_holder.label_style, self._owner))
+                label, self._pie_style.label_style, self._owner))
 
         circle_points = CirclePoints(
             center=self._owner.center,
-            radius=self._style_holder.pie_style.pie_radius)
+            radius=self._pie_style.pie_radius)
         angles = circle_points.iterate_over_circle(len(labels))
 
         for child in self:

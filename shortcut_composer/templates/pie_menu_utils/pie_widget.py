@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import TypeVar, Generic
+from typing import TypeVar, Generic, Callable
 
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import (
@@ -14,8 +14,7 @@ from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
 from composer_utils import CirclePoints, Config
 from composer_utils.label import LabelWidget
 from .pie_label import PieLabel
-from .pie_style_holder import PieStyleHolder
-from .pie_config import PieConfig
+from .pie_style import PieStyle
 from .pie_widget_utils import OrderHandler, PiePainter, WidgetHolder
 
 T = TypeVar('T')
@@ -36,8 +35,8 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
     def __init__(
         self,
-        style_holder: PieStyleHolder,
-        config: PieConfig,
+        pie_style: PieStyle,
+        allow_value_edit_callback: Callable[[], bool],
         parent=None
     ) -> None:
         AnimatedWidget.__init__(
@@ -45,8 +44,19 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             animation_time_s=Config.PIE_ANIMATION_TIME.read(),
             fps_limit=Config.FPS_LIMIT.read(),
             parent=parent)
-        diameter = 2*style_holder.pie_style.widget_radius
-        self.resize(diameter, diameter)
+
+        self._pie_style = pie_style
+        self._allow_value_edit_callback = allow_value_edit_callback
+
+        self._painter = PiePainter(self._pie_style)
+        self.widget_holder = WidgetHolder(self._pie_style, self)
+        self.order_handler = OrderHandler(
+            self.widget_holder,
+            self._allow_value_edit_callback)
+
+        self.active_label: PieLabel | None = None
+        self._last_widget = None
+        self._is_draggable = False
 
         self.setAcceptDrops(True)
         self.setWindowFlags((
@@ -59,24 +69,8 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self.setStyleSheet("background: transparent;")
         self.setCursor(Qt.CursorShape.CrossCursor)
 
-        self._style_holder = style_holder
-        self._config = config
-
-        self._painter = PiePainter(self._style_holder.pie_style)
-
-        self._config.PIE_RADIUS_SCALE.register_callback(self._reset)
-        self._config.ICON_RADIUS_SCALE.register_callback(self._reset)
-        Config.PIE_GLOBAL_SCALE.register_callback(self._reset)
-        Config.PIE_ICON_GLOBAL_SCALE.register_callback(self._reset)
-
-        self.active_label: PieLabel | None = None
-        self._last_widget = None
-        self._is_draggable = False
-
-        self.widget_holder = WidgetHolder(config, style_holder, self)
-        self.order_handler = OrderHandler(self._config, self.widget_holder)
-
         self.set_draggable(False)
+        self.reset_size()
 
     # TODO: to widget holder?
     def set_draggable(self, draggable: bool) -> None:
@@ -88,7 +82,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     @property
     def deadzone(self) -> float:
         """Return the deadzone distance."""
-        return self._style_holder.pie_style.deadzone_radius
+        return self._pie_style.deadzone_radius
 
     def paintEvent(self, event: QPaintEvent) -> None:
         """Paint the entire widget using the Painter wrapper."""
@@ -113,7 +107,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         label = source_widget.label
         circle_points = CirclePoints(
             center=self.center,
-            radius=self._style_holder.pie_style.pie_radius)
+            radius=self._pie_style.pie_radius)
         distance = circle_points.distance(e.pos())
 
         if self._type and not isinstance(label.value, self._type):
@@ -121,7 +115,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             return
 
         self._last_widget = source_widget
-        if distance > self._style_holder.pie_style.widget_radius:
+        if distance > self._pie_style.widget_radius:
             # Dragged out of the PieWidget
             return self.order_handler.remove(label)
 
@@ -163,9 +157,9 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             return None
         return type(self.order_handler.labels[0].value)
 
-    def _reset(self) -> None:
+    def reset_size(self) -> None:
         """Set widget geometry according to style."""
-        radius = self._style_holder.pie_style.widget_radius
+        radius = self._pie_style.widget_radius
         difference = radius - self.width()//2
         new_center = QPoint(
             self.center_global.x() - difference,

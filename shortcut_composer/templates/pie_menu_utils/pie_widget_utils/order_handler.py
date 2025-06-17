@@ -1,10 +1,9 @@
 # SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Iterator
+from typing import Iterator, Callable
 
 from ..pie_label import PieLabel
-from ..pie_config import PieConfig
 from .widget_holder import WidgetHolder
 
 
@@ -19,11 +18,11 @@ class OrderHandler:
 
     def __init__(
         self,
-        config: PieConfig,
-        widget_holder: WidgetHolder
+        widget_holder: WidgetHolder,
+        allow_value_edit_callback: Callable[[], bool],
     ) -> None:
-        self._config = config
         self._widget_holder = widget_holder
+        self._allow_value_edit_callback = allow_value_edit_callback
 
         self._labels: list[PieLabel] = []
 
@@ -38,19 +37,19 @@ class OrderHandler:
 
     def append(self, label: PieLabel) -> None:
         """Append the new label to the holder."""
-        if (self._config.allow_value_edit):
+        if self._allow_value_edit_callback():
             self._labels.append(label)
             self._widget_holder.reset(self._labels)
 
     def insert(self, index: int, label: PieLabel) -> None:
         """Insert the new label to the holder at given index."""
-        if (self._config.allow_value_edit):
+        if self._allow_value_edit_callback():
             self._labels.insert(index, label)
             self._widget_holder.reset(self._labels)
 
     def remove(self, label: PieLabel) -> None:
         """Remove the label from the holder."""
-        if (label in self._labels and self._config.allow_value_edit):
+        if label in self._labels and self._allow_value_edit_callback():
             self._labels.remove(label)
             self._widget_holder.reset(self._labels)
 
