@@ -56,9 +56,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
         self.active_label: PieLabel | None = None
         self._last_widget = None
-        self._is_draggable = False
 
-        self.setAcceptDrops(True)
         self.setWindowFlags((
             self.windowFlags() |
             Qt.WindowType.Tool |
@@ -77,7 +75,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         """Change draggable state of all children."""
         for widget in self.widget_holder:
             widget.draggable = draggable
-        self._is_draggable = draggable
+        self.setAcceptDrops(draggable)
 
     @property
     def deadzone(self) -> float:
@@ -91,9 +89,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
     def dragEnterEvent(self, e: QDragEnterEvent) -> None:
         """Allow dragging the widgets while in edit mode."""
-        if self._is_draggable:
-            return e.accept()
-        e.ignore()
+        e.accept()
 
     def dragMoveEvent(self, e: QDragMoveEvent) -> None:
         """Handle all children actions - order change, add and remove."""
