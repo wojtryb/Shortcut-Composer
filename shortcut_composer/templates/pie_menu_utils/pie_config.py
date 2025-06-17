@@ -136,7 +136,6 @@ class PieConfig(FieldGroup, Generic[T]):
         """Return all presets based on mode and stored order."""
         if not self.TAG_MODE.read():
             return self.ORDER.read()
-
         return self._manager.get_values(self.TAG_NAME.read())
 
     def set_values(self, values: list[T]) -> None:
@@ -172,7 +171,6 @@ class PieConfig(FieldGroup, Generic[T]):
         self.TAG_MODE.reset_default()
         self.TAG_NAME.reset_default()
         self.ORDER.reset_default()
-        self.refresh_order()
 
     def is_order_default(self) -> bool:
         """Return whether order is the same as default one."""

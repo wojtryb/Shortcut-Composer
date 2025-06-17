@@ -201,7 +201,6 @@ class PieMenu(RawInstructions, Generic[T]):
         if self.pie_widget.isVisible():
             return
 
-        self._controller.refresh()
         self._reset_labels()
 
         self.settings_button.move(QPoint(
@@ -216,6 +215,7 @@ class PieMenu(RawInstructions, Generic[T]):
 
     def _reset_labels(self) -> None:
         """Replace list values with newly created labels."""
+        self._controller.refresh()
         values = self._config.values()
 
         labels: list[PieLabel] = []
@@ -224,7 +224,6 @@ class PieMenu(RawInstructions, Generic[T]):
             if label is not None:
                 labels.append(label)
 
-        self._config.refresh_order()
         self.pie_widget.order_handler.replace_labels(labels)
 
     def on_every_key_release(self) -> None:
