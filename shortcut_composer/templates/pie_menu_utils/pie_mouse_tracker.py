@@ -65,8 +65,8 @@ class PieMouseTracker:
             return self._set_active_label(None)
 
         angle = circle.angle_from_point(cursor)
-        holder = self._pie_widget.widget_holder
-        self._set_active_label(holder.on_angle(angle).label)
+        handler = self._pie_widget.order_handler
+        self._set_active_label(handler.label_on_angle(angle))
 
     def _set_active_label(self, label: PieLabel | None) -> None:
         """Mark label as active and start animating the change."""

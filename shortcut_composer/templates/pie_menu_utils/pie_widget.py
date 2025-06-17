@@ -15,7 +15,7 @@ from composer_utils import CirclePoints, Config
 from composer_utils.label import LabelWidget
 from .pie_label import PieLabel
 from .pie_style import PieStyle
-from .pie_widget_utils import OrderHandler, PiePainter, WidgetHolder
+from .pie_widget_utils import OrderHandler, PiePainter
 
 T = TypeVar('T')
 
@@ -49,10 +49,10 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self._allow_value_edit_callback = allow_value_edit_callback
 
         self._painter = PiePainter(self._pie_style)
-        self.widget_holder = WidgetHolder(self._pie_style, self)
         self.order_handler = OrderHandler(
-            self.widget_holder,
-            self._allow_value_edit_callback)
+            pie_style=self._pie_style,
+            owner=self,
+            allow_value_edit_callback=self._allow_value_edit_callback)
 
         self.active_label: PieLabel | None = None
         self._last_widget = None
@@ -73,7 +73,8 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     # TODO: to widget holder?
     def set_draggable(self, draggable: bool) -> None:
         """Change draggable state of all children."""
-        for widget in self.widget_holder:
+        # TODO: allow to iterate over widgets in order handler
+        for widget in self.order_handler._widgets.values():
             widget.draggable = draggable
         self.setAcceptDrops(draggable)
 
@@ -124,20 +125,19 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             return
 
         angle = circle_points.angle_from_point(e.pos())
-        _a = self.widget_holder.on_angle(angle)
+        label_under_cursor = self.order_handler.label_on_angle(angle)
 
         if label not in self.order_handler or not self.order_handler:
             # Dragged with unknown label
-            index = self.order_handler.index(_a.label)
+            index = self.order_handler.index(label_under_cursor)
             return self.order_handler.insert(index, label)
 
-        _b = self.widget_holder.on_label(label)
-        if _a == _b:
+        if label_under_cursor == label:
             # Dragged over the same widget
             return
 
         # Dragged existing label to a new location
-        self.order_handler.swap(_a.label, _b.label)
+        self.order_handler.swap(label_under_cursor, label)
         self.repaint()
 
     def dragLeaveEvent(self, e: QDragLeaveEvent) -> None:

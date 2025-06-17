@@ -5,7 +5,7 @@ from config_system import Field
 from core_components import Controller
 from data_components import PieDeadzoneStrategy
 from .pie_label import PieLabel
-from .pie_widget_utils import WidgetHolder
+from .pie_widget_utils import OrderHandler
 
 
 class PieActuator:
@@ -71,17 +71,16 @@ class PieActuator:
 
     def mark_selected_widget(
             self,
-            widget_holder: WidgetHolder,
-            labels: list[PieLabel]) -> None:
+            order_handler: OrderHandler) -> None:
         """Force color of the label that is selected for being picked."""
-        self._labels = labels
-        widget_holder.clear_forced_widgets()
+        self._labels = order_handler.labels
+        order_handler.clear_forced_widgets()
 
         if self._selected_label is None:
             return
 
         try:
-            widget = widget_holder.on_label(self._selected_label)
+            widget = order_handler.widget_on_label(self._selected_label)
         except ValueError:
             return
         widget.forced = True

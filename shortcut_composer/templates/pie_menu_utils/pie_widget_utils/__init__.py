@@ -3,8 +3,7 @@
 
 """Additional classes used by pie widget components."""
 
-from .widget_holder import WidgetHolder
 from .order_handler import OrderHandler
 from .pie_painter import PiePainter
 
-__all__ = ["WidgetHolder", "OrderHandler", "PiePainter"]
+__all__ = ["OrderHandler", "PiePainter"]

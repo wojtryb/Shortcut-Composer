@@ -210,8 +210,7 @@ class PieMenu(RawInstructions, Generic[T]):
         self.current_value_holder.refresh()
 
         self._actuator.mark_selected_widget(
-            widget_holder=self.pie_widget.widget_holder,
-            labels=self.pie_widget.order_handler.labels)
+            order_handler=self.pie_widget.order_handler)
 
         self.pie_mouse_tracker.start()
 
