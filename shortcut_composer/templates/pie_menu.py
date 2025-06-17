@@ -112,7 +112,7 @@ class PieMenu(RawInstructions, Generic[T]):
             max_lines_amount=max_lines_amount,
             max_signs_amount=max_signs_amount,
             abbreviate_with_dot=abbreviate_with_dot)
-        # allow reset button to reset the labels
+        # allow reset button and tag selector to change the labels
         self._config.ORDER.register_callback(self._reset_labels)
 
         self._edit_mode_handler = PieEditModeHandler(self)
@@ -171,9 +171,9 @@ class PieMenu(RawInstructions, Generic[T]):
             parent=self.pie_widget)
 
         def on_click():
+            self._edit_mode_handler.set_edit_mode_false()
             self._config.set_values(
                 [label.value for label in self.pie_widget.order_handler])
-            self._edit_mode_handler.set_edit_mode_false()
         accept_button.clicked.connect(on_click)
         accept_button.hide()
         return accept_button
@@ -207,30 +207,15 @@ class PieMenu(RawInstructions, Generic[T]):
 
         self.pie_mouse_tracker.start()
 
-    INVALID_VALUES: list[T] = []
-
     def _reset_labels(self) -> None:
         """Replace list values with newly created labels."""
         values = self._config.values()
-
-        # Workaround of krita tags sometimes returning invalid presets
-        # Bad values are remembered in class attribute and filtered out
-        filtered_values = [v for v in values if v not in self.INVALID_VALUES]
-        current_values = [
-            label.value for label in self.pie_widget.order_handler]
-
-        # Method is expensive, and should not be performed when values
-        # did not in fact change.
-        if filtered_values == current_values:
-            return
 
         labels: list[PieLabel] = []
         for value in values:
             label = PieLabel.from_value(value, self._controller)
             if label is not None:
                 labels.append(label)
-            else:
-                self.INVALID_VALUES.append(value)
 
         self._config.refresh_order()
         self.pie_widget.order_handler.replace_labels(labels)

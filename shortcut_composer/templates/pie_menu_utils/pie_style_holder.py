@@ -19,9 +19,6 @@ class PieStyleHolder:
         self._pie_config = pie_config
         self._base_size = Krita.screen_size/2560
 
-        def abbreviation_sign_callback():
-            return "." if self._pie_config.ABBREVIATE_WITH_DOT.read() else ""
-
         self.label_style = LabelWidgetStyle(
             icon_radius_callback=self._icon_radius,
             border_thickness_callback=self._border_thickness,
@@ -29,7 +26,7 @@ class PieStyleHolder:
             background_color_callback=self._background_color,
             max_lines_amount_callback=self._pie_config.MAX_LINES_AMOUNT.read,
             max_signs_amount_callback=self._pie_config.MAX_SIGNS_AMOUNT.read,
-            abbreviation_sign_callback=abbreviation_sign_callback)
+            abbreviation_sign_callback=self._abbreviation_sign_callback)
         """Style of labels inside the pie."""
 
         self.settings_label_style = LabelWidgetStyle(
@@ -82,13 +79,13 @@ class PieStyleHolder:
 
     def _icon_radius(self) -> int:
         """Return scaled icon radius based on configured value."""
-        elements = self._pie_config.ORDER.read()
+        elements = self.pie_style.amount_of_labels
         desired_radius = self._desired_icon_radius()
 
         if not elements:
             return desired_radius
 
-        max_radius = round(self.pie_style.pie_radius * math.pi / len(elements))
+        max_radius = round(self.pie_style.pie_radius * math.pi / elements)
         return min(desired_radius, max_radius)
 
     def _button_sized_icon_radius(self) -> int:
@@ -118,6 +115,9 @@ class PieStyleHolder:
             return self._pie_config.BACKGROUND_COLOR.read()
         else:
             return Config.default_background_color
+
+    def _abbreviation_sign_callback(self):
+        return "." if self._pie_config.ABBREVIATE_WITH_DOT.read() else ""
 
     def _accept_button_radius(self) -> int:
         """Return radius of accept button based on configured value."""

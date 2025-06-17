@@ -38,7 +38,7 @@ class WidgetHolder:
         Ensure the icon widgets properly represents this container.
         """
         # values need to be saved for labels to scale properly
-        self._config.set_values([label.value for label in labels])
+        self._style_holder.pie_style.amount_of_labels = len(labels)
 
         children_widgets: list[LabelWidget[PieLabel]] = []
         for label in labels:

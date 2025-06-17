@@ -35,6 +35,11 @@ class PieStyle:
         self._accept_button_radius_callback = accept_button_radius_callback
         self._background_opacity_callback = background_opacity_callback
 
+        # Amount of labels in the pie that can be used by the callbacks
+        # If it is used, user must guarantee that its value is correct
+        # len(ORDER) should not be used, as pie register callbacks to it
+        self.amount_of_labels = 0
+
     @property
     def pie_radius(self) -> int:
         """Radius of the pie, excluding the icons."""
