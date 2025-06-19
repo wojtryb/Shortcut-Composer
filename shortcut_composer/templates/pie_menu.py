@@ -126,6 +126,7 @@ class PieMenu(RawInstructions, Generic[T]):
         """Create Qwidget of the Pie for selecting values."""
         pie_widget = PieWidget(
             pie_style=self._style_holder.pie_style,
+            allowed_types=self._controller.TYPE,
             allow_value_edit_callback=lambda: self._config.allow_value_edit)
 
         self._config.PIE_RADIUS_SCALE.register_callback(pie_widget.reset_size)

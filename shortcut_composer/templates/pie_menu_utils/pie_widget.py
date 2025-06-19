@@ -36,7 +36,8 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     def __init__(
         self,
         pie_style: PieStyle,
-        allow_value_edit_callback: Callable[[], bool],
+        allowed_types: type | tuple[type, ...] = object,
+        allow_value_edit_callback: Callable[[], bool] = lambda: True,
         parent=None
     ) -> None:
         AnimatedWidget.__init__(
@@ -46,6 +47,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             parent=parent)
 
         self._pie_style = pie_style
+        self._allowed_types = allowed_types
         self._allow_value_edit_callback = allow_value_edit_callback
 
         self._painter = PiePainter(self._pie_style)
@@ -107,7 +109,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             radius=self._pie_style.pie_radius)
         distance = circle_points.distance(e.pos())
 
-        if self._type and not isinstance(label.value, self._type):
+        if not isinstance(label.value, self._allowed_types):
             # Label type does not match the type of pie menu
             return
 
@@ -145,13 +147,6 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         if self._last_widget is not None:
             self.order_handler.remove(self._last_widget.label)
         return super().dragLeaveEvent(e)
-
-    @property
-    def _type(self) -> type | None:
-        """Return type of values stored in labels. None if no labels."""
-        if not self.order_handler:
-            return None
-        return type(self.order_handler.labels[0].value)
 
     def reset_size(self) -> None:
         """Set widget geometry according to style."""
