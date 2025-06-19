@@ -154,12 +154,6 @@ class PieConfig(FieldGroup, Generic[T]):
         self.TAG_NAME.field.refresh()
         self.ORDER.write(self.values())
 
-    def set_current_as_default(self) -> None:
-        """Set current pie values as a new default list of values."""
-        self.TAG_MODE.default = self.TAG_MODE.read()
-        self.TAG_NAME.default = self.TAG_NAME.read()
-        self.ORDER.default = self.ORDER.read()
-
     def reset_the_default(self) -> None:
         """Set empty pie as a new default list of values."""
         self.TAG_MODE.default = False
@@ -171,13 +165,6 @@ class PieConfig(FieldGroup, Generic[T]):
         self.TAG_MODE.reset_default()
         self.TAG_NAME.reset_default()
         self.ORDER.reset_default()
-
-    def is_order_default(self) -> bool:
-        """Return whether order is the same as default one."""
-        return (
-            self.TAG_MODE.read() == self.TAG_MODE.default
-            and self.TAG_NAME.read() == self.TAG_NAME.default
-            and self.ORDER.read() == self.ORDER.default)
 
     def register_to_order_related(self, callback: Callable[[], None]) -> None:
         """Register callback to all fields related to value order."""

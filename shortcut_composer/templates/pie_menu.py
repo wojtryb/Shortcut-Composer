@@ -16,12 +16,12 @@ from .pie_menu_utils import PieConfig
 from .pie_menu_utils import (
     PieCurrentValueHolder,
     PieEditModeHandler,
+    PieLabelCreator,
     PieMouseTracker,
     PieStyleHolder,
     PieActuator,
     PieSettings,
-    PieWidget,
-    PieLabel)
+    PieWidget)
 from .raw_instructions import RawInstructions
 
 T = TypeVar('T')
@@ -113,11 +113,10 @@ class PieMenu(RawInstructions, Generic[T]):
             max_lines_amount=max_lines_amount,
             max_signs_amount=max_signs_amount,
             abbreviate_with_dot=abbreviate_with_dot)
-        # allow reset button and tag selector to change the labels
-        self._config.ORDER.register_callback(self._reset_labels)
 
         self._edit_mode_handler = PieEditModeHandler(self)
         self._style_holder = PieStyleHolder(pie_config=self._config)
+        self._label_creator = PieLabelCreator(self._controller)
         self._actuator = PieActuator(
             controller=self._controller,
             strategy_field=self._config.DEADZONE_STRATEGY)
@@ -142,7 +141,9 @@ class PieMenu(RawInstructions, Generic[T]):
         return PieSettings(
             config=self._config,
             style_holder=self._style_holder,
-            controller=self._controller)
+            controller=self._controller,
+            order_handler=self.pie_widget.order_handler,
+            label_creator=self._label_creator)
 
     @cached_property
     def pie_mouse_tracker(self) -> PieMouseTracker:
@@ -213,29 +214,20 @@ class PieMenu(RawInstructions, Generic[T]):
 
         self.pie_mouse_tracker.start()
 
-    INVALID_VALUES: list[T] = []
-
     def _reset_labels(self) -> None:
         """Replace list values with newly created labels."""
-        self._controller.refresh()
+        self._controller.refresh()  # TODO: maybe not needed?
         values = self._config.values()
 
         # Method is expensive, and should not be performed when values
         # did not in fact change.
-        filtered_values = [v for v in values if v not in self.INVALID_VALUES]
+        filtered_values = self._label_creator.filter_values(values)
         current = [label.value for label in self.pie_widget.order_handler]
 
         if filtered_values == current:
             return
 
-        labels: list[PieLabel] = []
-        for value in values:
-            label = PieLabel.from_value(value, self._controller)
-            if label is not None:
-                labels.append(label)
-            else:
-                self.INVALID_VALUES.append(value)
-
+        labels = self._label_creator.create_labels_from_values(filtered_values)
         self.pie_widget.order_handler.replace_labels(labels)
 
     def on_every_key_release(self) -> None:

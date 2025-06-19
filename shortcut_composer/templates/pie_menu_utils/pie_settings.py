@@ -12,7 +12,9 @@ from core_components import Controller, NumericController
 from .pie_config import PieConfig
 from .pie_label import PieLabel
 from .pie_settings_tabs import PreferencesTab, ValuesListTab, SaveLocationTab
+from .pie_label_creator import PieLabelCreator
 from .pie_style_holder import PieStyleHolder
+from .pie_widget_utils import OrderHandler
 
 
 class PieSettings(AnimatedWidget, BaseWidget):
@@ -34,6 +36,8 @@ class PieSettings(AnimatedWidget, BaseWidget):
         controller: Controller,
         config: PieConfig,
         style_holder: PieStyleHolder,
+        order_handler: OrderHandler,
+        label_creator: PieLabelCreator
     ) -> None:
         AnimatedWidget.__init__(
             self,
@@ -64,9 +68,12 @@ class PieSettings(AnimatedWidget, BaseWidget):
 
         # Second tab (optional, depend on controller type)
         if issubclass(controller.TYPE, (str, EnumGroup)):
-            self._tab_holder.addTab(
-                ValuesListTab(self._config, controller, self._style_holder),
-                "Values")
+            tab = ValuesListTab(
+                self._config,
+                order_handler,
+                controller,
+                self._style_holder)
+            self._tab_holder.addTab(tab, "Values")
             self._tab_holder.setCurrentIndex(1)
         elif isinstance(controller, NumericController):
             def label_from_integer(value: int) -> PieLabel[int]:
@@ -86,7 +93,8 @@ class PieSettings(AnimatedWidget, BaseWidget):
             self._tab_holder.setCurrentIndex(1)
 
         # Third tab
-        self._tab_holder.addTab(SaveLocationTab(self._config), "Save location")
+        tab = SaveLocationTab(self._config, order_handler, label_creator)
+        self._tab_holder.addTab(tab, "Save location")
 
         layout = QVBoxLayout(self)
         layout.addWidget(self._tab_holder)

@@ -14,6 +14,7 @@ from ..pie_label import PieLabel
 from ..pie_style import PieStyle
 
 PieLabelWidget = LabelWidget[PieLabel]
+EmptyCallback = Callable[[], None]
 
 
 class OrderHandler:
@@ -37,6 +38,11 @@ class OrderHandler:
 
         self._labels: list[PieLabel] = []
         self._widgets: dict[int, PieLabelWidget] = {}
+        self._on_change_callbacks: list[EmptyCallback] = []
+
+    @property
+    def values(self):
+        return [label.value for label in self._labels]
 
     # TODO: change list to tuple?
     @property
@@ -71,6 +77,7 @@ class OrderHandler:
 
     def swap(self, _a: PieLabel, _b: PieLabel, /) -> None:
         """TODO: swap without removing widgets is faster and does not blink"""
+
         idx_a = self._labels.index(_a)
         idx_b = self._labels.index(_b)
 
@@ -91,6 +98,9 @@ class OrderHandler:
 
         w_a.move_center(label_a.center)
         w_b.move_center(label_b.center)
+
+        for callback in self._on_change_callbacks:
+            callback()
 
     def label_on_angle(self, angle: float) -> PieLabel:
         """Return Label, which widget is the closest to given `angle`."""
@@ -114,15 +124,20 @@ class OrderHandler:
         for widget in self._widgets.values():
             widget.forced = False
 
+    def register_callback_on_change(self, callback: EmptyCallback):
+        self._on_change_callbacks.append(callback)
+
     def _reset_widgets(
         self,
         labels: list[PieLabel],
     ) -> None:
         """
-        Ensure the icon widgets properly represents this container.
+        Ensure the icon widgets properly represent this container.
         """
         # values need to be saved for labels to scale properly
-        self._pie_style.amount_of_labels = len(labels)
+        self._pie_style.amount_of_labels = len(labels)  # TODO: style holder cb
+        for callback in self._on_change_callbacks:
+            callback()
 
         new_widgets: list[LabelWidget[PieLabel]] = []
         for label in labels:

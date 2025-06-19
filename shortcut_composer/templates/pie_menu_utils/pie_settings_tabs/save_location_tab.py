@@ -12,6 +12,8 @@ from PyQt5.QtWidgets import (
 from api_krita import Krita
 from api_krita.pyqt import SafeConfirmButton
 from ..pie_config import PieConfig
+from ..pie_widget_utils import OrderHandler
+from ..pie_label_creator import PieLabelCreator
 
 
 class SaveLocationTab(QWidget):
@@ -20,11 +22,15 @@ class SaveLocationTab(QWidget):
     def __init__(
         self,
         config: PieConfig,
+        order_handler: OrderHandler,
+        label_creator: PieLabelCreator,
         parent: QWidget | None = None
     ) -> None:
         """Tab that allows to switch location in which icon order is saved."""
         super().__init__(parent)
         self._config = config
+        self._order_handler = order_handler
+        self._label_creator = label_creator
 
         self._location_button = self._init_location_button()
         self._mode_title = self._init_mode_title()
@@ -32,7 +38,8 @@ class SaveLocationTab(QWidget):
         self._set_new_default_button = self._init_set_new_default_button()
         self._reset_to_default_button = self._init_reset_to_default_button()
 
-        self._config.register_callback(self._update_button_activity)
+        self._order_handler.register_callback_on_change(
+            self._update_button_activity)
         self._update_button_activity()
 
         self.setLayout(self._init_layout())
@@ -103,8 +110,15 @@ class SaveLocationTab(QWidget):
         button = SafeConfirmButton(
             text="Set pie values as a new default",
             icon=Krita.get_icon("document-save"))
-        button.clicked.connect(self._config.set_current_as_default)
+
+        def set_current_as_default():
+            self._config.TAG_MODE.default = self._config.TAG_MODE.read()
+            self._config.TAG_NAME.default = self._config.TAG_NAME.read()
+            self._config.ORDER.default = self._order_handler.values
+
+        button.clicked.connect(set_current_as_default)
         button.clicked.connect(self._update_button_activity)
+
         button.setFixedHeight(button.sizeHint().height()*2)
         return button
 
@@ -113,8 +127,17 @@ class SaveLocationTab(QWidget):
         button = SafeConfirmButton(
             text="Reset pie values to default",
             icon=Krita.get_icon("edit-delete"))
-        button.clicked.connect(self._config.reset_to_default)
+
+        def reset_order_to_default():
+            self._config.reset_to_default()  # TODO: why this does not refresh?
+            self._config.refresh_order()
+            values = self._config.values()
+            labels = self._label_creator.create_labels_from_values(values)
+            self._order_handler.replace_labels(labels)
+
+        button.clicked.connect(reset_order_to_default)
         button.clicked.connect(self._update_button_activity)
+
         button.setFixedHeight(button.sizeHint().height()*2)
         return button
 
@@ -156,9 +179,14 @@ class SaveLocationTab(QWidget):
                 "remain useful regardless of which document is edited.")
         self._config.SAVE_LOCAL.write(value)
 
-    def _update_button_activity(self) -> None:
+    def _update_button_activity(self, *args) -> None:
         """Disable location action buttons, when they won't do anything."""
-        if not self._config.is_order_default():
+        is_order_default = (
+            self._config.TAG_MODE.read() == self._config.TAG_MODE.default
+            and self._config.TAG_NAME.read() == self._config.TAG_NAME.default
+            and self._order_handler.values == self._config.ORDER.default)
+
+        if not is_order_default:
             self._set_new_default_button.setEnabled(True)
             self._reset_to_default_button.setEnabled(True)
         else:

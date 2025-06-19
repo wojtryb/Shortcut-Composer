@@ -13,6 +13,7 @@ from ..pie_config import PieConfig
 from ..group_manager import GroupManager
 from ..group_manager_impl import dispatch_group_manager
 from ..pie_style_holder import PieStyleHolder
+from ..pie_widget_utils import OrderHandler
 
 
 class ValuesListTab(QWidget):
@@ -20,12 +21,14 @@ class ValuesListTab(QWidget):
     def __init__(
         self,
         config: PieConfig,
+        order_handler: OrderHandler,
         controller: Controller,
         style_holder: PieStyleHolder,
         parent: QWidget | None = None
     ) -> None:
         super().__init__(parent)
         self._config = config
+        self._order_handler = order_handler
         self._style_holder = style_holder
 
         self._manager = dispatch_group_manager(controller)
@@ -75,9 +78,10 @@ class ValuesListTab(QWidget):
 
         def refresh_draggable() -> None:
             """Mark which pies are currently used in the pie."""
-            scroll_area.mark_used_values(self._config.values())
+            scroll_area.mark_used_values(self._order_handler.values)
 
         self._config.ORDER.register_callback(refresh_draggable)
+        self._order_handler.register_callback_on_change(refresh_draggable)
         scroll_area.widgets_changed.connect(refresh_draggable)
         refresh_draggable()
         return scroll_area
