@@ -31,7 +31,7 @@ class ValuesListTab(QWidget):
         self._order_handler = order_handler
         self._style_holder = style_holder
 
-        self._manager = dispatch_group_manager(controller)
+        self._label_creator = dispatch_group_manager(controller)
         self._scroll_area = self._init_scroll_area()
         self._mode_button = self._init_mode_button()
         self._auto_combobox = self._init_auto_combobox()
@@ -55,7 +55,7 @@ class ValuesListTab(QWidget):
         top_layout.addWidget(self._auto_combobox.widget, 2)
         top_layout.addWidget(self._manual_combobox.widget, 2)
         # Do not display picker, when there is only one group
-        if len(self._manager.fetch_groups()) <= 1:
+        if len(self._label_creator.fetch_groups()) <= 1:
             self._mode_button.hide()
             self._auto_combobox.widget.hide()
             self._manual_combobox.widget.hide()
@@ -80,7 +80,6 @@ class ValuesListTab(QWidget):
             """Mark which pies are currently used in the pie."""
             scroll_area.mark_used_values(self._order_handler.values)
 
-        self._config.ORDER.register_callback(refresh_draggable)
         self._order_handler.register_callback_on_change(refresh_draggable)
         scroll_area.widgets_changed.connect(refresh_draggable)
         refresh_draggable()
@@ -115,11 +114,15 @@ class ValuesListTab(QWidget):
         def handle_picked_tag() -> None:
             """Save used tag in config and report the values changed."""
             auto_combobox.save()
+            values = self._label_creator.get_values(auto_combobox.read())
+            labels = self._label_creator.create_labels(values)
+            self._order_handler.replace_labels(labels)
+
             self._config.refresh_order()
 
         auto_combobox = GroupComboBox(
             last_value_field=self._config.TAG_NAME,
-            group_manager=self._manager,
+            group_manager=self._label_creator,
             pretty_name="Tag name")
 
         auto_combobox.widget.currentTextChanged.connect(handle_picked_tag)
@@ -129,15 +132,15 @@ class ValuesListTab(QWidget):
         def _display_group() -> None:
             """Update preset widgets according to tag selected in combobox."""
             picked_group = manual_combobox.widget.currentText()
-            values = self._manager.get_values(picked_group)
+            values = self._label_creator.get_values(picked_group)
             self._scroll_area.replace_handled_labels(
-                self._manager.create_labels(values))
+                self._label_creator.create_labels(values))
             self._scroll_area._apply_search_bar_filter()
             manual_combobox.save()
 
         manual_combobox = GroupComboBox(
             last_value_field=self._config.LAST_TAG_SELECTED,
-            group_manager=self._manager,
+            group_manager=self._label_creator,
             additional_fields=["---Select tag---", "All"])
 
         manual_combobox.widget.currentTextChanged.connect(_display_group)

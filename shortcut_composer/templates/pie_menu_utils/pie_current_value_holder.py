@@ -39,6 +39,7 @@ class PieCurrentValueHolder:
     def refresh(self):
         """Replace remembered LabelWidget with the current value."""
         # Leave the widget empty if controller does not get values.
+        self._controller.refresh()
         try:
             current_value = self._controller.get_value()
         except NotImplementedError:

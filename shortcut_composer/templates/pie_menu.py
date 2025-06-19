@@ -12,11 +12,11 @@ from api_krita.pyqt import RoundButton
 from data_components import PieDeadzoneStrategy
 from composer_utils import Config
 from core_components import Controller, Instruction
+from .pie_menu_utils.group_manager_impl import dispatch_group_manager
 from .pie_menu_utils import PieConfig
 from .pie_menu_utils import (
     PieCurrentValueHolder,
     PieEditModeHandler,
-    PieLabelCreator,
     PieMouseTracker,
     PieStyleHolder,
     PieActuator,
@@ -116,7 +116,7 @@ class PieMenu(RawInstructions, Generic[T]):
 
         self._edit_mode_handler = PieEditModeHandler(self)
         self._style_holder = PieStyleHolder(pie_config=self._config)
-        self._label_creator = PieLabelCreator(self._controller)
+        self._label_creator = dispatch_group_manager(self._controller)
         self._actuator = PieActuator(
             controller=self._controller,
             strategy_field=self._config.DEADZONE_STRATEGY)
@@ -142,8 +142,7 @@ class PieMenu(RawInstructions, Generic[T]):
             config=self._config,
             style_holder=self._style_holder,
             controller=self._controller,
-            order_handler=self.pie_widget.order_handler,
-            label_creator=self._label_creator)
+            order_handler=self.pie_widget.order_handler)
 
     @cached_property
     def pie_mouse_tracker(self) -> PieMouseTracker:
@@ -216,18 +215,12 @@ class PieMenu(RawInstructions, Generic[T]):
 
     def _reset_labels(self) -> None:
         """Replace list values with newly created labels."""
-        self._controller.refresh()  # TODO: maybe not needed?
         values = self._config.values()
+        labels = self._label_creator.create_labels(values)
 
-        # Method is expensive, and should not be performed when values
-        # did not in fact change.
-        filtered_values = self._label_creator.filter_values(values)
-        current = [label.value for label in self.pie_widget.order_handler]
-
-        if filtered_values == current:
+        if labels == self.pie_widget.order_handler.labels:
             return
 
-        labels = self._label_creator.create_labels_from_values(filtered_values)
         self.pie_widget.order_handler.replace_labels(labels)
 
     def on_every_key_release(self) -> None:

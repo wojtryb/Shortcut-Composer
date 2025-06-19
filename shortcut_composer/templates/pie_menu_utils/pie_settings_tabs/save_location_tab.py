@@ -11,9 +11,10 @@ from PyQt5.QtWidgets import (
 
 from api_krita import Krita
 from api_krita.pyqt import SafeConfirmButton
+from core_components import Controller
 from ..pie_config import PieConfig
 from ..pie_widget_utils import OrderHandler
-from ..pie_label_creator import PieLabelCreator
+from ..group_manager_impl import dispatch_group_manager
 
 
 class SaveLocationTab(QWidget):
@@ -23,14 +24,14 @@ class SaveLocationTab(QWidget):
         self,
         config: PieConfig,
         order_handler: OrderHandler,
-        label_creator: PieLabelCreator,
+        controller: Controller,
         parent: QWidget | None = None
     ) -> None:
         """Tab that allows to switch location in which icon order is saved."""
         super().__init__(parent)
         self._config = config
         self._order_handler = order_handler
-        self._label_creator = label_creator
+        self._label_creator = dispatch_group_manager(controller)
 
         self._location_button = self._init_location_button()
         self._mode_title = self._init_mode_title()
@@ -71,6 +72,7 @@ class SaveLocationTab(QWidget):
     def _init_location_button(self) -> SafeConfirmButton:
         """Return button that switches between save locations."""
         def switch_mode() -> None:
+            # TODO ?
             values = self._config.ORDER.read()
 
             self.is_local_mode = not self.is_local_mode
@@ -132,7 +134,7 @@ class SaveLocationTab(QWidget):
             self._config.reset_to_default()  # TODO: why this does not refresh?
             self._config.refresh_order()
             values = self._config.values()
-            labels = self._label_creator.create_labels_from_values(values)
+            labels = self._label_creator.create_labels(values)
             self._order_handler.replace_labels(labels)
 
         button.clicked.connect(reset_order_to_default)

@@ -2,12 +2,11 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Protocol
-from enum import Enum
 
-from composer_utils.label.label_interface import LabelInterface
+from .pie_label import PieLabel
 
 
 class GroupManager(Protocol):
     def fetch_groups(self) -> list: ...
     def get_values(self, group: str) -> list: ...
-    def create_labels(self, values: list[Enum]) -> list[LabelInterface]: ...
+    def create_labels(self, values: list) -> list[PieLabel]: ...
