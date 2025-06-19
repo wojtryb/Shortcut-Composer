@@ -47,6 +47,8 @@ class CirclePoints:
 
     def iterate_over_circle(self, amount: int) -> Iterable[Tuple[int, QPoint]]:
         """Iterate over points, when the circle is divided into even parts."""
+        if not amount:
+            return
         for angle in self._float_range(0, 360, 360/amount):
             yield round(angle), self.point_from_angle(angle)
 
