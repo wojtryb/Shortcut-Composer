@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import TypeVar, Generic
+from typing import TypeVar, Generic, Callable
 from functools import cached_property
 
 from PyQt5.QtCore import QPoint
@@ -129,11 +129,7 @@ class PieMenu(RawInstructions, Generic[T]):
             allowed_types=self._controller.TYPE,
             allow_value_edit_callback=lambda: not self._config.TAG_MODE.read())
 
-        self._config.PIE_RADIUS_SCALE.register_callback(pie_widget.reset_size)
-        self._config.ICON_RADIUS_SCALE.register_callback(pie_widget.reset_size)
-        Config.PIE_GLOBAL_SCALE.register_callback(pie_widget.reset_size)
-        Config.PIE_ICON_GLOBAL_SCALE.register_callback(pie_widget.reset_size)
-
+        self._register_callback_to_size_change(pie_widget.reset_size)
         return pie_widget
 
     @cached_property
@@ -164,6 +160,15 @@ class PieMenu(RawInstructions, Generic[T]):
             parent=self.pie_widget)
         settings_button.clicked.connect(
             self._edit_mode_handler.set_edit_mode_true)
+
+        def move_to_bottom_left():
+            size = 2*self._style_holder.pie_style.widget_radius
+            settings_button.move(QPoint(
+                size-settings_button.width(),
+                size-settings_button.height()))
+        self._register_callback_to_size_change(move_to_bottom_left)
+        move_to_bottom_left()
+
         return settings_button
 
     @cached_property
@@ -183,17 +188,37 @@ class PieMenu(RawInstructions, Generic[T]):
             self._edit_mode_handler.set_edit_mode_false()
             self._config.set_values(
                 [label.value for label in self.pie_widget.order_handler])
+
         accept_button.clicked.connect(on_click)
         accept_button.hide()
+
+        def move_to_pie_center():
+            radius = self._style_holder.pie_style.widget_radius
+            accept_button.move_center(QPoint(radius, radius))
+        self._register_callback_to_size_change(move_to_pie_center)
+        move_to_pie_center()
+
         return accept_button
 
     @cached_property
     def current_value_holder(self) -> PieCurrentValueHolder:
         """Create a LabelWidget holder with currently selected value."""
-        return PieCurrentValueHolder(
+        value_holder = PieCurrentValueHolder(
             self._controller,
             self._style_holder.button_size_label_style,
             self.pie_widget)
+
+        def move_to_bottom_left():
+            if value_holder._widget is None:
+                return
+            size = 2*self._style_holder.pie_style.widget_radius
+            value_holder._widget.move(QPoint(
+                size-value_holder._widget.width(),
+                size-value_holder._widget.height()))
+        self._register_callback_to_size_change(move_to_bottom_left)
+        move_to_bottom_left()
+
+        return value_holder
 
     def on_key_press(self) -> None:
         """Handle the event of user pressing the action key."""
@@ -245,3 +270,9 @@ class PieMenu(RawInstructions, Generic[T]):
             self.pie_widget.active_label,
             self.pie_widget.order_handler.labels)
         self.pie_mouse_tracker.stop()
+
+    def _register_callback_to_size_change(self, callback: Callable[[], None]):
+        self._config.PIE_RADIUS_SCALE.register_callback(callback)
+        self._config.ICON_RADIUS_SCALE.register_callback(callback)
+        Config.PIE_GLOBAL_SCALE.register_callback(callback)
+        Config.PIE_ICON_GLOBAL_SCALE.register_callback(callback)

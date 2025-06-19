@@ -52,7 +52,6 @@ class PieEditModeHandler:
         self._move_settings_next_to_pie()
 
         self._obj.accept_button.show()
-        self._obj.accept_button.move_center(self._obj.pie_widget.center)
 
         self._obj.settings_button.hide()
         self._obj.current_value_holder.show()

@@ -25,7 +25,7 @@ class PieCurrentValueHolder:
         self,
         controller: Controller,
         style: LabelWidgetStyle,
-        pie_widget: PieWidget
+        pie_widget: PieWidget  # TODO: should not be here
     ) -> None:
         self._controller = controller
         self._style = style
@@ -51,12 +51,17 @@ class PieCurrentValueHolder:
             return
 
         if self._widget is not None:
+            position = self._widget.pos()
             self._widget.setParent(None)  # type: ignore
+        else:
+            position = QPoint()
+
         self._widget = dispatch_label_widget(label)(
             label=label,
             label_widget_style=self._style,
             parent=self._pie_widget)
-        self._ensure_correct_position()
+
+        self._widget.move(position)
         if self._is_hidden:
             self.hide()
 
@@ -71,10 +76,3 @@ class PieCurrentValueHolder:
         self._is_hidden = False
         if self._widget is not None:
             self._widget.show()
-
-    def _ensure_correct_position(self):
-        """Move the widget to the bottom-right spot of the PieWidget."""
-        if self._widget is not None:
-            self._widget.move(QPoint(
-                self._pie_widget.width()-self._widget.width(),
-                self._pie_widget.height()-self._widget.height()))
