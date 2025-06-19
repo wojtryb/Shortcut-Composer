@@ -127,11 +127,6 @@ class PieConfig(FieldGroup, Generic[T]):
         - In manual mode, specifies both the values and their order.
         """
 
-    @property
-    def allow_value_edit(self) -> bool:
-        """Return whether user can add and remove items from the pie."""
-        return not self.TAG_MODE.read()
-
     def values(self) -> list[T]:
         """Return all presets based on mode and stored order."""
         if not self.TAG_MODE.read():

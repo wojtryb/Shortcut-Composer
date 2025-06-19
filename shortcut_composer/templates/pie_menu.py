@@ -115,7 +115,7 @@ class PieMenu(RawInstructions, Generic[T]):
             abbreviate_with_dot=abbreviate_with_dot)
 
         self._edit_mode_handler = PieEditModeHandler(self)
-        self._style_holder = PieStyleHolder(pie_config=self._config)
+        self._style_holder = PieStyleHolder(self._config)
         self._label_creator = dispatch_group_manager(self._controller)
         self._actuator = PieActuator(
             controller=self._controller,
@@ -127,7 +127,7 @@ class PieMenu(RawInstructions, Generic[T]):
         pie_widget = PieWidget(
             pie_style=self._style_holder.pie_style,
             allowed_types=self._controller.TYPE,
-            allow_value_edit_callback=lambda: self._config.allow_value_edit)
+            allow_value_edit_callback=lambda: not self._config.TAG_MODE.read())
 
         self._config.PIE_RADIUS_SCALE.register_callback(pie_widget.reset_size)
         self._config.ICON_RADIUS_SCALE.register_callback(pie_widget.reset_size)
@@ -141,14 +141,14 @@ class PieMenu(RawInstructions, Generic[T]):
         """Create QWidget with pie settings right for given type of labels."""
         return PieSettings(
             config=self._config,
-            style_holder=self._style_holder,
+            style_holder=self._style_holder,  # TODO: pass just label_style?
             controller=self._controller,
             order_handler=self.pie_widget.order_handler)
 
     @cached_property
     def pie_mouse_tracker(self) -> PieMouseTracker:
         """Create Manager which shows, hides and moves the Pie."""
-        return PieMouseTracker(pie_widget=self.pie_widget)
+        return PieMouseTracker(self.pie_widget)
 
     @cached_property
     def settings_button(self) -> RoundButton:
@@ -192,7 +192,7 @@ class PieMenu(RawInstructions, Generic[T]):
         """Create a LabelWidget holder with currently selected value."""
         return PieCurrentValueHolder(
             self._controller,
-            self._style_holder,
+            self._style_holder.button_size_label_style,
             self.pie_widget)
 
     def on_key_press(self) -> None:

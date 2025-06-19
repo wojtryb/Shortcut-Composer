@@ -98,8 +98,7 @@ class PieStyleHolder:
 
     def _deadzone_radius(self) -> float:
         """Return deadzone radius based on configured value."""
-        elements = self.pie_style.amount_of_labels
-        if not elements:
+        if not self.pie_style.amount_of_labels:
             return float("inf")
         return self.pie_style.accept_button_radius
 

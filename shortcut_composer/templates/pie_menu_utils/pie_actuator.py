@@ -8,6 +8,7 @@ from .pie_label import PieLabel
 from .pie_widget_utils import OrderHandler
 
 
+# TODO: refactor
 class PieActuator:
     """
     Activates the correct labels from the Pie.

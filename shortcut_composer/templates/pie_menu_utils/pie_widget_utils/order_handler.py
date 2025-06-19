@@ -135,7 +135,7 @@ class OrderHandler:
         Ensure the icon widgets properly represent this container.
         """
         # values need to be saved for labels to scale properly
-        self._pie_style.amount_of_labels = len(labels)  # TODO: style holder cb
+        self._pie_style.amount_of_labels = len(labels)
         for callback in self._on_change_callbacks:
             callback()
 

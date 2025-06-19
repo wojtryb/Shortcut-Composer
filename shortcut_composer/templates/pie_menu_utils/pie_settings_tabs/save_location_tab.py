@@ -72,15 +72,9 @@ class SaveLocationTab(QWidget):
     def _init_location_button(self) -> SafeConfirmButton:
         """Return button that switches between save locations."""
         def switch_mode() -> None:
-            # TODO ?
-            values = self._config.ORDER.read()
-
             self.is_local_mode = not self.is_local_mode
             if self.is_local_mode:
                 self._config.reset_the_default()
-
-            # make sure the icons stay the same
-            self._config.ORDER.write(values)
 
         button = SafeConfirmButton(text="Change mode")
         button.clicked.connect(switch_mode)
@@ -131,8 +125,7 @@ class SaveLocationTab(QWidget):
             icon=Krita.get_icon("edit-delete"))
 
         def reset_order_to_default():
-            self._config.reset_to_default()  # TODO: why this does not refresh?
-            self._config.refresh_order()
+            self._config.reset_to_default()
             values = self._config.values()
             labels = self._label_creator.create_labels(values)
             self._order_handler.replace_labels(labels)

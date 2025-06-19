@@ -7,9 +7,9 @@ from PyQt5.QtCore import QPoint
 from core_components import Controller
 from composer_utils.label import LabelWidget
 from composer_utils.label.label_widget_impl import dispatch_label_widget
+from composer_utils.label import LabelWidgetStyle
 from .pie_label import PieLabel
 from .pie_widget import PieWidget
-from .pie_style_holder import PieStyleHolder
 
 
 class PieCurrentValueHolder:
@@ -24,7 +24,7 @@ class PieCurrentValueHolder:
     def __init__(
         self,
         controller: Controller,
-        style: PieStyleHolder,
+        style: LabelWidgetStyle,
         pie_widget: PieWidget
     ) -> None:
         self._controller = controller
@@ -54,7 +54,7 @@ class PieCurrentValueHolder:
             self._widget.setParent(None)  # type: ignore
         self._widget = dispatch_label_widget(label)(
             label=label,
-            label_widget_style=self._style.button_size_label_style,
+            label_widget_style=self._style,
             parent=self._pie_widget)
         self._ensure_correct_position()
         if self._is_hidden:
