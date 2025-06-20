@@ -136,6 +136,8 @@ class PieMenu(RawInstructions, Generic[T]):
             allowed_types=self._controller.TYPE,
             allow_value_edit_callback=lambda: not self._config.TAG_MODE.read())
 
+        # This is first `settings_button`, which creates it
+        self.settings_button.setParent(pie_widget)
         self._register_callback_to_size_change(pie_widget.reset_size)
         return pie_widget
 
@@ -163,16 +165,15 @@ class PieMenu(RawInstructions, Generic[T]):
             background_color_callback=lambda: pie_style.background_color,
             active_color_callback=lambda: pie_style.active_color,
             icon=Krita.get_icon("properties"),
-            icon_scale=1.1,
-            parent=self.pie_widget)
+            icon_scale=1.1)
         settings_button.clicked.connect(
             self._edit_mode_handler.set_edit_mode_true)
 
         def move_to_bottom_left():
-            size = 2*self._style_holder.pie_style.widget_radius
-            settings_button.move(QPoint(
-                size-settings_button.width(),
-                size-settings_button.height()))
+            pie_size = 2*self._style_holder.pie_style.widget_radius
+            button_size = 2*self._style_holder.small_label_style.icon_radius
+            position = pie_size-button_size
+            settings_button.move(QPoint(position, position))
         self._register_callback_to_size_change(move_to_bottom_left)
         move_to_bottom_left()
 
@@ -212,16 +213,14 @@ class PieMenu(RawInstructions, Generic[T]):
         """Create a LabelWidget holder with currently selected value."""
         value_holder = PieCurrentValueHolder(
             self._controller,
-            self._style_holder.button_size_label_style,
+            self._style_holder.small_label_style,
             self.pie_widget)
 
         def move_to_bottom_left():
-            if value_holder._widget is None:
-                return
-            size = 2*self._style_holder.pie_style.widget_radius
-            value_holder._widget.move(QPoint(
-                size-value_holder._widget.width(),
-                size-value_holder._widget.height()))
+            pie_size = 2*self._style_holder.pie_style.widget_radius
+            button_size = 2*self._style_holder.small_label_style.icon_radius
+            position = pie_size-button_size
+            value_holder.move(QPoint(position, position))
         self._register_callback_to_size_change(move_to_bottom_left)
         move_to_bottom_left()
 
@@ -236,9 +235,6 @@ class PieMenu(RawInstructions, Generic[T]):
 
         self._reset_labels()
 
-        self.settings_button.move(QPoint(
-            self.pie_widget.width()-self.settings_button.width(),
-            self.pie_widget.height()-self.settings_button.height()))
         self.current_value_holder.refresh()
 
         self._actuator.mark_selected_widget(

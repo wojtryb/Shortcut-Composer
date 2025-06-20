@@ -76,3 +76,8 @@ class PieCurrentValueHolder:
         self._is_hidden = False
         if self._widget is not None:
             self._widget.show()
+
+    def move(self, point: QPoint):
+        """Move the widget to a new position."""
+        if self._widget is not None:
+            self._widget.move(point)

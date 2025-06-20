@@ -39,7 +39,7 @@ class PieStyleHolder:
             abbreviation_sign_callback=lambda: ".")
         """Style of labels in the settings."""
 
-        self.button_size_label_style = LabelWidgetStyle(
+        self.small_label_style = LabelWidgetStyle(
             icon_radius_callback=self._button_sized_icon_radius,
             border_thickness_callback=self._border_thickness,
             active_color_callback=self._active_color,
