@@ -130,9 +130,6 @@ class PieMenu(RawInstructions, Generic[T]):
 
         self._style_holder = PieStyleHolder(self._config)
         self._label_creator = dispatch_group_manager(self._controller)
-        self._actuator = PieActuator(
-            controller=self._controller,
-            strategy_field=self._config.DEADZONE_STRATEGY)
 
         self._is_in_edit_mode = False
         self._force_reload = False
@@ -172,6 +169,17 @@ class PieMenu(RawInstructions, Generic[T]):
         return PieMouseTracker(self.pie_widget)
 
     @cached_property
+    def pie_actuator(self) -> PieActuator:
+        pie_actuator = PieActuator(self.pie_widget)
+
+        def update_strategy() -> None:
+            pie_actuator.strategy = self._config.DEADZONE_STRATEGY.read()
+        self._config.DEADZONE_STRATEGY.register_callback(update_strategy)
+        update_strategy()
+
+        return pie_actuator
+
+    @cached_property
     def settings_button(self) -> RoundButton:
         """Create button with which user can enter the edit mode."""
         pie_style = self._style_holder.pie_style
@@ -187,8 +195,7 @@ class PieMenu(RawInstructions, Generic[T]):
             self.pie_mouse_tracker.stop()
 
             self.pie_widget.set_draggable(True)
-            for widget in self.pie_widget.order_handler.widgets:
-                widget.forced = False
+            self.pie_actuator.unmark_all_widgets()
             self.pie_widget.active_label = None
             self.pie_widget.repaint()
 
@@ -288,7 +295,7 @@ class PieMenu(RawInstructions, Generic[T]):
             self.pie_widget.order_handler.replace_labels(new_labels)
 
         self.current_value_holder.refresh()
-        self._actuator.mark_selected_widget(self.pie_widget.order_handler)
+        self.pie_actuator.mark_suggested_widget()
 
         self.pie_mouse_tracker.start()
 
@@ -309,9 +316,11 @@ class PieMenu(RawInstructions, Generic[T]):
         # Hide the widget before label gets activated
         # Activation can open windows, which is better with pie hidden
         self.pie_widget.hide()
-        self._actuator.activate(
-            self.pie_widget.active_label,
-            self.pie_widget.order_handler.labels)
+
+        label = self.pie_actuator.select()
+        if label is not None:
+            self._controller.set_value(label.value)
+
         self.pie_mouse_tracker.stop()
 
     def _register_callback_to_size_change(self, callback: Callable[[], None]):

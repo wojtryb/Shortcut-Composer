@@ -1,17 +1,16 @@
 # SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from config_system import Field
-from core_components import Controller
 from data_components import PieDeadzoneStrategy
 from .pie_label import PieLabel
-from .pie_widget_utils import OrderHandler
+from .pie_widget import PieWidget
 
 
-# TODO: refactor
 class PieActuator:
     """
     Activates the correct labels from the Pie.
+
+    TODO update dosctring and class name
 
     When a valid label is given in `activate()` method, it us activated
     and also remembered.
@@ -26,63 +25,50 @@ class PieActuator:
 
     def __init__(
         self,
-        controller: Controller,
-        strategy_field: Field,
+        pie_widget: PieWidget,
+        initial_strategy: PieDeadzoneStrategy = PieDeadzoneStrategy.DO_NOTHING
     ) -> None:
-        self._controller = controller
-        self._last_label: PieLabel | None = None
-        self._labels = []
+        self._pie_widget = pie_widget
+        self.strategy = initial_strategy
 
-        def update_strategy() -> None:
-            self._current_strategy = strategy_field.read()
-        self._current_strategy: PieDeadzoneStrategy
-        strategy_field.register_callback(update_strategy)
-        update_strategy()
+        self._previous_label: PieLabel | None = None
 
-    def activate(
-            self,
-            active: PieLabel | None,
-            labels: list[PieLabel]) -> None:
-        """Activate the correct label"""
-        self._labels = labels
+    def select(self) -> PieLabel | None:
+        active = self._pie_widget.active_label
 
+        # Out of deadzone, label picked
         if active is not None:
-            # Out of deadzone, label picked
-            self._controller.set_value(active.value)
-            self._last_label = active
+            self._previous_label = active
+            return active
+
+        # In deadzone, use strategy to select label
+        return self._label_from_strategy()
+
+    def mark_suggested_widget(self) -> None:
+        """Force color of the label that is selected for being picked."""
+        self.unmark_all_widgets()
+
+        label = self._label_from_strategy()
+        if label is None:
             return
 
-        # In deadzone
-        if self._selected_label is not None:
-            self._controller.set_value(self._selected_label.value)
+        if label in self._pie_widget.order_handler.labels:
+            widget = self._pie_widget.order_handler.widget_with_label(label)
+            widget.forced = True
 
-    @property
-    def _selected_label(self) -> PieLabel | None:
-        """Return label which should be picked on deadzone."""
-        if self._current_strategy == PieDeadzoneStrategy.DO_NOTHING:
-            return None
-        elif self._current_strategy == PieDeadzoneStrategy.PICK_TOP:
-            if self._labels:
-                return self._labels[0]
-            return None
-        elif self._current_strategy == PieDeadzoneStrategy.PICK_PREVIOUS:
-            if self._last_label in self._labels:
-                return self._last_label
-            return None
-
-    def mark_selected_widget(
-            self,
-            order_handler: OrderHandler) -> None:
-        """Force color of the label that is selected for being picked."""
-        self._labels = order_handler.labels
-        for widget in order_handler.widgets:
+    def unmark_all_widgets(self):
+        for widget in self._pie_widget.order_handler.widgets:
             widget.forced = False
 
-        if self._selected_label is None:
-            return
+    def _label_from_strategy(self) -> PieLabel | None:
+        """Return label suggested by current strategy."""
+        labels = self._pie_widget.order_handler.labels
 
-        try:
-            widget = order_handler.widget_with_label(self._selected_label)
-        except ValueError:
-            return
-        widget.forced = True
+        match self.strategy:
+            case PieDeadzoneStrategy.PICK_TOP:
+                if labels:
+                    return labels[0]
+            case PieDeadzoneStrategy.PICK_PREVIOUS:
+                if self._previous_label in labels:
+                    return self._previous_label
+        return None
