@@ -16,7 +16,6 @@ from .pie_menu_utils.group_manager_impl import dispatch_group_manager
 from .pie_menu_utils import PieConfig
 from .pie_menu_utils import (
     PieCurrentValueHolder,
-    PieEditModeHandler,
     PieMouseTracker,
     PieStyleHolder,
     PieActuator,
@@ -76,6 +75,21 @@ class PieMenu(RawInstructions, Generic[T]):
         active_color=QColor(0, 0, 255)           # 100% blue
     )
     ```
+
+    ### Class design concept
+    TODO: programmer guide to this class
+    TODO: why cached_property
+
+    When not in edit mode:
+    - PieWidget is shown, PieSettings are not
+    - labels cannot be dragged
+    - settings button is shown. It allows to enter edit mode
+
+    Wnen in edit mode:
+    - Both PieWidget and PieSettings are shown
+    - labels can be dragged to, from and inside the PieWidget
+    - settings button is replaced with current value icon
+    - accept button is shown. It allows to hide everything.
     """
 
     def __init__(
@@ -114,18 +128,19 @@ class PieMenu(RawInstructions, Generic[T]):
             max_signs_amount=max_signs_amount,
             abbreviate_with_dot=abbreviate_with_dot)
 
-        self._edit_mode_handler = PieEditModeHandler(self)
         self._style_holder = PieStyleHolder(self._config)
         self._label_creator = dispatch_group_manager(self._controller)
         self._actuator = PieActuator(
             controller=self._controller,
             strategy_field=self._config.DEADZONE_STRATEGY)
 
+        self._is_in_edit_mode = False
+        self._force_reload = False
+
         # Usually, when labels stay same, recreating widgets is not needed.
         # When widget scale changes, they have to be reloaded.
         def raise_flag():
             self._force_reload = True
-        self._force_reload = False
         self._register_callback_to_size_change(raise_flag)
 
     @cached_property
@@ -167,8 +182,32 @@ class PieMenu(RawInstructions, Generic[T]):
             active_color_callback=lambda: pie_style.active_color,
             icon=Krita.get_icon("properties"),
             icon_scale=1.1)
-        settings_button.clicked.connect(
-            self._edit_mode_handler.set_edit_mode_true)
+
+        def set_edit_mode_on() -> None:
+            self.pie_mouse_tracker.stop()
+
+            self.pie_widget.set_draggable(True)
+            for widget in self.pie_widget.order_handler.widgets:
+                widget.forced = False
+            self.pie_widget.active_label = None
+            self.pie_widget.repaint()
+
+            self.pie_settings.show()
+
+            # Move settings next to the pie
+            settings_offset = round(0.5*(
+                self.pie_widget.width()
+                + self.pie_settings.width()*1.05))
+            center = self.pie_widget.center_global + QPoint(settings_offset, 0)
+            self.pie_settings.move_center(center)
+
+            self.accept_button.show()
+
+            self.settings_button.hide()
+            self.current_value_holder.show()
+
+            self._is_in_edit_mode = True
+        settings_button.clicked.connect(set_edit_mode_on)
 
         def move_to_bottom_left():
             pie_size = 2*self._style_holder.pie_style.widget_radius
@@ -193,11 +232,21 @@ class PieMenu(RawInstructions, Generic[T]):
             icon_scale=1.5,
             parent=self.pie_widget)
 
-        def on_click():
-            self._edit_mode_handler.set_edit_mode_false()
+        def set_edit_mode_off():
+            self.pie_widget.hide()
+            self.pie_widget.set_draggable(False)
+
+            self.pie_settings.hide()
+            self.accept_button.hide()
+            self.settings_button.show()
+            self.current_value_holder.hide()
+
+            # Save values from the pie to config
             values = [label.value for label in self.pie_widget.order_handler]
             self._config.set_values(values)
-        accept_button.clicked.connect(on_click)
+
+            self._is_in_edit_mode = False
+        accept_button.clicked.connect(set_edit_mode_off)
         accept_button.hide()
 
         def move_to_pie_center():
@@ -257,7 +306,7 @@ class PieMenu(RawInstructions, Generic[T]):
         """
         super().on_every_key_release()
 
-        if self._edit_mode_handler.is_in_edit_mode:
+        if self._is_in_edit_mode:
             return
 
         # Hide the widget before label gets activated

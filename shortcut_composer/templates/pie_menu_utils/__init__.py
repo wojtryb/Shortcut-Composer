@@ -4,7 +4,6 @@
 """Components used by PieMenu action."""
 
 from .pie_current_value_holder import PieCurrentValueHolder
-from .pie_edit_mode_handler import PieEditModeHandler
 from .pie_mouse_tracker import PieMouseTracker
 from .pie_style_holder import PieStyleHolder
 from .pie_settings import PieSettings
@@ -16,7 +15,6 @@ from .pie_label import PieLabel
 
 __all__ = [
     "PieCurrentValueHolder",
-    "PieEditModeHandler",
     "PieMouseTracker",
     "PieStyleHolder",
     "PieSettings",
