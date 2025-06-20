@@ -112,8 +112,7 @@ class PieStyleHolder:
         """Return background color based on configured value."""
         if self._pie_config.OVERRIDE_DEFAULT_THEME.read():
             return self._pie_config.BACKGROUND_COLOR.read()
-        else:
-            return Config.default_background_color
+        return Config.default_background_color
 
     def _abbreviation_sign_callback(self):
         return "." if self._pie_config.ABBREVIATE_WITH_DOT.read() else ""

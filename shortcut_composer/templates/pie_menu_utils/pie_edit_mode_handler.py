@@ -43,12 +43,12 @@ class PieEditModeHandler:
         self._obj.pie_mouse_tracker.stop()
 
         self._obj.pie_widget.set_draggable(True)
-        self._obj.pie_widget.order_handler.clear_forced_widgets()
+        for widget in self._obj.pie_widget.order_handler.widgets:
+            widget.forced = False
         self._obj.pie_widget.active_label = None
         self._obj.pie_widget.repaint()
 
         self._obj.pie_settings.show()
-        self._obj.pie_settings.resize(self._obj.pie_settings.sizeHint())
         self._move_settings_next_to_pie()
 
         self._obj.accept_button.show()

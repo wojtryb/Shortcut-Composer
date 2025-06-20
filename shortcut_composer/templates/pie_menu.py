@@ -136,8 +136,9 @@ class PieMenu(RawInstructions, Generic[T]):
             allowed_types=self._controller.TYPE,
             allow_value_edit_callback=lambda: not self._config.TAG_MODE.read())
 
-        # This is first `settings_button`, which creates it
+        # This is the first `settings_button` occurence, which creates it
         self.settings_button.setParent(pie_widget)
+
         self._register_callback_to_size_change(pie_widget.reset_size)
         return pie_widget
 
@@ -194,9 +195,8 @@ class PieMenu(RawInstructions, Generic[T]):
 
         def on_click():
             self._edit_mode_handler.set_edit_mode_false()
-            self._config.set_values(
-                [label.value for label in self.pie_widget.order_handler])
-
+            values = [label.value for label in self.pie_widget.order_handler]
+            self._config.set_values(values)
         accept_button.clicked.connect(on_click)
         accept_button.hide()
 
@@ -230,28 +230,21 @@ class PieMenu(RawInstructions, Generic[T]):
         """Handle the event of user pressing the action key."""
         super().on_key_press()
 
+        # This is the first `pie_widget` occurence, which creates it
         if self.pie_widget.isVisible():
             return
 
-        self._reset_labels()
+        new_labels = self._label_creator.create_labels(self._config.values())
+        current_labels = self.pie_widget.order_handler.labels
+
+        if new_labels != current_labels or self._force_reload:
+            self._force_reload = False
+            self.pie_widget.order_handler.replace_labels(new_labels)
 
         self.current_value_holder.refresh()
-
-        self._actuator.mark_selected_widget(
-            order_handler=self.pie_widget.order_handler)
+        self._actuator.mark_selected_widget(self.pie_widget.order_handler)
 
         self.pie_mouse_tracker.start()
-
-    def _reset_labels(self) -> None:
-        """Replace list values with newly created labels."""
-        values = self._config.values()
-        labels = self._label_creator.create_labels(values)
-
-        current_labels = self.pie_widget.order_handler.labels
-        if labels == current_labels and not self._force_reload:
-            return
-        self._force_reload = False
-        self.pie_widget.order_handler.replace_labels(labels)
 
     def on_every_key_release(self) -> None:
         """
@@ -267,8 +260,8 @@ class PieMenu(RawInstructions, Generic[T]):
         if self._edit_mode_handler.is_in_edit_mode:
             return
 
-        # Hide the widget before activation, in case it opens a new
-        # window which would mess with the hiding
+        # Hide the widget before label gets activated
+        # Activation can open windows, which is better whth pie hidden
         self.pie_widget.hide()
         self._actuator.activate(
             self.pie_widget.active_label,

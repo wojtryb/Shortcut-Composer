@@ -3,7 +3,7 @@
 
 from typing import TypeVar, Generic, Callable
 
-from PyQt5.QtCore import Qt, QPoint
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import (
     QDragEnterEvent,
     QDragLeaveEvent,
@@ -75,8 +75,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     # TODO: to widget holder?
     def set_draggable(self, draggable: bool) -> None:
         """Change draggable state of all children."""
-        # TODO: allow to iterate over widgets in order handler
-        for widget in self.order_handler._widgets.values():
+        for widget in self.order_handler.widgets:
             widget.draggable = draggable
         self.setAcceptDrops(draggable)
 
@@ -113,14 +112,19 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             # Label type does not match the type of pie menu
             return
 
+        # Remember this widget in case user moves mouse so fast,
+        # that there is no other dragMoveEvent to remove it.
+        #
+        # It will be removed in dragLeaveEvent then.
         self._last_widget = source_widget
+
         if distance > self._pie_style.widget_radius:
             # Dragged out of the PieWidget
             return self.order_handler.remove(label)
 
         if not self.order_handler:
             # First label dragged to empty pie
-            return self.order_handler.insert(0, label)
+            return self.order_handler.append(label)
 
         if distance < self.deadzone:
             # Do nothing in deadzone
@@ -129,8 +133,8 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         angle = circle_points.angle_from_point(e.pos())
         label_under_cursor = self.order_handler.label_on_angle(angle)
 
-        if label not in self.order_handler or not self.order_handler:
-            # Dragged with unknown label
+        if label not in self.order_handler:
+            # Dragged with new label, which must be added
             index = self.order_handler.index(label_under_cursor)
             return self.order_handler.insert(index, label)
 
@@ -140,7 +144,6 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
         # Dragged existing label to a new location
         self.order_handler.swap(label_under_cursor, label)
-        self.repaint()
 
     def dragLeaveEvent(self, e: QDragLeaveEvent) -> None:
         """Remove the label when its widget is dragged out."""
@@ -151,9 +154,4 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     def reset_size(self) -> None:
         """Set widget geometry according to style."""
         radius = self._pie_style.widget_radius
-        difference = radius - self.width()//2
-        new_center = QPoint(
-            self.center_global.x() - difference,
-            self.center_global.y())
         self.resize(2*radius, 2*radius)
-        self.move_center(new_center)

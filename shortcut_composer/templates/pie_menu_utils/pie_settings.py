@@ -56,8 +56,6 @@ class PieSettings(AnimatedWidget, BaseWidget):
         self._style_holder = style_holder
         self._tab_holder = QTabWidget()
 
-        self._config.register_to_order_related(self._reset)
-
         # First tab
         self._preferences_tab = PreferencesTab(
             config=self._config,
@@ -107,7 +105,3 @@ class PieSettings(AnimatedWidget, BaseWidget):
         """Hide the window after its settings are saved to kritarc."""
         self._preferences_tab.apply()
         super().hide()
-
-    def _reset(self) -> None:
-        """React to change in pie size."""
-        self.setMinimumHeight(self._style_holder.pie_style.widget_radius*2)

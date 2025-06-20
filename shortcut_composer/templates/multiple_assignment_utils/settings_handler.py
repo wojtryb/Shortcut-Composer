@@ -48,7 +48,7 @@ class SettingsHandler:
         self._button.move(0, 0)
         self._button.hide()
 
-        instructions.append(HandlerInstruction(self._settings, self._button))
+        instructions.append(_HandlerInstruction(self._settings, self._button))
 
     def _on_button_click(self) -> None:
         """Show the settings and hide the button after it was clicked."""
@@ -56,7 +56,7 @@ class SettingsHandler:
         self._button.hide()
 
 
-class HandlerInstruction(Instruction):
+class _HandlerInstruction(Instruction):
     """Instruction installed on the MA action which activates the button."""
 
     def __init__(self, settings: ActionValuesWindow, button: RoundButton):

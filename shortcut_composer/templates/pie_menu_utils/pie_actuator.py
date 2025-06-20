@@ -75,13 +75,14 @@ class PieActuator:
             order_handler: OrderHandler) -> None:
         """Force color of the label that is selected for being picked."""
         self._labels = order_handler.labels
-        order_handler.clear_forced_widgets()
+        for widget in order_handler.widgets:
+            widget.forced = False
 
         if self._selected_label is None:
             return
 
         try:
-            widget = order_handler.widget_on_label(self._selected_label)
+            widget = order_handler.widget_with_label(self._selected_label)
         except ValueError:
             return
         widget.forced = True

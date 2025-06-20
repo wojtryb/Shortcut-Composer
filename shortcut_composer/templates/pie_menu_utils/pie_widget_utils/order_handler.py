@@ -44,10 +44,13 @@ class OrderHandler:
     def values(self):
         return [label.value for label in self._labels]
 
-    # TODO: change list to tuple?
     @property
     def labels(self) -> list[PieLabel]:
         return self._labels.copy()
+
+    @property
+    def widgets(self) -> list[PieLabelWidget]:
+        return [widget for widget in self._widgets.values()]
 
     def replace_labels(self, labels: list[PieLabel]) -> None:
         self._labels = labels.copy()
@@ -81,8 +84,8 @@ class OrderHandler:
         idx_a = self._labels.index(_a)
         idx_b = self._labels.index(_b)
 
-        w_a = self.widget_on_label(self._labels[idx_a])
-        w_b = self.widget_on_label(self._labels[idx_b])
+        w_a = self.widget_with_label(self._labels[idx_a])
+        w_b = self.widget_with_label(self._labels[idx_b])
 
         label_a = w_a.label
         label_b = w_b.label
@@ -112,17 +115,12 @@ class OrderHandler:
         closest = min(self._angles(), key=angle_difference)
         return self._widgets[closest].label
 
-    def widget_on_label(self, label: PieLabel) -> PieLabelWidget:
+    def widget_with_label(self, label: PieLabel) -> PieLabelWidget:
         """Return widget wrapping the label of the same value as given."""
         for widget in self._widgets.values():
             if widget.label == label:
                 return widget
         raise ValueError(f"{label} not in holder.")
-
-    def clear_forced_widgets(self) -> None:
-        """Clear the forced colors of all held widgets. Helper method."""
-        for widget in self._widgets.values():
-            widget.forced = False
 
     def register_callback_on_change(self, callback: EmptyCallback):
         self._on_change_callbacks.append(callback)
