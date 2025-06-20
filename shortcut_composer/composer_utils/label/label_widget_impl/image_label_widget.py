@@ -37,9 +37,8 @@ class ImageLabelWidget(LabelWidget[T]):
         if not isinstance(to_display, QPixmap):
             raise TypeError("Label supposed to be QPixmap.")
 
-        rounded_image = PixmapTransform.make_pixmap_round(to_display)
         return PixmapTransform.scale_pixmap(
-            pixmap=rounded_image,
+            pixmap=to_display,
             size_px=round((
                 self.icon_radius
                 - self._label_widget_style.border_thickness

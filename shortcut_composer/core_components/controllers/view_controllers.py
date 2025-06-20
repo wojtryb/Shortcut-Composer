@@ -4,6 +4,7 @@
 from PyQt5.QtGui import QPixmap, QImage, QColor
 from api_krita import Krita
 from api_krita.enums import BlendingMode
+from api_krita.pyqt import PixmapTransform
 from composer_utils.label import LabelText, LabelTextColorizer
 from ..controller_base import Controller, NumericController
 
@@ -44,7 +45,8 @@ class PresetController(ViewBasedController, Controller[str]):
         except KeyError:
             return None
         else:
-            return QPixmap.fromImage(image)
+            pixmap = QPixmap.fromImage(image)
+            return PixmapTransform.make_pixmap_round(pixmap)
 
 
 class BrushSizeController(ViewBasedController, NumericController):
