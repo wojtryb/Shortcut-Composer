@@ -121,6 +121,13 @@ class PieMenu(RawInstructions, Generic[T]):
             controller=self._controller,
             strategy_field=self._config.DEADZONE_STRATEGY)
 
+        # Usually, when labels stay same, recreating widgets is not needed.
+        # When widget scale changes, they have to be reloaded.
+        def raise_flag():
+            self._force_reload = True
+        self._force_reload = False
+        self._register_callback_to_size_change(raise_flag)
+
     @cached_property
     def pie_widget(self) -> PieWidget:
         """Create Qwidget of the Pie for selecting values."""
@@ -244,9 +251,10 @@ class PieMenu(RawInstructions, Generic[T]):
         values = self._config.values()
         labels = self._label_creator.create_labels(values)
 
-        if labels == self.pie_widget.order_handler.labels:
+        current_labels = self.pie_widget.order_handler.labels
+        if labels == current_labels and not self._force_reload:
             return
-
+        self._force_reload = False
         self.pie_widget.order_handler.replace_labels(labels)
 
     def on_every_key_release(self) -> None:
