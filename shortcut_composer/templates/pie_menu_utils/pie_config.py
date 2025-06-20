@@ -127,6 +127,7 @@ class PieConfig(FieldGroup, Generic[T]):
         - In manual mode, specifies both the values and their order.
         """
 
+    # TODO: return labels instead of values?
     def values(self) -> list[T]:
         """Return all presets based on mode and stored order."""
         if not self.TAG_MODE.read():
@@ -142,12 +143,6 @@ class PieConfig(FieldGroup, Generic[T]):
             field.write(values)
 
         self.ORDER.write(values)
-
-    def refresh_order(self) -> None:
-        """Refresh the values in case the active document changed."""
-        self.TAG_MODE.field.refresh()
-        self.TAG_NAME.field.refresh()
-        self.ORDER.write(self.values())
 
     def reset_the_default(self) -> None:
         """Set empty pie as a new default list of values."""

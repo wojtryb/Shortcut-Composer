@@ -118,8 +118,6 @@ class ValuesListTab(QWidget):
             labels = self._label_creator.create_labels(values)
             self._order_handler.replace_labels(labels)
 
-            self._config.refresh_order()
-
         auto_combobox = GroupComboBox(
             last_value_field=self._config.TAG_NAME,
             group_manager=self._label_creator,
@@ -152,7 +150,6 @@ class ValuesListTab(QWidget):
         """Set the pie mode to tag (True) or manual (False)."""
         if notify:
             self._config.TAG_MODE.write(value)
-        self._config.refresh_order()
         if value:
             # moving to tag mode
             self._mode_button.main_text = "Tag mode"

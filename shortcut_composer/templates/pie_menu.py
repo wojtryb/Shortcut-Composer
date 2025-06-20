@@ -192,17 +192,14 @@ class PieMenu(RawInstructions, Generic[T]):
             self.pie_widget.active_label = None
             self.pie_widget.repaint()
 
-            self.pie_settings.show()
-
             # Move settings next to the pie
-            settings_offset = round(0.5*(
-                self.pie_widget.width()
-                + self.pie_settings.width()*1.05))
-            center = self.pie_widget.center_global + QPoint(settings_offset, 0)
+            self.pie_settings.show()
+            pie_radius = self._style_holder.pie_style.widget_radius
+            offset = round(pie_radius + self.pie_settings.width()*0.525)
+            center = self.pie_widget.center_global + QPoint(offset, 0)
             self.pie_settings.move_center(center)
 
             self.accept_button.show()
-
             self.settings_button.hide()
             self.current_value_holder.show()
 
@@ -310,7 +307,7 @@ class PieMenu(RawInstructions, Generic[T]):
             return
 
         # Hide the widget before label gets activated
-        # Activation can open windows, which is better whth pie hidden
+        # Activation can open windows, which is better with pie hidden
         self.pie_widget.hide()
         self._actuator.activate(
             self.pie_widget.active_label,

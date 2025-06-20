@@ -14,12 +14,15 @@ from ..group_manager import GroupManager
 class PresetGroupManager(GroupManager):
     """TODO"""
 
-    known_labels: dict[str, PieLabel | None] = {}
+    known_labels: dict[str, PieLabel] = {}
     """
     Dictionary of known preset labels mapped to their names.
 
     Allows to avoid creating the same labels multiple times.
     """
+
+    invalid_presets: list[str] = []
+    """List of preset names, that result in invalid labels."""
 
     def __init__(self) -> None:
         self._controller = PresetController()
@@ -35,14 +38,21 @@ class PresetGroupManager(GroupManager):
 
     def create_labels(self, values: Iterable[str]) -> list[PieLabel[str]]:
         """Create labels from list of preset names."""
-        labels: list[PieLabel | None] = []
+        labels: list[PieLabel] = []
 
         for preset in values:
             if preset in self.known_labels:
-                label = self.known_labels[preset]
-            else:
-                label = PieLabel.from_value(preset, self._controller)
-                self.known_labels[preset] = label
+                labels.append(self.known_labels[preset])
+                continue
+
+            if preset in self.invalid_presets:
+                continue
+
+            label = PieLabel.from_value(preset, self._controller)
+            if label is None:
+                self.invalid_presets.append(preset)
+                continue
+
             labels.append(label)
 
-        return [label for label in labels if label is not None]
+        return labels
