@@ -26,7 +26,11 @@ class Tag(list[str]):
         with Database() as database:
             from_krita = database.get_preset_names_from_tag(self.tag_name)
 
-        field = Field("ShortcutComposer: Tag order", self.tag_name, [], str)
+        field = Field(
+            config_group="ShortcutComposer: Tag order",
+            name=self.tag_name,
+            default=[],
+            parser_type=str)
         from_config = field.read()
 
         preset_order = [p for p in from_config if p in from_krita]

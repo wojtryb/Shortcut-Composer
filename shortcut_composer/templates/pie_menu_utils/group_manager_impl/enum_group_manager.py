@@ -3,6 +3,7 @@
 
 from api_krita.enums.helpers import EnumGroup
 from core_components import Controller
+from config_system import Field
 from ..pie_label import PieLabel
 from ..group_manager import GroupManager
 
@@ -20,7 +21,20 @@ class EnumGroupManager(GroupManager):
             return list(self._enum_type._member_map_.values())
         elif group not in self._enum_type._groups_:
             return []
-        return self._enum_type._groups_[group]
+
+        from_krita = self._enum_type._groups_[group]
+
+        field = Field(
+            config_group="ShortcutComposer: Tag order",
+            name=group,
+            default=[],
+            parser_type=self._controller.TYPE)
+        from_config = field.read()
+
+        known_order = [v for v in from_config if v in from_krita]
+        missing = [v for v in from_krita if v not in from_config]
+
+        return known_order + missing
 
     def create_labels(
         self,

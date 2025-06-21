@@ -109,16 +109,21 @@ class ValuesListTab(QWidget):
             lambda: self._set_tag_mode(self._config.TAG_MODE.read(), False))
         return mode_button
 
-    def _init_auto_combobox(self) -> 'GroupComboBox':
+    def _init_auto_combobox(self) -> '_GroupComboBox':
         """Create tag mode combobox, which sets tag presets to the pie."""
         def handle_picked_tag() -> None:
             """Save used tag in config and report the values changed."""
+            # Save order in previous tag
+            self._order_handler.values
+            self._config.set_values(self._order_handler.values)
+
+            # Switch to new tag and replace labels with its values
             auto_combobox.save()
             values = self._label_creator.get_values(auto_combobox.read())
             labels = self._label_creator.create_labels(values)
             self._order_handler.replace_labels(labels)
 
-        auto_combobox = GroupComboBox(
+        auto_combobox = _GroupComboBox(
             last_value_field=self._config.TAG_NAME,
             group_manager=self._label_creator,
             pretty_name="Tag name")
@@ -126,7 +131,7 @@ class ValuesListTab(QWidget):
         auto_combobox.widget.currentTextChanged.connect(handle_picked_tag)
         return auto_combobox
 
-    def _init_manual_combobox(self) -> 'GroupComboBox':
+    def _init_manual_combobox(self) -> '_GroupComboBox':
         def _display_group() -> None:
             """Update preset widgets according to tag selected in combobox."""
             picked_group = manual_combobox.widget.currentText()
@@ -136,7 +141,7 @@ class ValuesListTab(QWidget):
             self._scroll_area._apply_search_bar_filter()
             manual_combobox.save()
 
-        manual_combobox = GroupComboBox(
+        manual_combobox = _GroupComboBox(
             last_value_field=self._config.LAST_TAG_SELECTED,
             group_manager=self._label_creator,
             additional_fields=["---Select tag---", "All"])
@@ -166,7 +171,7 @@ class ValuesListTab(QWidget):
             self._auto_combobox.widget.hide()
 
 
-class GroupComboBox(StringComboBox):
+class _GroupComboBox(StringComboBox):
 
     def __init__(
         self,

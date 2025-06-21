@@ -137,9 +137,11 @@ class PieConfig(FieldGroup, Generic[T]):
     def set_values(self, values: list[T]) -> None:
         """When in tag mode, remember the tag order. Then write normally."""
         if self.TAG_MODE.read():
-            group = "ShortcutComposer: Tag order"
             field = Field(
-                group, self.TAG_NAME.read(), [], self._controller.TYPE)
+                config_group="ShortcutComposer: Tag order",
+                name=self.TAG_NAME.read(),
+                default=[],
+                parser_type=self._controller.TYPE)
             field.write(values)
 
         self.ORDER.write(values)
