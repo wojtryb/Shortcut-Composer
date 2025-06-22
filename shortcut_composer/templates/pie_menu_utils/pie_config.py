@@ -4,7 +4,8 @@
 from typing import Generic, TypeVar
 from PyQt5.QtGui import QColor
 from api_krita import Krita
-from config_system import Field, FieldGroup
+from composer_utils import GroupOrderHolder
+from config_system import FieldGroup
 from config_system.field_base_impl import DualField, FieldWithEditableDefault
 from data_components import Tag, PieDeadzoneStrategy
 from core_components import Controller
@@ -41,6 +42,7 @@ class PieConfig(FieldGroup, Generic[T]):
     ) -> None:
         super().__init__(name)
         self._controller = controller
+        self._group_order_holder = GroupOrderHolder(controller.TYPE)
 
         self.PIE_RADIUS_SCALE = self.field(
             name="Pie scale",
@@ -128,12 +130,7 @@ class PieConfig(FieldGroup, Generic[T]):
     def set_values(self, values: list[T]) -> None:
         """When in tag mode, remember the tag order. Then write normally."""
         if self.TAG_MODE.read():
-            field = Field(
-                config_group="ShortcutComposer: Tag order",
-                name=self.TAG_NAME.read(),
-                default=[],
-                parser_type=self._controller.TYPE)
-            field.write(values)
+            self._group_order_holder.set_order(self.TAG_NAME.read(), values)
 
         self.ORDER.write(values)
 

@@ -4,6 +4,7 @@
 """Utilities specific for this plugin. Not directly reusable elsewhere."""
 
 from .animation_progress import AnimationProgress
+from .group_order_holder import GroupOrderHolder
 from .settings_dialog import SettingsDialog
 from .buttons_layout import ButtonsLayout
 from .circle_points import CirclePoints
@@ -11,6 +12,7 @@ from .global_config import Config
 
 __all__ = [
     "AnimationProgress",
+    "GroupOrderHolder",
     "SettingsDialog",
     "ButtonsLayout",
     "CirclePoints",

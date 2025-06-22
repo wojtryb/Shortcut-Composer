@@ -3,15 +3,16 @@
 
 from api_krita.enums.helpers import EnumGroup
 from core_components import Controller
-from config_system import Field
 from ..pie_label import PieLabel
 from ..group_manager import GroupManager
 from ..pie_config import PieConfig
+from composer_utils import GroupOrderHolder
 
 
 class EnumGroupManager(GroupManager):
     def __init__(self, controller: Controller) -> None:
         self._controller = controller
+        self._group_order_holder = GroupOrderHolder(controller.TYPE)
         self._enum_type = self._controller.TYPE
 
     def fetch_groups(self) -> list[str]:
@@ -34,13 +35,7 @@ class EnumGroupManager(GroupManager):
             return []
 
         from_krita = self._enum_type._groups_[group]
-
-        field = Field(
-            config_group="ShortcutComposer: Tag order",
-            name=group,
-            default=[],
-            parser_type=self._controller.TYPE)
-        from_config = field.read()
+        from_config = self._group_order_holder.get_order(group)
 
         known_order = [v for v in from_config if v in from_krita]
         missing = [v for v in from_krita if v not in from_config]

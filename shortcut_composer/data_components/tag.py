@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from api_krita.wrappers import Database
-from config_system import Field
+from composer_utils import GroupOrderHolder
 
 
 class Tag(list[str]):
@@ -10,6 +10,7 @@ class Tag(list[str]):
 
     def __init__(self, tag_name: str) -> None:
         self.tag_name = tag_name
+        self._group_order_holder = GroupOrderHolder(str)
         self.refresh()
 
     def refresh(self) -> None:
@@ -26,12 +27,7 @@ class Tag(list[str]):
         with Database() as database:
             from_krita = database.get_preset_names_from_tag(self.tag_name)
 
-        field = Field(
-            config_group="ShortcutComposer: Tag order",
-            name=self.tag_name,
-            default=[],
-            parser_type=str)
-        from_config = field.read()
+        from_config = self._group_order_holder.get_order(self.tag_name)
 
         preset_order = [p for p in from_config if p in from_krita]
         missing = [p for p in from_krita if p not in from_config]
