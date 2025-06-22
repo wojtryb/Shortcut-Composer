@@ -2,40 +2,38 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 
-from PyQt5.QtCore import QPoint
+from PyQt5.QtWidgets import QWidget
 
 from core_components import Controller
 from composer_utils.label import LabelWidget
 from composer_utils.label.label_widget_impl import dispatch_label_widget
 from composer_utils.label import LabelWidgetStyle
 from .pie_label import PieLabel
-from .pie_widget import PieWidget
 
 
-class PieCurrentValueHolder:
+class PieCurrentValueHolder(QWidget):
     """
     Holds the LabelWidget with the current value.
 
     - Allows to quickly drag current value to PieMenu.
     - If controller cannot fatch a value, this object is not displayed.
-    - Can be hidden and shown similarily to QWidget.
     """
 
     def __init__(
         self,
         controller: Controller,
         style: LabelWidgetStyle,
-        pie_widget: PieWidget  # TODO: should not be here
     ) -> None:
+        super().__init__(None)
         self._controller = controller
         self._style = style
-        self._pie_widget = pie_widget
         self._widget: LabelWidget | None = None
         self._is_hidden = True
 
         self.refresh()
         self.hide()
 
+    # def replace(self, label: PieLabel | None):
     def refresh(self):
         """Replace remembered LabelWidget with the current value."""
         # Leave the widget empty if controller does not get values.
@@ -43,41 +41,24 @@ class PieCurrentValueHolder:
         try:
             current_value = self._controller.get_value()
         except NotImplementedError:
+            if self._widget is not None:
+                self._widget.setParent(None)  # type: ignore
             return
 
         # Leave the widget empty if the value does not have a label.
         label = PieLabel.from_value(current_value, self._controller)
         if label is None:
+            if self._widget is not None:
+                self._widget.setParent(None)  # type: ignore
             return
 
+        self._refresh_widget(label)
+
+    def _refresh_widget(self, label: PieLabel) -> None:
         if self._widget is not None:
-            position = self._widget.pos()
             self._widget.setParent(None)  # type: ignore
-        else:
-            position = QPoint()
 
         self._widget = dispatch_label_widget(label)(
             label=label,
             label_widget_style=self._style,
-            parent=self._pie_widget)
-
-        self._widget.move(position)
-        if self._is_hidden:
-            self.hide()
-
-    def hide(self):
-        """Do not display the widget until the `show()` is called."""
-        self._is_hidden = True
-        if self._widget is not None:
-            self._widget.hide()
-
-    def show(self):
-        """Display the widget until the `hide` is called."""
-        self._is_hidden = False
-        if self._widget is not None:
-            self._widget.show()
-
-    def move(self, point: QPoint):
-        """Move the widget to a new position."""
-        if self._widget is not None:
-            self._widget.move(point)
+            parent=self)

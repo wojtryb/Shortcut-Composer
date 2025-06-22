@@ -273,8 +273,8 @@ class PieMenu(RawInstructions, Generic[T]):
         """Create a LabelWidget holder with currently selected value."""
         value_holder = PieCurrentValueHolder(
             self._controller,
-            self._style_holder.small_label_style,
-            self.pie_widget)
+            self._style_holder.small_label_style)
+        value_holder.setParent(self.pie_widget)
 
         def move_to_bottom_left():
             pie_size = 2*self._style_holder.pie_style.widget_radius
