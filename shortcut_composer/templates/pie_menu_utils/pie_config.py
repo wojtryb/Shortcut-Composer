@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Callable, Generic, TypeVar
+from typing import Generic, TypeVar
 from PyQt5.QtGui import QColor
 from api_krita import Krita
 from config_system import Field, FieldGroup
@@ -119,7 +119,7 @@ class PieConfig(FieldGroup, Generic[T]):
         self.ORDER = self._create_editable_dual_field(
             field_name="Values",
             default=default_values,
-            parser_type=controller.TYPE)
+            parser_type=self._controller.TYPE)
         """
         Selected values in specific order.
 
@@ -145,24 +145,6 @@ class PieConfig(FieldGroup, Generic[T]):
             field.write(values)
 
         self.ORDER.write(values)
-
-    def reset_the_default(self) -> None:
-        """Set empty pie as a new default list of values."""
-        self.TAG_MODE.default = False
-        self.TAG_NAME.default = ""
-        self.ORDER.default = []
-
-    def reset_to_default(self) -> None:
-        """Replace current list of values in pie with the default list."""
-        self.TAG_MODE.reset_default()
-        self.TAG_NAME.reset_default()
-        self.ORDER.reset_default()
-
-    def register_to_order_related(self, callback: Callable[[], None]) -> None:
-        """Register callback to all fields related to value order."""
-        self.TAG_MODE.register_callback(callback)
-        self.TAG_NAME.register_callback(callback)
-        self.ORDER.register_callback(callback)
 
     def _create_editable_dual_field(
         self,

@@ -246,8 +246,7 @@ class PieMenu(RawInstructions, Generic[T]):
             self.current_value_holder.hide()
 
             # Save values from the pie to config
-            values = [label.value for label in self.pie_widget.order_handler]
-            self._config.set_values(values)
+            self._config.set_values(self.pie_widget.order_handler.values)
 
             self._is_in_edit_mode = False
         accept_button.clicked.connect(set_edit_mode_off)

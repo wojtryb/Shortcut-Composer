@@ -74,7 +74,9 @@ class SaveLocationTab(QWidget):
         def switch_mode() -> None:
             self.is_local_mode = not self.is_local_mode
             if self.is_local_mode:
-                self._config.reset_the_default()
+                self._config.TAG_MODE.default = False
+                self._config.TAG_NAME.default = ""
+                self._config.ORDER.default = []
 
         button = SafeConfirmButton(text="Change mode")
         button.clicked.connect(switch_mode)
@@ -125,7 +127,10 @@ class SaveLocationTab(QWidget):
             icon=Krita.get_icon("edit-delete"))
 
         def reset_order_to_default():
-            self._config.reset_to_default()
+            self._config.TAG_MODE.reset_default()
+            self._config.TAG_NAME.reset_default()
+            self._config.ORDER.reset_default()
+
             values = self._config.values()
             labels = self._label_creator.create_labels(values)
             self._order_handler.replace_labels(labels)
