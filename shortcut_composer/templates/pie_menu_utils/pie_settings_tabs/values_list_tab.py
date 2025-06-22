@@ -7,6 +7,7 @@ from api_krita import Krita
 from api_krita.pyqt import SafeConfirmButton
 from config_system import Field
 from config_system.ui import StringComboBox
+from composer_utils import GroupOrderHolder
 from composer_utils.label.complex_widgets import ScrollArea
 from core_components import Controller
 from ..pie_config import PieConfig
@@ -31,6 +32,7 @@ class ValuesListTab(QWidget):
         self._order_handler = order_handler
         self._style_holder = style_holder
 
+        self._group_order_holder = GroupOrderHolder(controller.TYPE)
         self._label_creator = dispatch_group_manager(controller)
         self._scroll_area = self._init_scroll_area()
         self._mode_button = self._init_mode_button()
@@ -115,7 +117,9 @@ class ValuesListTab(QWidget):
             """Save used tag in config and report the values changed."""
             # Save order in previous tag
             self._order_handler.values
-            self._config.set_values(self._order_handler.values)
+            self._group_order_holder.set_order(
+                self._config.TAG_NAME.read(),
+                self._order_handler.values)
 
             # Switch to new tag and replace labels with its values
             auto_combobox.save()

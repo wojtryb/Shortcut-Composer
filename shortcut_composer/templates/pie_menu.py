@@ -9,6 +9,7 @@ from PyQt5.QtGui import QColor
 
 from api_krita import Krita
 from api_krita.pyqt import RoundButton
+from composer_utils import GroupOrderHolder
 from data_components import PieDeadzoneStrategy
 from composer_utils import Config
 from core_components import Controller, Instruction
@@ -130,6 +131,7 @@ class PieMenu(RawInstructions, Generic[T]):
 
         self._style_holder = PieStyleHolder(self._config)
         self._label_creator = dispatch_group_manager(self._controller)
+        self._group_order_holder = GroupOrderHolder(self._controller.TYPE)
 
         self._is_in_edit_mode = False
         self._force_reload = False
@@ -246,7 +248,13 @@ class PieMenu(RawInstructions, Generic[T]):
             self.current_value_holder.hide()
 
             # Save values from the pie to config
-            self._config.set_values(self.pie_widget.order_handler.values)
+            values = self.pie_widget.order_handler.values
+            if self._config.TAG_MODE.read():
+                self._group_order_holder.set_order(
+                    group_name=self._config.TAG_NAME.read(),
+                    values=values)
+            else:
+                self._config.ORDER.write(values)
 
             self._is_in_edit_mode = False
         accept_button.clicked.connect(set_edit_mode_off)

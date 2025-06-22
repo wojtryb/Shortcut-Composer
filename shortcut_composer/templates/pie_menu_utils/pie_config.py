@@ -4,7 +4,6 @@
 from typing import Generic, TypeVar
 from PyQt5.QtGui import QColor
 from api_krita import Krita
-from composer_utils import GroupOrderHolder
 from config_system import FieldGroup
 from config_system.field_base_impl import DualField, FieldWithEditableDefault
 from data_components import Tag, PieDeadzoneStrategy
@@ -20,8 +19,6 @@ class PieConfig(FieldGroup, Generic[T]):
 
     Most of PieMenu components can read and modify this object to
     personalize it and remember its state between sessions.
-
-    It contains conveniance methods that affect multiple fields at once.
     """
 
     def __init__(
@@ -42,7 +39,6 @@ class PieConfig(FieldGroup, Generic[T]):
     ) -> None:
         super().__init__(name)
         self._controller = controller
-        self._group_order_holder = GroupOrderHolder(controller.TYPE)
 
         self.PIE_RADIUS_SCALE = self.field(
             name="Pie scale",
@@ -126,13 +122,6 @@ class PieConfig(FieldGroup, Generic[T]):
         - In group mode, specifies the order of the values.
         - In manual mode, specifies both the values and their order.
         """
-
-    def set_values(self, values: list[T]) -> None:
-        """When in tag mode, remember the tag order. Then write normally."""
-        if self.TAG_MODE.read():
-            self._group_order_holder.set_order(self.TAG_NAME.read(), values)
-
-        self.ORDER.write(values)
 
     def _create_editable_dual_field(
         self,
