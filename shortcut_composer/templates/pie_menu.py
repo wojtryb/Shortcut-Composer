@@ -286,7 +286,7 @@ class PieMenu(RawInstructions, Generic[T]):
         if self.pie_widget.isVisible():
             return
 
-        new_labels = self._label_creator.create_labels(self._config.values())
+        new_labels = self._label_creator.labels_from_config(self._config)
         current_labels = self.pie_widget.order_handler.labels
 
         if new_labels != current_labels or self._force_reload:

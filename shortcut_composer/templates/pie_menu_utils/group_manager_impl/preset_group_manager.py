@@ -7,6 +7,7 @@ from api_krita import Krita
 from api_krita.wrappers import Database
 from core_components.controllers import PresetController
 from data_components import Tag
+from ..pie_config import PieConfig
 from ..pie_label import PieLabel
 from ..group_manager import GroupManager
 
@@ -31,12 +32,22 @@ class PresetGroupManager(GroupManager):
         with Database() as database:
             return database.get_brush_tags()
 
-    def get_values(self, group: str) -> list[str]:
+    def labels_from_group(self, group: str):
+        return self._create_labels(self._get_values(group))
+
+    def labels_from_config(self, config: PieConfig):
+        if not config.TAG_MODE.read():
+            values = config.ORDER.read()
+        else:
+            values = self._get_values(config.TAG_NAME.read())
+        return self._create_labels(values)
+
+    def _get_values(self, group: str) -> list[str]:
         if group == "All":
             return list(Krita.get_presets().keys())
         return Tag(group)
 
-    def create_labels(self, values: Iterable[str]) -> list[PieLabel[str]]:
+    def _create_labels(self, values: Iterable[str]) -> list[PieLabel[str]]:
         """Create labels from list of preset names."""
         labels: list[PieLabel] = []
 

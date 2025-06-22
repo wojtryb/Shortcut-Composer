@@ -131,8 +131,7 @@ class SaveLocationTab(QWidget):
             self._config.TAG_NAME.reset_default()
             self._config.ORDER.reset_default()
 
-            values = self._config.values()
-            labels = self._label_creator.create_labels(values)
+            labels = self._label_creator.labels_from_config(self._config)
             self._order_handler.replace_labels(labels)
 
         button.clicked.connect(reset_order_to_default)

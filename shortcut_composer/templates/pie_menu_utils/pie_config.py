@@ -8,7 +8,6 @@ from config_system import Field, FieldGroup
 from config_system.field_base_impl import DualField, FieldWithEditableDefault
 from data_components import Tag, PieDeadzoneStrategy
 from core_components import Controller
-from .group_manager_impl import dispatch_group_manager
 
 T = TypeVar("T")
 U = TypeVar("U")
@@ -42,7 +41,6 @@ class PieConfig(FieldGroup, Generic[T]):
     ) -> None:
         super().__init__(name)
         self._controller = controller
-        self._manager = dispatch_group_manager(controller)
 
         self.PIE_RADIUS_SCALE = self.field(
             name="Pie scale",
@@ -126,13 +124,6 @@ class PieConfig(FieldGroup, Generic[T]):
         - In group mode, specifies the order of the values.
         - In manual mode, specifies both the values and their order.
         """
-
-    # TODO: return labels instead of values?
-    def values(self) -> list[T]:
-        """Return all presets based on mode and stored order."""
-        if not self.TAG_MODE.read():
-            return self.ORDER.read()
-        return self._manager.get_values(self.TAG_NAME.read())
 
     def set_values(self, values: list[T]) -> None:
         """When in tag mode, remember the tag order. Then write normally."""

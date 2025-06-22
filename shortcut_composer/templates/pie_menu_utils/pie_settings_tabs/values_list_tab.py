@@ -119,8 +119,8 @@ class ValuesListTab(QWidget):
 
             # Switch to new tag and replace labels with its values
             auto_combobox.save()
-            values = self._label_creator.get_values(auto_combobox.read())
-            labels = self._label_creator.create_labels(values)
+            picked_group = auto_combobox.read()
+            labels = self._label_creator.labels_from_group(picked_group)
             self._order_handler.replace_labels(labels)
 
         auto_combobox = _GroupComboBox(
@@ -135,9 +135,8 @@ class ValuesListTab(QWidget):
         def _display_group() -> None:
             """Update preset widgets according to tag selected in combobox."""
             picked_group = manual_combobox.widget.currentText()
-            values = self._label_creator.get_values(picked_group)
-            self._scroll_area.replace_handled_labels(
-                self._label_creator.create_labels(values))
+            labels = self._label_creator.labels_from_group(picked_group)
+            self._scroll_area.replace_handled_labels(labels)
             self._scroll_area._apply_search_bar_filter()
             manual_combobox.save()
 

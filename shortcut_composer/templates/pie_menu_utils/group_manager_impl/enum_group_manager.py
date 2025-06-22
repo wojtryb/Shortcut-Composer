@@ -6,6 +6,7 @@ from core_components import Controller
 from config_system import Field
 from ..pie_label import PieLabel
 from ..group_manager import GroupManager
+from ..pie_config import PieConfig
 
 
 class EnumGroupManager(GroupManager):
@@ -16,7 +17,17 @@ class EnumGroupManager(GroupManager):
     def fetch_groups(self) -> list[str]:
         return list(self._enum_type._groups_.keys())
 
-    def get_values(self, group: str) -> list[EnumGroup]:
+    def labels_from_group(self, group: str) -> list[PieLabel]:
+        return self._create_labels(self._get_values(group))
+
+    def labels_from_config(self, config: PieConfig) -> list[PieLabel]:
+        if not config.TAG_MODE.read():
+            values = config.ORDER.read()
+        else:
+            values = self._get_values(config.TAG_NAME.read())
+        return self._create_labels(values)
+
+    def _get_values(self, group: str) -> list[EnumGroup]:
         if group == "All":
             return list(self._enum_type._member_map_.values())
         elif group not in self._enum_type._groups_:
@@ -36,7 +47,7 @@ class EnumGroupManager(GroupManager):
 
         return known_order + missing
 
-    def create_labels(
+    def _create_labels(
         self,
         values: list[EnumGroup]
     ) -> list[PieLabel[EnumGroup]]:
