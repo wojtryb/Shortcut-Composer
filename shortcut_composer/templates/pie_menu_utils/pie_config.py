@@ -7,7 +7,6 @@ from api_krita import Krita
 from config_system import FieldGroup
 from config_system.field_base_impl import DualField, FieldWithEditableDefault
 from data_components import Tag, PieDeadzoneStrategy
-from core_components import Controller
 
 T = TypeVar("T")
 U = TypeVar("U")
@@ -24,8 +23,8 @@ class PieConfig(FieldGroup, Generic[T]):
     def __init__(
         self,
         name: str,
-        values: Tag | list[T],
-        controller: Controller,
+        values: list[T],
+        value_type: type[T],
         pie_radius_scale: float,
         icon_radius_scale: float,
         save_local: bool,
@@ -38,7 +37,7 @@ class PieConfig(FieldGroup, Generic[T]):
         abbreviate_with_dot: bool,
     ) -> None:
         super().__init__(name)
-        self._controller = controller
+        self._value_type = value_type
 
         self.PIE_RADIUS_SCALE = self.field(
             name="Pie scale",
@@ -115,7 +114,7 @@ class PieConfig(FieldGroup, Generic[T]):
         self.ORDER = self._create_editable_dual_field(
             field_name="Values",
             default=default_values,
-            parser_type=self._controller.TYPE)
+            parser_type=self._value_type)
         """
         Selected values in specific order.
 

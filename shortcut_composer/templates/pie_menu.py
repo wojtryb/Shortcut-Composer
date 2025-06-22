@@ -117,7 +117,7 @@ class PieMenu(RawInstructions, Generic[T]):
         self._config = PieConfig(
             name=f"ShortcutComposer: {name}",
             values=values,
-            controller=controller,
+            value_type=controller.TYPE,
             pie_radius_scale=pie_radius_scale,
             icon_radius_scale=icon_radius_scale,
             save_local=save_local,
@@ -161,7 +161,7 @@ class PieMenu(RawInstructions, Generic[T]):
         """Create QWidget with pie settings right for given type of labels."""
         return PieSettings(
             config=self._config,
-            style_holder=self._style_holder,  # TODO: pass just label_style?
+            style_holder=self._style_holder,
             controller=self._controller,
             order_handler=self.pie_widget.order_handler)
 
