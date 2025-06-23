@@ -43,7 +43,6 @@ class PieSettings(AnimatedWidget, BaseWidget):
             fps_limit=Config.FPS_LIMIT.read(),
             parent=None)
 
-        self.setMinimumHeight(round(style_holder.pie_style.widget_radius*2))
         self.setAcceptDrops(True)
         self.setWindowFlags((
             self.windowFlags() |
@@ -78,7 +77,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
                     raise RuntimeError(f"Could not create label from {value}")
                 return label
 
-            self._numeric_picker = NumericValuePicker(
+            tab = NumericValuePicker(
                 create_label_from_integer=label_from_integer,
                 unscaled_label_style=style_holder.settings_label_style,
                 min_value=controller.MIN_VALUE,
@@ -86,6 +85,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
                 step=controller.STEP,
                 wrapping=controller.WRAPPING,
                 adaptive=controller.ADAPTIVE)
+            self._tab_holder.addTab(tab, "Values")
             self._tab_holder.setCurrentIndex(1)
 
         # Third tab
