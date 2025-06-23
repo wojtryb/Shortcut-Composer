@@ -91,6 +91,12 @@ class ValuesListTab(QWidget):
         """Create button which switches between tag and manual mode."""
         def switch_mode() -> None:
             """Change the is_tag_mode to the opposite state."""
+            # Save custom order when leaving tag mode
+            if self._config.TAG_MODE.read():
+                self._group_order_holder.set_order(
+                    self._config.TAG_NAME.read(),
+                    self._order_handler.values)
+
             is_tag_mode = not self._config.TAG_MODE.read()
             self._set_tag_mode(is_tag_mode)
             if is_tag_mode:

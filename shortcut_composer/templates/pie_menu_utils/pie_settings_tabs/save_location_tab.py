@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import (
 from api_krita import Krita
 from api_krita.pyqt import SafeConfirmButton
 from core_components import Controller
+from composer_utils import GroupOrderHolder
 from ..pie_config import PieConfig
 from ..pie_widget_utils import OrderHandler
 from ..group_manager_impl import dispatch_group_manager
@@ -33,6 +34,7 @@ class SaveLocationTab(QWidget):
         self._order_handler = order_handler
         self._label_creator = dispatch_group_manager(controller)
 
+        self._group_order_holder = GroupOrderHolder(controller.TYPE)
         self._location_button = self._init_location_button()
         self._mode_title = self._init_mode_title()
         self._mode_description = self._init_mode_description()
@@ -129,6 +131,12 @@ class SaveLocationTab(QWidget):
             icon=Krita.get_icon("edit-delete"))
 
         def reset_order_to_default():
+            # Save custom order when leaving tag mode
+            if self._config.TAG_MODE.read():
+                self._group_order_holder.set_order(
+                    self._config.TAG_NAME.read(),
+                    self._order_handler.values)
+
             self._config.TAG_MODE.reset_default()
             self._config.TAG_NAME.reset_default()
             self._config.ORDER.reset_default()
