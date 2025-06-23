@@ -117,14 +117,17 @@ class ValuesListTab(QWidget):
             """Save used tag in config and report the values changed."""
             # Save order in previous tag
             self._group_order_holder.set_order(
-                self._config.TAG_NAME.read(),
+                self._previous_group,
                 self._order_handler.values)
+            self._previous_group = auto_combobox.read()
 
             # Switch to new tag and replace labels with its values
             auto_combobox.save()
             picked_group = auto_combobox.read()
             labels = self._label_creator.labels_from_group(picked_group)
             self._order_handler.replace_labels(labels)
+
+        self._previous_group = self._config.TAG_NAME.read()
 
         auto_combobox = _GroupComboBox(
             last_value_field=self._config.TAG_NAME,
