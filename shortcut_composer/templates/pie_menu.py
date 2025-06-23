@@ -10,9 +10,9 @@ from PyQt5.QtGui import QColor
 from api_krita import Krita
 from api_krita.pyqt import RoundButton
 from composer_utils import GroupOrderHolder
-from data_components import PieDeadzoneStrategy
 from composer_utils import Config
 from core_components import Controller, Instruction
+from data_components import PieDeadzoneStrategy, Tag
 from .pie_menu_utils.group_manager_impl import dispatch_group_manager
 from .pie_menu_utils import PieConfig
 from .pie_menu_utils import (
@@ -97,7 +97,7 @@ class PieMenu(RawInstructions, Generic[T]):
         self, *,
         name: str,
         controller: Controller[T],
-        values: list[T],
+        values: list[T] | Tag,
         instructions: list[Instruction] | None = None,
         pie_radius_scale: float = 1.0,
         icon_radius_scale: float = 1.0,

@@ -23,7 +23,7 @@ class PieConfig(FieldGroup, Generic[T]):
     def __init__(
         self,
         name: str,
-        values: list[T],
+        values: list[T] | Tag,
         value_type: type[T],
         pie_radius_scale: float,
         icon_radius_scale: float,
