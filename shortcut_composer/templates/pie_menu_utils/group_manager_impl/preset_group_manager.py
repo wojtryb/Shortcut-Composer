@@ -53,8 +53,8 @@ class PresetGroupManager(GroupManager):
 
         return labels
 
-    def labels_from_group(self, group: str):
-        return self.labels_from_values(self._get_values(group))
+    def labels_from_group(self, group: str, sort: bool = True):
+        return self.labels_from_values(self._get_values(group, sort))
 
     def labels_from_config(self, config: PieConfig):
         if not config.TAG_MODE.read():
@@ -63,7 +63,7 @@ class PresetGroupManager(GroupManager):
             values = self._get_values(config.TAG_NAME.read())
         return self.labels_from_values(values)
 
-    def _get_values(self, group: str) -> list[str]:
+    def _get_values(self, group: str, sort: bool = True) -> list[str]:
         if group == "All":
             return list(Krita.get_presets().keys())
-        return Tag(group)
+        return Tag(group, sort)

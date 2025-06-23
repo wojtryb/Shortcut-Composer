@@ -139,7 +139,9 @@ class ValuesListTab(QWidget):
         def _display_group() -> None:
             """Update preset widgets according to tag selected in combobox."""
             picked_group = manual_combobox.widget.currentText()
-            labels = self._label_creator.labels_from_group(picked_group)
+            labels = self._label_creator.labels_from_group(
+                group=picked_group,
+                sort=False)
             self._scroll_area.replace_handled_labels(labels)
             self._scroll_area._apply_search_bar_filter()
             manual_combobox.save()

@@ -26,8 +26,12 @@ class EnumGroupManager(GroupManager):
         labels = [PieLabel.from_value(v, self._controller) for v in values]
         return [label for label in labels if label is not None]
 
-    def labels_from_group(self, group: str) -> list[PieLabel]:
-        return self.labels_from_values(self._get_values(group))
+    def labels_from_group(
+        self,
+        group: str,
+        sort: bool = True
+    ) -> list[PieLabel]:
+        return self.labels_from_values(self._get_values(group, sort))
 
     def labels_from_config(self, config: PieConfig) -> list[PieLabel]:
         if not config.TAG_MODE.read():
@@ -36,13 +40,19 @@ class EnumGroupManager(GroupManager):
             values = self._get_values(config.TAG_NAME.read())
         return self.labels_from_values(values)
 
-    def _get_values(self, group: str) -> list[EnumGroup]:
+    def _get_values(
+        self,
+        group: str,
+        sort: bool = True
+    ) -> list[EnumGroup]:
         if group == "All":
             return list(self._enum_type._member_map_.values())
         elif group not in self._enum_type._groups_:
             return []
 
         from_krita = self._enum_type._groups_[group]
+        if not sort:
+            return from_krita
         from_config = self._group_order_holder.get_order(group)
 
         known_order = [v for v in from_config if v in from_krita]
