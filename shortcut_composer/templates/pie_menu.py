@@ -271,10 +271,10 @@ class PieMenu(RawInstructions, Generic[T]):
     @cached_property
     def current_value_holder(self) -> PieCurrentValueHolder:
         """Create a LabelWidget holder with currently selected value."""
-        value_holder = PieCurrentValueHolder(
-            self._controller,
-            self._style_holder.small_label_style)
+        style = self._style_holder.small_label_style
+        value_holder = PieCurrentValueHolder(style)
         value_holder.setParent(self.pie_widget)
+        value_holder.hide()
 
         def move_to_bottom_left():
             pie_size = 2*self._style_holder.pie_style.widget_radius
@@ -301,9 +301,17 @@ class PieMenu(RawInstructions, Generic[T]):
             self._force_reload = False
             self.pie_widget.order_handler.replace_labels(new_labels)
 
-        self.current_value_holder.refresh()
-        self.pie_actuator.mark_suggested_widget()
+        # Fill current_value_holder with current value
+        try:
+            current_value = self._controller.get_value()
+        except NotImplementedError:
+            label = None
+        else:
+            labels = self._label_creator.labels_from_values([current_value])
+            label = labels[0] if labels else None
+        self.current_value_holder.replace(label)
 
+        self.pie_actuator.mark_suggested_widget()
         self.pie_mouse_tracker.start()
 
     def on_every_key_release(self) -> None:

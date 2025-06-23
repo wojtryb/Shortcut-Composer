@@ -18,15 +18,23 @@ class EnumGroupManager(GroupManager):
     def fetch_groups(self) -> list[str]:
         return list(self._enum_type._groups_.keys())
 
+    def labels_from_values(
+        self,
+        values: list[EnumGroup]
+    ) -> list[PieLabel[EnumGroup]]:
+        """Create labels from list of preset names."""
+        labels = [PieLabel.from_value(v, self._controller) for v in values]
+        return [label for label in labels if label is not None]
+
     def labels_from_group(self, group: str) -> list[PieLabel]:
-        return self._create_labels(self._get_values(group))
+        return self.labels_from_values(self._get_values(group))
 
     def labels_from_config(self, config: PieConfig) -> list[PieLabel]:
         if not config.TAG_MODE.read():
             values = config.ORDER.read()
         else:
             values = self._get_values(config.TAG_NAME.read())
-        return self._create_labels(values)
+        return self.labels_from_values(values)
 
     def _get_values(self, group: str) -> list[EnumGroup]:
         if group == "All":
@@ -41,11 +49,3 @@ class EnumGroupManager(GroupManager):
         missing = [v for v in from_krita if v not in from_config]
 
         return known_order + missing
-
-    def _create_labels(
-        self,
-        values: list[EnumGroup]
-    ) -> list[PieLabel[EnumGroup]]:
-        """Create labels from list of preset names."""
-        labels = [PieLabel.from_value(v, self._controller) for v in values]
-        return [label for label in labels if label is not None]

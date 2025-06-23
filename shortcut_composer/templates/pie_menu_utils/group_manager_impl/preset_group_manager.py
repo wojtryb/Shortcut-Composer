@@ -32,22 +32,7 @@ class PresetGroupManager(GroupManager):
         with Database() as database:
             return database.get_brush_tags()
 
-    def labels_from_group(self, group: str):
-        return self._create_labels(self._get_values(group))
-
-    def labels_from_config(self, config: PieConfig):
-        if not config.TAG_MODE.read():
-            values = config.ORDER.read()
-        else:
-            values = self._get_values(config.TAG_NAME.read())
-        return self._create_labels(values)
-
-    def _get_values(self, group: str) -> list[str]:
-        if group == "All":
-            return list(Krita.get_presets().keys())
-        return Tag(group)
-
-    def _create_labels(self, values: Iterable[str]) -> list[PieLabel[str]]:
+    def labels_from_values(self, values: Iterable[str]) -> list[PieLabel[str]]:
         """Create labels from list of preset names."""
         labels: list[PieLabel] = []
 
@@ -67,3 +52,18 @@ class PresetGroupManager(GroupManager):
             labels.append(label)
 
         return labels
+
+    def labels_from_group(self, group: str):
+        return self.labels_from_values(self._get_values(group))
+
+    def labels_from_config(self, config: PieConfig):
+        if not config.TAG_MODE.read():
+            values = config.ORDER.read()
+        else:
+            values = self._get_values(config.TAG_NAME.read())
+        return self.labels_from_values(values)
+
+    def _get_values(self, group: str) -> list[str]:
+        if group == "All":
+            return list(Krita.get_presets().keys())
+        return Tag(group)
