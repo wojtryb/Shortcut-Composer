@@ -41,6 +41,8 @@ class SaveLocationTab(QWidget):
 
         self._order_handler.register_callback_on_change(
             self._update_button_activity)
+        self._config.TAG_MODE.register_callback(self._update_button_activity)
+        self._config.TAG_NAME.register_callback(self._update_button_activity)
         self._update_button_activity()
 
         self.setLayout(self._init_layout())

@@ -116,7 +116,6 @@ class ValuesListTab(QWidget):
         def handle_picked_tag() -> None:
             """Save used tag in config and report the values changed."""
             # Save order in previous tag
-            self._order_handler.values
             self._group_order_holder.set_order(
                 self._config.TAG_NAME.read(),
                 self._order_handler.values)
