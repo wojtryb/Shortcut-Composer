@@ -284,6 +284,14 @@ class PieMenu(RawInstructions, Generic[T]):
         self._register_callback_to_size_change(move_to_bottom_left)
         move_to_bottom_left()
 
+        def set_enabled():
+            if value_holder._widget is None:
+                return
+            current = value_holder._widget.label
+            enabled = current not in self.pie_widget.order_handler.labels
+            value_holder.enabled = enabled
+        self.pie_widget.order_handler.register_callback_on_change(set_enabled)
+
         return value_holder
 
     def on_key_press(self) -> None:
@@ -302,6 +310,7 @@ class PieMenu(RawInstructions, Generic[T]):
             self.pie_widget.order_handler.replace_labels(new_labels)
 
         # Fill current_value_holder with current value
+        self._controller.refresh()
         try:
             current_value = self._controller.get_value()
         except NotImplementedError:
@@ -310,6 +319,7 @@ class PieMenu(RawInstructions, Generic[T]):
             labels = self._label_creator.labels_from_values([current_value])
             label = labels[0] if labels else None
         self.current_value_holder.replace(label)
+        self.current_value_holder.enabled = label not in new_labels
 
         self.pie_actuator.mark_suggested_widget()
         self.pie_mouse_tracker.start()

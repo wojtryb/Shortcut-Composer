@@ -26,6 +26,7 @@ class PieCurrentValueHolder(QWidget):
         super().__init__(None)
         self._style = style
         self._widget: LabelWidget | None = None
+        self._enabled = False
 
     def replace(self, label: PieLabel | None) -> None:
         """Replace remembered LabelWidget with the passed value."""
@@ -39,3 +40,16 @@ class PieCurrentValueHolder(QWidget):
             label=label,
             label_widget_style=self._style,
             parent=self)
+        self._widget.enabled = self._enabled
+        self._widget.draggable = self._enabled
+
+    @property
+    def enabled(self) -> bool:
+        return self._enabled
+
+    @enabled.setter
+    def enabled(self, value: bool) -> None:
+        self._enabled = value
+        if self._widget is not None:
+            self._widget.enabled = self._enabled
+            self._widget.draggable = self._enabled
