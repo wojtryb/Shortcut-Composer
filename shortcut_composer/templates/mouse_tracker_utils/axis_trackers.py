@@ -22,9 +22,8 @@ class SingleAxisTracker(RawInstructions):
         name: str,
         slider_handler: SliderHandler,
         instructions: list[Instruction] = [],
-        short_vs_long_press_time: float | None = None
     ) -> None:
-        super().__init__(name, instructions, short_vs_long_press_time)
+        super().__init__(name, instructions)
 
         self._handler = slider_handler
 
@@ -54,9 +53,8 @@ class DoubleAxisTracker(RawInstructions):
         horizontal_handler: SliderHandler,
         vertical_handler: SliderHandler,
         instructions: list[Instruction] = [],
-        short_vs_long_press_time: float | None = None
     ) -> None:
-        super().__init__(name, instructions, short_vs_long_press_time)
+        super().__init__(name, instructions)
 
         self._horizontal_handler = horizontal_handler
         self._vertical_handler = vertical_handler

@@ -28,8 +28,6 @@ class TemporaryKey(RawInstructions, Generic[T]):
                         controller. If not given, taken from controller.
     - `instructions` -- (optional) list of additional instructions to
                         perform on key press and release.
-    - `short_vs_long_press_time` -- (optional) time [s] that specifies
-                                    if key press is short or long.
 
     *some controllers don't have a default value. Then providing it
      becomes required.
@@ -51,7 +49,6 @@ class TemporaryKey(RawInstructions, Generic[T]):
         high_value=50,
         low_value=100,
         instructions=[], # See "instructions" for more info
-        short_vs_long_press_time=0.3,
     )
     ```
     """
@@ -63,9 +60,8 @@ class TemporaryKey(RawInstructions, Generic[T]):
         high_value: T,
         low_value: T | None = None,
         instructions: list[Instruction] | None = None,
-        short_vs_long_press_time: float | None = None
     ) -> None:
-        super().__init__(name, instructions, short_vs_long_press_time)
+        super().__init__(name, instructions)
         self._controller = controller
         self._high_value = high_value
         self._low_value = self._read_default_value(low_value)

@@ -15,6 +15,7 @@ from PyQt5.QtGui import QColor
 
 from api_krita.enums import Action, Tool, Toggle, BlendingMode, TransformMode
 from core_components import instructions, controllers
+from input_adapter import ComplexActionInterface
 from data_components import (
     RotationDeadzoneStrategy,
     PieDeadzoneStrategy,
@@ -27,7 +28,7 @@ from data_components import (
 INFINITY = float("inf")
 
 
-def create_actions() -> list[templates.RawInstructions]: return [
+def create_actions() -> list[ComplexActionInterface]: return [
     # Switch between FREEHAND BRUSH and the MOVE tool
     templates.TemporaryKey(
         name="Temporary move tool",

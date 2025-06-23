@@ -32,8 +32,6 @@ class MultipleAssignment(RawInstructions, Generic[T]):
                          given, taken from a controller.
     - `instructions`  -- (optional) list of additional instructions to
                          perform on key press and release.
-    - `short_vs_long_press_time` -- (optional) time [s] that specifies
-                                    if key press is short or long.
 
     *some controllers don't have a default value. Then providing it
      becomes required.
@@ -54,7 +52,6 @@ class MultipleAssignment(RawInstructions, Generic[T]):
         controller=controllers.BrushSizeController(),
         default_value=100,
         values=[5, 10, 20, 50],
-        short_vs_long_press_time=0.3
     )
     ```
     """
@@ -66,9 +63,8 @@ class MultipleAssignment(RawInstructions, Generic[T]):
         values: list[T],
         default_value: T | None = None,
         instructions: list[Instruction] | None = None,
-        short_vs_long_press_time: float | None = None
     ) -> None:
-        super().__init__(name, instructions, short_vs_long_press_time)
+        super().__init__(name, instructions)
 
         self._controller = controller
 

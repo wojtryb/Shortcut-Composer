@@ -18,8 +18,6 @@ class RawInstructions(ComplexActionInterface):
                         in shortcut_composer.action file
     - `instructions` -- (optional) list of additional instructions to
                         perform on key press and release.
-    - `short_vs_long_press_time` -- (optional) time [s] that specifies
-                                    if key press is short or long.
 
     ### Action implementation example:
 
@@ -31,8 +29,7 @@ class RawInstructions(ComplexActionInterface):
         name="Toggle isolate layer (temporary)",
         instructions=[
             instructions.TemporaryOn(Toggle.ISOLATE_LAYER)
-        ],
-        short_vs_long_press_time=0.3
+        ]
     )
     ```
     """
@@ -41,10 +38,9 @@ class RawInstructions(ComplexActionInterface):
         self,
         name: str,
         instructions: list[Instruction] | None = None,
-        short_vs_long_press_time: float | None = None
     ) -> None:
         self.name = name
-        self.short_vs_long_press_time = _read_time(short_vs_long_press_time)
+        self.short_vs_long_press_time = Config.SHORT_VS_LONG_PRESS_TIME.read()
         self._instructions = InstructionHolder(
             instructions if instructions is not None else [])
 
@@ -63,10 +59,3 @@ class RawInstructions(ComplexActionInterface):
     def on_every_key_release(self) -> None:
         """Run instructions meant for key release event after short time."""
         self._instructions.on_every_key_release()
-
-
-def _read_time(short_vs_long_press_time: float | None) -> float:
-    """Return the given time, or time red from krita config if not given."""
-    if short_vs_long_press_time is None:
-        return Config.SHORT_VS_LONG_PRESS_TIME.read()
-    return short_vs_long_press_time

@@ -57,8 +57,6 @@ class PieMenu(RawInstructions, Generic[T]):
     - `max_signs_amount`  -- (optional) default limit of signs in line
     - `abbreviate_with_dot` -- (optional) whether '.' sign should be
                                used for abbreviating words
-    - `short_vs_long_press_time` -- (optional) time [s] that specifies
-                                    if key press is short or long
 
     ### Action implementation example:
 
@@ -109,9 +107,8 @@ class PieMenu(RawInstructions, Generic[T]):
         max_lines_amount: int = 2,
         max_signs_amount: int = 8,
         abbreviate_with_dot: bool = True,
-        short_vs_long_press_time: float | None = None
     ) -> None:
-        super().__init__(name, instructions, short_vs_long_press_time)
+        super().__init__(name, instructions)
         self._controller = controller
 
         self._config = PieConfig(
