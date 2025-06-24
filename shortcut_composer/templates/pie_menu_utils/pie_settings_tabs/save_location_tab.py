@@ -131,12 +131,6 @@ class SaveLocationTab(QWidget):
             icon=Krita.get_icon("edit-delete"))
 
         def reset_order_to_default():
-            # Save custom order when leaving tag mode
-            if self._config.TAG_MODE.read():
-                self._group_order_holder.set_order(
-                    self._config.TAG_NAME.read(),
-                    self._order_handler.values)
-
             self._config.TAG_MODE.reset_default()
             self._config.TAG_NAME.reset_default()
             self._config.ORDER.reset_default()

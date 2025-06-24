@@ -89,14 +89,8 @@ class ValuesListTab(QWidget):
         """Create button which switches between tag and manual mode."""
         def switch_mode() -> None:
             """Change the is_tag_mode to the opposite state."""
-            # Save custom order when leaving tag mode
-            if self._config.TAG_MODE.read():
-                self._group_order_holder.set_order(
-                    self._config.TAG_NAME.read(),
-                    self._order_handler.values)
-
             is_tag_mode = not self._config.TAG_MODE.read()
-            self._set_tag_mode(is_tag_mode)
+            self._config.TAG_MODE.write(is_tag_mode)
             if is_tag_mode:
                 self._auto_combobox.set(self._manual_combobox.read())
                 self._auto_combobox.save()
@@ -112,7 +106,7 @@ class ValuesListTab(QWidget):
         mode_button.clicked.connect(switch_mode)
         mode_button.setFixedHeight(mode_button.sizeHint().height()*2)
         self._config.TAG_MODE.register_callback(
-            lambda: self._set_tag_mode(self._config.TAG_MODE.read(), False))
+            lambda: self._set_tag_mode(self._config.TAG_MODE.read()))
         return mode_button
 
     def _init_auto_combobox(self) -> StringComboBox:
@@ -159,10 +153,8 @@ class ValuesListTab(QWidget):
 
         return manual_combobox
 
-    def _set_tag_mode(self, value: bool, notify: bool = True) -> None:
+    def _set_tag_mode(self, value: bool) -> None:
         """Set the pie mode to tag (True) or manual (False)."""
-        if notify:
-            self._config.TAG_MODE.write(value)
         if value:
             # moving to tag mode
             self._mode_button.main_text = "Tag mode"
@@ -170,6 +162,9 @@ class ValuesListTab(QWidget):
             self._scroll_area.hide()
             self._manual_combobox.widget.hide()
             self._auto_combobox.widget.show()
+
+            labels = self._label_creator.labels_from_config(self._config)
+            self._order_handler.replace_labels(labels)
         else:
             # moving to manual mode
             self._mode_button.main_text = "Manual mode"
