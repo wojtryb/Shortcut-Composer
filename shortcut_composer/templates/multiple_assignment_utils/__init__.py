@@ -5,11 +5,9 @@
 
 from .action_values_window import ActionValuesWindow
 from .settings_handler import SettingsHandler
-from .action_values import ActionValues
 from .value_list import ValueList
 
 __all__ = [
     "ActionValuesWindow",
     "SettingsHandler",
-    "ActionValues",
     "ValueList"]

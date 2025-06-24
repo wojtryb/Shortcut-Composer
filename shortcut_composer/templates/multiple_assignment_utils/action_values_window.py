@@ -3,12 +3,19 @@
 
 from enum import Enum
 
-from PyQt5.QtWidgets import QVBoxLayout, QDialog
+from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QDialog
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QColor
 
+from core_components.controllers import ToolController
 from config_system import Field
+from config_system.ui import StringComboBox
 from composer_utils import ButtonsLayout
-from .action_values import ActionValues
+from composer_utils.label.complex_widgets import ScrollArea
+
+from composer_utils.label import LabelText, LabelWidgetStyle
+from ..pie_menu_utils import PieWidget, PieLabel, PieStyle
+from ..pie_menu_utils.group_manager_impl import dispatch_group_manager
 
 
 class ActionValuesWindow(QDialog):
@@ -19,39 +26,81 @@ class ActionValuesWindow(QDialog):
         self.setWindowFlags(
             self.windowFlags() |
             Qt.WindowType.WindowStaysOnTopHint)
+
+        self._config = Field("temp", "temp", "---Select tag---")
+        controller = ToolController()  # TODO: pass this controller
+        self._label_creator = dispatch_group_manager(controller)
+
+        self._scroll_area = ScrollArea(LabelWidgetStyle(
+            background_color_callback=lambda: QColor(200, 250, 250),
+            active_color_callback=lambda: QColor(225, 255, 255)))
+        self._combobox = self._init_combobox()
+        self._widget = self._init_widget()
+        self._buttons = ButtonsLayout(
+            ok_callback=self.hide,
+            apply_callback=self.hide,
+            reset_callback=self.hide,
+            cancel_callback=self.hide)
+
+        self.setLayout(self._init_layout())
+
+    def _init_layout(self) -> QVBoxLayout:
+        picker_layout = QVBoxLayout()
+        picker_layout.addWidget(self._combobox.widget)
+        picker_layout.addWidget(self._scroll_area)
+
+        core_layout = QHBoxLayout()
+        core_layout.addWidget(self._widget)
+        core_layout.addLayout(picker_layout)
+
         layout = QVBoxLayout()
+        layout.addLayout(core_layout)
+        layout.addLayout(self._buttons)
 
-        self._config = config
-        self.widget = ActionValues(enum_type, config)
-        layout.addWidget(self.widget)
+        return layout
 
-        layout.addLayout(ButtonsLayout(
-            ok_callback=self._ok,
-            apply_callback=self._apply,
-            reset_callback=self._reset,
-            cancel_callback=self.hide))
+    def _init_widget(self):
+        widget = PieWidget(PieStyle(
+            active_color_callback=lambda: QColor(225, 255, 255),
+            background_color_callback=lambda: QColor(150, 150, 255),
+            background_opacity_callback=lambda: 35))
 
-        self.setLayout(layout)
+        widget.order_handler.append(PieLabel("1", LabelText("ASD")))
+        widget.order_handler.append(PieLabel("2", LabelText("QWE")))
+        widget.order_handler.append(PieLabel("3", LabelText("ZXCZXC")))
+        widget.order_handler.append(PieLabel("4", LabelText("FGH")))
+        widget.order_handler.append(PieLabel("5", LabelText("BNMF ASD")))
 
-    def show(self) -> None:
-        """Refresh the widget before showing it."""
-        self._refresh()
-        return super().show()
+        widget.set_draggable(True)
+        return widget
 
-    def _ok(self) -> None:
-        """Hide the dialog after applying the changes"""
-        self._apply()
-        self.hide()
+    def _init_combobox(self) -> StringComboBox:
+        def display_group() -> None:
+            """Update preset widgets according to tag selected in combobox."""
+            picked_group = combobox.read()
+            labels = self._label_creator.labels_from_group(
+                group=picked_group,
+                sort=False)
+            self._scroll_area.replace_handled_labels(labels)
+            self._scroll_area.apply_search_bar_filter()
+            combobox.save()
 
-    def _reset(self) -> None:
-        """Reset all config values to defaults in krita and elements."""
-        self._config.reset_default()
-        self._refresh()
+        combobox = StringComboBox(
+            config_field=self._config,  # .LAST_TAG_SELECTED,
+            allowed_values=(
+                ["---Select tag---", "All"]
+                + self._label_creator.fetch_groups()))
 
-    def _apply(self) -> None:
-        """Apply changes in held widget."""
-        self.widget.apply()
+        combobox.widget.currentTextChanged.connect(display_group)
+        display_group()
 
-    def _refresh(self) -> None:
-        """Refresh the held widget."""
-        self.widget.refresh()
+        return combobox
+
+    def show(self):
+        super().show()
+        self._buttons._button_box.setFocus()
+
+# class MaConfig:
+#     LAST_TAG_SELECTED: Field
+#     VALUES: Field
+#     DEFAULT_VALUE: Field
