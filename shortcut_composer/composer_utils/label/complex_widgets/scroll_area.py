@@ -50,8 +50,8 @@ class ScrollArea(QWidget, Generic[T]):
 
     def __init__(
         self,
-        label_style: LabelWidgetStyle,
-        columns: int,
+        label_style: LabelWidgetStyle = LabelWidgetStyle(),
+        columns: int = 3,
         parent=None
     ) -> None:
         super().__init__(parent)

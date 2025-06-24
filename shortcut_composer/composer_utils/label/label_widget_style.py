@@ -20,13 +20,20 @@ class LabelWidgetStyle:
 
     def __init__(
         self,
-        icon_radius_callback: Callable[[], int],
-        border_thickness_callback: Callable[[], int],
-        active_color_callback: Callable[[], QColor],
-        background_color_callback: Callable[[], QColor],
-        max_lines_amount_callback: Callable[[], int],
-        max_signs_amount_callback: Callable[[], int],
-        abbreviation_sign_callback: Callable[[], str],
+        icon_radius_callback: Callable[[], int]
+        = lambda: round(Krita.screen_size*0.02),
+        border_thickness_callback: Callable[[], int]
+        = lambda: round(Krita.screen_size*0.001),
+        active_color_callback: Callable[[], QColor]
+        = Krita.get_main_color_from_theme,
+        background_color_callback: Callable[[], QColor]
+        = Krita.get_active_color_from_theme,
+        max_lines_amount_callback: Callable[[], int]
+        = lambda: 2,
+        max_signs_amount_callback: Callable[[], int]
+        = lambda: 8,
+        abbreviation_sign_callback: Callable[[], str]
+        = lambda: ".",
     ) -> None:
         self._icon_radius_callback = icon_radius_callback
         self._border_thickness_callback = border_thickness_callback

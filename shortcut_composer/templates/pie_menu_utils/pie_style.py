@@ -5,6 +5,7 @@ from typing import Callable
 
 from PyQt5.QtGui import QColor
 
+from api_krita import Krita
 from composer_utils.label import LabelWidgetStyle
 
 
@@ -18,13 +19,20 @@ class PieStyle:
 
     def __init__(
         self,
-        label_style: LabelWidgetStyle,
-        desired_icon_radius_callback: Callable[[], int],
-        pie_radius_callback: Callable[[], int],
-        deadzone_radius_callback: Callable[[], float],
-        settings_button_radius_callback: Callable[[], int],
-        accept_button_radius_callback: Callable[[], int],
-        background_opacity_callback: Callable[[], int],
+        label_style: LabelWidgetStyle
+        = LabelWidgetStyle(),
+        desired_icon_radius_callback: Callable[[], int]
+        = lambda: round(Krita.screen_size*0.02),
+        pie_radius_callback: Callable[[], int]
+        = lambda: round(Krita.screen_size*0.065),
+        deadzone_radius_callback: Callable[[], float]
+        = lambda: round(Krita.screen_size*0.016),
+        settings_button_radius_callback: Callable[[], int]
+        = lambda: round(Krita.screen_size*0.012),
+        accept_button_radius_callback: Callable[[], int]
+        = lambda: round(Krita.screen_size*0.016),
+        background_opacity_callback: Callable[[], int]
+        = lambda: 75,
     ) -> None:
         self.label_style = label_style
 

@@ -35,7 +35,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
     def __init__(
         self,
-        pie_style: PieStyle,
+        pie_style: PieStyle = PieStyle(),
         allowed_types: type | tuple[type, ...] = object,
         allow_value_edit_callback: Callable[[], bool] = lambda: True,
         parent=None
