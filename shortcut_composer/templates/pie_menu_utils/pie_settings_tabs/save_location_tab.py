@@ -184,10 +184,14 @@ class SaveLocationTab(QWidget):
 
     def _update_button_activity(self, *args) -> None:
         """Disable location action buttons, when they won't do anything."""
-        is_order_default = (
-            self._config.TAG_MODE.read() == self._config.TAG_MODE.default
-            and self._config.TAG_NAME.read() == self._config.TAG_NAME.default
-            and self._order_handler.values == self._config.ORDER.default)
+        cfg = self._config
+        if not cfg.TAG_MODE.read():
+            is_order_default = (
+                cfg.TAG_MODE.read() == cfg.TAG_MODE.default
+                and cfg.TAG_NAME.read() == cfg.TAG_NAME.default
+                and self._order_handler.values == cfg.ORDER.default)
+        else:
+            is_order_default = cfg.TAG_NAME.read() == cfg.TAG_NAME.default
 
         if not is_order_default:
             self._set_new_default_button.setEnabled(True)
