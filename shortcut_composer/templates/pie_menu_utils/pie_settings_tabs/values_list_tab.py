@@ -5,13 +5,11 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 
 from api_krita import Krita
 from api_krita.pyqt import SafeConfirmButton
-from config_system import Field
 from config_system.ui import StringComboBox
 from composer_utils import GroupOrderHolder
 from composer_utils.label.complex_widgets import ScrollArea
 from core_components import Controller
 from ..pie_config import PieConfig
-from ..group_manager import GroupManager
 from ..group_manager_impl import dispatch_group_manager
 from ..pie_style_holder import PieStyleHolder
 from ..pie_widget_utils import OrderHandler
@@ -117,15 +115,14 @@ class ValuesListTab(QWidget):
             lambda: self._set_tag_mode(self._config.TAG_MODE.read(), False))
         return mode_button
 
-    def _init_auto_combobox(self) -> '_GroupComboBox':
+    def _init_auto_combobox(self) -> StringComboBox:
         """Create tag mode combobox, which sets tag presets to the pie."""
         def handle_picked_tag() -> None:
             """Save used tag in config and report the values changed."""
             # Save order in previous tag
             self._group_order_holder.set_order(
-                self._previous_group,
+                auto_combobox.config_field.read(),
                 self._order_handler.values)
-            self._previous_group = auto_combobox.read()
 
             # Switch to new tag and replace labels with its values
             auto_combobox.save()
@@ -133,34 +130,32 @@ class ValuesListTab(QWidget):
             labels = self._label_creator.labels_from_group(picked_group)
             self._order_handler.replace_labels(labels)
 
-        self._previous_group = self._config.TAG_NAME.read()
-
-        auto_combobox = _GroupComboBox(
-            last_value_field=self._config.TAG_NAME,
-            group_manager=self._label_creator,
-            pretty_name="Tag name")
+        auto_combobox = StringComboBox(
+            config_field=self._config.TAG_NAME,
+            allowed_values=self._label_creator.fetch_groups())
 
         auto_combobox.widget.currentTextChanged.connect(handle_picked_tag)
         return auto_combobox
 
-    def _init_manual_combobox(self) -> '_GroupComboBox':
-        def _display_group() -> None:
+    def _init_manual_combobox(self) -> StringComboBox:
+        def display_group() -> None:
             """Update preset widgets according to tag selected in combobox."""
-            picked_group = manual_combobox.widget.currentText()
+            picked_group = manual_combobox.read()
             labels = self._label_creator.labels_from_group(
                 group=picked_group,
                 sort=False)
             self._scroll_area.replace_handled_labels(labels)
-            self._scroll_area._apply_search_bar_filter()
+            self._scroll_area.apply_search_bar_filter()
             manual_combobox.save()
 
-        manual_combobox = _GroupComboBox(
-            last_value_field=self._config.LAST_TAG_SELECTED,
-            group_manager=self._label_creator,
-            additional_fields=["---Select tag---", "All"])
+        manual_combobox = StringComboBox(
+            config_field=self._config.LAST_TAG_SELECTED,
+            allowed_values=(
+                ["---Select tag---", "All"]
+                + self._label_creator.fetch_groups()))
 
-        manual_combobox.widget.currentTextChanged.connect(_display_group)
-        _display_group()
+        manual_combobox.widget.currentTextChanged.connect(display_group)
+        display_group()
 
         return manual_combobox
 
@@ -182,27 +177,3 @@ class ValuesListTab(QWidget):
             self._scroll_area.show()
             self._manual_combobox.widget.show()
             self._auto_combobox.widget.hide()
-
-
-class _GroupComboBox(StringComboBox):
-
-    def __init__(
-        self,
-        last_value_field: Field[str],
-        group_manager: GroupManager,
-        parent: QWidget | None = None,
-        pretty_name: str | None = None,
-        additional_fields: list[str] = [],
-    ) -> None:
-        self._additional_fields = additional_fields
-        self._group_manager = group_manager
-        super().__init__(last_value_field, parent, pretty_name)
-        self.config_field.register_callback(
-            lambda: self.set(self.config_field.read()))
-
-    def reset(self) -> None:
-        """Replace list of available tags with those red from database."""
-        self._combo_box.clear()
-        self._combo_box.addItems(self._additional_fields)
-        self._combo_box.addItems(self._group_manager.fetch_groups())
-        self.set(self.config_field.read())

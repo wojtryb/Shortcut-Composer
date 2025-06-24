@@ -121,10 +121,10 @@ class ScrollArea(QWidget, Generic[T]):
         search_bar = QLineEdit(self)
         search_bar.setPlaceholderText("Search")
         search_bar.setClearButtonEnabled(True)
-        search_bar.textChanged.connect(self._apply_search_bar_filter)
+        search_bar.textChanged.connect(self.apply_search_bar_filter)
         return search_bar
 
-    def _apply_search_bar_filter(self) -> None:
+    def apply_search_bar_filter(self) -> None:
         """Replace widgets in layout with those that match the filter."""
         self.setUpdatesEnabled(False)
         pattern = re.escape(self._search_bar.text())
