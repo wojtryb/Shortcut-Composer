@@ -110,24 +110,35 @@ class ValuesListTab(QWidget):
 
     def _init_auto_combobox(self) -> StringComboBox:
         """Create tag mode combobox, which sets tag presets to the pie."""
-        def handle_picked_tag() -> None:
-            """Save used tag in config and report the values changed."""
-            # Save order in previous tag
-            self._group_order_holder.set_order(
-                self._config.TAG_NAME.read(),
-                self._order_handler.values)
-
-            # Switch to new tag and replace labels with its values
-            auto_combobox.save()
-            picked_group = auto_combobox.read()
-            labels = self._label_creator.labels_from_group(picked_group)
-            self._order_handler.replace_labels(labels)
-
         auto_combobox = StringComboBox(
             config_field=self._config.TAG_NAME,
             allowed_values=self._label_creator.fetch_groups())
 
-        auto_combobox.widget.currentTextChanged.connect(handle_picked_tag)
+        def set_order_of_previous_group(previous_group: str):
+            # Save order of previous group
+            values = self._order_handler.values
+            self._group_order_holder.set_order(previous_group, values)
+
+        def replace_labels():
+            # Replace the labels with values from the updated group
+            new_group = auto_combobox.read()
+            labels = self._label_creator.labels_from_group(new_group)
+            self._order_handler.replace_labels(labels)
+
+        def on_new_tag() -> None:
+            if self._config.TAG_NAME.read() != auto_combobox.read():
+                set_order_of_previous_group(auto_combobox.read())
+                auto_combobox.set(self._config.TAG_NAME.read())
+                replace_labels()
+        self._config.TAG_NAME.register_callback(on_new_tag)
+
+        def on_text_change():
+            if self._config.TAG_NAME.read() != auto_combobox.read():
+                set_order_of_previous_group(self._config.TAG_NAME.read())
+                self._config.TAG_NAME.write(auto_combobox.read())
+                replace_labels()
+        auto_combobox.widget.currentTextChanged.connect(on_text_change)
+
         return auto_combobox
 
     def _init_manual_combobox(self) -> StringComboBox:
