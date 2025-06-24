@@ -182,7 +182,7 @@ class SaveLocationTab(QWidget):
                 "remain useful regardless of which document is edited.")
         self._config.SAVE_LOCAL.write(value)
 
-    def _update_button_activity(self, *args) -> None:
+    def _update_button_activity(self) -> None:
         """Disable location action buttons, when they won't do anything."""
         cfg = self._config
         if not cfg.TAG_MODE.read():
