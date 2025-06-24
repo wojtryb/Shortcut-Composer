@@ -184,7 +184,7 @@ class PieMenu(RawInstructions, Generic[T]):
         pie_style = self._style_holder.pie_style
 
         settings_button = RoundButton(
-            radius_callback=lambda: pie_style.setting_button_radius,
+            radius_callback=lambda: self._style_holder.settings_button_radius,
             background_color_callback=lambda: pie_style.background_color,
             active_color_callback=lambda: pie_style.active_color,
             icon=Krita.get_icon("properties"),
@@ -228,7 +228,7 @@ class PieMenu(RawInstructions, Generic[T]):
         pie_style = self._style_holder.pie_style
 
         accept_button = RoundButton(
-            radius_callback=lambda: pie_style.accept_button_radius,
+            radius_callback=lambda: self._style_holder.accept_button_radius,
             background_color_callback=lambda: pie_style.background_color,
             active_color_callback=lambda: pie_style.active_color,
             icon=Krita.get_icon("dialog-ok"),

@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Callable
+from math import pi
 
 from PyQt5.QtGui import QColor
 
@@ -19,29 +20,48 @@ class PieStyle:
 
     def __init__(
         self,
-        label_style: LabelWidgetStyle
-        = LabelWidgetStyle(),
-        desired_icon_radius_callback: Callable[[], int]
-        = lambda: round(Krita.screen_size*0.02),
         pie_radius_callback: Callable[[], int]
         = lambda: round(Krita.screen_size*0.065),
         deadzone_radius_callback: Callable[[], float]
         = lambda: round(Krita.screen_size*0.016),
-        settings_button_radius_callback: Callable[[], int]
-        = lambda: round(Krita.screen_size*0.012),
-        accept_button_radius_callback: Callable[[], int]
-        = lambda: round(Krita.screen_size*0.016),
         background_opacity_callback: Callable[[], int]
         = lambda: 75,
+        desired_icon_radius_callback: Callable[[], int]
+        = lambda: round(Krita.screen_size*0.02),
+        border_thickness_callback: Callable[[], int]
+        = lambda: round(Krita.screen_size*0.001),
+        active_color_callback: Callable[[], QColor]
+        = Krita.get_main_color_from_theme,
+        background_color_callback: Callable[[], QColor]
+        = Krita.get_active_color_from_theme,
+        max_lines_amount_callback: Callable[[], int]
+        = lambda: 2,
+        max_signs_amount_callback: Callable[[], int]
+        = lambda: 8,
+        abbreviation_sign_callback: Callable[[], str]
+        = lambda: ".",
     ) -> None:
-        self.label_style = label_style
 
-        self._desired_icon_radius_callback = desired_icon_radius_callback
         self._pie_radius_callback = pie_radius_callback
+        self._desired_icon_radius_callback = desired_icon_radius_callback
         self._deadzone_radius_callback = deadzone_radius_callback
-        self._settings_button_radius_callback = settings_button_radius_callback
-        self._accept_button_radius_callback = accept_button_radius_callback
         self._background_opacity_callback = background_opacity_callback
+
+        def icon_radius() -> int:
+            desired_radius = self._desired_icon_radius_callback()
+            if not self.amount_of_labels:
+                return desired_radius
+            max_radius = round(self.pie_radius * pi / self.amount_of_labels)
+            return min(desired_radius, max_radius)
+        self.label_style = LabelWidgetStyle(
+            icon_radius_callback=icon_radius,
+            border_thickness_callback=border_thickness_callback,
+            active_color_callback=active_color_callback,
+            background_color_callback=background_color_callback,
+            max_lines_amount_callback=max_lines_amount_callback,
+            max_signs_amount_callback=max_signs_amount_callback,
+            abbreviation_sign_callback=abbreviation_sign_callback,
+        )
 
         # Amount of labels in the pie that can be used by the callbacks
         # If it is used, user must guarantee that its value is correct
@@ -57,16 +77,6 @@ class PieStyle:
     def deadzone_radius(self) -> float:
         """Radius of the deadzone in the center."""
         return self._deadzone_radius_callback()
-
-    @property
-    def setting_button_radius(self) -> int:
-        """Radius of the button which activates settings widget."""
-        return self._settings_button_radius_callback()
-
-    @property
-    def accept_button_radius(self) -> int:
-        """Radius of the button which accepts the edit."""
-        return self._accept_button_radius_callback()
 
     @property
     def widget_radius(self) -> int:

@@ -1,8 +1,6 @@
 # SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import math
-
 from PyQt5.QtGui import QColor
 
 from api_krita import Krita
@@ -19,16 +17,19 @@ class PieStyleHolder:
         self._pie_config = pie_config
         self._base_size = Krita.screen_size/2560
 
-        self.label_style = LabelWidgetStyle(
-            icon_radius_callback=self._icon_radius,
+        self.pie_style = PieStyle(
+            pie_radius_callback=self._pie_radius,
+            deadzone_radius_callback=self._deadzone_radius,
+            background_opacity_callback=self._pie_config.PIE_OPACITY.read,
+            desired_icon_radius_callback=self._desired_icon_radius,
             border_thickness_callback=self._border_thickness,
             active_color_callback=self._active_color,
             background_color_callback=self._background_color,
             max_lines_amount_callback=self._pie_config.MAX_LINES_AMOUNT.read,
             max_signs_amount_callback=self._pie_config.MAX_SIGNS_AMOUNT.read,
             abbreviation_sign_callback=self._abbreviation_sign_callback)
-        """Style of labels inside the pie."""
 
+        """Style of the pie widget."""
         self.settings_label_style = LabelWidgetStyle(
             icon_radius_callback=self._unscaled_icon_radius,
             border_thickness_callback=self._border_thickness,
@@ -49,15 +50,19 @@ class PieStyleHolder:
             abbreviation_sign_callback=lambda: "")
         """Style of label, being the size of button activating settings."""
 
-        self.pie_style = PieStyle(
-            label_style=self.label_style,
-            desired_icon_radius_callback=self._desired_icon_radius,
-            pie_radius_callback=self._pie_radius,
-            deadzone_radius_callback=self._deadzone_radius,
-            settings_button_radius_callback=self._settings_button_radius,
-            accept_button_radius_callback=self._accept_button_radius,
-            background_opacity_callback=self._pie_config.PIE_OPACITY.read)
-        """Style of the pie widget."""
+    @property
+    def accept_button_radius(self) -> int:
+        """Return radius of accept button based on configured value."""
+        return round(
+            40 * self._base_size * Config.PIE_DEADZONE_GLOBAL_SCALE.read())
+
+    @property
+    def settings_button_radius(self) -> int:
+        """Return radius of settings button based on configured value."""
+        return round(
+            30 * self._base_size
+            * Config.PIE_GLOBAL_SCALE.read()
+            * self._pie_config.PIE_RADIUS_SCALE.read())
 
     def _pie_radius(self) -> int:
         """Return pie radius based on configured value."""
@@ -77,20 +82,9 @@ class PieStyleHolder:
             self._unscaled_icon_radius()
             * self._pie_config.ICON_RADIUS_SCALE.read())
 
-    def _icon_radius(self) -> int:
-        """Return scaled icon radius based on configured value."""
-        elements = self.pie_style.amount_of_labels
-        desired_radius = self._desired_icon_radius()
-
-        if not elements:
-            return desired_radius
-
-        max_radius = round(self.pie_style.pie_radius * math.pi / elements)
-        return min(desired_radius, max_radius)
-
     def _button_sized_icon_radius(self) -> int:
         """Return icon radius that is visually the same as settings button."""
-        return self._settings_button_radius() + self._border_thickness()
+        return self.settings_button_radius + self._border_thickness()
 
     def _border_thickness(self) -> int:
         """Return border thickness based on configured value."""
@@ -100,7 +94,7 @@ class PieStyleHolder:
         """Return deadzone radius based on configured value."""
         if not self.pie_style.amount_of_labels:
             return float("inf")
-        return self.pie_style.accept_button_radius
+        return self.accept_button_radius
 
     def _active_color(self) -> QColor:
         """Return active color based on configured value."""
@@ -116,15 +110,3 @@ class PieStyleHolder:
 
     def _abbreviation_sign_callback(self):
         return "." if self._pie_config.ABBREVIATE_WITH_DOT.read() else ""
-
-    def _accept_button_radius(self) -> int:
-        """Return radius of accept button based on configured value."""
-        return round(
-            40 * self._base_size * Config.PIE_DEADZONE_GLOBAL_SCALE.read())
-
-    def _settings_button_radius(self) -> int:
-        """Return radius of settings button based on configured value."""
-        return round(
-            30 * self._base_size
-            * Config.PIE_GLOBAL_SCALE.read()
-            * self._pie_config.PIE_RADIUS_SCALE.read())
