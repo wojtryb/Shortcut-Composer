@@ -34,11 +34,7 @@ class ActionValuesWindow(QDialog):
             active_color_callback=lambda: QColor(225, 255, 255)))
         self._combobox = self._init_combobox()
         self._widget = self._init_widget()
-        self._buttons = ButtonsLayout(
-            ok_callback=self.hide,
-            apply_callback=self.hide,
-            reset_callback=self.hide,
-            cancel_callback=self.hide)
+        self._buttons = self._init_buttons()
 
         self.setLayout(self._init_layout())
 
@@ -62,10 +58,6 @@ class ActionValuesWindow(QDialog):
             active_color_callback=lambda: QColor(225, 255, 255),
             background_color_callback=lambda: QColor(150, 150, 255),
             background_opacity_callback=lambda: 35))
-
-        values = self._config.VALUES.read()
-        for label in self._label_creator.labels_from_values(values):
-            widget.order_handler.append(label)
 
         widget.set_draggable(True)
         return widget
@@ -92,6 +84,30 @@ class ActionValuesWindow(QDialog):
 
         return combobox
 
-    def show(self):
+    def _init_buttons(self) -> ButtonsLayout:
+        def apply() -> None:
+            self._config.VALUES.write(self._widget.order_handler.values)
+
+        def ok() -> None:
+            apply()
+            self.hide()
+
+        def reset() -> None:
+            self._config.reset_default()
+            self._reset_widget()
+
+        return ButtonsLayout(
+            ok_callback=ok,
+            apply_callback=apply,
+            reset_callback=reset,
+            cancel_callback=self.hide)
+
+    def _reset_widget(self) -> None:
+        values = self._config.VALUES.read()
+        labels = self._label_creator.labels_from_values(values)
+        self._widget.order_handler.replace_labels(labels)
+
+    def show(self) -> None:
         super().show()
+        self._reset_widget()
         self._buttons._button_box.setFocus()
