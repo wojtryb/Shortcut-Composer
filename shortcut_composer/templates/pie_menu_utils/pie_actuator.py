@@ -26,12 +26,12 @@ class PieActuator:
     def __init__(
         self,
         pie_widget: PieWidget,
-        initial_strategy: PieDeadzoneStrategy = PieDeadzoneStrategy.DO_NOTHING
+        initial_label: PieLabel | None = None,
+        initial_strategy: PieDeadzoneStrategy = PieDeadzoneStrategy.DO_NOTHING,
     ) -> None:
         self._pie_widget = pie_widget
+        self._previous_label = initial_label
         self.strategy = initial_strategy
-
-        self._previous_label: PieLabel | None = None
 
     def select(self) -> PieLabel | None:
         active = self._pie_widget.active_label

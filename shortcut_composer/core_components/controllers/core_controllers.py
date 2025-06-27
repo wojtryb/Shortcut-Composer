@@ -54,6 +54,7 @@ class ActionController(Controller[Action]):
 
     TYPE = Action
     REQUIRES_TEXT_SETTINGS = True
+    DEFAULT_VALUE = Action.UNDO
 
     @staticmethod
     def get_value() -> NoReturn:

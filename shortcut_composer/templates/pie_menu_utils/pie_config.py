@@ -4,6 +4,7 @@
 from typing import Generic, TypeVar
 from PyQt5.QtGui import QColor
 from api_krita import Krita
+from core_components import Controller
 from config_system import FieldGroup
 from config_system.field_base_impl import DualField, FieldWithEditableDefault
 from data_components import Tag, PieDeadzoneStrategy
@@ -24,7 +25,7 @@ class PieConfig(FieldGroup, Generic[T]):
         self,
         name: str,
         values: list[T] | Tag,
-        value_type: type[T],
+        controller: Controller,
         pie_radius_scale: float,
         icon_radius_scale: float,
         save_local: bool,
@@ -37,7 +38,7 @@ class PieConfig(FieldGroup, Generic[T]):
         abbreviate_with_dot: bool,
     ) -> None:
         super().__init__(name)
-        self._value_type = value_type
+        # self._value_type = value_type
 
         self.PIE_RADIUS_SCALE = self.field(
             name="Pie scale",
@@ -108,13 +109,20 @@ class PieConfig(FieldGroup, Generic[T]):
         self.LAST_TAG_SELECTED = self.field(
             name="Last tag selected",
             default="---Select tag---")
-        """Last selected value group remembered between sessions"""
+        """Last selected value group remembered between sessions."""
+        self.LAST_VALUE_SELECTED = self.field(
+            name="Last value selected",
+            default=controller.DEFAULT_VALUE)
+        """Last selected value remembered between sessions."""
+        # TODO: if Field could exist without default, but with only
+        # parser, controller here would not be needed.
+        # Field should default to None, this class should get only TYPE
 
         default_values = [] if isinstance(values, Tag) else values
         self.ORDER = self._create_editable_dual_field(
             field_name="Values",
             default=default_values,
-            parser_type=self._value_type)
+            parser_type=controller.TYPE)
         """
         Selected values in specific order.
 

@@ -114,7 +114,7 @@ class PieMenu(RawInstructions, Generic[T]):
         self._config = PieConfig(
             name=f"ShortcutComposer: {name}",
             values=values,
-            value_type=controller.TYPE,
+            controller=controller,
             pie_radius_scale=pie_radius_scale,
             icon_radius_scale=icon_radius_scale,
             save_local=save_local,
@@ -169,7 +169,11 @@ class PieMenu(RawInstructions, Generic[T]):
 
     @cached_property
     def pie_actuator(self) -> PieActuator:
-        pie_actuator = PieActuator(self.pie_widget)
+        last_value = self._config.LAST_VALUE_SELECTED.read()
+        labels = self._label_creator.labels_from_values((last_value,))
+        label = labels[0] if labels else None
+
+        pie_actuator = PieActuator(self.pie_widget, label)
 
         def update_strategy() -> None:
             pie_actuator.strategy = self._config.DEADZONE_STRATEGY.read()
@@ -342,6 +346,7 @@ class PieMenu(RawInstructions, Generic[T]):
         label = self.pie_actuator.select()
         if label is not None:
             self._controller.set_value(label.value)
+            self._config.LAST_VALUE_SELECTED.write(label.value)
 
         self.pie_mouse_tracker.stop()
 

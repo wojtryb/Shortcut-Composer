@@ -29,6 +29,7 @@ class PresetController(ViewBasedController, Controller[str]):
 
     TYPE = str
     REQUIRES_TEXT_SETTINGS = False
+    DEFAULT_VALUE = "e) Marker Details"
 
     def get_value(self) -> str:
         """Get currently active preset."""
