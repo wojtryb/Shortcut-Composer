@@ -11,7 +11,7 @@ from composer_utils import ButtonsLayout
 from composer_utils.label.complex_widgets import ScrollArea
 
 from composer_utils.label import LabelWidgetStyle
-from ..pie_menu_utils import PieWidget, PieStyle
+from ..pie_menu_utils import PieWidget, PieStyle, PieCurrentValueHolder
 from ..pie_menu_utils.group_manager_impl import dispatch_group_manager
 from .ma_config import MaConfig
 
@@ -34,18 +34,23 @@ class ActionValuesWindow(QDialog):
             active_color_callback=lambda: QColor(225, 255, 255)))
         self._combobox = self._init_combobox()
         self._widget = self._init_widget()
+        self._holder_of_default = self._init_holder_of_default()
         self._buttons = self._init_buttons()
 
         self.setLayout(self._init_layout())
 
     def _init_layout(self) -> QVBoxLayout:
-        picker_layout = QVBoxLayout()
-        picker_layout.addWidget(self._combobox.widget)
-        picker_layout.addWidget(self._scroll_area)
+        left_layout = QVBoxLayout()
+        left_layout.addWidget(self._widget)
+        left_layout.addWidget(self._holder_of_default)
+
+        right_layout = QVBoxLayout()
+        right_layout.addWidget(self._combobox.widget)
+        right_layout.addWidget(self._scroll_area)
 
         core_layout = QHBoxLayout()
-        core_layout.addWidget(self._widget)
-        core_layout.addLayout(picker_layout)
+        core_layout.addLayout(left_layout)
+        core_layout.addLayout(right_layout)
 
         layout = QVBoxLayout()
         layout.addLayout(core_layout)
@@ -61,6 +66,12 @@ class ActionValuesWindow(QDialog):
 
         widget.set_draggable(True)
         return widget
+
+    def _init_holder_of_default(self) -> PieCurrentValueHolder:
+        holder_of_default = PieCurrentValueHolder()
+        holder_of_default.enabled = True
+        holder_of_default.setAcceptDrops(True)
+        return holder_of_default
 
     def _init_combobox(self) -> StringComboBox:
         def display_group() -> None:
@@ -94,7 +105,7 @@ class ActionValuesWindow(QDialog):
 
         def reset() -> None:
             self._config.reset_default()
-            self._reset_widget()
+            self._reset_values()
 
         return ButtonsLayout(
             ok_callback=ok,
@@ -102,12 +113,19 @@ class ActionValuesWindow(QDialog):
             reset_callback=reset,
             cancel_callback=self.hide)
 
-    def _reset_widget(self) -> None:
+    def _reset_values(self) -> None:
+        # Reset widget
         values = self._config.VALUES.read()
         labels = self._label_creator.labels_from_values(values)
         self._widget.order_handler.replace_labels(labels)
 
+        # Reset default value holder
+        value = self._config.DEFAULT_VALUE.read()
+        labels = self._label_creator.labels_from_values((value,))
+        label = labels[0] if labels else None
+        self._holder_of_default.replace(label)
+
     def show(self) -> None:
         super().show()
-        self._reset_widget()
+        self._reset_values()
         self._buttons._button_box.setFocus()

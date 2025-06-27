@@ -275,6 +275,7 @@ class PieMenu(RawInstructions, Generic[T]):
         style = self._style_holder.small_label_style
         value_holder = PieCurrentValueHolder(style)
         value_holder.setParent(self.pie_widget)
+        value_holder.setAcceptDrops(False)
         value_holder.hide()
 
         def move_to_bottom_left():
@@ -286,6 +287,7 @@ class PieMenu(RawInstructions, Generic[T]):
         move_to_bottom_left()
 
         def set_enabled():
+            # FIXME
             if value_holder._widget is None:
                 return
             current = value_holder._widget.label
