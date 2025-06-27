@@ -287,10 +287,9 @@ class PieMenu(RawInstructions, Generic[T]):
         move_to_bottom_left()
 
         def set_enabled():
-            # FIXME
-            if value_holder._widget is None:
+            current = value_holder.label
+            if current is None:
                 return
-            current = value_holder._widget.label
             enabled = current not in self.pie_widget.order_handler.labels
             value_holder.enabled = enabled
         self.pie_widget.order_handler.register_callback_on_change(set_enabled)

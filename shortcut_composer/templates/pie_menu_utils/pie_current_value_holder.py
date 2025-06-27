@@ -45,6 +45,12 @@ class PieCurrentValueHolder(QWidget):
         self._update_with_label(label)
 
     @property
+    def label(self) -> PieLabel | None:
+        if self._widget is not None:
+            return self._widget.label
+        return None
+
+    @property
     def enabled(self) -> bool:
         return self._enabled
 
