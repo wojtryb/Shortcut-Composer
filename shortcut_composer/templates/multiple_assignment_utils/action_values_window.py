@@ -98,6 +98,9 @@ class ActionValuesWindow(QDialog):
     def _init_buttons(self) -> ButtonsLayout:
         def apply() -> None:
             self._config.VALUES.write(self._widget.order_handler.values)
+            label = self._holder_of_default.label
+            if label is not None:
+                self._config.DEFAULT_VALUE.write(label.value)
 
         def ok() -> None:
             apply()
