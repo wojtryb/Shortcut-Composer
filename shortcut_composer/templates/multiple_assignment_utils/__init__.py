@@ -5,11 +5,9 @@
 
 from .action_values_window import ActionValuesWindow
 from .settings_handler import SettingsHandler
-from .value_list import ValueList
 from .ma_config import MaConfig
 
 __all__ = [
     "ActionValuesWindow",
     "SettingsHandler",
-    "ValueList",
     "MaConfig"]
