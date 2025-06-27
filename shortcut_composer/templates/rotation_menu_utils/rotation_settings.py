@@ -122,17 +122,21 @@ class RotationSettings(QDialog):
         full_layout = QVBoxLayout(self)
         full_layout.addWidget(self._general_tab)
         full_layout.addLayout(ButtonsLayout(
-            ok_callback=self.ok,
-            apply_callback=self.apply,
             reset_callback=self.reset,
             cancel_callback=self.hide,
-        ))
+            apply_callback=self.apply,
+            ok_callback=self.ok))
         self.setLayout(full_layout)
 
     def show(self) -> None:
         """Show the dialog after refreshing all its elements."""
         self.refresh()
         return super().show()
+
+    def reset(self) -> None:
+        """Reset all config values to defaults in krita and elements."""
+        self._config.reset_default()
+        self.refresh()
 
     def apply(self) -> None:
         """Ask all dialog zones to apply themselves."""
@@ -142,11 +146,6 @@ class RotationSettings(QDialog):
         """Hide the dialog after applying the changes"""
         self.apply()
         self.hide()
-
-    def reset(self) -> None:
-        """Reset all config values to defaults in krita and elements."""
-        self._config.reset_default()
-        self.refresh()
 
     def refresh(self) -> None:
         """Update boxes with configured values."""

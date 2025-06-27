@@ -155,11 +155,10 @@ class SettingsDialog(QDialog):
         full_layout = QVBoxLayout(self)
         full_layout.addWidget(self._general_tab)
         full_layout.addLayout(ButtonsLayout(
-            ok_callback=self.ok,
-            apply_callback=self.apply,
             reset_callback=self.reset,
             cancel_callback=self.hide,
-        ))
+            apply_callback=self.apply,
+            ok_callback=self.ok))
         self.setLayout(full_layout)
 
     def show(self) -> None:
@@ -167,6 +166,12 @@ class SettingsDialog(QDialog):
         self.refresh()
         self.move(QCursor.pos())
         return super().show()
+
+    def reset(self) -> None:
+        """Reset all config values to defaults in krita and elements."""
+        Config.reset_default()
+        self.refresh()
+        Krita.trigger_action("Reload Shortcut Composer")
 
     def apply(self) -> None:
         """Ask all dialog zones to apply themselves."""
@@ -177,12 +182,6 @@ class SettingsDialog(QDialog):
         """Hide the dialog after applying the changes"""
         self.apply()
         self.hide()
-
-    def reset(self) -> None:
-        """Reset all config values to defaults in krita and elements."""
-        Config.reset_default()
-        self.refresh()
-        Krita.trigger_action("Reload Shortcut Composer")
 
     def refresh(self) -> None:
         self._general_tab.refresh()

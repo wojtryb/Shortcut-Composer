@@ -108,6 +108,10 @@ class ActionValuesWindow(QDialog):
         return combobox
 
     def _init_buttons(self) -> ButtonsLayout:
+        def reset() -> None:
+            self._config.reset_default()
+            self._reset_values()
+
         def apply() -> None:
             self._config.VALUES.write(self._widget.order_handler.values)
             label = self._holder_of_default.label
@@ -118,15 +122,11 @@ class ActionValuesWindow(QDialog):
             apply()
             self.hide()
 
-        def reset() -> None:
-            self._config.reset_default()
-            self._reset_values()
-
         return ButtonsLayout(
-            ok_callback=ok,
-            apply_callback=apply,
             reset_callback=reset,
-            cancel_callback=self.hide)
+            cancel_callback=self.hide,
+            apply_callback=apply,
+            ok_callback=ok)
 
     def _reset_values(self) -> None:
         # Reset widget
@@ -143,4 +143,4 @@ class ActionValuesWindow(QDialog):
     def show(self) -> None:
         super().show()
         self._reset_values()
-        self._buttons._button_box.setFocus()
+        self._widget.setFocus()
