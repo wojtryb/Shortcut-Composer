@@ -77,7 +77,7 @@ def create_actions() -> list[ComplexActionInterface]: return [
         instructions=[instructions.ToggleVisibilityAbove()],
     ),
 
-    # Cycle between painting opacity values from values_to_cycle list
+    # Cycle between painting opacity values from values list
     # After a long key press, go back to opacity of 100%
     templates.MultipleAssignment(
         name="Cycle painting opacity",
@@ -87,7 +87,7 @@ def create_actions() -> list[ComplexActionInterface]: return [
         values=[70, 50, 30, 100],
     ),
 
-    # Cycle between selection tools from values_to_cycle list.
+    # Cycle between selection tools from values list.
     # After a long key press, go back to the FREEHAND BRUSH tool
     templates.MultipleAssignment(
         name="Cycle selection tools",
@@ -98,6 +98,15 @@ def create_actions() -> list[ComplexActionInterface]: return [
             Tool.RECTANGULAR_SELECTION,
             Tool.CONTIGUOUS_SELECTION,
         ],
+    ),
+
+    # Cycle between brush presets values list.
+    # After a long key press, go back to the "e) Marker Details" preset
+    templates.MultipleAssignment(
+        name="Cycle brush presets",
+        controller=controllers.PresetController(),
+        default_value="e) Marker Details",
+        values=["a) Eraser Circle", "a) Eraser Small", "a) Eraser Soft"],
     ),
 
     # Control undo and redo actions by sliding the cursor horizontally
