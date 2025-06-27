@@ -32,6 +32,7 @@ class PieCurrentValueHolder(QWidget):
         self._enabled = False
         self._previous_label: PieLabel | None = None
 
+        self.setFixedSize(style.icon_radius*2, style.icon_radius*2)
         self.setAcceptDrops(True)
 
     def replace(self, label: PieLabel | None) -> None:

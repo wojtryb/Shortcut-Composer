@@ -39,7 +39,7 @@ class LabelWidget(BaseWidget, Generic[T]):
         self.label = label
         self._label_widget_style = label_widget_style
 
-        self.resize(self.icon_radius*2, self.icon_radius*2)
+        self.setFixedSize(self.icon_radius*2, self.icon_radius*2)
         self.setCursor(Qt.CursorShape.ArrowCursor)
 
         self._draggable = True
