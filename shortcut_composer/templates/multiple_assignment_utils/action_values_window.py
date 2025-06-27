@@ -1,34 +1,32 @@
 # SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from enum import Enum
-
 from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QDialog
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
 
-from core_components.controllers import ToolController
-from config_system import Field
+from core_components import Controller
 from config_system.ui import StringComboBox
 from composer_utils import ButtonsLayout
 from composer_utils.label.complex_widgets import ScrollArea
 
-from composer_utils.label import LabelText, LabelWidgetStyle
-from ..pie_menu_utils import PieWidget, PieLabel, PieStyle
+from composer_utils.label import LabelWidgetStyle
+from ..pie_menu_utils import PieWidget, PieStyle
 from ..pie_menu_utils.group_manager_impl import dispatch_group_manager
+from .ma_config import MaConfig
 
 
+# TODO: SettingsWindow
 class ActionValuesWindow(QDialog):
     """Tab in which user can change action enums and their order."""
 
-    def __init__(self, enum_type: type[Enum], config: Field[list[Enum]]):
+    def __init__(self, controller: Controller, config: MaConfig):
         super().__init__()
         self.setWindowFlags(
             self.windowFlags() |
             Qt.WindowType.WindowStaysOnTopHint)
 
-        self._config = Field("temp", "temp", "---Select tag---")
-        controller = ToolController()  # TODO: pass this controller
+        self._config = config
         self._label_creator = dispatch_group_manager(controller)
 
         self._scroll_area = ScrollArea(LabelWidgetStyle(
@@ -65,11 +63,9 @@ class ActionValuesWindow(QDialog):
             background_color_callback=lambda: QColor(150, 150, 255),
             background_opacity_callback=lambda: 35))
 
-        widget.order_handler.append(PieLabel("1", LabelText("ASD")))
-        widget.order_handler.append(PieLabel("2", LabelText("QWE")))
-        widget.order_handler.append(PieLabel("3", LabelText("ZXCZXC")))
-        widget.order_handler.append(PieLabel("4", LabelText("FGH")))
-        widget.order_handler.append(PieLabel("5", LabelText("BNMF ASD")))
+        values = self._config.VALUES.read()
+        for label in self._label_creator.labels_from_values(values):
+            widget.order_handler.append(label)
 
         widget.set_draggable(True)
         return widget
@@ -86,9 +82,9 @@ class ActionValuesWindow(QDialog):
             combobox.save()
 
         combobox = StringComboBox(
-            config_field=self._config,  # .LAST_TAG_SELECTED,
+            config_field=self._config.LAST_GROUP_SELECTED,
             allowed_values=(
-                ["---Select tag---", "All"]
+                ["---Select group---", "All"]
                 + self._label_creator.fetch_groups()))
 
         combobox.widget.currentTextChanged.connect(display_group)
@@ -99,8 +95,3 @@ class ActionValuesWindow(QDialog):
     def show(self):
         super().show()
         self._buttons._button_box.setFocus()
-
-# class MaConfig:
-#     LAST_TAG_SELECTED: Field
-#     VALUES: Field
-#     DEFAULT_VALUE: Field

@@ -3,10 +3,10 @@
 
 from typing import TypeVar, Generic
 
+from api_krita.enums.helpers import EnumGroup
 from core_components import Controller, Instruction
-from config_system import Field
 from .raw_instructions import RawInstructions
-from .multiple_assignment_utils import SettingsHandler
+from .multiple_assignment_utils import SettingsHandler, MaConfig
 
 T = TypeVar('T')
 
@@ -68,20 +68,22 @@ class MultipleAssignment(RawInstructions, Generic[T]):
 
         self._controller = controller
 
-        self._config = Field(
-            config_group=f"ShortcutComposer: {self.name}",
-            name="Values",
-            default=values)
-        self._config.register_callback(self._reset_values_to_cycle)
+        self._config = MaConfig(
+            name=f"ShortcutComposer: {name}",
+            values=values,
+            default_value=self._read_default_value(default_value))
+        self._config.VALUES.register_callback(self._reset_values_to_cycle)
 
-        self._settings = SettingsHandler(
-            self.name,
-            self._config,
-            self._instructions)
-
-        self._default_value = self._read_default_value(default_value)
         self._values_to_cycle: list[T]
         self._reset_values_to_cycle()
+
+        if not issubclass(controller.TYPE, (EnumGroup, str)):
+            return
+
+        self._instructions.append(SettingsHandler(
+            name,
+            controller,
+            self._config))
 
     def on_key_press(self) -> None:
         """Switch to the next value or start over when value is not in list."""
@@ -102,11 +104,11 @@ class MultipleAssignment(RawInstructions, Generic[T]):
     def on_long_key_release(self) -> None:
         """Set default value."""
         super().on_long_key_release()
-        self._controller.set_value(self._default_value)
+        self._controller.set_value(self._config.DEFAULT_VALUE.read())
 
     def _reset_values_to_cycle(self) -> None:
         """Reload values from config and validate them."""
-        self._values_to_cycle = self._config.read()
+        self._values_to_cycle = self._config.VALUES.read()
 
         if len(set(self._values_to_cycle)) != len(self._values_to_cycle):
             raise ValueError("Values to cycle does not support duplicates.")
@@ -115,6 +117,7 @@ class MultipleAssignment(RawInstructions, Generic[T]):
         if self._values_to_cycle:
             self._values_to_cycle.append(self._values_to_cycle[0])
 
+    # TODO: this could be handled by config, if no defualt value is allowed
     def _read_default_value(self, value: T | None) -> T:
         """Read value from controller if it was not given."""
         if (default := self._controller.DEFAULT_VALUE) is None:

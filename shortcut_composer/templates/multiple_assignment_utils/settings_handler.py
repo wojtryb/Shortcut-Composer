@@ -1,18 +1,19 @@
 # SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from enum import Enum
+from functools import cached_property
 
 from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QWidget
 
 from api_krita import Krita
 from api_krita.pyqt import RoundButton, Timer
-from core_components import Instruction, InstructionHolder
-from config_system import Field
+from core_components import Controller, Instruction
 from .action_values_window import ActionValuesWindow
+from .ma_config import MaConfig
 
 
-class SettingsHandler:
+class SettingsHandler(Instruction):
     """
     Manages showing the MA settings window and button activating it.
 
@@ -27,15 +28,12 @@ class SettingsHandler:
     def __init__(
         self,
         name: str,
-        config: Field[list],
-        instructions: InstructionHolder,
+        controller: Controller,
+        config: MaConfig,
     ) -> None:
-        to_cycle = config.read()
-        if not to_cycle or not isinstance(to_cycle[0], Enum):
-            return
-
-        self._settings = ActionValuesWindow(type(to_cycle[0]), config)
-        self._settings.setWindowTitle(f"Configure: {name}")
+        self._name = name
+        self._controller = controller
+        self._config = config
 
         self._button = RoundButton(
             radius_callback=lambda: 25,
@@ -48,33 +46,30 @@ class SettingsHandler:
         self._button.move(0, 0)
         self._button.hide()
 
-        instructions.append(_HandlerInstruction(self._settings, self._button))
+        self._timer = Timer(self._timer_callback, 500)
 
     def _on_button_click(self) -> None:
         """Show the settings and hide the button after it was clicked."""
-        self._settings.show()
+        self._settings_window.show()
         self._button.hide()
 
+    @cached_property
+    def _settings_window(self) -> QWidget:
+        settings_window = ActionValuesWindow(self._controller, self._config)
+        settings_window.setWindowTitle(f"Configure: {self._name}")
+        return settings_window
 
-class _HandlerInstruction(Instruction):
-    """Instruction installed on the MA action which activates the button."""
-
-    def __init__(self, settings: ActionValuesWindow, button: RoundButton):
-        self._settings = settings
-        self._button = button
-        self._timer = Timer(self.timer_callback, 500)
-
-    def on_key_press(self) -> None:
-        """Start a timer which soon will run a callback once."""
-        self._timer.start()
-
-    def timer_callback(self) -> None:
+    def _timer_callback(self) -> None:
         """Show a button in top left corner of painting area."""
-        if not self._settings.isVisible():
+        if not self._settings_window.isVisible():
             mdiArea = Krita.get_active_mdi_area()
             self._button.move(mdiArea.mapToGlobal(mdiArea.pos()))
             self._button.show()
         self._timer.stop()
+
+    def on_key_press(self) -> None:
+        """Start a timer which soon will run a callback once."""
+        self._timer.start()
 
     def on_every_key_release(self) -> None:
         """Hide the button when visible, or cancel the timer if not."""

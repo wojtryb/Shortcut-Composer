@@ -38,7 +38,6 @@ class PieConfig(FieldGroup, Generic[T]):
         abbreviate_with_dot: bool,
     ) -> None:
         super().__init__(name)
-        # self._value_type = value_type
 
         self.PIE_RADIUS_SCALE = self.field(
             name="Pie scale",
