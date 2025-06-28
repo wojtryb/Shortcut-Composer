@@ -28,8 +28,8 @@ class PieStyleHolder:
             max_lines_amount_callback=self._pie_config.MAX_LINES_AMOUNT.read,
             max_signs_amount_callback=self._pie_config.MAX_SIGNS_AMOUNT.read,
             abbreviation_sign_callback=self._abbreviation_sign_callback)
-
         """Style of the pie widget."""
+
         self.settings_label_style = LabelWidgetStyle(
             icon_radius_callback=self._unscaled_icon_radius,
             border_thickness_callback=self._border_thickness,

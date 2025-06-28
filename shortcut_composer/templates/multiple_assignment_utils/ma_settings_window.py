@@ -11,13 +11,13 @@ from composer_utils import ButtonsLayout
 from composer_utils.label.complex_widgets import ScrollArea
 
 from composer_utils.label import LabelWidgetStyle
-from ..pie_menu_utils import PieWidget, PieStyle, PieCurrentValueHolder
+from composer_utils.label.complex_widgets import LabelHolder
+from ..pie_menu_utils import PieWidget, PieStyle
 from ..pie_menu_utils.group_manager_impl import dispatch_group_manager
 from .ma_config import MaConfig
 
 
-# TODO: SettingsWindow
-class ActionValuesWindow(QDialog):
+class MaSettingsWindow(QDialog):
     """Tab in which user can change action enums and their order."""
 
     def __init__(self, controller: Controller, config: MaConfig):
@@ -79,8 +79,8 @@ class ActionValuesWindow(QDialog):
         widget.set_draggable(True)
         return widget
 
-    def _init_holder_of_default(self) -> PieCurrentValueHolder:
-        holder_of_default = PieCurrentValueHolder(self._label_style)
+    def _init_holder_of_default(self) -> LabelHolder:
+        holder_of_default = LabelHolder(self._label_style)
         holder_of_default.enabled = True
         holder_of_default.setAcceptDrops(True)
         return holder_of_default

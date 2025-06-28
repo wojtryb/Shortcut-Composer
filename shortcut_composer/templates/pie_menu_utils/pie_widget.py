@@ -72,7 +72,6 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self.set_draggable(False)
         self.reset_size()
 
-    # TODO: to widget holder?
     def set_draggable(self, draggable: bool) -> None:
         """Change draggable state of all children."""
         for widget in self.order_handler.widgets:

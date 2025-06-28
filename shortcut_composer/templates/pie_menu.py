@@ -9,14 +9,13 @@ from PyQt5.QtGui import QColor
 
 from api_krita import Krita
 from api_krita.pyqt import RoundButton
-from composer_utils import GroupOrderHolder
-from composer_utils import Config
+from composer_utils import Config, GroupOrderHolder
+from composer_utils.label.complex_widgets import LabelHolder
 from core_components import Controller, Instruction
 from data_components import PieDeadzoneStrategy, Tag
 from .pie_menu_utils.group_manager_impl import dispatch_group_manager
 from .pie_menu_utils import PieConfig
 from .pie_menu_utils import (
-    PieCurrentValueHolder,
     PieMouseTracker,
     PieStyleHolder,
     PieActuator,
@@ -270,10 +269,10 @@ class PieMenu(RawInstructions, Generic[T]):
         return accept_button
 
     @cached_property
-    def current_value_holder(self) -> PieCurrentValueHolder:
+    def current_value_holder(self) -> LabelHolder:
         """Create a LabelWidget holder with currently selected value."""
         style = self._style_holder.small_label_style
-        value_holder = PieCurrentValueHolder(style)
+        value_holder = LabelHolder(style)
         value_holder.setParent(self.pie_widget)
         value_holder.setAcceptDrops(False)
         value_holder.hide()

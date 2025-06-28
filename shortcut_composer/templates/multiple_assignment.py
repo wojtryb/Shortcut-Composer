@@ -6,7 +6,7 @@ from typing import TypeVar, Generic
 from api_krita.enums.helpers import EnumGroup
 from core_components import Controller, Instruction
 from .raw_instructions import RawInstructions
-from .multiple_assignment_utils import SettingsHandler, MaConfig
+from .multiple_assignment_utils import MaSettingsHandler, MaConfig
 
 T = TypeVar('T')
 
@@ -80,7 +80,7 @@ class MultipleAssignment(RawInstructions, Generic[T]):
         if not issubclass(controller.TYPE, (EnumGroup, str)):
             return
 
-        self._instructions.append(SettingsHandler(
+        self._instructions.append(MaSettingsHandler(
             name,
             controller,
             self._config))

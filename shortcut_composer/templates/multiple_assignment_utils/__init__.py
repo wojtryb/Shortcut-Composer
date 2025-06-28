@@ -3,11 +3,11 @@
 
 """Widgets to display on the settings dialog."""
 
-from .action_values_window import ActionValuesWindow
-from .settings_handler import SettingsHandler
+from .ma_settings_window import MaSettingsWindow
+from .ma_settings_handler import MaSettingsHandler
 from .ma_config import MaConfig
 
 __all__ = [
-    "ActionValuesWindow",
-    "SettingsHandler",
+    "MaSettingsWindow",
+    "MaSettingsHandler",
     "MaConfig"]

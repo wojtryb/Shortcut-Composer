@@ -9,11 +9,11 @@ from PyQt5.QtWidgets import QWidget
 from api_krita import Krita
 from api_krita.pyqt import RoundButton, Timer
 from core_components import Controller, Instruction
-from .action_values_window import ActionValuesWindow
+from .ma_settings_window import MaSettingsWindow
 from .ma_config import MaConfig
 
 
-class SettingsHandler(Instruction):
+class MaSettingsHandler(Instruction):
     """
     Manages showing the MA settings window and button activating it.
 
@@ -55,7 +55,7 @@ class SettingsHandler(Instruction):
 
     @cached_property
     def _settings_window(self) -> QWidget:
-        settings_window = ActionValuesWindow(self._controller, self._config)
+        settings_window = MaSettingsWindow(self._controller, self._config)
         settings_window.setWindowTitle(f"Configure: {self._name}")
         return settings_window
 

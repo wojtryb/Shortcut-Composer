@@ -7,11 +7,10 @@ from PyQt5.QtGui import QDragEnterEvent, QDragLeaveEvent
 from composer_utils.label import LabelWidget
 from composer_utils.label.label_widget_impl import dispatch_label_widget
 from composer_utils.label import LabelWidgetStyle
-from .pie_label import PieLabel
+from ..label_interface import LabelInterface
 
 
-# LabelHolder
-class PieCurrentValueHolder(QWidget):
+class LabelHolder(QWidget):
     """
     Holds the LabelWidget with the current value.
 
@@ -30,12 +29,12 @@ class PieCurrentValueHolder(QWidget):
 
         self._widget: LabelWidget | None = None
         self._enabled = False
-        self._previous_label: PieLabel | None = None
+        self._previous_label: LabelInterface | None = None
 
         self.setFixedSize(style.icon_radius*2, style.icon_radius*2)
         self.setAcceptDrops(True)
 
-    def replace(self, label: PieLabel | None) -> None:
+    def replace(self, label: LabelInterface | None) -> None:
         """Replace remembered LabelWidget with the passed value."""
         if self._widget is not None:
             self._widget.setParent(None)  # type: ignore
@@ -46,7 +45,7 @@ class PieCurrentValueHolder(QWidget):
         self._update_with_label(label)
 
     @property
-    def label(self) -> PieLabel | None:
+    def label(self) -> LabelInterface | None:
         if self._widget is not None:
             return self._widget.label
         return None
@@ -87,7 +86,7 @@ class PieCurrentValueHolder(QWidget):
             self._update_with_label(self._previous_label)
         return super().dragLeaveEvent(e)
 
-    def _update_with_label(self, label: PieLabel):
+    def _update_with_label(self, label: LabelInterface):
         self._widget = dispatch_label_widget(label)(
             label=label,
             label_widget_style=self._style,
