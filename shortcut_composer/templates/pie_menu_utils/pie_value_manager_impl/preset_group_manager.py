@@ -8,14 +8,14 @@ from api_krita.wrappers import Database
 from composer_utils import GroupOrderHolder
 from core_components.controllers import PresetController
 from ..pie_config import PieConfig
-from ..pie_label import PieLabel
+from ..pie_widget_utils import PieWidgetLabel
 from ..pie_value_manager import PieValueManager
 
 
 class PresetPieValueManager(PieValueManager):
     """TODO"""
 
-    known_labels: dict[str, PieLabel] = {}
+    known_labels: dict[str, PieWidgetLabel] = {}
     """
     Dictionary of known preset labels mapped to their names.
 
@@ -33,9 +33,12 @@ class PresetPieValueManager(PieValueManager):
         with Database() as database:
             return database.get_brush_tags()
 
-    def labels_from_values(self, values: Iterable[str]) -> list[PieLabel[str]]:
+    def labels_from_values(
+        self,
+        values: Iterable[str]
+    ) -> list[PieWidgetLabel[str]]:
         """Create labels from list of preset names."""
-        labels: list[PieLabel] = []
+        labels: list[PieWidgetLabel] = []
 
         for preset in values:
             if preset in self.known_labels:
@@ -45,7 +48,7 @@ class PresetPieValueManager(PieValueManager):
             if preset in self.invalid_presets:
                 continue
 
-            label = PieLabel.from_value(preset, self._controller)
+            label = PieWidgetLabel.from_value(preset, self._controller)
             if label is None:
                 self.invalid_presets.append(preset)
                 continue

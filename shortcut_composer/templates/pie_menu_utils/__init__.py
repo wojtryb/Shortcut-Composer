@@ -9,7 +9,6 @@ from .pie_settings import PieSettings
 from .pie_actuator import PieActuator
 from .pie_config import PieConfig
 from .pie_widget import PieWidget
-from .pie_label import PieLabel
 
 __all__ = [
     "PieMouseTracker",
@@ -17,5 +16,4 @@ __all__ = [
     "PieSettings",
     "PieActuator",
     "PieConfig",
-    "PieWidget",
-    "PieLabel"]
+    "PieWidget"]

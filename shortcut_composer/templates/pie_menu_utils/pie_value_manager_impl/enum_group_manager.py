@@ -3,10 +3,10 @@
 
 from api_krita.enums.helpers import EnumGroup
 from core_components import Controller
-from ..pie_label import PieLabel
+from composer_utils import GroupOrderHolder
+from ..pie_widget_utils import PieWidgetLabel
 from ..pie_value_manager import PieValueManager
 from ..pie_config import PieConfig
-from composer_utils import GroupOrderHolder
 
 
 class EnumPieValueManager(PieValueManager):
@@ -21,19 +21,20 @@ class EnumPieValueManager(PieValueManager):
     def labels_from_values(
         self,
         values: list[EnumGroup]
-    ) -> list[PieLabel[EnumGroup]]:
+    ) -> list[PieWidgetLabel[EnumGroup]]:
         """Create labels from list of preset names."""
-        labels = [PieLabel.from_value(v, self._controller) for v in values]
+        labels = [PieWidgetLabel.from_value(
+            v, self._controller) for v in values]
         return [label for label in labels if label is not None]
 
     def labels_from_group(
         self,
         group: str,
         sort: bool = True
-    ) -> list[PieLabel]:
+    ) -> list[PieWidgetLabel]:
         return self.labels_from_values(self._get_values(group, sort))
 
-    def labels_from_config(self, config: PieConfig) -> list[PieLabel]:
+    def labels_from_config(self, config: PieConfig) -> list[PieWidgetLabel]:
         if not config.TAG_MODE.read():
             values = config.ORDER.read()
         else:

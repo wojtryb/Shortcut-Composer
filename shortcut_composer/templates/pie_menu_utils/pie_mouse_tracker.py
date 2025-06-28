@@ -5,8 +5,8 @@ from PyQt5.QtGui import QCursor
 
 from api_krita.pyqt import Timer
 from composer_utils import CirclePoints, Config
-from .pie_label import PieLabel
 from .pie_widget import PieWidget
+from .pie_widget_utils import PieWidgetLabel
 
 
 class PieMouseTracker:
@@ -68,7 +68,7 @@ class PieMouseTracker:
         handler = self._pie_widget.order_handler
         self._set_active_label(handler.label_on_angle(angle))
 
-    def _set_active_label(self, label: PieLabel | None) -> None:
+    def _set_active_label(self, label: PieWidgetLabel | None) -> None:
         """Mark label as active and start animating the change."""
         if self._pie_widget.active_label != label:
             self._pie_widget.active_label = label

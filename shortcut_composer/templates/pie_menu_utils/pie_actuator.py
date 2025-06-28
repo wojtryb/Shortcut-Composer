@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from data_components import PieDeadzoneStrategy
-from .pie_label import PieLabel
 from .pie_widget import PieWidget
+from .pie_widget_utils import PieWidgetLabel
 
 
 class PieActuator:
@@ -26,14 +26,14 @@ class PieActuator:
     def __init__(
         self,
         pie_widget: PieWidget,
-        initial_label: PieLabel | None = None,
+        initial_label: PieWidgetLabel | None = None,
         initial_strategy: PieDeadzoneStrategy = PieDeadzoneStrategy.DO_NOTHING,
     ) -> None:
         self._pie_widget = pie_widget
         self._previous_label = initial_label
         self.strategy = initial_strategy
 
-    def select(self) -> PieLabel | None:
+    def select(self) -> PieWidgetLabel | None:
         active = self._pie_widget.active_label
 
         # Out of deadzone, label picked
@@ -60,7 +60,7 @@ class PieActuator:
         for widget in self._pie_widget.order_handler.widgets:
             widget.forced = False
 
-    def _label_from_strategy(self) -> PieLabel | None:
+    def _label_from_strategy(self) -> PieWidgetLabel | None:
         """Return label suggested by current strategy."""
         labels = self._pie_widget.order_handler.labels
 
