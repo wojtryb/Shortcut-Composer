@@ -10,7 +10,7 @@ from composer_utils import Config
 from composer_utils.label.complex_widgets import NumericValuePicker
 from core_components import Controller, NumericController
 from .pie_config import PieConfig
-from .pie_settings_tabs import PreferencesTab, ValuesListTab, SaveLocationTab
+from .pie_settings_tabs import TabPreferences, TabValuesList, TabSaveLocation
 from .pie_style_holder import PieStyleHolder
 from .pie_widget_utils import PieWidgetOrder, PieWidgetLabel
 
@@ -55,14 +55,14 @@ class PieSettings(AnimatedWidget, BaseWidget):
         self._tab_holder = QTabWidget()
 
         # First tab
-        self._preferences_tab = PreferencesTab(
+        self._preferences_tab = TabPreferences(
             config=self._config,
             requires_text_settings=controller.REQUIRES_TEXT_SETTINGS)
         self._tab_holder.addTab(self._preferences_tab, "Preferences")
 
         # Second tab (optional, depend on controller type)
         if issubclass(controller.TYPE, (str, EnumGroup)):
-            tab = ValuesListTab(
+            tab = TabValuesList(
                 self._config,
                 order_handler,
                 controller,
@@ -88,7 +88,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
             self._tab_holder.setCurrentIndex(1)
 
         # Third tab
-        tab = SaveLocationTab(self._config, order_handler, controller)
+        tab = TabSaveLocation(self._config, order_handler, controller)
         self._tab_holder.addTab(tab, "Save location")
 
         layout = QVBoxLayout(self)

@@ -15,7 +15,7 @@ from ..pie_style_holder import PieStyleHolder
 from ..pie_widget_utils import PieWidgetOrder
 
 
-class ValuesListTab(QWidget):
+class TabValuesList(QWidget):
 
     def __init__(
         self,

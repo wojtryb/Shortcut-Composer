@@ -15,7 +15,7 @@ from data_components import PieDeadzoneStrategy
 from ..pie_config import PieConfig
 
 
-class PreferencesTab(QWidget):
+class TabPreferences(QWidget):
 
     def __init__(
         self,
@@ -38,7 +38,6 @@ class PreferencesTab(QWidget):
         self._form.apply()
 
     def _init_layout(self) -> QVBoxLayout:
-        # layout = QVBoxLayout(self)
         layout = QVBoxLayout()
         layout.addWidget(self._form)
         layout.addStretch()

@@ -18,7 +18,7 @@ from ..pie_widget_utils import PieWidgetOrder
 from ..pie_value_manager_impl import dispatch_pie_value_manager
 
 
-class SaveLocationTab(QWidget):
+class TabSaveLocation(QWidget):
     """PieSettings tab for changing location in which values are saved."""
 
     def __init__(
