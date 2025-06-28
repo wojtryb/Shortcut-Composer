@@ -13,9 +13,9 @@ from composer_utils import Config, GroupOrderHolder
 from composer_utils.label.complex_widgets import LabelHolder
 from core_components import Controller, Instruction
 from data_components import PieDeadzoneStrategy, Tag
-from .pie_menu_utils.pie_label_creator_impl import dispatch_pie_label_creator
 from .pie_menu_utils import PieConfig
 from .pie_menu_utils import (
+    PieLabelCreator,
     PieMouseTracker,
     PieStyleHolder,
     PieActuator,
@@ -126,7 +126,7 @@ class PieMenu(RawInstructions, Generic[T]):
             abbreviate_with_dot=abbreviate_with_dot)
 
         self._style_holder = PieStyleHolder(self._config)
-        self._label_creator = dispatch_pie_label_creator(self._controller)
+        self._label_creator = PieLabelCreator(self._controller)
         self._group_order_holder = GroupOrderHolder(self._controller.TYPE)
 
         self._is_in_edit_mode = False
@@ -169,8 +169,7 @@ class PieMenu(RawInstructions, Generic[T]):
     @cached_property
     def pie_actuator(self) -> PieActuator:
         last_value = self._config.LAST_VALUE_SELECTED.read()
-        labels = self._label_creator.labels_from_values((last_value,))
-        label = labels[0] if labels else None
+        label = self._label_creator.label_from_value(last_value)
 
         pie_actuator = PieActuator(self.pie_widget, label)
 
@@ -317,8 +316,7 @@ class PieMenu(RawInstructions, Generic[T]):
         except NotImplementedError:
             label = None
         else:
-            labels = self._label_creator.labels_from_values([current_value])
-            label = labels[0] if labels else None
+            label = self._label_creator.label_from_value(current_value)
         self.current_value_holder.replace(label)
         self.current_value_holder.enabled = label not in new_labels
 

@@ -15,7 +15,7 @@ from core_components import Controller
 from composer_utils import GroupOrderHolder
 from ..pie_config import PieConfig
 from ..pie_widget_utils import PieWidgetOrder
-from ..pie_label_creator_impl import dispatch_pie_label_creator
+from ..pie_label_creator import PieLabelCreator
 
 
 class TabSaveLocation(QWidget):
@@ -32,7 +32,7 @@ class TabSaveLocation(QWidget):
         super().__init__(parent)
         self._config = config
         self._order_handler = order_handler
-        self._label_creator = dispatch_pie_label_creator(controller)
+        self._label_creator = PieLabelCreator(controller)
 
         self._group_order_holder = GroupOrderHolder(controller.TYPE)
         self._location_button = self._init_location_button()

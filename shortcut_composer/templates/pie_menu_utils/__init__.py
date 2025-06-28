@@ -3,6 +3,7 @@
 
 """Components used by PieMenu action."""
 
+from .pie_label_creator import PieLabelCreator
 from .pie_mouse_tracker import PieMouseTracker
 from .pie_style_holder import PieStyleHolder
 from .pie_settings import PieSettings
@@ -11,6 +12,7 @@ from .pie_config import PieConfig
 from .pie_widget import PieWidget
 
 __all__ = [
+    "PieLabelCreator",
     "PieMouseTracker",
     "PieStyleHolder",
     "PieSettings",

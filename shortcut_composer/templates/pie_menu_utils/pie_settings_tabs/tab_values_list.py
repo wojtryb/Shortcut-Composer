@@ -10,7 +10,7 @@ from composer_utils import GroupOrderHolder
 from composer_utils.label.complex_widgets import ScrollArea
 from core_components import Controller
 from ..pie_config import PieConfig
-from ..pie_label_creator_impl import dispatch_pie_label_creator
+from ..pie_label_creator import PieLabelCreator
 from ..pie_style_holder import PieStyleHolder
 from ..pie_widget_utils import PieWidgetOrder
 
@@ -31,7 +31,7 @@ class TabValuesList(QWidget):
         self._style_holder = style_holder
 
         self._group_order_holder = GroupOrderHolder(controller.TYPE)
-        self._label_creator = dispatch_pie_label_creator(controller)
+        self._label_creator = PieLabelCreator(controller)
         self._scroll_area = self._init_scroll_area()
         self._mode_button = self._init_mode_button()
         self._auto_combobox = self._init_auto_combobox()
