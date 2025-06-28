@@ -50,7 +50,7 @@ class ListField(FieldBase, Generic[T]):
         """
         raw = self.location.read(self.config_group, self.name)
         if raw is None:
-            return self.default
+            return self.default.copy()
 
         if raw == "":
             return []
