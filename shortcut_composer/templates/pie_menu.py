@@ -13,7 +13,7 @@ from composer_utils import Config, GroupOrderHolder
 from composer_utils.label.complex_widgets import LabelHolder
 from core_components import Controller, Instruction
 from data_components import PieDeadzoneStrategy, Tag
-from .pie_menu_utils.pie_value_manager_impl import dispatch_pie_value_manager
+from .pie_menu_utils.pie_label_creator_impl import dispatch_pie_label_creator
 from .pie_menu_utils import PieConfig
 from .pie_menu_utils import (
     PieMouseTracker,
@@ -126,7 +126,7 @@ class PieMenu(RawInstructions, Generic[T]):
             abbreviate_with_dot=abbreviate_with_dot)
 
         self._style_holder = PieStyleHolder(self._config)
-        self._label_creator = dispatch_pie_value_manager(self._controller)
+        self._label_creator = dispatch_pie_label_creator(self._controller)
         self._group_order_holder = GroupOrderHolder(self._controller.TYPE)
 
         self._is_in_edit_mode = False

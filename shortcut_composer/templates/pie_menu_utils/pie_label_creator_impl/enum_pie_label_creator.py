@@ -5,11 +5,11 @@ from api_krita.enums.helpers import EnumGroup
 from core_components import Controller
 from composer_utils import GroupOrderHolder
 from ..pie_widget_utils import PieWidgetLabel
-from ..pie_value_manager import PieValueManager
+from ..pie_label_creator import PieLabelCreator
 from ..pie_config import PieConfig
 
 
-class EnumPieValueManager(PieValueManager):
+class EnumPieLabelCreator(PieLabelCreator):
     def __init__(self, controller: Controller) -> None:
         self._controller = controller
         self._group_order_holder = GroupOrderHolder(controller.TYPE)

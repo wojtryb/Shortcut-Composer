@@ -7,7 +7,7 @@ from .pie_config import PieConfig
 from .pie_widget_utils import PieWidgetLabel
 
 
-class PieValueManager(Protocol):
+class PieLabelCreator(Protocol):
     def fetch_groups(self) -> list[str]: ...
 
     def labels_from_values(self, values: Iterable) -> list[PieWidgetLabel]: ...
