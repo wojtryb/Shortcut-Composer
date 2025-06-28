@@ -26,7 +26,7 @@ class NumericValuePicker(QWidget, Generic[T]):
     def __init__(
         self,
         create_label_from_integer: Callable[[int], T],
-        unscaled_label_style: LabelWidgetStyle,
+        unscaled_label_style: LabelWidgetStyle = LabelWidgetStyle(),
         min_value: int = 0,
         max_value: int = 100,
         step: int = 1,

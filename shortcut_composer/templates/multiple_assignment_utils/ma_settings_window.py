@@ -5,14 +5,16 @@ from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QDialog, QLabel
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
 
+from api_krita.enums.helpers import EnumGroup
 from core_components import Controller
 from config_system.ui import StringComboBox
 from composer_utils import ButtonsLayout
-from composer_utils.label.complex_widgets import ScrollArea
+from composer_utils.label.complex_widgets import ScrollArea, NumericValuePicker
 
 from composer_utils.label import LabelWidgetStyle
 from composer_utils.label.complex_widgets import LabelHolder
 from ..pie_menu_utils import PieWidget, PieLabelCreator
+from ..pie_menu_utils.pie_widget_utils import PieWidgetStyle, PieWidgetLabel
 from .ma_config import MaConfig
 
 
@@ -39,8 +41,6 @@ class MaSettingsWindow(QDialog):
             active_color_callback=lambda: active_color,
             background_color_callback=lambda: background_color)
 
-        self._scroll_area = ScrollArea(self._label_style)
-        self._combobox = self._init_combobox()
         self._widget = self._init_widget()
         self._holder_of_default = self._init_holder_of_default()
         self._buttons = self._init_buttons()
@@ -60,13 +60,20 @@ class MaSettingsWindow(QDialog):
         left_layout.addWidget(self._widget)
         left_layout.addLayout(bottom_of_left_layout)
 
-        right_layout = QVBoxLayout()
-        right_layout.addWidget(self._combobox.widget)
-        right_layout.addWidget(self._scroll_area)
-
         core_layout = QHBoxLayout()
         core_layout.addLayout(left_layout)
-        core_layout.addLayout(right_layout)
+        if issubclass(self._controller.TYPE, (str, EnumGroup)):
+            core_layout.addLayout(_TabValuesList(
+                self._config,
+                self._label_creator,
+                self._label_style))
+        elif issubclass(self._controller.TYPE, int):
+            def label_from_integer(value: int) -> PieWidgetLabel[int]:
+                label = PieWidgetLabel.from_value(value, self._controller)
+                if label is None:
+                    raise RuntimeError(f"Could not create label from {value}")
+                return label
+            core_layout.addWidget(NumericValuePicker(label_from_integer))
 
         layout = QVBoxLayout()
         layout.addLayout(core_layout)
@@ -75,7 +82,9 @@ class MaSettingsWindow(QDialog):
         return layout
 
     def _init_widget(self):
-        widget = PieWidget(self._pie_style)
+        widget = PieWidget(
+            pie_style=self._pie_style,
+            allowed_types=self._controller.TYPE)
         widget.set_draggable(True)
         return widget
 
@@ -84,28 +93,6 @@ class MaSettingsWindow(QDialog):
         holder_of_default.enabled = True
         holder_of_default.setAcceptDrops(True)
         return holder_of_default
-
-    def _init_combobox(self) -> StringComboBox:
-        def display_group() -> None:
-            """Update preset widgets according to tag selected in combobox."""
-            picked_group = combobox.read()
-            labels = self._label_creator.labels_from_group(
-                group=picked_group,
-                sort=False)
-            self._scroll_area.replace_handled_labels(labels)
-            self._scroll_area.apply_search_bar_filter()
-            combobox.save()
-
-        combobox = StringComboBox(
-            config_field=self._config.LAST_GROUP_SELECTED,
-            allowed_values=(
-                ["---Select group---", "All"]
-                + self._label_creator.fetch_groups()))
-
-        combobox.widget.currentTextChanged.connect(display_group)
-        display_group()
-
-        return combobox
 
     def _init_buttons(self) -> ButtonsLayout:
         def reset() -> None:
@@ -143,3 +130,42 @@ class MaSettingsWindow(QDialog):
         super().show()
         self._reset_values()
         self._widget.setFocus()
+
+
+class _TabValuesList(QVBoxLayout):
+    def __init__(
+            self,
+            config: MaConfig,
+            label_creator: PieLabelCreator,
+            label_style: LabelWidgetStyle):
+        super().__init__()
+
+        self._config = config
+        self._label_creator = label_creator
+        self._scroll_area = ScrollArea(label_style)
+        self._combobox = self._init_combobox()
+
+        self.addWidget(self._combobox.widget)
+        self.addWidget(self._scroll_area)
+
+    def _init_combobox(self) -> StringComboBox:
+        def display_group() -> None:
+            """Update preset widgets according to tag selected in combobox."""
+            picked_group = combobox.read()
+            labels = self._label_creator.labels_from_group(
+                group=picked_group,
+                sort=False)
+            self._scroll_area.replace_handled_labels(labels)
+            self._scroll_area.apply_search_bar_filter()
+            combobox.save()
+
+        combobox = StringComboBox(
+            config_field=self._config.LAST_GROUP_SELECTED,
+            allowed_values=(
+                ["---Select group---", "All"]
+                + self._label_creator.fetch_groups()))
+
+        combobox.widget.currentTextChanged.connect(display_group)
+        display_group()
+
+        return combobox
