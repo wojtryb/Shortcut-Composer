@@ -14,8 +14,8 @@ from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
 from composer_utils import CirclePoints, Config
 from composer_utils.label import LabelWidget
 from .pie_label import PieLabel
-from .pie_style import PieStyle
-from .pie_widget_utils import OrderHandler, PiePainter
+from .pie_widget_utils.pie_widget_style import PieWidgetStyle
+from .pie_widget_utils import PieWidgetOrder, PieWidgetPainter
 
 T = TypeVar('T')
 
@@ -35,7 +35,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
     def __init__(
         self,
-        pie_style: PieStyle = PieStyle(),
+        pie_style: PieWidgetStyle = PieWidgetStyle(),
         allowed_types: type | tuple[type, ...] = object,
         allow_value_edit_callback: Callable[[], bool] = lambda: True,
         parent=None
@@ -50,8 +50,8 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self._allowed_types = allowed_types
         self._allow_value_edit_callback = allow_value_edit_callback
 
-        self._painter = PiePainter(self._pie_style)
-        self.order_handler = OrderHandler(
+        self._painter = PieWidgetPainter(self._pie_style)
+        self.order_handler = PieWidgetOrder(
             pie_style=self._pie_style,
             owner=self,
             allow_value_edit_callback=self._allow_value_edit_callback)

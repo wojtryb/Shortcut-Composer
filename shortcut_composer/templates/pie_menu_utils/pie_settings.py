@@ -13,7 +13,7 @@ from .pie_config import PieConfig
 from .pie_label import PieLabel
 from .pie_settings_tabs import PreferencesTab, ValuesListTab, SaveLocationTab
 from .pie_style_holder import PieStyleHolder
-from .pie_widget_utils import OrderHandler
+from .pie_widget_utils import PieWidgetOrder
 
 
 class PieSettings(AnimatedWidget, BaseWidget):
@@ -35,7 +35,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
         controller: Controller,
         config: PieConfig,
         style_holder: PieStyleHolder,
-        order_handler: OrderHandler,
+        order_handler: PieWidgetOrder,
     ) -> None:
         AnimatedWidget.__init__(
             self,

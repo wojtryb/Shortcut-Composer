@@ -10,7 +10,7 @@ from api_krita import Krita
 from composer_utils.label import LabelWidgetStyle
 
 
-class PieStyle:
+class PieWidgetStyle:
     """
     Style which allows to paint a PieWidget.
 

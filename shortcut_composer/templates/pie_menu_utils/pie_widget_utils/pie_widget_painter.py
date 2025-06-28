@@ -5,14 +5,14 @@ from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QColor
 
 from api_krita.pyqt import Painter
-from ..pie_style import PieStyle
+from .pie_widget_style import PieWidgetStyle
 from ..pie_label import PieLabel
 
 
-class PiePainter:
+class PieWidgetPainter:
     """Uses provided painter and parts of widget information to paint it."""
 
-    def __init__(self, style: PieStyle) -> None:
+    def __init__(self, style: PieWidgetStyle) -> None:
         self._style = style
 
     def paint(self, painter: Painter, labels: list[PieLabel]) -> None:

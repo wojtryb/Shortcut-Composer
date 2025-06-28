@@ -9,10 +9,10 @@ from composer_utils import GroupOrderHolder
 from core_components.controllers import PresetController
 from ..pie_config import PieConfig
 from ..pie_label import PieLabel
-from ..group_manager import GroupManager
+from ..pie_value_manager import PieValueManager
 
 
-class PresetGroupManager(GroupManager):
+class PresetPieValueManager(PieValueManager):
     """TODO"""
 
     known_labels: dict[str, PieLabel] = {}

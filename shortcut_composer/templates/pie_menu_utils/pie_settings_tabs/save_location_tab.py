@@ -14,8 +14,8 @@ from api_krita.pyqt import SafeConfirmButton
 from core_components import Controller
 from composer_utils import GroupOrderHolder
 from ..pie_config import PieConfig
-from ..pie_widget_utils import OrderHandler
-from ..group_manager_impl import dispatch_group_manager
+from ..pie_widget_utils import PieWidgetOrder
+from ..pie_value_manager_impl import dispatch_pie_value_manager
 
 
 class SaveLocationTab(QWidget):
@@ -24,7 +24,7 @@ class SaveLocationTab(QWidget):
     def __init__(
         self,
         config: PieConfig,
-        order_handler: OrderHandler,
+        order_handler: PieWidgetOrder,
         controller: Controller,
         parent: QWidget | None = None
     ) -> None:
@@ -32,7 +32,7 @@ class SaveLocationTab(QWidget):
         super().__init__(parent)
         self._config = config
         self._order_handler = order_handler
-        self._label_creator = dispatch_group_manager(controller)
+        self._label_creator = dispatch_pie_value_manager(controller)
 
         self._group_order_holder = GroupOrderHolder(controller.TYPE)
         self._location_button = self._init_location_button()

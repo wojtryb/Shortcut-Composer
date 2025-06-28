@@ -9,7 +9,6 @@ from .pie_settings import PieSettings
 from .pie_actuator import PieActuator
 from .pie_config import PieConfig
 from .pie_widget import PieWidget
-from .pie_style import PieStyle
 from .pie_label import PieLabel
 
 __all__ = [
@@ -19,5 +18,4 @@ __all__ = [
     "PieActuator",
     "PieConfig",
     "PieWidget",
-    "PieLabel",
-    "PieStyle"]
+    "PieLabel"]

@@ -11,13 +11,13 @@ from composer_utils import CirclePoints
 from composer_utils.label import LabelWidget
 from composer_utils.label.label_widget_impl import dispatch_label_widget
 from ..pie_label import PieLabel
-from ..pie_style import PieStyle
+from .pie_widget_style import PieWidgetStyle
 
 PieLabelWidget = LabelWidget[PieLabel]
 EmptyCallback = Callable[[], None]
 
 
-class OrderHandler:
+class PieWidgetOrder:
     """
     Represents the pie icons as a positional label container.
 
@@ -28,7 +28,7 @@ class OrderHandler:
 
     def __init__(
         self,
-        pie_style: PieStyle,
+        pie_style: PieWidgetStyle,
         owner: BaseWidget,
         allow_value_edit_callback: Callable[[], bool],
     ) -> None:

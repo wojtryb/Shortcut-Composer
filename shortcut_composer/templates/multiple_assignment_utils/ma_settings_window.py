@@ -12,8 +12,9 @@ from composer_utils.label.complex_widgets import ScrollArea
 
 from composer_utils.label import LabelWidgetStyle
 from composer_utils.label.complex_widgets import LabelHolder
-from ..pie_menu_utils import PieWidget, PieStyle
-from ..pie_menu_utils.group_manager_impl import dispatch_group_manager
+from ..pie_menu_utils import PieWidget
+from ..pie_menu_utils.pie_widget_utils import PieWidgetStyle
+from ..pie_menu_utils.pie_value_manager_impl import dispatch_pie_value_manager
 from .ma_config import MaConfig
 
 
@@ -27,11 +28,11 @@ class MaSettingsWindow(QDialog):
             Qt.WindowType.WindowStaysOnTopHint)
 
         self._config = config
-        self._label_creator = dispatch_group_manager(controller)
+        self._label_creator = dispatch_pie_value_manager(controller)
 
         active_color = QColor(110, 160, 255)
         background_color = QColor(150, 150, 255)
-        self._pie_style = PieStyle(
+        self._pie_style = PieWidgetStyle(
             active_color_callback=lambda: active_color,
             background_color_callback=lambda: background_color,
             background_opacity_callback=lambda: 35)

@@ -7,7 +7,7 @@ from api_krita import Krita
 from composer_utils import Config
 from composer_utils.label import LabelWidgetStyle
 from .pie_config import PieConfig
-from .pie_style import PieStyle
+from .pie_widget_utils import PieWidgetStyle
 
 
 class PieStyleHolder:
@@ -17,7 +17,7 @@ class PieStyleHolder:
         self._pie_config = pie_config
         self._base_size = Krita.screen_size/2560
 
-        self.pie_style = PieStyle(
+        self.pie_style = PieWidgetStyle(
             pie_radius_callback=self._pie_radius,
             deadzone_radius_callback=self._deadzone_radius,
             background_opacity_callback=self._pie_config.PIE_OPACITY.read,

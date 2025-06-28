@@ -7,9 +7,7 @@ from .pie_config import PieConfig
 from .pie_label import PieLabel
 
 
-# TODO: Strategies: Alphabetical, natural, remembered instead of `sort`
-# ValueManager?
-class GroupManager(Protocol):
+class PieValueManager(Protocol):
     def fetch_groups(self) -> list[str]: ...
 
     def labels_from_values(self, values: Iterable) -> list[PieLabel]: ...
