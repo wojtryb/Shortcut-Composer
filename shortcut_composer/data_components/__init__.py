@@ -16,7 +16,7 @@ from .strategies import (
 from .current_layer_stack import CurrentLayerStack
 from .slider import Slider
 from .range import Range
-from .tag import Tag
+from .group import Group
 
 __all__ = [
     "RotationDeadzoneStrategy",
@@ -25,4 +25,4 @@ __all__ = [
     "CurrentLayerStack",
     "Slider",
     "Range",
-    "Tag"]
+    "Group"]

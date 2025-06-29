@@ -4,7 +4,7 @@
 from typing import Generic, TypeVar
 
 from config_system import FieldGroup
-from data_components import Tag
+from data_components import Group
 
 T = TypeVar("T")
 
@@ -15,12 +15,12 @@ class MaConfig(FieldGroup, Generic[T]):
         self,
         name: str,
         value_type: type,
-        values: list[T] | Tag,
+        values: list[T] | Group,
         default_value: T,
     ) -> None:
         super().__init__(name)
 
-        default_values = [] if isinstance(values, Tag) else values
+        default_values = [] if isinstance(values, Group) else values
         self.VALUES = self.field(
             name="Values",
             default=default_values,
@@ -32,13 +32,13 @@ class MaConfig(FieldGroup, Generic[T]):
             default=default_value)
         """Value activated after a long press."""
 
-        group_mode = isinstance(values, Tag)
+        group_mode = isinstance(values, Group)
         self.GROUP_MODE = self.field(
             name="Group mode",
             default=group_mode)
         """If true, the pie operates on groups, not individual values."""
 
-        group_name = values.tag_name if isinstance(values, Tag) else ""
+        group_name = values.group_name if isinstance(values, Group) else ""
         self.GROUP_NAME = self.field(
             name="Group",
             default=group_name)

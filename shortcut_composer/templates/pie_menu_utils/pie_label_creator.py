@@ -66,9 +66,9 @@ class PieLabelCreator(Generic[T]):
         return self.labels_from_values(values)
 
     def labels_from_config(self, config: PieConfig) -> list[PieLabel]:
-        if not config.TAG_MODE.read():
+        if not config.GROUP_MODE.read():
             values = config.ORDER.read()
         else:
-            group = config.TAG_NAME.read()
+            group = config.GROUP_NAME.read()
             values = self._group_manager.values_from_group(group)
         return self.labels_from_values(values)

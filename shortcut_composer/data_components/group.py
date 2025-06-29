@@ -2,6 +2,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 
-class Tag:
-    def __init__(self, tag_name: str) -> None:
-        self.tag_name = tag_name
+class Group:
+    def __init__(self, group_name: str) -> None:
+        self.group_name = group_name

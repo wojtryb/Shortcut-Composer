@@ -21,9 +21,9 @@ class TabValuesList(QWidget):
 
     @dataclass
     class Config:
-        TAG_MODE: Field[bool]
-        TAG_NAME: Field[str]
-        LAST_TAG_SELECTED: Field[str]
+        GROUP_MODE: Field[bool]
+        GROUP_NAME: Field[str]
+        LAST_GROUP_SELECTED: Field[str]
 
     def __init__(
         self,
@@ -45,7 +45,7 @@ class TabValuesList(QWidget):
         self._auto_combobox = self._init_auto_combobox()
         self._manual_combobox = self._init_manual_combobox()
 
-        self._set_tag_mode()
+        self._set_group_mode()
         self.setLayout(self._init_layout())
 
     def _init_layout(self) -> QVBoxLayout:
@@ -94,16 +94,16 @@ class TabValuesList(QWidget):
         return scroll_area
 
     def _init_mode_button(self) -> SafeConfirmButton:
-        """Create button which switches between tag and manual mode."""
+        """Create button which switches between group and manual mode."""
         def switch_mode() -> None:
-            """Change the is_tag_mode to the opposite state."""
-            # Writing to TAG_MODE can reload the labels in Pie
-            self._config.TAG_MODE.write(not self._config.TAG_MODE.read())
-            if self._config.TAG_MODE.read():
+            """Change the is_group mode to the opposite state."""
+            # Writing to GROUP_MODE can reload the labels in Pie
+            self._config.GROUP_MODE.write(not self._config.GROUP_MODE.read())
+            if self._config.GROUP_MODE.read():
                 self._auto_combobox.set(self._manual_combobox.read())
                 self._auto_combobox.save()
                 # Reset hidden combobox to prevent unnecessary icon loading
-                self._manual_combobox.set("---Select tag---")
+                self._manual_combobox.set("---Select group---")
                 self._manual_combobox.save()
             else:
                 self._manual_combobox.set(self._auto_combobox.read())
@@ -113,13 +113,13 @@ class TabValuesList(QWidget):
         mode_button.setFixedHeight(mode_button.sizeHint().height()*2)
         mode_button.clicked.connect(switch_mode)
 
-        self._config.TAG_MODE.register_callback(self._set_tag_mode)
+        self._config.GROUP_MODE.register_callback(self._set_group_mode)
         return mode_button
 
     def _init_auto_combobox(self) -> StringComboBox:
-        """Create tag mode combobox, which sets tag presets to the pie."""
+        """Create group mode combobox, which sets group values to the pie."""
         auto_combobox = StringComboBox(
-            config_field=self._config.TAG_NAME,
+            config_field=self._config.GROUP_NAME,
             allowed_values=self._label_creator.fetch_groups())
 
         def set_order_of_previous_group(previous_group: str):
@@ -133,17 +133,17 @@ class TabValuesList(QWidget):
             labels = self._label_creator.labels_from_group(new_group)
             self._order_handler.replace_labels(labels)
 
-        def on_new_tag() -> None:
-            if self._config.TAG_NAME.read() != auto_combobox.read():
+        def on_new_group() -> None:
+            if self._config.GROUP_NAME.read() != auto_combobox.read():
                 set_order_of_previous_group(auto_combobox.read())
-                auto_combobox.set(self._config.TAG_NAME.read())
+                auto_combobox.set(self._config.GROUP_NAME.read())
                 replace_labels()
-        self._config.TAG_NAME.register_callback(on_new_tag)
+        self._config.GROUP_NAME.register_callback(on_new_group)
 
         def on_text_change():
-            if self._config.TAG_NAME.read() != auto_combobox.read():
-                set_order_of_previous_group(self._config.TAG_NAME.read())
-                self._config.TAG_NAME.write(auto_combobox.read())
+            if self._config.GROUP_NAME.read() != auto_combobox.read():
+                set_order_of_previous_group(self._config.GROUP_NAME.read())
+                self._config.GROUP_NAME.write(auto_combobox.read())
                 replace_labels()
         auto_combobox.widget.currentTextChanged.connect(on_text_change)
 
@@ -151,7 +151,7 @@ class TabValuesList(QWidget):
 
     def _init_manual_combobox(self) -> StringComboBox:
         def display_group() -> None:
-            """Update preset widgets according to tag selected in combobox."""
+            """Update preset widgets with group selected in combobox."""
             picked_group = manual_combobox.read()
             labels = self._label_creator.labels_from_group(
                 group=picked_group,
@@ -161,9 +161,9 @@ class TabValuesList(QWidget):
             manual_combobox.save()
 
         manual_combobox = StringComboBox(
-            config_field=self._config.LAST_TAG_SELECTED,
+            config_field=self._config.LAST_GROUP_SELECTED,
             allowed_values=(
-                ["---Select tag---", "All"]
+                ["---Select group---", "All"]
                 + self._label_creator.fetch_groups()))
 
         manual_combobox.widget.currentTextChanged.connect(display_group)
@@ -171,17 +171,17 @@ class TabValuesList(QWidget):
 
         return manual_combobox
 
-    def _set_tag_mode(self) -> None:
-        """Set the pie mode to tag (True) or manual (False)."""
-        if self._config.TAG_MODE.read():
-            # moving to tag mode
-            self._mode_button.main_text = "Tag mode"
+    def _set_group_mode(self) -> None:
+        """Set the pie mode to group (True) or manual (False)."""
+        if self._config.GROUP_MODE.read():
+            # moving to group mode
+            self._mode_button.main_text = "Group mode"
             self._mode_button.icon = Krita.get_icon("tag")
             self._scroll_area.hide()
             self._manual_combobox.widget.hide()
             self._auto_combobox.widget.show()
 
-            group = self._config.TAG_NAME.read()
+            group = self._config.GROUP_NAME.read()
             labels = self._label_creator.labels_from_group(group)
             self._order_handler.replace_labels(labels)
 

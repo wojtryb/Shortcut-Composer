@@ -23,7 +23,7 @@ from data_components import (
     PickLayerStrategy,
     Slider,
     Range,
-    Tag)
+    Group)
 
 INFINITY = float("inf")
 
@@ -106,7 +106,7 @@ def create_actions() -> list[ComplexActionInterface]: return [
         name="Cycle brush presets",
         controller=controllers.PresetController(),
         default_value="e) Marker Details",
-        values=Tag("Erasers"),
+        values=Group("Erasers"),
     ),
 
     # Control undo and redo actions by sliding the cursor horizontally
@@ -315,7 +315,7 @@ def create_actions() -> list[ComplexActionInterface]: return [
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
         deadzone_strategy=PieDeadzoneStrategy.PICK_PREVIOUS,
-        values=Tag("★ My Favorites"),
+        values=Group("★ My Favorites"),
         background_color=QColor(95, 65, 65, 190),
         active_color=QColor(200, 70, 70),
     ),
@@ -327,7 +327,7 @@ def create_actions() -> list[ComplexActionInterface]: return [
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
         deadzone_strategy=PieDeadzoneStrategy.PICK_PREVIOUS,
-        values=Tag("RGBA"),
+        values=Group("RGBA"),
         background_color=QColor(65, 95, 65, 190),
         active_color=QColor(70, 200, 70),
     ),
@@ -339,7 +339,7 @@ def create_actions() -> list[ComplexActionInterface]: return [
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
         deadzone_strategy=PieDeadzoneStrategy.PICK_PREVIOUS,
-        values=Tag("Erasers"),
+        values=Group("Erasers"),
         background_color=QColor(70, 70, 105, 190),
         active_color=QColor(110, 160, 235),
     ),

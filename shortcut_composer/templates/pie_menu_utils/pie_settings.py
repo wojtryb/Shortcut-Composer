@@ -65,9 +65,9 @@ class PieSettings(AnimatedWidget, BaseWidget):
         if issubclass(controller.TYPE, (str, EnumGroup)):
             tab = TabValuesList(
                 config=TabValuesList.Config(
-                    self._config.TAG_MODE,
-                    self._config.TAG_NAME,
-                    self._config.LAST_TAG_SELECTED),
+                    self._config.GROUP_MODE,
+                    self._config.GROUP_NAME,
+                    self._config.LAST_GROUP_SELECTED),
                 order_handler=order_handler,
                 controller=controller,
                 label_style=self._style_holder.settings_label_style)

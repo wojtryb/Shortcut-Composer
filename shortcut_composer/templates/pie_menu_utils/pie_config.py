@@ -7,7 +7,7 @@ from api_krita import Krita
 from core_components import Controller
 from config_system import FieldGroup
 from config_system.field_base_impl import DualField, FieldWithEditableDefault
-from data_components import Tag, PieDeadzoneStrategy
+from data_components import Group, PieDeadzoneStrategy
 
 T = TypeVar("T")
 U = TypeVar("U")
@@ -24,7 +24,7 @@ class PieConfig(FieldGroup, Generic[T]):
     def __init__(
         self,
         name: str,
-        values: list[T] | Tag,
+        values: list[T] | Group,
         controller: Controller,
         pie_radius_scale: float,
         icon_radius_scale: float,
@@ -93,21 +93,21 @@ class PieConfig(FieldGroup, Generic[T]):
             default=abbreviate_with_dot)
         """Sign used to show that text was trimmed."""
 
-        tag_mode = isinstance(values, Tag)
-        self.TAG_MODE = self._create_editable_dual_field(
-            field_name="Tag mode",
-            default=tag_mode)
+        group_mode = isinstance(values, Group)
+        self.GROUP_MODE = self._create_editable_dual_field(
+            field_name="Tag mode",  # Backwards compatibility
+            default=group_mode)
         """If true, the pie operates on groups, not individual values."""
 
-        tag_name = values.tag_name if isinstance(values, Tag) else ""
-        self.TAG_NAME = self._create_editable_dual_field(
+        group_name = values.group_name if isinstance(values, Group) else ""
+        self.GROUP_NAME = self._create_editable_dual_field(
             field_name="Tag",
-            default=tag_name)
+            default=group_name)
         """Name of selected group if in group mode."""
 
-        self.LAST_TAG_SELECTED = self.field(
+        self.LAST_GROUP_SELECTED = self.field(
             name="Last tag selected",
-            default="---Select tag---")
+            default="---Select group---")
         """Last selected value group remembered between sessions."""
         self.LAST_VALUE_SELECTED = self.field(
             name="Last value selected",
@@ -117,7 +117,7 @@ class PieConfig(FieldGroup, Generic[T]):
         # parser, controller here would not be needed.
         # Field should default to None, this class should get only TYPE
 
-        default_values = [] if isinstance(values, Tag) else values
+        default_values = [] if isinstance(values, Group) else values
         self.ORDER = self._create_editable_dual_field(
             field_name="Values",
             default=default_values,

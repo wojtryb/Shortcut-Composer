@@ -4,7 +4,7 @@
 from typing import TypeVar, Generic
 
 from core_components import Controller, Instruction
-from data_components import Tag
+from data_components import Group
 from .pie_menu_utils.pie_label_creator_utils import dispatch_pie_group_manager
 from .raw_instructions import RawInstructions
 from .multiple_assignment_utils import MaSettingsHandler, MaConfig
@@ -61,7 +61,7 @@ class MultipleAssignment(RawInstructions, Generic[T]):
         self, *,
         name: str,
         controller: Controller[T],
-        values: list[T] | Tag,
+        values: list[T] | Group,
         default_value: T | None = None,
         instructions: list[Instruction] | None = None,
     ) -> None:

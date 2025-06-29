@@ -41,11 +41,10 @@ class TabSaveLocation(QWidget):
         self._set_new_default_button = self._init_set_new_default_button()
         self._reset_to_default_button = self._init_reset_to_default_button()
 
-        self._order_handler.register_callback_on_change(
-            self._update_button_activity)
-        self._config.TAG_MODE.register_callback(self._update_button_activity)
-        self._config.TAG_NAME.register_callback(self._update_button_activity)
-        self._update_button_activity()
+        self._order_handler.register_callback_on_change(self._update_buttons)
+        self._config.GROUP_MODE.register_callback(self._update_buttons)
+        self._config.GROUP_NAME.register_callback(self._update_buttons)
+        self._update_buttons()
 
         self.setLayout(self._init_layout())
         self.is_local_mode = self._config.SAVE_LOCAL.read()
@@ -78,8 +77,8 @@ class TabSaveLocation(QWidget):
         def switch_mode() -> None:
             self.is_local_mode = not self.is_local_mode
             if self.is_local_mode:
-                self._config.TAG_MODE.default = False
-                self._config.TAG_NAME.default = ""
+                self._config.GROUP_MODE.default = False
+                self._config.GROUP_NAME.default = ""
                 self._config.ORDER.default = []
 
         button = SafeConfirmButton(text="Change mode")
@@ -114,12 +113,12 @@ class TabSaveLocation(QWidget):
             icon=Krita.get_icon("document-save"))
 
         def set_current_as_default():
-            self._config.TAG_MODE.default = self._config.TAG_MODE.read()
-            self._config.TAG_NAME.default = self._config.TAG_NAME.read()
+            self._config.GROUP_MODE.default = self._config.GROUP_MODE.read()
+            self._config.GROUP_NAME.default = self._config.GROUP_NAME.read()
             self._config.ORDER.default = self._order_handler.values
 
         button.clicked.connect(set_current_as_default)
-        button.clicked.connect(self._update_button_activity)
+        button.clicked.connect(self._update_buttons)
 
         button.setFixedHeight(button.sizeHint().height()*2)
         return button
@@ -131,15 +130,15 @@ class TabSaveLocation(QWidget):
             icon=Krita.get_icon("edit-delete"))
 
         def reset_order_to_default():
-            self._config.TAG_MODE.reset_default()
-            self._config.TAG_NAME.reset_default()
+            self._config.GROUP_MODE.reset_default()
+            self._config.GROUP_NAME.reset_default()
             self._config.ORDER.reset_default()
 
             labels = self._label_creator.labels_from_config(self._config)
             self._order_handler.replace_labels(labels)
 
         button.clicked.connect(reset_order_to_default)
-        button.clicked.connect(self._update_button_activity)
+        button.clicked.connect(self._update_buttons)
 
         button.setFixedHeight(button.sizeHint().height()*2)
         return button
@@ -182,16 +181,16 @@ class TabSaveLocation(QWidget):
                 "remain useful regardless of which document is edited.")
         self._config.SAVE_LOCAL.write(value)
 
-    def _update_button_activity(self) -> None:
+    def _update_buttons(self) -> None:
         """Disable location action buttons, when they won't do anything."""
         cfg = self._config
-        if not cfg.TAG_MODE.read():
+        if not cfg.GROUP_MODE.read():
             is_order_default = (
-                cfg.TAG_MODE.read() == cfg.TAG_MODE.default
-                and cfg.TAG_NAME.read() == cfg.TAG_NAME.default
+                cfg.GROUP_MODE.read() == cfg.GROUP_MODE.default
+                and cfg.GROUP_NAME.read() == cfg.GROUP_NAME.default
                 and self._order_handler.values == cfg.ORDER.default)
         else:
-            is_order_default = cfg.TAG_NAME.read() == cfg.TAG_NAME.default
+            is_order_default = cfg.GROUP_NAME.read() == cfg.GROUP_NAME.default
 
         if not is_order_default:
             self._set_new_default_button.setEnabled(True)

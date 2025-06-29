@@ -12,7 +12,7 @@ from api_krita.pyqt import RoundButton
 from composer_utils import Config, GroupOrderHolder
 from composer_utils.label.complex_widgets import LabelHolder
 from core_components import Controller, Instruction
-from data_components import PieDeadzoneStrategy, Tag
+from data_components import PieDeadzoneStrategy, Group
 from .pie_menu_utils import PieConfig
 from .pie_menu_utils import (
     PieLabelCreator,
@@ -94,7 +94,7 @@ class PieMenu(RawInstructions, Generic[T]):
         self, *,
         name: str,
         controller: Controller[T],
-        values: list[T] | Tag,
+        values: list[T] | Group,
         instructions: list[Instruction] | None = None,
         pie_radius_scale: float = 1.0,
         icon_radius_scale: float = 1.0,
@@ -144,7 +144,7 @@ class PieMenu(RawInstructions, Generic[T]):
         pie_widget = PieWidget(
             pie_style=self._style_holder.pie_style,
             allowed_types=self._controller.TYPE,
-            allow_value_edit_callback=lambda: not self._config.TAG_MODE.read())
+            allow_value_edit_callback=lambda: not self._config.GROUP_MODE.read())
 
         # This is the first `settings_button` occurence, which creates it
         self.settings_button.setParent(pie_widget)
@@ -248,9 +248,9 @@ class PieMenu(RawInstructions, Generic[T]):
 
             # Save values from the pie to config
             values = self.pie_widget.order_handler.values
-            if self._config.TAG_MODE.read():
+            if self._config.GROUP_MODE.read():
                 self._group_order_holder.set_order(
-                    group_name=self._config.TAG_NAME.read(),
+                    group_name=self._config.GROUP_NAME.read(),
                     values=values)
             else:
                 self._config.ORDER.write(values)
