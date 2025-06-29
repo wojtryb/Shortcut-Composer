@@ -106,7 +106,7 @@ def create_actions() -> list[ComplexActionInterface]: return [
         name="Cycle brush presets",
         controller=controllers.PresetController(),
         default_value="e) Marker Details",
-        values=["a) Eraser Circle", "a) Eraser Small", "a) Eraser Soft"],
+        values=Tag("Erasers"),
     ),
 
     # Control undo and redo actions by sliding the cursor horizontally

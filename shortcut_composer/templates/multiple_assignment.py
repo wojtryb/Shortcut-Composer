@@ -4,6 +4,8 @@
 from typing import TypeVar, Generic
 
 from core_components import Controller, Instruction
+from data_components import Tag
+from .pie_menu_utils.pie_label_creator_utils import dispatch_pie_group_manager
 from .raw_instructions import RawInstructions
 from .multiple_assignment_utils import MaSettingsHandler, MaConfig
 
@@ -59,22 +61,20 @@ class MultipleAssignment(RawInstructions, Generic[T]):
         self, *,
         name: str,
         controller: Controller[T],
-        values: list[T],
+        values: list[T] | Tag,
         default_value: T | None = None,
         instructions: list[Instruction] | None = None,
     ) -> None:
         super().__init__(name, instructions)
 
         self._controller = controller
+        self._group_manager = dispatch_pie_group_manager(controller)
 
         self._config = MaConfig(
             name=f"ShortcutComposer: {name}",
+            value_type=self._controller.TYPE,
             values=values,
             default_value=self._read_default_value(default_value))
-        self._config.VALUES.register_callback(self._reset_values_to_cycle)
-
-        self._values_to_cycle: list[T]
-        self._reset_values_to_cycle()
 
         self._instructions.append(MaSettingsHandler(
             name,
@@ -85,33 +85,41 @@ class MultipleAssignment(RawInstructions, Generic[T]):
         """Switch to the next value or start over when value is not in list."""
         super().on_key_press()
 
-        if not self._values_to_cycle:
+        values = self._reset_values_to_cycle()
+
+        if not values:
             return
 
         self._controller.refresh()
         current = self._controller.get_value()
 
-        if current in self._values_to_cycle:
-            id = self._values_to_cycle.index(current) + 1
-            self._controller.set_value(self._values_to_cycle[id])
+        if current in values:
+            id = values.index(current) + 1
+            self._controller.set_value(values[id])
         else:
-            self._controller.set_value(self._values_to_cycle[0])
+            self._controller.set_value(values[0])
 
     def on_long_key_release(self) -> None:
         """Set default value."""
         super().on_long_key_release()
         self._controller.set_value(self._config.DEFAULT_VALUE.read())
 
-    def _reset_values_to_cycle(self) -> None:
+    def _reset_values_to_cycle(self) -> list[T]:
         """Reload values from config and validate them."""
-        self._values_to_cycle = self._config.VALUES.read()
+        if not self._config.GROUP_MODE.read():
+            values = self._config.VALUES.read()
+        else:
+            group = self._config.GROUP_NAME.read()
+            values = self._group_manager.values_from_group(group)
 
-        if len(set(self._values_to_cycle)) != len(self._values_to_cycle):
+        if len(set(values)) != len(values):
             raise ValueError("Values to cycle does not support duplicates.")
 
         # Duplicate first value at the end, to allow cycling
-        if self._values_to_cycle:
-            self._values_to_cycle.append(self._values_to_cycle[0])
+        if values:
+            values.append(values[0])
+
+        return values
 
     # TODO: this could be handled by config, if no defualt value is allowed
     def _read_default_value(self, value: T | None) -> T:

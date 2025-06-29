@@ -14,14 +14,17 @@ class MaConfig(FieldGroup, Generic[T]):
     def __init__(
         self,
         name: str,
-        values: list[T],
+        value_type: type,
+        values: list[T] | Tag,
         default_value: T,
     ) -> None:
         super().__init__(name)
 
+        default_values = [] if isinstance(values, Tag) else values
         self.VALUES = self.field(
             name="Values",
-            default=values)
+            default=default_values,
+            parser_type=value_type)
         """Values to cycle with short key presses."""
 
         self.DEFAULT_VALUE = self.field(
