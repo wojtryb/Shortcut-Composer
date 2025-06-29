@@ -102,6 +102,7 @@ class MultipleAssignment(RawInstructions, Generic[T]):
     def on_long_key_release(self) -> None:
         """Set default value."""
         super().on_long_key_release()
+        self._controller.refresh()
         self._controller.set_value(self._config.DEFAULT_VALUE.read())
 
     def _reset_values_to_cycle(self) -> list[T]:
