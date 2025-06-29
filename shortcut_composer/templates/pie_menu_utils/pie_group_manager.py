@@ -7,10 +7,7 @@ T = TypeVar("T")
 
 
 class PieGroupManager(Protocol, Generic[T]):
-    def fetch_groups(self) -> list[str]: ...
+    """TODO: when group is unknown, returns empty list."""
 
-    def values_from_group(
-        self,
-        group: str,
-        sort: bool = True
-    ) -> list[T]: ...
+    def fetch_groups(self) -> list[str]: ...
+    def values_from_group(self, group: str, sort: bool = True) -> list[T]: ...

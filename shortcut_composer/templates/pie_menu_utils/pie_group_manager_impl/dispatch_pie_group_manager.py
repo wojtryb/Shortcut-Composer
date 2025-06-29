@@ -14,4 +14,4 @@ def dispatch_pie_group_manager(controller: Controller) -> PieGroupManager:
         return PresetPieGroupManager()
     elif issubclass(controller.TYPE, EnumGroup):
         return EnumPieGroupManager(controller)
-    return InvalidPieGroupManager(controller.TYPE)
+    return InvalidPieGroupManager()
