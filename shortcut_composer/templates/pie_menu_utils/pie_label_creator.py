@@ -5,7 +5,7 @@ from typing import Generic, TypeVar, Iterable
 
 from core_components import Controller
 from composer_utils import GroupOrderHolder
-from .pie_group_manager_impl import dispatch_pie_group_manager
+from .pie_label_creator_utils import dispatch_pie_group_manager
 from .pie_config import PieConfig
 from .pie_label import PieLabel
 
