@@ -34,12 +34,12 @@ class PieMenu(RawInstructions, Generic[T]):
     - Moving mouse in a direction of a value activates it on key release
     - When in deadzone, selected strategy is used to determine action
     - Edit button activates mode in which pie does not hide on key
-      release and can be configured (see PieSettings)
+      release and can be configured (see pie_menu_utils.pie_settings.py)
 
     ### Arguments:
 
     - `name`          -- unique name of action. Must match the
-                         definition in shortcut_composer.action file
+                         definition in shortcut_composer.actions.py file
     - `controller`    -- defines which krita property will be modified
     - `values`        -- default list of values to display in pie
     - `instructions`  -- (optional) list of additional instructions to
@@ -57,7 +57,7 @@ class PieMenu(RawInstructions, Generic[T]):
     - `abbreviate_with_dot` -- (optional) whether '.' sign should be
                                used for abbreviating words
 
-    ### Action implementation example:
+    ### Action usage example:
 
     Action is meant to change opacity of current layer to one of
     predefined values using the pie menu widget.
@@ -75,19 +75,41 @@ class PieMenu(RawInstructions, Generic[T]):
     ```
 
     ### Class design concept
-    TODO: programmer guide to this class
-    TODO: why cached_property
 
-    When not in edit mode:
-    - PieWidget is shown, PieSettings are not
-    - labels cannot be dragged
-    - settings button is shown. It allows to enter edit mode
+    PieMenu class represents the entire action for picking values from a
+    radial menu. Do not confuse it with PieWidget, which represents the
+    GUI of displayed widget.
 
-    Wnen in edit mode:
-    - Both PieWidget and PieSettings are shown
-    - labels can be dragged to, from and inside the PieWidget
-    - settings button is replaced with current value icon
-    - accept button is shown. It allows to hide everything.
+    PieMenu responsibilities are:
+    - creating top-level action components (for both GUI and logic).
+    - connecting those components together.
+    - handling the KeyPress and KeyRelease events of the
+      ComplexActionInterface it implements.
+
+    PieMenu action exists in two main states:
+    - When in normal mode:
+        - Action closes on KeyRelease event.
+        - Action is used for activating displayed values.
+        - `pie_widget` is shown, `pie_settings` is hidden.
+        - Values displayed on `pie_widget` cannot be dragged.
+        - `settings_button` is shown. It allows to enter the edit mode.
+
+    - Wnen in edit mode:
+        - Action can be closed only with the `accept_button`.
+        - Action is used for selecting what values will be displayed
+          after returning to normal mode.
+        - Both `pie_widget` and `pie_settings` are shown.
+        - labels can be dragged to, from and into the `pie_widget`.
+        - `settings_button` is replaced with `current_value_holder`
+
+    Created components are defined as `cached_property`. As GUI can take
+    a relatively long time to initialize, this solution allows to create
+    them at the moment user activates them:
+    - `pie_widget` is created on first KeyPress of this action.
+    - `pie_settings` is created on first entering of the edit mode.
+
+    All components that require those components during initialization
+    also need to be defined as `cached_property`.
     """
 
     def __init__(
@@ -132,21 +154,24 @@ class PieMenu(RawInstructions, Generic[T]):
         self._is_in_edit_mode = False
         self._force_reload = False
 
-        # Usually, when labels stay same, recreating widgets is not needed.
-        # When widget scale changes, they have to be reloaded.
+        # Usually, when values stay same, recreating widgets is not
+        # needed, but when widget scale changes, they have to be
+        # reloaded even when values were not changed.
         def raise_flag():
             self._force_reload = True
         self._register_callback_to_size_change(raise_flag)
 
     @cached_property
     def pie_widget(self) -> PieWidget:
-        """Create Qwidget of the Pie for selecting values."""
+        """GUI of the radial menu for activating values."""
+        def allow_value_edit_callback():
+            return not self._config.GROUP_MODE.read()
+
         pie_widget = PieWidget(
             pie_style=self._style_holder.pie_style,
             allowed_types=self._controller.TYPE,
-            allow_value_edit_callback=lambda: not self._config.GROUP_MODE.read())
+            allow_value_edit_callback=allow_value_edit_callback)
 
-        # This is the first `settings_button` occurence, which creates it
         self.settings_button.setParent(pie_widget)
 
         self._register_callback_to_size_change(pie_widget.reset_size)
@@ -154,7 +179,7 @@ class PieMenu(RawInstructions, Generic[T]):
 
     @cached_property
     def pie_settings(self) -> PieSettings:
-        """Create QWidget with pie settings right for given type of labels."""
+        """GUI for customizing the pie_widget in the edit mode."""
         return PieSettings(
             config=self._config,
             style_holder=self._style_holder,
@@ -163,15 +188,15 @@ class PieMenu(RawInstructions, Generic[T]):
 
     @cached_property
     def pie_mouse_tracker(self) -> PieMouseTracker:
-        """Create Manager which shows, hides and moves the Pie."""
+        """Logic of showing/hiding/moving pie_widget in normal mode."""
         return PieMouseTracker(self.pie_widget)
 
     @cached_property
     def pie_actuator(self) -> PieActuator:
+        """Logic of activating value on KeyRelease event."""
         last_value = self._config.LAST_VALUE_SELECTED.read()
         label = self._label_creator.label_from_value(last_value)
-
-        pie_actuator = PieActuator(self.pie_widget, label)
+        pie_actuator = PieActuator(self.pie_widget, initial_label=label)
 
         def update_strategy() -> None:
             pie_actuator.strategy = self._config.DEADZONE_STRATEGY.read()
@@ -182,7 +207,7 @@ class PieMenu(RawInstructions, Generic[T]):
 
     @cached_property
     def settings_button(self) -> RoundButton:
-        """Create button with which user can enter the edit mode."""
+        """GUI for switching from normal to edit mode."""
         pie_style = self._style_holder.pie_style
 
         settings_button = RoundButton(
@@ -193,6 +218,11 @@ class PieMenu(RawInstructions, Generic[T]):
             icon_scale=1.1)
 
         def set_edit_mode_on() -> None:
+            # Following cached_property are created in this method:
+            # self.pie_settings
+            # self.accept_button
+            # self.current_value_holder
+
             self.pie_mouse_tracker.stop()
 
             self.pie_widget.set_draggable(True)
@@ -226,7 +256,7 @@ class PieMenu(RawInstructions, Generic[T]):
 
     @cached_property
     def accept_button(self) -> RoundButton:
-        """Create button displayed in edit mode, for hiding the pie."""
+        """GUI for switching from edit to normal mode."""
         pie_style = self._style_holder.pie_style
 
         accept_button = RoundButton(
@@ -259,6 +289,7 @@ class PieMenu(RawInstructions, Generic[T]):
         accept_button.clicked.connect(set_edit_mode_off)
         accept_button.hide()
 
+        # Correct position of the burron is at the center of pie_widget
         def move_to_pie_center():
             radius = self._style_holder.pie_style.widget_radius
             accept_button.move_center(QPoint(radius, radius))
@@ -269,13 +300,14 @@ class PieMenu(RawInstructions, Generic[T]):
 
     @cached_property
     def current_value_holder(self) -> LabelHolder:
-        """Create a LabelWidget holder with currently selected value."""
+        """GUI containing current value in edit mode."""
         style = self._style_holder.small_label_style
         value_holder = LabelHolder(style)
         value_holder.setParent(self.pie_widget)
         value_holder.setAcceptDrops(False)
         value_holder.hide()
 
+        # Correct position of the holder is at bottom left
         def move_to_bottom_left():
             pie_size = 2*self._style_holder.pie_style.widget_radius
             button_size = 2*self._style_holder.small_label_style.icon_radius
@@ -284,6 +316,7 @@ class PieMenu(RawInstructions, Generic[T]):
         self._register_callback_to_size_change(move_to_bottom_left)
         move_to_bottom_left()
 
+        # Holder must be disabled, when its value is already in pie_widget
         def set_enabled():
             current = value_holder.label
             if current is None:
@@ -298,18 +331,26 @@ class PieMenu(RawInstructions, Generic[T]):
         """Handle the event of user pressing the action key."""
         super().on_key_press()
 
-        # This is the first `pie_widget` occurence, which creates it
+        # Following cached_property are created in this method:
+        # self.pie_widget
+        # self.settings_button (technically created by pie_widget)
+        # self.pie_actuator
+        # self.pie_mouse_tracker
+
+        # Abort handling when the widget is already being displayed
         if self.pie_widget.isVisible():
             return
 
+        # Read values selected for display from config
         new_labels = self._label_creator.labels_from_config(self._config)
         current_labels = self.pie_widget.order_handler.labels
 
+        # Replace labels in pie_widget when values or label size changed
         if new_labels != current_labels or self._force_reload:
             self._force_reload = False
             self.pie_widget.order_handler.replace_labels(new_labels)
 
-        # Fill current_value_holder with current value
+        # Fill current_value_holder with value from controller
         self._controller.refresh()
         try:
             current_value = self._controller.get_value()
@@ -320,27 +361,24 @@ class PieMenu(RawInstructions, Generic[T]):
         self.current_value_holder.replace(label)
         self.current_value_holder.enabled = label not in new_labels
 
+        # Color the value to select, when action ends in deadzone
         self.pie_actuator.mark_suggested_widget()
+        # Start tracker which highlights/selects the values under cursor
         self.pie_mouse_tracker.start()
 
     def on_every_key_release(self) -> None:
-        """
-        Handle the key release event.
-
-        In normal mode:
-            Close pie, and set selected value if deadzone was reached.
-        In edit mode:
-            Ignore input.
-        """
+        """Handle the event of user releasing the action key."""
         super().on_every_key_release()
 
         if self._is_in_edit_mode:
             return
 
-        # Hide the widget before label gets activated
-        # Activation can open windows, which is better with pie hidden
+        # Hide the pie_widget before label gets activated. Activation
+        # could open windows, which is better with it being hidden
         self.pie_widget.hide()
 
+        # If actuator selected a value, activate, and remember it.
+        # Remembered value will initialize actuator in next session
         label = self.pie_actuator.select()
         if label is not None:
             self._controller.set_value(label.value)
@@ -349,6 +387,7 @@ class PieMenu(RawInstructions, Generic[T]):
         self.pie_mouse_tracker.stop()
 
     def _register_callback_to_size_change(self, callback: Callable[[], None]):
+        """Register callback to each config Field related to size."""
         self._config.PIE_RADIUS_SCALE.register_callback(callback)
         self._config.ICON_RADIUS_SCALE.register_callback(callback)
         Config.PIE_GLOBAL_SCALE.register_callback(callback)
