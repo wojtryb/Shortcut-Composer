@@ -30,11 +30,9 @@ class PieWidgetOrder:
         self,
         pie_style: PieWidgetStyle,
         owner: BaseWidget,
-        allow_value_edit_callback: Callable[[], bool],
     ) -> None:
         self._pie_style = pie_style
         self._owner = owner
-        self._allow_value_edit_callback = allow_value_edit_callback
 
         self._labels: list[PieLabel] = []
         self._widgets: dict[int, PieLabelWidget] = {}
@@ -58,19 +56,17 @@ class PieWidgetOrder:
 
     def append(self, label: PieLabel) -> None:
         """Append the new label to the holder."""
-        if self._allow_value_edit_callback():
-            self._labels.append(label)
-            self._reset_widgets(self._labels)
+        self._labels.append(label)
+        self._reset_widgets(self._labels)
 
     def insert(self, index: int, label: PieLabel) -> None:
         """Insert the new label to the holder at given index."""
-        if self._allow_value_edit_callback():
-            self._labels.insert(index, label)
-            self._reset_widgets(self._labels)
+        self._labels.insert(index, label)
+        self._reset_widgets(self._labels)
 
     def remove(self, label: PieLabel) -> None:
         """Remove the label from the holder."""
-        if label in self._labels and self._allow_value_edit_callback():
+        if label in self._labels:
             self._labels.remove(label)
             self._reset_widgets(self._labels)
 

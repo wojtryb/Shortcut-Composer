@@ -93,11 +93,12 @@ class MaSettingsWindow(QDialog):
         widget = PieWidget(
             pie_style=self._pie_style,
             allowed_types=self._controller.TYPE)
+        widget.only_order_change = False
 
-        def set_draggable():
-            widget.set_draggable(not self._config.GROUP_MODE.read())
-        self._config.GROUP_MODE.register_callback(set_draggable)
-        set_draggable()
+        def set_draggable_in_manual_mode():
+            widget.draggable = not self._config.GROUP_MODE.read()
+        self._config.GROUP_MODE.register_callback(set_draggable_in_manual_mode)
+        set_draggable_in_manual_mode()
 
         return widget
 

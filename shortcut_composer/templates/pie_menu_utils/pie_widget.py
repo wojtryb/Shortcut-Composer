@@ -37,7 +37,6 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self,
         pie_style: PieWidgetStyle = PieWidgetStyle(),
         allowed_types: type | tuple[type, ...] = object,
-        allow_value_edit_callback: Callable[[], bool] = lambda: True,
         parent=None
     ) -> None:
         AnimatedWidget.__init__(
@@ -45,19 +44,6 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             animation_time_s=Config.PIE_ANIMATION_TIME.read(),
             fps_limit=Config.FPS_LIMIT.read(),
             parent=parent)
-
-        self._pie_style = pie_style
-        self._allowed_types = allowed_types
-        self._allow_value_edit_callback = allow_value_edit_callback
-
-        self._painter = PieWidgetPainter(self._pie_style)
-        self.order_handler = PieWidgetOrder(
-            pie_style=self._pie_style,
-            owner=self,
-            allow_value_edit_callback=self._allow_value_edit_callback)
-
-        self.active_label: PieLabel | None = None
-        self._last_widget = None
 
         self.setWindowFlags((
             self.windowFlags() |
@@ -69,14 +55,31 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self.setStyleSheet("background: transparent;")
         self.setCursor(Qt.CursorShape.CrossCursor)
 
-        self.set_draggable(False)
+        self._pie_style = pie_style
+        self._allowed_types = allowed_types
+
+        self._painter = PieWidgetPainter(self._pie_style)
+        self._last_widget = None
+
+        self.order_handler = PieWidgetOrder(self._pie_style, owner=self)
+        self.active_label: PieLabel | None = None
+        self.draggable = False
+        self.only_order_change = False
+
         self.reset_size()
 
-    def set_draggable(self, draggable: bool) -> None:
-        """Change draggable state of all children."""
+    @property
+    def draggable(self):
+        """TODO"""
+        return self._draggable
+
+    @draggable.setter
+    def draggable(self, draggable: bool) -> None:
+        """TODO"""
+        self._draggable = draggable
         for widget in self.order_handler.widgets:
-            widget.draggable = draggable
-        self.setAcceptDrops(draggable)
+            widget.draggable = self._draggable
+        self.setAcceptDrops(self._draggable)
 
     @property
     def deadzone(self) -> float:
@@ -119,11 +122,11 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
         if distance > self._pie_style.widget_radius:
             # Dragged out of the PieWidget
-            return self.order_handler.remove(label)
+            return self._do(self.order_handler.remove, label)
 
         if not self.order_handler:
             # First label dragged to empty pie
-            return self.order_handler.append(label)
+            return self._do(self.order_handler.append, label)
 
         if distance < self.deadzone:
             # Do nothing in deadzone
@@ -135,7 +138,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         if label not in self.order_handler:
             # Dragged with new label, which must be added
             index = self.order_handler.index(label_under_cursor)
-            return self.order_handler.insert(index, label)
+            return self._do(self.order_handler.insert, index, label)
 
         if label_under_cursor == label:
             # Dragged over the same widget
@@ -147,10 +150,15 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     def dragLeaveEvent(self, e: QDragLeaveEvent) -> None:
         """Remove the label when its widget is dragged out."""
         if self._last_widget is not None:
-            self.order_handler.remove(self._last_widget.label)
+            self._do(self.order_handler.remove, self._last_widget.label)
         return super().dragLeaveEvent(e)
 
     def reset_size(self) -> None:
         """Set widget geometry according to style."""
         diameter = 2*self._pie_style.widget_radius
         self.setFixedSize(diameter, diameter)
+
+    def _do(self, callback: Callable[..., None], /, *args, **kwargs):
+        """TODO"""
+        if not self.only_order_change:
+            callback(*args, **kwargs)

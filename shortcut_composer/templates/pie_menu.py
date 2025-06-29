@@ -164,17 +164,21 @@ class PieMenu(RawInstructions, Generic[T]):
     @cached_property
     def pie_widget(self) -> PieWidget:
         """GUI of the radial menu for activating values."""
-        def allow_value_edit_callback():
-            return not self._config.GROUP_MODE.read()
 
         pie_widget = PieWidget(
             pie_style=self._style_holder.pie_style,
-            allowed_types=self._controller.TYPE,
-            allow_value_edit_callback=allow_value_edit_callback)
+            allowed_types=self._controller.TYPE)
+        pie_widget.draggable = False
+
+        def allow_value_edit_callback():
+            pie_widget.only_order_change = self._config.GROUP_MODE.read()
+        self._config.GROUP_MODE.register_callback(allow_value_edit_callback)
+        allow_value_edit_callback()
+
+        self._register_callback_to_size_change(pie_widget.reset_size)
 
         self.settings_button.setParent(pie_widget)
 
-        self._register_callback_to_size_change(pie_widget.reset_size)
         return pie_widget
 
     @cached_property
@@ -225,7 +229,7 @@ class PieMenu(RawInstructions, Generic[T]):
 
             self.pie_mouse_tracker.stop()
 
-            self.pie_widget.set_draggable(True)
+            self.pie_widget.draggable = True
             self.pie_actuator.unmark_all_widgets()
             self.pie_widget.active_label = None
             self.pie_widget.repaint()
@@ -269,7 +273,7 @@ class PieMenu(RawInstructions, Generic[T]):
 
         def set_edit_mode_off():
             self.pie_widget.hide()
-            self.pie_widget.set_draggable(False)
+            self.pie_widget.draggable = False
 
             self.pie_settings.hide()
             self.accept_button.hide()

@@ -35,7 +35,7 @@ class PieMouseTracker:
 
         # Make sure the pie widget is not draggable. It could have been
         # broken by pie settings reloading the widgets.
-        self._pie_widget.set_draggable(False)
+        self._pie_widget.draggable = False
 
     def stop(self) -> None:
         """Stop the mouse tracking loop and reset internal label values."""
