@@ -27,7 +27,7 @@ class MaSettingsWindow(QDialog):
         self.setWindowFlags(
             self.windowFlags() |
             Qt.WindowType.WindowStaysOnTopHint)
-        self.setFixedSize(self.sizeHint())
+        self.setFixedSize(self.minimumSizeHint())
 
         self._config = config
         self._controller = controller

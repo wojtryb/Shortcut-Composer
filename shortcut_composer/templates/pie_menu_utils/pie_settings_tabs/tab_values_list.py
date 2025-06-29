@@ -3,7 +3,7 @@
 
 from dataclasses import dataclass
 
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QSizePolicy
 
 from api_krita import Krita
 from api_krita.pyqt import SafeConfirmButton
@@ -111,6 +111,10 @@ class TabValuesList(QWidget):
 
         mode_button = SafeConfirmButton(confirm_text="Change?")
         mode_button.setFixedHeight(mode_button.sizeHint().height()*2)
+        policy = mode_button.sizePolicy()
+        policy.setHorizontalPolicy(QSizePolicy.Policy.Ignored)
+        mode_button.setSizePolicy(policy)
+
         mode_button.clicked.connect(switch_mode)
 
         self._config.GROUP_MODE.register_callback(self._set_group_mode)
@@ -150,6 +154,12 @@ class TabValuesList(QWidget):
         return auto_combobox
 
     def _init_manual_combobox(self) -> StringComboBox:
+        manual_combobox = StringComboBox(
+            config_field=self._config.LAST_GROUP_SELECTED,
+            allowed_values=(
+                ["---Select group---", "All"]
+                + self._label_creator.fetch_groups()))
+
         def display_group() -> None:
             """Update preset widgets with group selected in combobox."""
             picked_group = manual_combobox.read()
@@ -159,13 +169,6 @@ class TabValuesList(QWidget):
             self._scroll_area.replace_handled_labels(labels)
             self._scroll_area.apply_search_bar_filter()
             manual_combobox.save()
-
-        manual_combobox = StringComboBox(
-            config_field=self._config.LAST_GROUP_SELECTED,
-            allowed_values=(
-                ["---Select group---", "All"]
-                + self._label_creator.fetch_groups()))
-
         manual_combobox.widget.currentTextChanged.connect(display_group)
         display_group()
 
