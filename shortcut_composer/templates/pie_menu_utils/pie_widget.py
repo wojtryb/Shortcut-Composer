@@ -13,11 +13,9 @@ from PyQt5.QtGui import (
 from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
 from composer_utils import CirclePoints, Config
 from composer_utils.label import LabelWidget
-from .pie_widget_utils import (
-    PieWidgetPainter,
-    PieWidgetOrder,
-    PieWidgetLabel,
-    PieWidgetStyle)
+from .pie_label import PieLabel
+from .pie_widget_utils.pie_widget_style import PieWidgetStyle
+from .pie_widget_utils import PieWidgetOrder, PieWidgetPainter
 
 T = TypeVar('T')
 
@@ -58,7 +56,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             owner=self,
             allow_value_edit_callback=self._allow_value_edit_callback)
 
-        self.active_label: PieWidgetLabel | None = None
+        self.active_label: PieLabel | None = None
         self._last_widget = None
 
         self.setWindowFlags((

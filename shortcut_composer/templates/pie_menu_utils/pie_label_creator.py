@@ -6,15 +6,15 @@ from typing import Generic, TypeVar, Iterable
 from core_components import Controller
 from composer_utils import GroupOrderHolder
 from .pie_group_manager_impl import dispatch_pie_group_manager
-from .pie_widget_utils import PieWidgetLabel
 from .pie_config import PieConfig
+from .pie_label import PieLabel
 
 T = TypeVar("T")
 
 
 class PieLabelCreator(Generic[T]):
 
-    known_labels: dict[T, PieWidgetLabel[T]] = {}
+    known_labels: dict[T, PieLabel[T]] = {}
     """
     Dictionary of known preset labels mapped to their names.
 
@@ -32,7 +32,7 @@ class PieLabelCreator(Generic[T]):
     def fetch_groups(self) -> list[str]:
         return self._group_manager.fetch_groups()
 
-    def label_from_value(self, value: T | None) -> PieWidgetLabel[T] | None:
+    def label_from_value(self, value: T | None) -> PieLabel[T] | None:
         if value is None:
             return None
 
@@ -42,7 +42,7 @@ class PieLabelCreator(Generic[T]):
         if value in self.invalid_values:
             return None
 
-        label = PieWidgetLabel.from_value(value, self._controller)
+        label = PieLabel.from_value(value, self._controller)
         if label is None:
             self.invalid_values.append(value)
             return None
@@ -52,7 +52,7 @@ class PieLabelCreator(Generic[T]):
     def labels_from_values(
         self,
         values: Iterable[T]
-    ) -> list[PieWidgetLabel[T]]:
+    ) -> list[PieLabel[T]]:
         """Create labels from list of preset names."""
         labels = [self.label_from_value(value) for value in values]
         return [label for label in labels if label is not None]
@@ -61,11 +61,11 @@ class PieLabelCreator(Generic[T]):
         self,
         group: str,
         sort: bool = True
-    ) -> list[PieWidgetLabel]:
+    ) -> list[PieLabel]:
         values = self._group_manager.values_from_group(group, sort)
         return self.labels_from_values(values)
 
-    def labels_from_config(self, config: PieConfig) -> list[PieWidgetLabel]:
+    def labels_from_config(self, config: PieConfig) -> list[PieLabel]:
         if not config.TAG_MODE.read():
             values = config.ORDER.read()
         else:

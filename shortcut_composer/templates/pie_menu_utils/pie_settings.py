@@ -10,9 +10,10 @@ from composer_utils import Config
 from composer_utils.label.complex_widgets import NumericValuePicker
 from core_components import Controller, NumericController
 from .pie_config import PieConfig
+from .pie_label import PieLabel
 from .pie_settings_tabs import TabPreferences, TabValuesList, TabSaveLocation
 from .pie_style_holder import PieStyleHolder
-from .pie_widget_utils import PieWidgetOrder, PieWidgetLabel
+from .pie_widget_utils import PieWidgetOrder
 
 
 class PieSettings(AnimatedWidget, BaseWidget):
@@ -70,8 +71,8 @@ class PieSettings(AnimatedWidget, BaseWidget):
             self._tab_holder.addTab(tab, "Values")
             self._tab_holder.setCurrentIndex(1)
         elif isinstance(controller, NumericController):
-            def label_from_integer(value: int) -> PieWidgetLabel[int]:
-                label = PieWidgetLabel.from_value(value, controller)
+            def label_from_integer(value: int) -> PieLabel[int]:
+                label = PieLabel.from_value(value, controller)
                 if label is None:
                     raise RuntimeError(f"Could not create label from {value}")
                 return label

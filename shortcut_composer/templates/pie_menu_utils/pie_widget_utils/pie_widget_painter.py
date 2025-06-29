@@ -6,7 +6,7 @@ from PyQt5.QtGui import QColor
 
 from api_krita.pyqt import Painter
 from .pie_widget_style import PieWidgetStyle
-from .pie_widget_label import PieWidgetLabel
+from ..pie_label import PieLabel
 
 
 class PieWidgetPainter:
@@ -15,7 +15,7 @@ class PieWidgetPainter:
     def __init__(self, style: PieWidgetStyle) -> None:
         self._style = style
 
-    def paint(self, painter: Painter, labels: list[PieWidgetLabel]) -> None:
+    def paint(self, painter: Painter, labels: list[PieLabel]) -> None:
         """Paint the widget which created the passed painter."""
         self._painter = painter
         self._labels = labels
@@ -117,7 +117,7 @@ class PieWidgetPainter:
                 color=self._style.active_color_dark,
                 thickness=self._style.border_thickness)
 
-    def _pick_pie_color(self, label: PieWidgetLabel) -> QColor:
+    def _pick_pie_color(self, label: PieLabel) -> QColor:
         """Pick color of pie based on widget mode and animation progress."""
         return self._overlay_colors(
             self._style.active_color_dark,

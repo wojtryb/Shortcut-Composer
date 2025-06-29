@@ -13,8 +13,8 @@ from composer_utils.label.complex_widgets import ScrollArea, NumericValuePicker
 
 from composer_utils.label import LabelWidgetStyle
 from composer_utils.label.complex_widgets import LabelHolder
-from ..pie_menu_utils import PieWidget, PieLabelCreator
-from ..pie_menu_utils.pie_widget_utils import PieWidgetStyle, PieWidgetLabel
+from ..pie_menu_utils import PieWidget, PieLabelCreator, PieLabel
+from ..pie_menu_utils.pie_widget_utils import PieWidgetStyle
 from .ma_config import MaConfig
 
 
@@ -68,8 +68,8 @@ class MaSettingsWindow(QDialog):
                 self._label_creator,
                 self._label_style))
         elif issubclass(self._controller.TYPE, int):
-            def label_from_integer(value: int) -> PieWidgetLabel[int]:
-                label = PieWidgetLabel.from_value(value, self._controller)
+            def label_from_integer(value: int) -> PieLabel[int]:
+                label = PieLabel.from_value(value, self._controller)
                 if label is None:
                     raise RuntimeError(f"Could not create label from {value}")
                 return label

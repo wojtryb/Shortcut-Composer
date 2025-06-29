@@ -15,7 +15,7 @@ T = TypeVar("T")
 
 
 @dataclass
-class PieWidgetLabel(LabelInterface, Generic[T]):
+class PieLabel(LabelInterface, Generic[T]):
     """
     Data representing a single value in PieWidget.
 
@@ -40,7 +40,7 @@ class PieWidgetLabel(LabelInterface, Generic[T]):
 
     def __eq__(self, other: T) -> bool:
         """Consider two labels with the same value and position - equal."""
-        if not isinstance(other, PieWidgetLabel):
+        if not isinstance(other, PieLabel):
             return False
 
         return self.value == other.value
@@ -51,13 +51,13 @@ class PieWidgetLabel(LabelInterface, Generic[T]):
 
     @staticmethod
     def from_value(value: T, controller: Controller)\
-            -> 'PieWidgetLabel[T] | None':
+            -> 'PieLabel[T] | None':
         """Use provided controller to create a label holding passed value."""
         label = controller.get_label(value)
         if label is None:
             return None
 
-        return PieWidgetLabel(
+        return PieLabel(
             value=value,
             display_value=label,
             pretty_name=controller.get_pretty_name(value))

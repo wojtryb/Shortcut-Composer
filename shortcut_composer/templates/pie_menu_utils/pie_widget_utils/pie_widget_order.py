@@ -10,10 +10,10 @@ from api_krita.pyqt import BaseWidget
 from composer_utils import CirclePoints
 from composer_utils.label import LabelWidget
 from composer_utils.label.label_widget_impl import dispatch_label_widget
-from .pie_widget_label import PieWidgetLabel
+from ..pie_label import PieLabel
 from .pie_widget_style import PieWidgetStyle
 
-PieLabelWidget = LabelWidget[PieWidgetLabel]
+PieLabelWidget = LabelWidget[PieLabel]
 EmptyCallback = Callable[[], None]
 
 
@@ -36,7 +36,7 @@ class PieWidgetOrder:
         self._owner = owner
         self._allow_value_edit_callback = allow_value_edit_callback
 
-        self._labels: list[PieWidgetLabel] = []
+        self._labels: list[PieLabel] = []
         self._widgets: dict[int, PieLabelWidget] = {}
         self._on_change_callbacks: list[EmptyCallback] = []
 
@@ -45,40 +45,40 @@ class PieWidgetOrder:
         return [label.value for label in self._labels]
 
     @property
-    def labels(self) -> list[PieWidgetLabel]:
+    def labels(self) -> list[PieLabel]:
         return self._labels.copy()
 
     @property
     def widgets(self) -> list[PieLabelWidget]:
         return [widget for widget in self._widgets.values()]
 
-    def replace_labels(self, labels: list[PieWidgetLabel]) -> None:
+    def replace_labels(self, labels: list[PieLabel]) -> None:
         self._labels = labels.copy()
         self._reset_widgets(self._labels)
 
-    def append(self, label: PieWidgetLabel) -> None:
+    def append(self, label: PieLabel) -> None:
         """Append the new label to the holder."""
         if self._allow_value_edit_callback():
             self._labels.append(label)
             self._reset_widgets(self._labels)
 
-    def insert(self, index: int, label: PieWidgetLabel) -> None:
+    def insert(self, index: int, label: PieLabel) -> None:
         """Insert the new label to the holder at given index."""
         if self._allow_value_edit_callback():
             self._labels.insert(index, label)
             self._reset_widgets(self._labels)
 
-    def remove(self, label: PieWidgetLabel) -> None:
+    def remove(self, label: PieLabel) -> None:
         """Remove the label from the holder."""
         if label in self._labels and self._allow_value_edit_callback():
             self._labels.remove(label)
             self._reset_widgets(self._labels)
 
-    def index(self, label: PieWidgetLabel) -> int:
+    def index(self, label: PieLabel) -> int:
         """Return the index at which the label is stored."""
         return self._labels.index(label)
 
-    def swap(self, _a: PieWidgetLabel, _b: PieWidgetLabel, /) -> None:
+    def swap(self, _a: PieLabel, _b: PieLabel, /) -> None:
         """TODO: swap without removing widgets is faster and does not blink"""
 
         idx_a = self._labels.index(_a)
@@ -105,7 +105,7 @@ class PieWidgetOrder:
         for callback in self._on_change_callbacks:
             callback()
 
-    def label_on_angle(self, angle: float) -> PieWidgetLabel:
+    def label_on_angle(self, angle: float) -> PieLabel:
         """Return Label, which widget is the closest to given `angle`."""
         def angle_difference(label_angle: float) -> float:
             """Return the smallest difference between two angles."""
@@ -115,7 +115,7 @@ class PieWidgetOrder:
         closest = min(self._angles(), key=angle_difference)
         return self._widgets[closest].label
 
-    def widget_with_label(self, label: PieWidgetLabel) -> PieLabelWidget:
+    def widget_with_label(self, label: PieLabel) -> PieLabelWidget:
         """Return widget wrapping the label of the same value as given."""
         for widget in self._widgets.values():
             if widget.label == label:
@@ -127,7 +127,7 @@ class PieWidgetOrder:
 
     def _reset_widgets(
         self,
-        labels: list[PieWidgetLabel],
+        labels: list[PieLabel],
     ) -> None:
         """
         Ensure the icon widgets properly represent this container.
@@ -137,7 +137,7 @@ class PieWidgetOrder:
         for callback in self._on_change_callbacks:
             callback()
 
-        new_widgets: list[LabelWidget[PieWidgetLabel]] = []
+        new_widgets: list[LabelWidget[PieLabel]] = []
         for label in labels:
             new_widgets.append(dispatch_label_widget(label)(
                 label, self._pie_style.label_style, self._owner))
@@ -179,7 +179,7 @@ class PieWidgetOrder:
         """Iterate over all angles at which LabelWidgets are."""
         return iter(self._widgets.keys())
 
-    def __iter__(self) -> Iterator[PieWidgetLabel]:
+    def __iter__(self) -> Iterator[PieLabel]:
         """Iterate over all labels in the holder."""
         return iter(self._labels)
 
