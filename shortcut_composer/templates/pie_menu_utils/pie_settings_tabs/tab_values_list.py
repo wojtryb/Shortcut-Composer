@@ -71,7 +71,6 @@ class TabValuesList(QWidget):
         action_layout = QVBoxLayout()
         action_layout.addLayout(top_layout)
         action_layout.addWidget(self._scroll_area)
-        action_layout.addStretch()
 
         return action_layout
 

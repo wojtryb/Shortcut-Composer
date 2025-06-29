@@ -9,7 +9,6 @@ from PyQt5.QtWidgets import (
     QScrollArea,
     QVBoxLayout,
     QHBoxLayout,
-    QSizePolicy,
     QScroller,
     QLineEdit,
     QWidget,
@@ -89,10 +88,7 @@ class ScrollArea(QWidget, Generic[T]):
     def _init_active_label_display(self) -> QLabel:
         """Return a label displaying hovered label."""
         label = QLabel(self)
-        label.setSizePolicy(
-            QSizePolicy.Policy.Ignored,
-            QSizePolicy.Policy.Expanding)
-        label.setMaximumHeight(label.sizeHint().height()*2)
+        label.setFixedHeight(label.sizeHint().height()*2)
         label.setWordWrap(True)
         return label
 
@@ -173,6 +169,12 @@ class ScrollArea(QWidget, Generic[T]):
             else:
                 widget.enabled = True
                 widget.draggable = True
+
+    # This fixes Qt issue of window changing size after the first text change
+    def show(self):
+        super().show()
+        self._active_label_display.setText("A")
+        self._active_label_display.setText("")
 
 
 class ChildInstruction:
