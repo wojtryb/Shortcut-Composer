@@ -92,7 +92,12 @@ class MaSettingsWindow(QDialog):
         widget = PieWidget(
             pie_style=self._pie_style,
             allowed_types=self._controller.TYPE)
-        widget.set_draggable(True)
+
+        def set_draggable():
+            widget.set_draggable(not self._config.GROUP_MODE.read())
+        self._config.GROUP_MODE.register_callback(set_draggable)
+        set_draggable()
+
         return widget
 
     def _init_holder_of_default(self) -> LabelHolder:
