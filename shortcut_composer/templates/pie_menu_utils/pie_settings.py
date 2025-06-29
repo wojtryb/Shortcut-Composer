@@ -64,10 +64,13 @@ class PieSettings(AnimatedWidget, BaseWidget):
         # Second tab (optional, depend on controller type)
         if issubclass(controller.TYPE, (str, EnumGroup)):
             tab = TabValuesList(
-                self._config,
-                order_handler,
-                controller,
-                self._style_holder)
+                config=TabValuesList.Config(
+                    self._config.TAG_MODE,
+                    self._config.TAG_NAME,
+                    self._config.LAST_TAG_SELECTED),
+                order_handler=order_handler,
+                controller=controller,
+                label_style=self._style_holder.settings_label_style)
             self._tab_holder.addTab(tab, "Values")
             self._tab_holder.setCurrentIndex(1)
         elif isinstance(controller, NumericController):

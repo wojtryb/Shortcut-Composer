@@ -1,34 +1,42 @@
 # SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from dataclasses import dataclass
+
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 
 from api_krita import Krita
 from api_krita.pyqt import SafeConfirmButton
+from config_system import Field
 from config_system.ui import StringComboBox
 from composer_utils import GroupOrderHolder
+from composer_utils.label import LabelWidgetStyle
 from composer_utils.label.complex_widgets import ScrollArea
 from core_components import Controller
-from ..pie_config import PieConfig
 from ..pie_label_creator import PieLabelCreator
-from ..pie_style_holder import PieStyleHolder
 from ..pie_widget_utils import PieWidgetOrder
 
 
 class TabValuesList(QWidget):
 
+    @dataclass
+    class Config:
+        TAG_MODE: Field[bool]
+        TAG_NAME: Field[str]
+        LAST_TAG_SELECTED: Field[str]
+
     def __init__(
         self,
-        config: PieConfig,
+        config: 'TabValuesList.Config',
         order_handler: PieWidgetOrder,
         controller: Controller,
-        style_holder: PieStyleHolder,
+        label_style: LabelWidgetStyle = LabelWidgetStyle(),
         parent: QWidget | None = None
     ) -> None:
         super().__init__(parent)
         self._config = config
         self._order_handler = order_handler
-        self._style_holder = style_holder
+        self._label_style = label_style
 
         self._group_order_holder = GroupOrderHolder(controller.TYPE)
         self._label_creator = PieLabelCreator(controller)
@@ -70,7 +78,7 @@ class TabValuesList(QWidget):
     def _init_scroll_area(self) -> ScrollArea:
         """Create preset scroll area which tracks which ones are used."""
         scroll_area = ScrollArea(
-            label_style=self._style_holder.settings_label_style,
+            label_style=self._label_style,
             columns=3)
         policy = scroll_area.sizePolicy()
         policy.setRetainSizeWhenHidden(True)
@@ -89,7 +97,7 @@ class TabValuesList(QWidget):
         """Create button which switches between tag and manual mode."""
         def switch_mode() -> None:
             """Change the is_tag_mode to the opposite state."""
-            # Writing to TAG_MODE can reloads the labels in Pie
+            # Writing to TAG_MODE can reload the labels in Pie
             self._config.TAG_MODE.write(not self._config.TAG_MODE.read())
             if self._config.TAG_MODE.read():
                 self._auto_combobox.set(self._manual_combobox.read())
@@ -173,8 +181,10 @@ class TabValuesList(QWidget):
             self._manual_combobox.widget.hide()
             self._auto_combobox.widget.show()
 
-            labels = self._label_creator.labels_from_config(self._config)
+            group = self._config.TAG_NAME.read()
+            labels = self._label_creator.labels_from_group(group)
             self._order_handler.replace_labels(labels)
+
         else:
             # moving to manual mode
             self._mode_button.main_text = "Manual mode"
