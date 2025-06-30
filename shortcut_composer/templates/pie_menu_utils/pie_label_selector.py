@@ -8,6 +8,7 @@ from .pie_widget import PieWidget
 
 class PieLabelSelector:
     """
+    Selects label from the pie based on marked ...
     Activates the correct labels from the Pie.
 
     TODO update dosctring and class name
@@ -33,13 +34,11 @@ class PieLabelSelector:
         self._previous_label = initial_label
         self.strategy = initial_strategy
 
-    def select(self) -> PieLabel | None:
-        active = self._pie_widget.active_label
-
+    def select(self, selected: PieLabel | None) -> PieLabel | None:
         # Out of deadzone, label picked
-        if active is not None:
-            self._previous_label = active
-            return active
+        if selected is not None:
+            self._previous_label = selected
+            return selected
 
         # In deadzone, use strategy to select label
         return self._label_from_strategy()

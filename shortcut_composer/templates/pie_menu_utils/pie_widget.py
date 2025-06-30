@@ -13,7 +13,6 @@ from PyQt5.QtGui import (
 from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
 from composer_utils import CirclePoints, Config
 from composer_utils.label import LabelWidget
-from .pie_label import PieLabel
 from .pie_widget_utils.pie_widget_style import PieWidgetStyle
 from .pie_widget_utils import PieWidgetOrder, PieWidgetPainter
 
@@ -42,8 +41,6 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     ### Public attributes
 
     - `order_handler` -- use it to populate the widget with values
-    - `active_label`  -- unhandled attribute. Other classes can store
-                         or use information here. FIXME
     - `draggable`     -- when True, widget allows to drag values from
                          and into itself.
     - `only_order_change` -- when True, widget allows only to swap
@@ -107,7 +104,6 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self._last_widget = None
 
         self.order_handler = PieWidgetOrder(self._style, owner=self)
-        self.active_label: PieLabel | None = None
         self.draggable = False
         self.only_order_change = False
 

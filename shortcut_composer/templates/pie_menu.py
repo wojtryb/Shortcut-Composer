@@ -234,7 +234,7 @@ class PieMenu(RawInstructions, Generic[T]):
 
             self._pie_widget.draggable = True
             self._label_selector.unmark_all_widgets()
-            self._pie_widget.active_label = None
+            self._mouse_tracker.selected_label = None
             self._pie_widget.repaint()
 
             # Move settings next to the pie
@@ -386,7 +386,7 @@ class PieMenu(RawInstructions, Generic[T]):
 
         # If actuator selected a value, activate, and remember it.
         # Remembered value will initialize actuator in next session
-        label = self._label_selector.select()
+        label = self._label_selector.select(self._mouse_tracker.selected_label)
         if label is not None:
             self._controller.set_value(label.value)
             self._config.LAST_VALUE_SELECTED.write(label.value)
