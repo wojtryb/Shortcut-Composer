@@ -11,102 +11,113 @@ from .pie_widget_utils import PieWidgetStyle
 
 
 class PieStyleHolder:
-    """Creates and gives access to style objects based on passed config."""
+    """
+    Aggregates all visual information of the whole PieMenu action.
+
+    It creates and holds style of PieWieget, labels in the PieSettings,
+    as well as size of the buttons.
+
+    Callbacks passed to those style objects are reading values from
+    passed PieConfig. When user changes the configuration, GUI elements
+    will read updated values.
+    """
 
     def __init__(self, pie_config: PieConfig) -> None:
         self._pie_config = pie_config
         self._base_size = Krita.screen_size/2560
 
         self.pie_style = PieWidgetStyle(
-            pie_radius_callback=self._pie_radius,
+            pie_radius_callback=self._pie_widget_radius,
             deadzone_radius_callback=self._deadzone_radius,
             background_opacity_callback=self._pie_config.PIE_OPACITY.read,
-            desired_icon_radius_callback=self._desired_icon_radius,
+            desired_icon_radius_callback=self._desired_pie_label_radius,
             border_thickness_callback=self._border_thickness,
             active_color_callback=self._active_color,
             background_color_callback=self._background_color,
             max_lines_amount_callback=self._pie_config.MAX_LINES_AMOUNT.read,
             max_signs_amount_callback=self._pie_config.MAX_SIGNS_AMOUNT.read,
             abbreviation_sign_callback=self._abbreviation_sign_callback)
-        """Style of the pie widget."""
+        """Style of the PieWidget."""
 
         self.settings_label_style = LabelWidgetStyle(
-            icon_radius_callback=self._unscaled_icon_radius,
+            icon_radius_callback=self._settings_label_radius,
             border_thickness_callback=self._border_thickness,
             active_color_callback=self._active_color,
             background_color_callback=self._background_color,
             max_lines_amount_callback=lambda: 3,
             max_signs_amount_callback=lambda: 10,
             abbreviation_sign_callback=lambda: ".")
-        """Style of labels in the settings."""
+        """Style of labels in the PieSettings."""
 
         self.small_label_style = LabelWidgetStyle(
-            icon_radius_callback=self._button_sized_icon_radius,
+            icon_radius_callback=self._button_sized_label_radius,
             border_thickness_callback=self._border_thickness,
             active_color_callback=self._active_color,
             background_color_callback=self._background_color,
             max_lines_amount_callback=lambda: 1,
             max_signs_amount_callback=lambda: 3,
             abbreviation_sign_callback=lambda: "")
-        """Style of label, being the size of button activating settings."""
+        """Style of small label, the size of the settings button."""
 
     @property
     def accept_button_radius(self) -> int:
-        """Return radius of accept button based on configured value."""
+        """Radius of accept button which closes the pie in edit mode."""
         return round(
             40 * self._base_size * Config.PIE_DEADZONE_GLOBAL_SCALE.read())
 
     @property
     def settings_button_radius(self) -> int:
-        """Return radius of settings button based on configured value."""
+        """Radius of settings button which enters edit mode."""
         return round(
             30 * self._base_size
             * Config.PIE_GLOBAL_SCALE.read()
             * self._pie_config.PIE_RADIUS_SCALE.read())
 
-    def _pie_radius(self) -> int:
-        """Return pie radius based on configured value."""
+    def _pie_widget_radius(self) -> int:
+        """Return radius of the PieWidget."""
         return round(
             165 * self._base_size
             * self._pie_config.PIE_RADIUS_SCALE.read()
             * Config.PIE_GLOBAL_SCALE.read())
 
-    def _unscaled_icon_radius(self) -> int:
-        """Return unscaled icon radius based on configured value."""
+    def _settings_label_radius(self) -> int:
+        """Return radius of LabelWidget in the PieSettings."""
         return round(
             50 * self._base_size
             * Config.PIE_ICON_GLOBAL_SCALE.read())
 
-    def _desired_icon_radius(self) -> int:
+    def _desired_pie_label_radius(self) -> int:
+        """Return max radius of LabelWidget in the PieWidget"""
         return round(
-            self._unscaled_icon_radius()
+            self._settings_label_radius()
             * self._pie_config.ICON_RADIUS_SCALE.read())
 
-    def _button_sized_icon_radius(self) -> int:
-        """Return icon radius that is visually the same as settings button."""
+    def _button_sized_label_radius(self) -> int:
+        """Return radius of LabelWidget, the size of settings button."""
         return self.settings_button_radius + self._border_thickness()
 
     def _border_thickness(self) -> int:
-        """Return border thickness based on configured value."""
-        return round(self._unscaled_icon_radius()*0.05)
+        """Return border thickness of all LabelWidgets."""
+        return round(self._settings_label_radius()*0.05)
 
     def _deadzone_radius(self) -> float:
-        """Return deadzone radius based on configured value."""
+        """Return deadzone radius of the PieWidget."""
         if not self.pie_style.amount_of_labels:
             return float("inf")
         return self.accept_button_radius
 
     def _active_color(self) -> QColor:
-        """Return active color based on configured value."""
+        """Return active color of all Widgets (Pie and Label)."""
         if self._pie_config.OVERRIDE_DEFAULT_THEME.read():
             return self._pie_config.ACTIVE_COLOR.read()
         return Config.default_active_color
 
     def _background_color(self) -> QColor:
-        """Return background color based on configured value."""
+        """Return background color of all Widgets (Pie and Label)."""
         if self._pie_config.OVERRIDE_DEFAULT_THEME.read():
             return self._pie_config.BACKGROUND_COLOR.read()
         return Config.default_background_color
 
     def _abbreviation_sign_callback(self):
+        """Return whether long text LabelWidgets should end with dot."""
         return "." if self._pie_config.ABBREVIATE_WITH_DOT.read() else ""

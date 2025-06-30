@@ -43,7 +43,7 @@ class CursorTracker(Generic[T, U]):
 
     *providing at least one of sliders is required.
 
-    ### Action implementation examples:
+    ### Action usage examples:
 
     Examples of defining a tracker for one, and for both axes.
 

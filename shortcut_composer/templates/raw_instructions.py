@@ -19,7 +19,7 @@ class RawInstructions(ComplexActionInterface):
     - `instructions` -- (optional) list of additional instructions to
                         perform on key press and release.
 
-    ### Action implementation example:
+    ### Action usage example:
 
     Example action is meant to turn on ISOLATE_LAYER action for as long
     as the key is pressed.

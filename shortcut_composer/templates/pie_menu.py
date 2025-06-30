@@ -59,7 +59,7 @@ class PieMenu(RawInstructions, Generic[T]):
 
     ### Action usage example:
 
-    Action is meant to change opacity of current layer to one of
+    Example action is meant to change opacity of current layer to one of
     predefined values using the pie menu widget.
 
     ```python
@@ -246,7 +246,7 @@ class PieMenu(RawInstructions, Generic[T]):
             self.current_value_holder.show()
 
             self._is_in_edit_mode = True
-        settings_button.clicked.connect(set_edit_mode_on)
+        settings_button.clicked.connect(set_edit_mode_on)  # type:ignore
 
         def move_to_bottom_left():
             pie_size = 2*self._style_holder.pie_style.widget_radius
@@ -290,10 +290,10 @@ class PieMenu(RawInstructions, Generic[T]):
                 self._config.ORDER.write(values)
 
             self._is_in_edit_mode = False
-        accept_button.clicked.connect(set_edit_mode_off)
+        accept_button.clicked.connect(set_edit_mode_off)  # type:ignore
         accept_button.hide()
 
-        # Correct position of the burron is at the center of pie_widget
+        # Correct position of the button is at the center of pie_widget
         def move_to_pie_center():
             radius = self._style_holder.pie_style.widget_radius
             accept_button.move_center(QPoint(radius, radius))

@@ -50,7 +50,7 @@ class RotationSelector(RawInstructions):
                               when mouse does not leave deadzone
     - `outline_opacity`   -- (optional) default opacity in %
 
-    ### Action implementation example:
+    ### Action usage example:
 
     Example action is meant to open a widget for rotating a brush.
 

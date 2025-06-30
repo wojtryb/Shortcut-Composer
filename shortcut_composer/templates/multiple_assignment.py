@@ -37,9 +37,9 @@ class MultipleAssignment(RawInstructions, Generic[T]):
     *some controllers don't have a default value. Then providing it
      becomes required.
 
-    ### Action implementation example:
+    ### Action usage example:
 
-    Action is meant to cycle brush sizes: 5px, 10px, 20px, 50px. by
+    Example action is meant to is meant to cycle brush sizes by
     constantly short pressing a key. Using `BrushSizeController` which
     is one of the available `controllers` tells krita, that requested
     values relate to brush size.
@@ -86,7 +86,6 @@ class MultipleAssignment(RawInstructions, Generic[T]):
         super().on_key_press()
 
         values = self._reset_values_to_cycle()
-
         if not values:
             return
 

@@ -32,7 +32,7 @@ class TemporaryKey(RawInstructions, Generic[T]):
     *some controllers don't have a default value. Then providing it
      becomes required.
 
-    ### Action implementation example:
+    ### Action usage example:
 
     Example action is meant to toggle between opacity 100% and 50%.
     Using `OpacityController` which is one of the available `controllers`

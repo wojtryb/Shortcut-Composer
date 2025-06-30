@@ -22,28 +22,73 @@ T = TypeVar('T')
 
 class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     """
-    Custom, circular widget with LabelWidgets on the edge.
+    Custom, circular PyQt widget with LabelWidgets on its edge.
 
-    Uses OrderHandler to store children widgets representing available
-    values. When the pie enters the edit mode, its children become
-    draggable.
+    PieWidget responsibilities are:
+    - display values stored in public `order_handler`.
+    - handle drag&drop events, allowing to change displayed values.
 
-    By dragging children, user can change their order or remove them
-    by moving them out of the widget. New children can be added by
-    dragging them from other widgets.
+    The widget is designed to be independent from the PieMenu action.
+    It can be connected with other PieMenu components, but on its own
+    pie_widget is not aware of the action logic.
+
+    ### Arguments:
+
+    - `pie_style`     -- (optional) specifies visuals of the widget such
+                         as size and color of its elements.
+    - `allowed_types` -- (optional) types of values that can be dragged
+                         into the widget. Other types are ignored.
+
+    ### Public attributes
+
+    - `order_handler` -- use it to populate the widget with values
+    - `active_label`  -- unhandled attribute. Other classes can store
+                         or use information here. FIXME
+    - `draggable`     -- when True, widget allows to drag values from
+                         and into itself.
+    - `only_order_change` -- when True, widget allows only to swap
+                             order of the values with dragging.
+                             Adding or removing values is not possible.
+
+    ### Class usage example
+
+    Following example contains three values of int and string types.
+    Those three values can be dragged around, but no values can be added
+    or removed from the widget.
+    The widget is white, and has a random size every time it opens.
+
+    ```python
+    import random
+    from PyQt5.QtGui import QColor
+    from composer_utils.label import LabelText
+    from .pie_label import PieLabel
+    from .pie_widget import PieWidget
+    from .pie_widget_utils import PieWidgetStyle
+
+    pie_widget = PieWidget(
+        pie_style=PieWidgetStyle(
+            pie_radius_callback=lambda: random.randint(100, 200),
+            active_color_callback=lambda: QColor(255, 255, 255)),
+        allowed_types=(str, int))
+
+    pie_widget.order_handler.append(PieLabel(1, LabelText("1")))
+    pie_widget.order_handler.append(PieLabel(2, LabelText("2")))
+    pie_widget.order_handler.append(PieLabel("A", LabelText("A")))
+
+    pie_widget.draggable = True
+    pie_widget.only_order_change = True
+    ```
     """
 
     def __init__(
         self,
         pie_style: PieWidgetStyle = PieWidgetStyle(),
         allowed_types: type | tuple[type, ...] = object,
-        parent=None
     ) -> None:
         AnimatedWidget.__init__(
             self,
             animation_time_s=Config.PIE_ANIMATION_TIME.read(),
-            fps_limit=Config.FPS_LIMIT.read(),
-            parent=parent)
+            fps_limit=Config.FPS_LIMIT.read())
 
         self.setWindowFlags((
             self.windowFlags() |
@@ -69,13 +114,13 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self.reset_size()
 
     @property
-    def draggable(self):
-        """TODO"""
+    def draggable(self) -> bool:
+        """Does widget allow to drag values from and into itself."""
         return self._draggable
 
     @draggable.setter
     def draggable(self, draggable: bool) -> None:
-        """TODO"""
+        """Set value of `draggable` property."""
         self._draggable = draggable
         for widget in self.order_handler.widgets:
             widget.draggable = self._draggable
@@ -92,11 +137,11 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             self._painter.paint(qt_painter, self.order_handler.labels)
 
     def dragEnterEvent(self, e: QDragEnterEvent) -> None:
-        """Allow dragging the widgets while in edit mode."""
+        """Allow dragging the widgets while .acceptDrops() == True."""
         e.accept()
 
     def dragMoveEvent(self, e: QDragMoveEvent) -> None:
-        """Handle all children actions - order change, add and remove."""
+        """Handle all children actions - change order/insert/remove."""
         e.accept()
         source_widget = e.source()
 
@@ -159,6 +204,6 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self.setFixedSize(diameter, diameter)
 
     def _do(self, callback: Callable[..., None], /, *args, **kwargs):
-        """TODO"""
+        """Perform callback if changes in values are not restricted."""
         if not self.only_order_change:
             callback(*args, **kwargs)
