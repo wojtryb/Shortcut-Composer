@@ -91,7 +91,7 @@ class MaSettingsWindow(QDialog):
 
     def _init_widget(self):
         widget = PieWidget(
-            pie_style=self._pie_style,
+            style=self._pie_style,
             allowed_types=self._controller.TYPE)
         widget.only_order_change = False
 

@@ -6,7 +6,7 @@ from .pie_label import PieLabel
 from .pie_widget import PieWidget
 
 
-class PieActuator:
+class PieLabelSelector:
     """
     Activates the correct labels from the Pie.
 

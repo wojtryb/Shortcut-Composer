@@ -34,7 +34,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
     ### Arguments:
 
-    - `pie_style`     -- (optional) specifies visuals of the widget such
+    - `style`         -- (optional) specifies visuals of the widget such
                          as size and color of its elements.
     - `allowed_types` -- (optional) types of values that can be dragged
                          into the widget. Other types are ignored.
@@ -82,7 +82,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
     def __init__(
         self,
-        pie_style: PieWidgetStyle = PieWidgetStyle(),
+        style: PieWidgetStyle = PieWidgetStyle(),
         allowed_types: type | tuple[type, ...] = object,
     ) -> None:
         AnimatedWidget.__init__(
@@ -100,13 +100,13 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self.setStyleSheet("background: transparent;")
         self.setCursor(Qt.CursorShape.CrossCursor)
 
-        self._pie_style = pie_style
+        self._style = style
         self._allowed_types = allowed_types
 
-        self._painter = PieWidgetPainter(self._pie_style)
+        self._painter = PieWidgetPainter(self._style)
         self._last_widget = None
 
-        self.order_handler = PieWidgetOrder(self._pie_style, owner=self)
+        self.order_handler = PieWidgetOrder(self._style, owner=self)
         self.active_label: PieLabel | None = None
         self.draggable = False
         self.only_order_change = False
@@ -129,7 +129,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     @property
     def deadzone(self) -> float:
         """Return the deadzone distance."""
-        return self._pie_style.deadzone_radius
+        return self._style.deadzone_radius
 
     def paintEvent(self, event: QPaintEvent) -> None:
         """Paint the entire widget using the Painter wrapper."""
@@ -152,7 +152,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         label = source_widget.label
         circle_points = CirclePoints(
             center=self.center,
-            radius=self._pie_style.pie_radius)
+            radius=self._style.pie_radius)
         distance = circle_points.distance(e.pos())
 
         if not isinstance(label.value, self._allowed_types):
@@ -165,7 +165,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         # It will be removed in dragLeaveEvent then.
         self._last_widget = source_widget
 
-        if distance > self._pie_style.widget_radius:
+        if distance > self._style.widget_radius:
             # Dragged out of the PieWidget
             return self._do(self.order_handler.remove, label)
 
@@ -200,7 +200,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
     def reset_size(self) -> None:
         """Set widget geometry according to style."""
-        diameter = 2*self._pie_style.widget_radius
+        diameter = 2*self._style.widget_radius
         self.setFixedSize(diameter, diameter)
 
     def _do(self, callback: Callable[..., None], /, *args, **kwargs):
