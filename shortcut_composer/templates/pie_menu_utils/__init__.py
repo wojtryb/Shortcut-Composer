@@ -5,7 +5,6 @@
 
 from .pie_label_selector import PieLabelSelector
 from .pie_label_creator import PieLabelCreator
-from .pie_mouse_tracker import PieMouseTracker
 from .pie_style_holder import PieStyleHolder
 from .pie_settings import PieSettings
 from .pie_config import PieConfig
@@ -15,7 +14,6 @@ from .pie_label import PieLabel
 __all__ = [
     "PieLabelSelector",
     "PieLabelCreator",
-    "PieMouseTracker",
     "PieStyleHolder",
     "PieSettings",
     "PieConfig",

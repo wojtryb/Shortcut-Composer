@@ -17,7 +17,6 @@ from .pie_menu_utils import PieConfig
 from .pie_menu_utils import (
     PieLabelSelector,
     PieLabelCreator,
-    PieMouseTracker,
     PieStyleHolder,
     PieSettings,
     PieWidget)
@@ -191,13 +190,8 @@ class PieMenu(RawInstructions, Generic[T]):
             order_handler=self._pie_widget.order_handler)
 
     @cached_property
-    def _mouse_tracker(self) -> PieMouseTracker:
-        """Logic of showing/hiding/moving pie_widget in normal mode."""
-        return PieMouseTracker(self._pie_widget)
-
-    @cached_property
     def _label_selector(self) -> PieLabelSelector:
-        """Logic of activating value on KeyRelease event."""
+        """Logic of showing/hiding/moving pie_widget in normal mode."""
         last_value = self._config.LAST_VALUE_SELECTED.read()
         label = self._label_creator.label_from_value(last_value)
 
@@ -230,11 +224,9 @@ class PieMenu(RawInstructions, Generic[T]):
             # self._accept_button
             # self._current_value_holder
 
-            self._mouse_tracker.stop()
+            self._label_selector.stop_tracking()
 
             self._pie_widget.draggable = True
-            self._label_selector.unmark_all_widgets()
-            self._mouse_tracker.selected_label = None
             self._pie_widget.repaint()
 
             # Move settings next to the pie
@@ -342,7 +334,6 @@ class PieMenu(RawInstructions, Generic[T]):
         # self._pie_widget
         # self._settings_button (technically created by pie_widget)
         # self._label_selector
-        # self._mouse_tracker
 
         # Abort handling when the widget is already being displayed
         if self._pie_widget.isVisible():
@@ -368,10 +359,8 @@ class PieMenu(RawInstructions, Generic[T]):
         self._current_value_holder.replace(label)
         self._current_value_holder.enabled = label not in new_labels
 
-        # Color the value to select, when action ends in deadzone
-        self._label_selector.mark_suggested_widget()
         # Start tracker which highlights/selects the values under cursor
-        self._mouse_tracker.start()
+        self._label_selector.start_tracking()
 
     def on_every_key_release(self) -> None:
         """Handle the event of user releasing the action key."""
@@ -380,18 +369,19 @@ class PieMenu(RawInstructions, Generic[T]):
         if self._is_in_edit_mode:
             return
 
+        # Select a label before stop_tracking() resets selector state
+        label = self._label_selector.select()
+        self._label_selector.stop_tracking()
+
         # Hide the pie_widget before label gets activated. Activation
         # could open windows, which is better with it being hidden
         self._pie_widget.hide()
 
         # If actuator selected a value, activate, and remember it.
         # Remembered value will initialize actuator in next session
-        label = self._label_selector.select(self._mouse_tracker.selected_label)
         if label is not None:
             self._controller.set_value(label.value)
             self._config.LAST_VALUE_SELECTED.write(label.value)
-
-        self._mouse_tracker.stop()
 
     def _register_callback_to_size_change(self, callback: Callable[[], None]):
         """Register callback to each config Field related to size."""
