@@ -13,16 +13,19 @@ T = TypeVar("T")
 
 
 class PieLabelCreator(Generic[T]):
+    """
+    Creates PieLabels of single type using passed controller.
+
+    - consist of methods that create PieLabels from different inputs
+    - stores known labels in cache to avoid creating them many times
+    - allows to fetch list of value groups that can be later used to
+      create PieLabels
+    """
 
     known_labels: dict[T, PieLabel[T]] = {}
-    """
-    Dictionary of known preset labels mapped to their names.
-
-    Allows to avoid creating the same labels multiple times.
-    """
-
+    """Dictionary of known preset labels mapped to their names."""
     invalid_values: list[T] = []
-    """List of preset names, that result in invalid labels."""
+    """List of values, that are known to result in invalid labels."""
 
     def __init__(self, controller: Controller[T]) -> None:
         self._controller = controller
@@ -30,9 +33,11 @@ class PieLabelCreator(Generic[T]):
         self._group_manager = dispatch_pie_group_manager(controller)
 
     def fetch_groups(self) -> list[str]:
+        """Return list of value group names."""
         return self._group_manager.fetch_groups()
 
     def label_from_value(self, value: T | None) -> PieLabel[T] | None:
+        """Create single PieLabel from a value. None when impossible."""
         if value is None:
             return None
 
@@ -53,7 +58,7 @@ class PieLabelCreator(Generic[T]):
         self,
         values: Iterable[T]
     ) -> list[PieLabel[T]]:
-        """Create labels from list of preset names."""
+        """Create PieLabels from values. Omit impossible values."""
         labels = [self.label_from_value(value) for value in values]
         return [label for label in labels if label is not None]
 
@@ -62,10 +67,12 @@ class PieLabelCreator(Generic[T]):
         group: str,
         sort: bool = True
     ) -> list[PieLabel]:
+        """Create PieLabels which values belong to a group."""
         values = self._group_manager.values_from_group(group, sort)
         return self.labels_from_values(values)
 
     def labels_from_config(self, config: PieConfig) -> list[PieLabel]:
+        """Create PieLabels which values are remembered in PieConfig."""
         if not config.GROUP_MODE.read():
             values = config.ORDER.read()
         else:

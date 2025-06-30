@@ -40,8 +40,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
         AnimatedWidget.__init__(
             self,
             animation_time_s=Config.PIE_ANIMATION_TIME.read(),
-            fps_limit=Config.FPS_LIMIT.read(),
-            parent=None)
+            fps_limit=Config.FPS_LIMIT.read())
 
         self.setAcceptDrops(True)
         self.setWindowFlags((
@@ -51,13 +50,11 @@ class PieSettings(AnimatedWidget, BaseWidget):
             Qt.WindowType.FramelessWindowHint))
         self.setCursor(Qt.CursorShape.ArrowCursor)
 
-        self._config = config
-        self._style_holder = style_holder
         self._tab_holder = QTabWidget()
 
         # First tab
         self._preferences_tab = TabPreferences(
-            config=self._config,
+            config=config,
             requires_text_settings=controller.REQUIRES_TEXT_SETTINGS)
         self._tab_holder.addTab(self._preferences_tab, "Preferences")
 
@@ -65,12 +62,12 @@ class PieSettings(AnimatedWidget, BaseWidget):
         if issubclass(controller.TYPE, (str, EnumGroup)):
             tab = TabValuesList(
                 config=TabValuesList.Config(
-                    self._config.GROUP_MODE,
-                    self._config.GROUP_NAME,
-                    self._config.LAST_GROUP_SELECTED),
+                    config.GROUP_MODE,
+                    config.GROUP_NAME,
+                    config.LAST_GROUP_SELECTED),
                 order_handler=order_handler,
                 controller=controller,
-                label_style=self._style_holder.settings_label_style)
+                label_style=style_holder.settings_label_style)
             self._tab_holder.addTab(tab, "Values")
             self._tab_holder.setCurrentIndex(1)
         elif isinstance(controller, NumericController):
@@ -92,7 +89,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
             self._tab_holder.setCurrentIndex(1)
 
         # Third tab
-        tab = TabSaveLocation(self._config, order_handler, controller)
+        tab = TabSaveLocation(config, order_handler, controller)
         self._tab_holder.addTab(tab, "Save location")
 
         layout = QVBoxLayout(self)

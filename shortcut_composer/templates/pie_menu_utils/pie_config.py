@@ -15,10 +15,10 @@ U = TypeVar("U")
 
 class PieConfig(FieldGroup, Generic[T]):
     """
-    FieldGroup representing config of PieMenu.
+    FieldGroup representing configuration of PieMenu action.
 
-    Most of PieMenu components can read and modify this object to
-    personalize it and remember its state between sessions.
+    It is initialized with values that become the field defauts.
+    Values written to the fields are remembered between sessions.
     """
 
     def __init__(
@@ -122,12 +122,7 @@ class PieConfig(FieldGroup, Generic[T]):
             field_name="Values",
             default=default_values,
             parser_type=controller.TYPE)
-        """
-        Selected values in specific order.
-
-        - In group mode, specifies the order of the values.
-        - In manual mode, specifies both the values and their order.
-        """
+        """Selected values in specific order, while in manual mode."""
 
     def _create_editable_dual_field(
         self,
