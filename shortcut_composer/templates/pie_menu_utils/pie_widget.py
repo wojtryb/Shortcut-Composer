@@ -112,15 +112,14 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
     @property
     def draggable(self) -> bool:
         """Does widget allow to drag values from and into itself."""
-        return self._draggable
+        return self.acceptDrops()
 
     @draggable.setter
     def draggable(self, draggable: bool) -> None:
         """Set value of `draggable` property."""
-        self._draggable = draggable
         for widget in self.order_handler.widgets:
-            widget.draggable = self._draggable
-        self.setAcceptDrops(self._draggable)
+            widget.draggable = draggable
+        self.setAcceptDrops(draggable)
 
     @property
     def deadzone(self) -> float:

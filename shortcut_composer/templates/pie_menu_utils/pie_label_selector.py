@@ -14,41 +14,39 @@ from .pie_widget import PieWidget
 
 class PieLabelSelector:
     """
-    Handles the passed PieWidget by tracking a mouse to select a label.
+    Selects labels in passed `PieWidget` by tracking mouse movement.
 
-    - Starts tracking on `start()`, and ensures the pie is shown under
-      the cursor.
-    - During tracking, marks the label under the cursor as selected.
-    - Starts the label animation each time new label is selected
-    - Stops tracking on `stop()`.
+    `PieLabelSelector` responsibilities are:
+    - detecting a label over which cursor is hovering
+    - starting animation when cursor hovers over a different label
+    - selecting a label, taking `PieDeadzoneStrategy` into consideration
+    - marking a label which `PieDeadzoneStrategy` points at
 
-    Tracking is done by timer that calls `_handle_cursor` repeatedly.
+    The class works in a following way:
+    1. call `start_tracking()`:
+        - `pie_widget` gets shown under the cursor
+        - label at which `PieDeadzoneStrategy` points gets marked
+        - timer starts to call `_handle_cursor()` repeatedly
+    2. `_handle_cursor()` called automatically in short time intervals:
+        - internally remember label over which cursor hovers
+        - start animation when mouse hovers over a new label
+        - if something unexpected happens, call `stop_tracking()`
+    3. call `stop_tracking()`
+        - stop the timer which calls `_handle_cursor()`
+        - remove mark from label at which `PieDeadzoneStrategy` points
+    4. call `select()`:
+        - return the last label over which cursor was hovering
+        - if there was none, use `PieDeadzoneStrategy` to return a label
 
-    Selected label is stored in public attribute, which can be None,
-    when no label was selected.
-    """
-    """
-    Selects label from the pie based on marked ...
-    Activates the correct labels from the Pie.
-
-    TODO update dosctring and class name
-
-    When a valid label is given in `activate()` method, it us activated
-    and also remembered.
-
-    When label is not given in `activate()` method, it means that user
-    closed the pie while still being in deadzone.
-    Then it is handled using the currently active strategy.
-
-    Actuator tracks selected strategy using `strategy_field` passed on
-    initialization. It can be changed in runtime.
+    Public attribute `strategy` can be overwritten to change what label
+    is selected with `select()` when cursor was hovering over deadzone.
     """
 
     def __init__(
         self,
         pie_widget: PieWidget,
-        initial_label: PieLabel | None = None,
         initial_strategy: PieDeadzoneStrategy = PieDeadzoneStrategy.DO_NOTHING,
+        initial_label: PieLabel | None = None,
     ) -> None:
         self._pie_widget = pie_widget
         self._previous_label = initial_label
@@ -62,26 +60,20 @@ class PieLabelSelector:
             hovered_label_callback=lambda: self._hovered_label)
 
     def start_tracking(self) -> None:
-        """Show widget under the mouse and start the mouse tracking loop."""
+        """Show widget under the mouse and start mouse tracking loop."""
+        self._mark_suggested_widget()
+        self._pie_widget.draggable = False
         self._pie_widget.move_center(QCursor().pos())
         self._pie_widget.show()
-
-        self._mark_suggested_widget()
         self._timer.start()
 
-        # Make sure the pie widget is not draggable. It could have been
-        # broken by pie settings reloading the widgets.
-        self._pie_widget.draggable = False
-
     def stop_tracking(self) -> None:
-        """Stop the mouse tracking loop and reset internal label values."""
-        self._hovered_label = None
+        """Stop the mouse tracking loop."""
         self._timer.stop()
-        for label in self._pie_widget.order_handler:
-            label.activation_progress.reset()
         self._unmark_all_widgets()
 
     def select(self) -> PieLabel | None:
+        """Return previously hovered label. Use strategy when None."""
         # Out of deadzone, label picked
         if self._hovered_label is not None:
             self._previous_label = self._hovered_label
@@ -104,7 +96,7 @@ class PieLabelSelector:
         return None
 
     def _handle_cursor(self) -> None:
-        """Calculate zone of the cursor and mark which child is selected."""
+        """Mark a label over which cursor hovers."""
         # NOTE: The widget can get hidden outside of stop() when key is
         # released during the drag&drop operation or when user clicked
         # outside the pie widget.
@@ -112,7 +104,7 @@ class PieLabelSelector:
             self._pie_widget.hide()
             return self.stop_tracking()
 
-        if self._pie_widget.acceptDrops():
+        if self._pie_widget.draggable:
             return self.stop_tracking()
 
         if not self._pie_widget.order_handler:
@@ -128,13 +120,13 @@ class PieLabelSelector:
         self._update_hovered(handler.label_on_angle(angle))
 
     def _update_hovered(self, label: PieLabel | None) -> None:
-        """Mark label as selected and start animating the change."""
+        """Mark label as hovered and start animating the change."""
         if self._hovered_label != label:
             self._hovered_label = label
             self._animator.start()
 
     def _mark_suggested_widget(self) -> None:
-        """Force color of the label that is selected for being picked."""
+        """Force color of label at which strategy points."""
         self._unmark_all_widgets()
 
         label = self._label_from_strategy()
@@ -146,8 +138,10 @@ class PieLabelSelector:
             widget.forced = True
 
     def _unmark_all_widgets(self):
+        """Clear any forced colors and ongoing animations of labels."""
         for widget in self._pie_widget.order_handler.widgets:
             widget.forced = False
+            widget.label.activation_progress.reset()
 
 
 class _LabelAnimator:
@@ -171,7 +165,7 @@ class _LabelAnimator:
         self._timer.start()
 
     def _update(self) -> None:
-        """Move all labels to next animation state. End animation if needed."""
+        """Move all labels to next animation state."""
         for label in self._pie_widget.order_handler:
             if self._hovered_label_callback() == label:
                 label.activation_progress.up()

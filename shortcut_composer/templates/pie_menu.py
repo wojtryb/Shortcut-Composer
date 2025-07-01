@@ -268,8 +268,6 @@ class PieMenu(RawInstructions, Generic[T]):
 
         def set_edit_mode_off():
             self._pie_widget.hide()
-            self._pie_widget.draggable = False
-
             self._settings.hide()
             self._accept_button.hide()
             self._settings_button.show()
@@ -369,8 +367,6 @@ class PieMenu(RawInstructions, Generic[T]):
         if self._is_in_edit_mode:
             return
 
-        # Select a label before stop_tracking() resets selector state
-        label = self._label_selector.select()
         self._label_selector.stop_tracking()
 
         # Hide the pie_widget before label gets activated. Activation
@@ -379,6 +375,7 @@ class PieMenu(RawInstructions, Generic[T]):
 
         # If actuator selected a value, activate, and remember it.
         # Remembered value will initialize actuator in next session
+        label = self._label_selector.select()
         if label is not None:
             self._controller.set_value(label.value)
             self._config.LAST_VALUE_SELECTED.write(label.value)

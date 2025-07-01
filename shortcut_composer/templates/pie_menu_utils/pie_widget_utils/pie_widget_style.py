@@ -64,8 +64,7 @@ class PieWidgetStyle:
         )
 
         # Amount of labels in the pie that can be used by the callbacks
-        # If it is used, user must guarantee that its value is correct
-        # len(ORDER) should not be used, as pie register callbacks to it
+        # PieWidgetOrder is responsible for keeping this value correct
         self.amount_of_labels = 0
 
     @property

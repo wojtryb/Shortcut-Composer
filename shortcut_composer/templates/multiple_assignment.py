@@ -22,6 +22,9 @@ class MultipleAssignment(RawInstructions, Generic[T]):
     - when the list is exhausted, start from beginning
     - end of long press ensures `default value`
 
+    Holding a key for enough time shows a button which can be used to
+    access the action settings.
+
     ### Arguments:
 
     - `name`          -- unique name of action. Must match the
