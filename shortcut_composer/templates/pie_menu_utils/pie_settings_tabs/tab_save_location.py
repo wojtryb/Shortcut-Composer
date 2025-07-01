@@ -28,7 +28,6 @@ class TabSaveLocation(QWidget):
         controller: Controller,
         parent: QWidget | None = None
     ) -> None:
-        """Tab that allows to switch location in which icon order is saved."""
         super().__init__(parent)
         self._config = config
         self._order_handler = order_handler
@@ -55,8 +54,8 @@ class TabSaveLocation(QWidget):
 
         - Header holds a button for switching save locations.
         - Main area consists of labels describing active location.
-        - Footer consists of buttons with additional value management
-          actions.
+        - Footer consists of buttons for resetting value to default and
+          for specifying the new default.
         """
         header = QHBoxLayout()
         header_label = QLabel(text="Change save location:")
@@ -98,7 +97,7 @@ class TabSaveLocation(QWidget):
         return label
 
     def _init_mode_description(self) -> QLabel:
-        """Return QLabel with one detailed description of the active mode."""
+        """Return QLabel with detailed description of the active mode."""
         label = QLabel()
         label.setWordWrap(True)
         label.setSizePolicy(

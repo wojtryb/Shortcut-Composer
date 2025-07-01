@@ -18,12 +18,28 @@ from ..pie_widget_utils import PieWidgetOrder
 
 
 class TabValuesList(QWidget):
+    """
+    Tab that allows to change values in a PieWidgetOrder.
+
+    The widget exists in two modes:
+    - In manual mode labels are displayed in scroll area, from which
+      they can be dragged into the PieWidget.
+    - In group mode, selecting a group automatically puts all of the
+      labels that belong to this group to the PieWidgetOrder
+
+    State of the widget is stored in passed config fields.
+    """
 
     @dataclass
     class Config:
+        """State of the TabValuesList widget"""
+
         GROUP_MODE: Field[bool]
+        """If true, the widget operates on groups, not individual values."""
         GROUP_NAME: Field[str]
+        """Name of selected group if in group mode."""
         LAST_GROUP_SELECTED: Field[str]
+        """Last selected value group remembered between sessions."""
 
     def __init__(
         self,
@@ -70,13 +86,12 @@ class TabValuesList(QWidget):
 
     def _init_layout(self) -> QVBoxLayout:
         """
-        Create Action Values tab of the Settings Window.
+        Create TabValuesList layout.
 
-        - Mode button and two comboboxes are places at the top
-        - Below them lies the preset scroll area
+        - Mode button and two comboboxes are placed at the top
         - Two comboboxes will swap with each other when the mode changes
-        - Scroll area combobox is taken out of it, and placed with the
-          other one to save space.
+        - Below them lies the value scroll area
+        - Scroll area already consists of search bar and label at bottom
         """
         top_layout = QHBoxLayout()
         top_layout.addWidget(self._mode_button, 1)
@@ -95,7 +110,7 @@ class TabValuesList(QWidget):
         return action_layout
 
     def _init_scroll_area(self) -> ScrollArea:
-        """Create preset scroll area which tracks which ones are used."""
+        """Create scroll area, which marks values used in the pie."""
         scroll_area = ScrollArea(
             label_style=self._label_style,
             columns=3)
@@ -169,6 +184,7 @@ class TabValuesList(QWidget):
         return group_combobox
 
     def _init_manual_combobox(self) -> StringComboBox:
+        """Create combobox, which sets values from group to scroll area."""
         manual_combobox = StringComboBox(
             config_field=self._config.LAST_GROUP_SELECTED,
             allowed_values=(

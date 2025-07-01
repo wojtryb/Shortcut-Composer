@@ -16,35 +16,42 @@ from ..pie_config import PieConfig
 
 
 class TabPreferences(QWidget):
+    """
+    Tab that allows to change preferences of the PieMenu action.
+
+    `requires_text_settings` flag allows to skip segment of form for
+    pies which labels never include any text.
+    """
 
     def __init__(
         self,
         config: PieConfig,
         requires_text_settings: bool,
-        parent: QWidget | None = None
     ) -> None:
-        super().__init__(parent)
+        super().__init__(None)
         self._config = config
-
         self._form = self._init_form(requires_text_settings)
         self._reset_button = self._init_reset_button()
-
         self.setLayout(self._init_layout())
 
-    def refresh(self):
+    def refresh(self) -> None:
+        """Change all values in the form to values stored in config."""
         self._form.refresh()
 
-    def apply(self):
+    def apply(self) -> None:
+        """Save all values from the form to the config."""
         self._form.apply()
 
     def _init_layout(self) -> QVBoxLayout:
+        """Create layout with form and a button to reset values to default."""
         layout = QVBoxLayout()
         layout.addWidget(self._form)
         layout.addStretch()
         layout.addWidget(self._init_reset_button())
         return layout
 
-    def _init_form(self, requires_text_settings) -> ConfigFormWidget:
+    def _init_form(self, requires_text_settings: bool) -> ConfigFormWidget:
+        """Create a form widgets that handle some of the config fields."""
         form = ConfigFormWidget([])
 
         form.add_title("Behavior")
@@ -143,7 +150,7 @@ class TabPreferences(QWidget):
         return form
 
     def _init_reset_button(self) -> SafeConfirmButton:
-        """Create button which resets config (except order) to default."""
+        """Create button which resets fields in form to default."""
 
         def _reset_config_to_default() -> None:
             """

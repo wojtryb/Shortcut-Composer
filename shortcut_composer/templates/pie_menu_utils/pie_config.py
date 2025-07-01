@@ -122,7 +122,14 @@ class PieConfig(FieldGroup, Generic[T]):
             field_name="Values",
             default=default_values,
             parser_type=controller.TYPE)
-        """Selected values in specific order, while in manual mode."""
+        """
+        Selected values in specific order, while in manual mode.
+
+        NOTE: this field is not updated with every change in the widget.
+        Instead, it is saved only when widget is closed.
+
+        Use PieWidgetOrder inside the PieWidget as source of truth.
+        """
 
     def _create_editable_dual_field(
         self,

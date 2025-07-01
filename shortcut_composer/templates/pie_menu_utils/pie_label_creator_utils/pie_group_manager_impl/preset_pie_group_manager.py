@@ -8,15 +8,27 @@ from ..pie_group_manager import PieGroupManager
 
 
 class PresetPieGroupManager(PieGroupManager[str]):
+    """Reads preset names that belong to a group (krita tag)."""
 
     def __init__(self) -> None:
         self._group_order_holder = GroupOrderHolder(str)
 
     def fetch_groups(self) -> list[str]:
+        """Return list of tags red from krita database."""
         with Database() as database:
             return database.get_brush_tags()
 
     def values_from_group(self, group: str, sort: bool = True) -> list[str]:
+        """
+        Return all preset names that belong to given tag.
+
+        If `sort` is True, order from GroupOrderHolder is used.
+        Otherwise they will come in the initial order from database.
+
+        When tag is unknown, empty list is returned.
+
+        Use tag 'All' to get all krita presets.
+        """
         if group == "All":
             return list(Krita.get_presets().keys())
 

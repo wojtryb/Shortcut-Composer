@@ -5,11 +5,15 @@ from ..pie_group_manager import PieGroupManager
 
 
 class InvalidPieGroupManager(PieGroupManager):
+    """GroupManager for types that have no defined groups."""
+
     def __init__(self) -> None:
         pass
 
     def fetch_groups(self) -> list[str]:
+        """Return empty list."""
         return []
 
     def values_from_group(self, group: str, sort: bool = True) -> list:
+        """Return empty list."""
         return []
