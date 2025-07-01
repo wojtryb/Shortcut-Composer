@@ -5,7 +5,7 @@ from typing import TypeVar, Generic
 
 from core_components import Controller, Instruction
 from data_components import Group
-from .pie_menu_utils.pie_label_creator_utils import dispatch_pie_group_manager
+from .pie_menu_utils.pie_label_creator_utils import dispatch_group_manager
 from .raw_instructions import RawInstructions
 from .multiple_assignment_utils import MaSettingsHandler, MaConfig
 
@@ -71,7 +71,7 @@ class MultipleAssignment(RawInstructions, Generic[T]):
         super().__init__(name, instructions)
 
         self._controller = controller
-        self._group_manager = dispatch_pie_group_manager(controller)
+        self._group_manager = dispatch_group_manager(controller.TYPE)
 
         self._config = MaConfig(
             name=f"ShortcutComposer: {name}",

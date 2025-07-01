@@ -5,7 +5,7 @@ from typing import Generic, TypeVar, Iterable
 
 from core_components import Controller
 from composer_utils import GroupOrderHolder
-from .pie_label_creator_utils import dispatch_pie_group_manager
+from .pie_label_creator_utils import dispatch_group_manager
 from .pie_config import PieConfig
 from .pie_label import PieLabel
 
@@ -30,7 +30,7 @@ class PieLabelCreator(Generic[T]):
     def __init__(self, controller: Controller[T]) -> None:
         self._controller = controller
         self._group_order_holder = GroupOrderHolder(controller.TYPE)
-        self._group_manager = dispatch_pie_group_manager(controller)
+        self._group_manager = dispatch_group_manager(controller.TYPE)
 
     def fetch_groups(self) -> list[str]:
         """Return list of value group names."""

@@ -12,7 +12,7 @@ from composer_utils.label.complex_widgets import NumericValuePicker
 
 from composer_utils.label import LabelWidgetStyle
 from composer_utils.label.complex_widgets import LabelHolder
-from ..pie_menu_utils.pie_label_creator_utils import dispatch_pie_group_manager
+from ..pie_menu_utils.pie_label_creator_utils import dispatch_group_manager
 from ..pie_menu_utils import PieWidget, PieLabelCreator, PieLabel
 from ..pie_menu_utils.pie_widget_utils import PieWidgetStyle
 from ..pie_menu_utils.pie_settings_tabs import TabValuesList
@@ -32,7 +32,7 @@ class MaSettingsWindow(QDialog):
         self._config = config
         self._controller = controller
         self._label_creator = PieLabelCreator(controller)
-        self._group_manager = dispatch_pie_group_manager(controller)
+        self._group_manager = dispatch_group_manager(controller.TYPE)
 
         active_color = QColor(110, 160, 255)
         background_color = QColor(150, 150, 255)

@@ -4,14 +4,12 @@
 from api_krita import Krita
 from api_krita.wrappers import Database
 from composer_utils import GroupOrderHolder
-from core_components.controllers import PresetController
 from ..pie_group_manager import PieGroupManager
 
 
 class PresetPieGroupManager(PieGroupManager[str]):
 
     def __init__(self) -> None:
-        self._controller = PresetController()
         self._group_order_holder = GroupOrderHolder(str)
 
     def fetch_groups(self) -> list[str]:
