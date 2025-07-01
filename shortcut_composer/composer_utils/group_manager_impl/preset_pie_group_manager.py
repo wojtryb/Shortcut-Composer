@@ -4,10 +4,10 @@
 from api_krita import Krita
 from api_krita.wrappers import Database
 from composer_utils import GroupOrderHolder
-from ..pie_group_manager import PieGroupManager
+from ..group_manager import GroupManager
 
 
-class PresetPieGroupManager(PieGroupManager[str]):
+class PresetGroupManager(GroupManager[str]):
     """Reads preset names that belong to a group (krita tag)."""
 
     def __init__(self) -> None:

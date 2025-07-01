@@ -5,10 +5,10 @@ from enum import Enum
 
 from api_krita.enums.helpers import EnumGroup
 from composer_utils import GroupOrderHolder
-from ..pie_group_manager import PieGroupManager
+from ..group_manager import GroupManager
 
 
-class EnumPieGroupManager(PieGroupManager[EnumGroup]):
+class EnumGroupManager(GroupManager[EnumGroup]):
     """Reads values names that are defined in the EnumGroup."""
 
     def __init__(self, enum_group_type: type[EnumGroup]) -> None:

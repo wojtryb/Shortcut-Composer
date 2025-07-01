@@ -3,5 +3,6 @@
 
 
 class Group:
+    """TODO"""
     def __init__(self, group_name: str) -> None:
         self.group_name = group_name

@@ -10,9 +10,9 @@ from core_components import Controller
 from composer_utils import ButtonsLayout
 from composer_utils.label.complex_widgets import NumericValuePicker
 
+from composer_utils.group_manager_impl import dispatch_group_manager
 from composer_utils.label import LabelWidgetStyle
 from composer_utils.label.complex_widgets import LabelHolder
-from ..pie_menu_utils.pie_label_creator_utils import dispatch_group_manager
 from ..pie_menu_utils import PieWidget, PieLabelCreator, PieLabel
 from ..pie_menu_utils.pie_widget_utils import PieWidgetStyle
 from ..pie_menu_utils.pie_settings_tabs import TabValuesList

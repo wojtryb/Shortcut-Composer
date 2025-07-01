@@ -1,10 +1,10 @@
 # SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from ..pie_group_manager import PieGroupManager
+from ..group_manager import GroupManager
 
 
-class InvalidPieGroupManager(PieGroupManager):
+class InvalidGroupManager(GroupManager):
     """GroupManager for types that have no defined groups."""
 
     def __init__(self) -> None:

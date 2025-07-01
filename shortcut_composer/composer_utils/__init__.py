@@ -7,6 +7,7 @@ from .animation_progress import AnimationProgress
 from .group_order_holder import GroupOrderHolder
 from .settings_dialog import SettingsDialog
 from .buttons_layout import ButtonsLayout
+from .group_manager import GroupManager
 from .circle_points import CirclePoints
 from .global_config import Config
 
@@ -15,5 +16,6 @@ __all__ = [
     "GroupOrderHolder",
     "SettingsDialog",
     "ButtonsLayout",
+    "GroupManager",
     "CirclePoints",
     "Config"]

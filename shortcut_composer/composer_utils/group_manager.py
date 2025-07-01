@@ -6,12 +6,12 @@ from typing import Protocol, Generic, TypeVar
 T = TypeVar("T")
 
 
-class PieGroupManager(Protocol, Generic[T]):
+class GroupManager(Protocol, Generic[T]):
     """
     Interface of class, which reads values that belong to a group.
 
     While GroupOrderHolder allows to read values saved in previous
-    sessions, this PieGroupManager can get those values from their
+    sessions, this GroupManager can get those values from their
     source.
 
     Accessing different data sources requires different implementations
