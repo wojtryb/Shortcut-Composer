@@ -42,10 +42,30 @@ class TabValuesList(QWidget):
         self._label_creator = PieLabelCreator(controller)
         self._scroll_area = self._init_scroll_area()
         self._mode_button = self._init_mode_button()
-        self._auto_combobox = self._init_auto_combobox()
+        self._auto_combobox = self._init_group_combobox()
         self._manual_combobox = self._init_manual_combobox()
 
-        self._set_group_mode()
+        def update_mode() -> None:
+            """Set the pie mode to group or manual based on config."""
+            if self._config.GROUP_MODE.read():
+                self._mode_button.main_text = "Group mode"
+                self._mode_button.icon = Krita.get_icon("tag")
+                self._scroll_area.hide()
+                self._manual_combobox.widget.hide()
+                self._auto_combobox.widget.show()
+
+                group = self._config.GROUP_NAME.read()
+                labels = self._label_creator.labels_from_group(group)
+                self._order_handler.replace_labels(labels)
+            else:
+                self._mode_button.main_text = "Manual mode"
+                self._mode_button.icon = Krita.get_icon("color-to-alpha")
+                self._scroll_area.show()
+                self._manual_combobox.widget.show()
+                self._auto_combobox.widget.hide()
+        self._config.GROUP_MODE.register_callback(update_mode)
+        update_mode()
+
         self.setLayout(self._init_layout())
 
     def _init_layout(self) -> QVBoxLayout:
@@ -83,19 +103,18 @@ class TabValuesList(QWidget):
         policy.setRetainSizeWhenHidden(True)
         scroll_area.setSizePolicy(policy)
 
-        def refresh_draggable() -> None:
-            """Mark which pies are currently used in the pie."""
+        def mark_used_values() -> None:
+            """Mark which values are currently used in the pie."""
             scroll_area.mark_used_values(self._order_handler.values)
 
-        self._order_handler.register_callback_on_change(refresh_draggable)
-        scroll_area.widgets_changed.connect(refresh_draggable)
-        refresh_draggable()
+        self._order_handler.register_callback_on_change(mark_used_values)
+        scroll_area.widgets_changed.connect(mark_used_values)
+        mark_used_values()
         return scroll_area
 
     def _init_mode_button(self) -> SafeConfirmButton:
-        """Create button which switches between group and manual mode."""
-        def switch_mode() -> None:
-            """Change the is_group mode to the opposite state."""
+        """Create button, which switches between group and manual mode."""
+        def switch_mode_to_opposite_state() -> None:
             # Writing to GROUP_MODE can reload the labels in Pie
             self._config.GROUP_MODE.write(not self._config.GROUP_MODE.read())
             if self._config.GROUP_MODE.read():
@@ -114,43 +133,40 @@ class TabValuesList(QWidget):
         policy.setHorizontalPolicy(QSizePolicy.Policy.Ignored)
         mode_button.setSizePolicy(policy)
 
-        mode_button.clicked.connect(switch_mode)
+        mode_button.clicked.connect(switch_mode_to_opposite_state)
 
-        self._config.GROUP_MODE.register_callback(self._set_group_mode)
         return mode_button
 
-    def _init_auto_combobox(self) -> StringComboBox:
-        """Create group mode combobox, which sets group values to the pie."""
-        auto_combobox = StringComboBox(
+    def _init_group_combobox(self) -> StringComboBox:
+        """Create combobox, which sets values from group to pie."""
+        group_combobox = StringComboBox(
             config_field=self._config.GROUP_NAME,
             allowed_values=self._label_creator.fetch_groups())
 
-        def set_order_of_previous_group(previous_group: str):
-            # Save order of previous group
+        def save_order_of_previous_group(previous_group: str):
             values = self._order_handler.values
             self._group_order_holder.set_order(previous_group, values)
 
-        def replace_labels():
-            # Replace the labels with values from the updated group
-            new_group = auto_combobox.read()
+        def replace_pie_labels():
+            new_group = group_combobox.read()
             labels = self._label_creator.labels_from_group(new_group)
             self._order_handler.replace_labels(labels)
 
         def on_new_group() -> None:
-            if self._config.GROUP_NAME.read() != auto_combobox.read():
-                set_order_of_previous_group(auto_combobox.read())
-                auto_combobox.set(self._config.GROUP_NAME.read())
-                replace_labels()
+            if self._config.GROUP_NAME.read() != group_combobox.read():
+                save_order_of_previous_group(group_combobox.read())
+                group_combobox.set(self._config.GROUP_NAME.read())
+                replace_pie_labels()
         self._config.GROUP_NAME.register_callback(on_new_group)
 
         def on_text_change():
-            if self._config.GROUP_NAME.read() != auto_combobox.read():
-                set_order_of_previous_group(self._config.GROUP_NAME.read())
-                self._config.GROUP_NAME.write(auto_combobox.read())
-                replace_labels()
-        auto_combobox.widget.currentTextChanged.connect(on_text_change)
+            if self._config.GROUP_NAME.read() != group_combobox.read():
+                save_order_of_previous_group(self._config.GROUP_NAME.read())
+                self._config.GROUP_NAME.write(group_combobox.read())
+                replace_pie_labels()
+        group_combobox.widget.currentTextChanged.connect(on_text_change)
 
-        return auto_combobox
+        return group_combobox
 
     def _init_manual_combobox(self) -> StringComboBox:
         manual_combobox = StringComboBox(
@@ -172,25 +188,3 @@ class TabValuesList(QWidget):
         display_group()
 
         return manual_combobox
-
-    def _set_group_mode(self) -> None:
-        """Set the pie mode to group (True) or manual (False)."""
-        if self._config.GROUP_MODE.read():
-            # moving to group mode
-            self._mode_button.main_text = "Group mode"
-            self._mode_button.icon = Krita.get_icon("tag")
-            self._scroll_area.hide()
-            self._manual_combobox.widget.hide()
-            self._auto_combobox.widget.show()
-
-            group = self._config.GROUP_NAME.read()
-            labels = self._label_creator.labels_from_group(group)
-            self._order_handler.replace_labels(labels)
-
-        else:
-            # moving to manual mode
-            self._mode_button.main_text = "Manual mode"
-            self._mode_button.icon = Krita.get_icon("color-to-alpha")
-            self._scroll_area.show()
-            self._manual_combobox.widget.show()
-            self._auto_combobox.widget.hide()
