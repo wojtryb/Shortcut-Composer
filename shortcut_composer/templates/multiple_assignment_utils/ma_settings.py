@@ -2,9 +2,10 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QDialog, QLabel
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QColor
 
+from api_krita import Krita
 from api_krita.enums.helpers import EnumGroup
 from core_components import Controller
 from composer_utils import ButtonsLayout
@@ -58,8 +59,13 @@ class MaSettings(QDialog):
         self._label_style = LabelWidgetStyle(
             active_color_callback=lambda: active_color,
             background_color_callback=lambda: background_color)
+        self._small_label_style = LabelWidgetStyle(
+            icon_radius_callback=lambda: round(Krita.screen_size*0.012),
+            active_color_callback=lambda: active_color,
+            background_color_callback=lambda: background_color)
 
         self._widget = self._init_widget()
+        self._current_value_holder = self._init_current_value_holder()
         self._holder_of_default = self._init_holder_of_default()
         self._buttons = self._init_buttons()
 
@@ -155,6 +161,29 @@ class MaSettings(QDialog):
             apply_callback=apply,
             ok_callback=ok)
 
+    def _init_current_value_holder(self) -> LabelHolder:
+        """Widget containing current value."""
+        value_holder = LabelHolder(self._small_label_style)
+        value_holder.setParent(self._widget)
+        value_holder.setAcceptDrops(False)
+
+        # Correct position of the holder is at bottom left
+        pie_size = 2*self._pie_style.widget_radius
+        button_size = 2*self._small_label_style.icon_radius
+        position = pie_size-button_size
+        value_holder.move(QPoint(position, position))
+
+        # Holder must be disabled, when its value is already in pie_widget
+        def set_enabled():
+            current = value_holder.label
+            if current is None:
+                return
+            enabled = current not in self._widget.order_handler.labels
+            value_holder.enabled = enabled
+        self._widget.order_handler.register_callback_on_change(set_enabled)
+
+        return value_holder
+
     def _reset_values(self) -> None:
         """Reset values in PieWidget and LabelHolder to defaults."""
         # Reset widget
@@ -174,5 +203,17 @@ class MaSettings(QDialog):
     def show(self) -> None:
         """Show the widget. Fixes the issue of search bar taking focus."""
         super().show()
+
+        self._controller.refresh()
+        try:
+            current_value = self._controller.get_value()
+        except NotImplementedError:
+            label = None
+        else:
+            label = self._label_creator.label_from_value(current_value)
+        self._current_value_holder.replace(label)
+        enabled = label not in self._widget.order_handler.labels
+        self._current_value_holder.enabled = enabled
+
         self._reset_values()
         self._widget.setFocus()
