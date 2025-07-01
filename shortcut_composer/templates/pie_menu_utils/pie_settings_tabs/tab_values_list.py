@@ -25,7 +25,7 @@ class TabValuesList(QWidget):
     - In manual mode labels are displayed in scroll area, from which
       they can be dragged into the PieWidget.
     - In group mode, selecting a group automatically puts all of the
-      labels that belong to this group to the PieWidgetOrder
+      labels that belong to this group to the PieWidgetOrder.
 
     State of the widget is stored in passed config fields.
     """

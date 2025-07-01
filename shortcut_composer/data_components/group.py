@@ -3,6 +3,12 @@
 
 
 class Group:
-    """TODO"""
+    """
+    Wraps a string to mark is as a name of Group.
+
+    For more informations about value Groups in Shortcut Composer read
+    dosctrings of GroupManager and GroupOrderHandler in composer_utils.
+    """
+
     def __init__(self, group_name: str) -> None:
         self.group_name = group_name

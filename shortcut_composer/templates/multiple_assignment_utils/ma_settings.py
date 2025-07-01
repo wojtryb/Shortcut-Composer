@@ -13,14 +13,29 @@ from composer_utils.label.complex_widgets import NumericValuePicker
 from composer_utils.group_manager_impl import dispatch_group_manager
 from composer_utils.label import LabelWidgetStyle
 from composer_utils.label.complex_widgets import LabelHolder
+# FIXME PieMenu elements should probably be moved to some common_utils
 from ..pie_menu_utils import PieWidget, PieLabelCreator, PieLabel
 from ..pie_menu_utils.pie_widget_utils import PieWidgetStyle
 from ..pie_menu_utils.pie_settings_tabs import TabValuesList
 from .ma_config import MaConfig
 
 
-class MaSettingsWindow(QDialog):
-    """Tab in which user can change action enums and their order."""
+class MaSettings(QDialog):
+    """
+    Widget that allows to change values in a MultipleAssignment action.
+
+    Uses elements from PieMenu action for picking the values to cycle
+    using the PieWidget and TabValuesList.
+
+    The widget exists in two modes:
+    - In manual mode labels are displayed in scroll area, from which
+      they can be dragged into the PieWidget.
+    - In group mode, selecting a group automatically puts all of the
+      labels that belong to this group to the PieWidget.
+
+    Dragging a label into the LabelHolder on the bottom allows to change
+    the value to activate on long key release of action.
+    """
 
     def __init__(self, controller: Controller, config: MaConfig):
         super().__init__()
@@ -51,6 +66,14 @@ class MaSettingsWindow(QDialog):
         self.setLayout(self._init_layout())
 
     def _init_layout(self) -> QVBoxLayout:
+        """
+        Create MaSettings layout.
+
+        - PieWidget with values to cycle on the left
+        - LabelHolder with long-key-press value underneath
+        - TabValuesList with values and mode button on the right
+        - Reset, Cancel, Apply, OK button in the footer
+        """
         bottom_of_left_layout = QHBoxLayout()
         bottom_of_left_layout.addStretch()
         text = QLabel("Value to set\nafter long key press:")
@@ -90,6 +113,7 @@ class MaSettingsWindow(QDialog):
         return layout
 
     def _init_widget(self):
+        """Create PieWidget with values to cycle."""
         widget = PieWidget(
             style=self._pie_style,
             allowed_types=self._controller.TYPE)
@@ -103,12 +127,14 @@ class MaSettingsWindow(QDialog):
         return widget
 
     def _init_holder_of_default(self) -> LabelHolder:
+        """Create LabelHolder with a value to pick in long-key-press."""
         holder_of_default = LabelHolder(self._label_style)
         holder_of_default.enabled = True
         holder_of_default.setAcceptDrops(True)
         return holder_of_default
 
     def _init_buttons(self) -> ButtonsLayout:
+        """Create ButtonsLayout with Reset, Cancel, Apply and OK."""
         def reset() -> None:
             self._config.reset_default()
             self._reset_values()
@@ -130,6 +156,7 @@ class MaSettingsWindow(QDialog):
             ok_callback=ok)
 
     def _reset_values(self) -> None:
+        """Reset values in PieWidget and LabelHolder to defaults."""
         # Reset widget
         if not self._config.GROUP_MODE.read():
             values = self._config.VALUES.read()
@@ -145,6 +172,7 @@ class MaSettingsWindow(QDialog):
         self._holder_of_default.replace(label)
 
     def show(self) -> None:
+        """Show the widget. Fixes the issue of search bar taking focus."""
         super().show()
         self._reset_values()
         self._widget.setFocus()

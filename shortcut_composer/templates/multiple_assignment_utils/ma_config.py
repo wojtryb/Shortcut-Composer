@@ -10,6 +10,12 @@ T = TypeVar("T")
 
 
 class MaConfig(FieldGroup, Generic[T]):
+    """
+    FieldGroup representing configuration of MultipleAssignment action.
+
+    It is initialized with values that become the field defauts.
+    Values written to the fields are remembered between sessions.
+    """
 
     def __init__(
         self,
