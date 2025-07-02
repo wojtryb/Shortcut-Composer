@@ -309,6 +309,7 @@ class PieMenu(RawInstructions, Generic[T]):
 
         # Correct position of the holder is at bottom left
         def move_to_bottom_left():
+            value_holder.reset_size()
             pie_size = 2*self._style_holder.pie_widget_style.widget_radius
             button_size = 2*self._style_holder.small_label_style.icon_radius
             position = pie_size-button_size

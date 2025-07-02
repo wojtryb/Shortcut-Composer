@@ -31,8 +31,8 @@ class LabelHolder(QWidget):
         self._enabled = False
         self._previous_label: LabelInterface | None = None
 
-        self.setFixedSize(style.icon_radius*2, style.icon_radius*2)
         self.setAcceptDrops(True)
+        self.reset_size()
 
     def replace(self, label: LabelInterface | None) -> None:
         """Replace remembered LabelWidget with the passed value."""
@@ -94,3 +94,8 @@ class LabelHolder(QWidget):
         self._widget.enabled = self._enabled
         self._widget.draggable = self._enabled
         self._widget.show()
+
+    def reset_size(self) -> None:
+        """Set widget geometry according to style."""
+        diameter = 2*self._style.icon_radius
+        self.setFixedSize(diameter, diameter)
