@@ -4,9 +4,9 @@
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QDragEnterEvent, QDragLeaveEvent
 
-from composer_utils.label import LabelWidget
-from composer_utils.label.label_widget_impl import dispatch_label_widget
-from composer_utils.label import LabelWidgetStyle
+from ..label_widget import LabelWidget
+from ..label_widget_style import LabelWidgetStyle
+from ..label_widget_impl import dispatch_label_widget
 from ..label_interface import LabelInterface
 
 

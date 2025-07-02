@@ -13,8 +13,9 @@ from PyQt5.QtWidgets import (
     QWidget,
     QLabel)
 
-from composer_utils.label import LabelWidgetStyle, LabelWidget
-from composer_utils.label.label_widget_impl import dispatch_label_widget
+from ..label_widget import LabelWidget
+from ..label_widget_style import LabelWidgetStyle
+from ..label_widget_impl import dispatch_label_widget
 from ..label_interface import LabelInterface
 
 T = TypeVar("T", bound=LabelInterface[int])

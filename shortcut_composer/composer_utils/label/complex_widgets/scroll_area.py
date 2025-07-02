@@ -14,8 +14,9 @@ from PyQt5.QtWidgets import (
     QWidget,
     QLabel)
 
-from composer_utils.label import LabelWidget, LabelWidgetStyle
-from composer_utils.label.label_widget_impl import dispatch_label_widget
+from ..label_widget import LabelWidget, WidgetInstructions
+from ..label_widget_style import LabelWidgetStyle
+from ..label_widget_impl import dispatch_label_widget
 from ..label_interface import LabelInterface
 from .scroll_area_utils import OffsetGridLayout
 
@@ -51,9 +52,8 @@ class ScrollArea(QWidget, Generic[T]):
         self,
         label_style: LabelWidgetStyle = LabelWidgetStyle(),
         columns: int = 3,
-        parent=None
     ) -> None:
-        super().__init__(parent)
+        super().__init__(None)
         self._label_style = label_style
         self._columns = columns
 

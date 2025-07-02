@@ -157,8 +157,8 @@ class LabelWidget(BaseWidget, Generic[T]):
         drag.exec(Qt.DropAction.MoveAction)
 
     def enterEvent(self, e: QEvent) -> None:
-        super().enterEvent(e)
         """Notice that mouse moved over the widget."""
+        super().enterEvent(e)
         self._hovered = True
         for instruction in self._instructions:
             instruction.on_enter(self.label)
