@@ -6,6 +6,7 @@ from typing import Sequence, TypeVar, Generic
 
 from PyQt5.QtCore import Qt, QTimer, pyqtSignal
 from PyQt5.QtWidgets import (
+    QSizePolicy,
     QScrollArea,
     QVBoxLayout,
     QHBoxLayout,
@@ -89,6 +90,10 @@ class ScrollArea(QWidget, Generic[T]):
         """Return a label displaying hovered label."""
         label = QLabel(self)
         label.setFixedHeight(label.sizeHint().height()*2)
+        # Do not allow the label to expand on each text change
+        label.setSizePolicy(
+            QSizePolicy.Policy.Ignored,
+            QSizePolicy.Policy.Ignored)
         label.setWordWrap(True)
         return label
 
@@ -103,7 +108,6 @@ class ScrollArea(QWidget, Generic[T]):
         area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         radius = self._label_style.icon_radius
         area.setMinimumWidth(round(radius*self._columns*2.3))
-        area.setMinimumHeight(round(radius*9.2))
         area.setWidgetResizable(True)
         area.setWidget(internal)
         QScroller.grabGesture(

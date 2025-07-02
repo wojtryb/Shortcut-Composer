@@ -183,11 +183,14 @@ class PieMenu(RawInstructions, Generic[T]):
     @cached_property
     def _settings(self) -> PieSettings:
         """GUI for customizing the pie_widget in the edit mode."""
-        return PieSettings(
+        settings = PieSettings(
             config=self._config,
             style_holder=self._style_holder,
             controller=self._controller,
             order_handler=self._pie_widget.order_handler)
+
+        self._register_callback_to_size_change(settings.reset_size)
+        return settings
 
     @cached_property
     def _label_selector(self) -> PieLabelSelector:

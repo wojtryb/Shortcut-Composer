@@ -50,6 +50,7 @@ class PieSettings(AnimatedWidget, BaseWidget):
             Qt.WindowType.FramelessWindowHint))
         self.setCursor(Qt.CursorShape.ArrowCursor)
 
+        self._style_holder = style_holder
         self._tab_holder = QTabWidget()
 
         # First tab
@@ -96,6 +97,8 @@ class PieSettings(AnimatedWidget, BaseWidget):
         layout.addWidget(self._tab_holder)
         self.setLayout(layout)
 
+        self.reset_size()
+
     def show(self) -> None:
         """Show the window after its settings are refreshed."""
         self._preferences_tab.refresh()
@@ -105,3 +108,9 @@ class PieSettings(AnimatedWidget, BaseWidget):
         """Hide the window after its settings are saved to kritarc."""
         self._preferences_tab.apply()
         super().hide()
+
+    def reset_size(self) -> None:
+        """Set widget geometry according to style."""
+        self.hide()
+        height = 13*self._style_holder.settings_label_style.icon_radius
+        self.setMinimumHeight(height)

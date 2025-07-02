@@ -64,7 +64,7 @@ class TabValuesList(QWidget):
         def update_mode() -> None:
             """Set the pie mode to group or manual based on config."""
             if self._config.GROUP_MODE.read():
-                self._mode_button.main_text = "Group mode"
+                self._mode_button.main_text = "Group\nmode"
                 self._mode_button.icon = Krita.get_icon("tag")
                 self._scroll_area.hide()
                 self._manual_combobox.widget.hide()
@@ -74,7 +74,7 @@ class TabValuesList(QWidget):
                 labels = self._label_creator.labels_from_group(group)
                 self._order_handler.replace_labels(labels)
             else:
-                self._mode_button.main_text = "Manual mode"
+                self._mode_button.main_text = "Manual\nmode"
                 self._mode_button.icon = Krita.get_icon("color-to-alpha")
                 self._scroll_area.show()
                 self._manual_combobox.widget.show()

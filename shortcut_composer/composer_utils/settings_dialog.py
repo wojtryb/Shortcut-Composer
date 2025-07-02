@@ -21,7 +21,6 @@ class SettingsDialog(QDialog):
             self.windowFlags() |
             Qt.WindowType.WindowStaysOnTopHint)
 
-        self.setMinimumSize(QSize(300, 200))
         self.setWindowTitle("Configure Shortcut Composer")
 
         self._general_tab = ConfigFormWidget([
