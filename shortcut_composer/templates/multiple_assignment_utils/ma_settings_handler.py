@@ -61,10 +61,9 @@ class MaSettingsHandler(Instruction):
 
     def _timer_callback(self) -> None:
         """Show a button in top left corner of painting area."""
-        if not self._settings_window.isVisible():
-            mdiArea = Krita.get_active_mdi_area()
-            self._button.move(mdiArea.mapToGlobal(mdiArea.pos()))
-            self._button.show()
+        mdiArea = Krita.get_active_mdi_area()
+        self._button.move(mdiArea.mapToGlobal(mdiArea.pos()))
+        self._button.show()
         self._timer.stop()
 
     def on_key_press(self) -> None:
