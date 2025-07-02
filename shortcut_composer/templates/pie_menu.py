@@ -169,12 +169,15 @@ class PieMenu(RawInstructions, Generic[T]):
             allowed_types=self._controller.TYPE)
         pie_widget.draggable = False
 
-        def allow_value_edit_callback():
+        def allow_value_edit():
             pie_widget.only_order_change = self._config.GROUP_MODE.read()
-        self._config.GROUP_MODE.register_callback(allow_value_edit_callback)
-        allow_value_edit_callback()
+        self._config.GROUP_MODE.register_callback(allow_value_edit)
+        allow_value_edit()
 
-        self._register_callback_to_size_change(pie_widget.reset_size)
+        def reset_size():
+            pie_widget.hide()
+            pie_widget.reset_size()
+        self._register_callback_to_size_change(reset_size)
 
         self._settings_button.setParent(pie_widget)
 
@@ -189,7 +192,10 @@ class PieMenu(RawInstructions, Generic[T]):
             controller=self._controller,
             order_handler=self._pie_widget.order_handler)
 
-        self._register_callback_to_size_change(settings.reset_size)
+        def reset_size():
+            settings.hide()
+            settings.reset_size()
+        self._register_callback_to_size_change(reset_size)
         return settings
 
     @cached_property

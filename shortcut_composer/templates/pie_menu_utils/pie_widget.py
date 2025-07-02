@@ -195,7 +195,6 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
     def reset_size(self) -> None:
         """Set widget geometry according to style."""
-        self.hide()
         diameter = 2*self._style.widget_radius
         self.setFixedSize(diameter, diameter)
 

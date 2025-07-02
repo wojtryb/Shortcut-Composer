@@ -111,6 +111,5 @@ class PieSettings(AnimatedWidget, BaseWidget):
 
     def reset_size(self) -> None:
         """Set widget geometry according to style."""
-        self.hide()
         height = 13*self._style_holder.settings_label_style.icon_radius
         self.setMinimumHeight(height)
