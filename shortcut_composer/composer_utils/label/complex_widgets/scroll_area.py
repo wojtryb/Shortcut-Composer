@@ -6,7 +6,6 @@ from typing import Sequence, TypeVar, Generic
 
 from PyQt5.QtCore import Qt, QTimer, pyqtSignal
 from PyQt5.QtWidgets import (
-    QSizePolicy,
     QScrollArea,
     QVBoxLayout,
     QHBoxLayout,
@@ -89,11 +88,12 @@ class ScrollArea(QWidget, Generic[T]):
     def _init_active_label_display(self) -> QLabel:
         """Return a label displaying hovered label."""
         label = QLabel(self)
+        # NOTE: this label must have a fixed size due to issue in Qt5
+        #
+        # On windows the whole settings widget freezes most likely
+        # because LabelWidgets are modifying size of their parent.
+        label.setFixedWidth(self._label_style.icon_radius*4)
         label.setFixedHeight(label.sizeHint().height()*2)
-        # Do not allow the label to expand on each text change
-        label.setSizePolicy(
-            QSizePolicy.Policy.Ignored,
-            QSizePolicy.Policy.Ignored)
         label.setWordWrap(True)
         return label
 
@@ -173,12 +173,6 @@ class ScrollArea(QWidget, Generic[T]):
             else:
                 widget.enabled = True
                 widget.draggable = True
-
-    # This fixes Qt issue of window changing size after the first text change
-    def show(self):
-        super().show()
-        self._active_label_display.setText("A")
-        self._active_label_display.setText("")
 
 
 class ChildInstruction:
