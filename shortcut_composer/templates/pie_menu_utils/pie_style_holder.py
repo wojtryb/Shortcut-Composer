@@ -29,7 +29,7 @@ class PieStyleHolder:
         self.pie_widget_style = PieWidgetStyle(
             pie_radius_callback=self._pie_widget_radius,
             deadzone_radius_callback=self._deadzone_radius,
-            background_opacity_callback=self._config.PIE_OPACITY.read,
+            background_opacity_callback=self._pie_widget_opacity,
             desired_icon_radius_callback=self._desired_pie_label_radius,
             border_thickness_callback=self._border_thickness,
             active_color_callback=self._active_color,
@@ -105,6 +105,11 @@ class PieStyleHolder:
         if not self.pie_widget_style.amount_of_labels:
             return float("inf")
         return self.accept_button_radius
+
+    def _pie_widget_opacity(self) -> int:
+        if self._config.OVERRIDE_DEFAULT_THEME.read():
+            return self._config.PIE_OPACITY.read()
+        return Config.DEFAULT_PIE_OPACITY.read()
 
     def _active_color(self) -> QColor:
         """Return active color of all Widgets (Pie and Label)."""
