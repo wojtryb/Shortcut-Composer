@@ -4,7 +4,7 @@
 import re
 from typing import Sequence, TypeVar, Generic
 
-from PyQt5.QtCore import Qt, QTimer, pyqtSignal
+from PyQt5.QtCore import Qt, QTimer, QEvent, pyqtSignal
 from PyQt5.QtWidgets import (
     QScrollArea,
     QVBoxLayout,
@@ -61,7 +61,7 @@ class ScrollArea(QWidget, Generic[T]):
         self._children_list: list[LabelWidget[T]] = []
 
         self._grid = OffsetGridLayout(self._columns, self)
-        self._active_label_display = self._init_active_label_display()
+        self._value_label = self._init_value_label()
         self._search_bar = self._init_search_bar()
         self._layout = self._init_layout()
 
@@ -77,7 +77,7 @@ class ScrollArea(QWidget, Generic[T]):
             - search bar which filters icons
         """
         footer = QHBoxLayout()
-        footer.addWidget(self._active_label_display, 1)
+        footer.addWidget(self._value_label, 1)
         footer.addWidget(self._search_bar, 1)
 
         layout = QVBoxLayout()
@@ -85,7 +85,7 @@ class ScrollArea(QWidget, Generic[T]):
         layout.addLayout(footer)
         return layout
 
-    def _init_active_label_display(self) -> QLabel:
+    def _init_value_label(self) -> QLabel:
         """Return a label displaying hovered label."""
         label = QLabel(self)
         # NOTE: this label must have a fixed size due to issue in Qt5
@@ -144,7 +144,7 @@ class ScrollArea(QWidget, Generic[T]):
             parent=self)
         child.setFixedSize(child.icon_radius*2, child.icon_radius*2)
         child.draggable = True
-        child.add_instruction(ChildInstruction(self._active_label_display))
+        child.add_instruction(ChildInstruction(self._value_label))
 
         self._known_children[label] = child
         return child
@@ -174,17 +174,21 @@ class ScrollArea(QWidget, Generic[T]):
                 widget.enabled = True
                 widget.draggable = True
 
+    def leaveEvent(self, e: QEvent) -> None:
+        """Notice that mouse moved out of the widget."""
+        super().leaveEvent(e)
+        self._value_label.setText("")
 
-class ChildInstruction:
+
+class ChildInstruction(WidgetInstructions):
     """Logic of displaying widget text in passed QLabel."""
 
-    def __init__(self, display_label: QLabel) -> None:
-        self._display_label = display_label
+    def __init__(self, value_label: QLabel) -> None:
+        self._value_label = value_label
 
     def on_enter(self, label: LabelInterface) -> None:
         """Set text of label which was entered with mouse."""
-        self._display_label.setText(str(label.pretty_name))
+        self._value_label.setText(label.pretty_name)
 
     def on_leave(self, label: LabelInterface) -> None:
-        """Reset text after mouse leaves the widget."""
-        self._display_label.setText("")
+        pass
