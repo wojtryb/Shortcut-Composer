@@ -11,6 +11,7 @@ from core_components import Controller
 from composer_utils import ButtonsLayout
 from composer_utils.label.complex_widgets import NumericValuePicker
 
+from composer_utils import Config
 from composer_utils.group_manager_impl import dispatch_group_manager
 from composer_utils.label import LabelWidgetStyle
 from composer_utils.label.complex_widgets import LabelHolder
@@ -49,13 +50,28 @@ class MaSettings(QDialog):
         self._label_creator = PieLabelCreator(controller)
         self._group_manager = dispatch_group_manager(controller.TYPE)
 
+        def pie_widget_radius() -> int:
+            """Return radius of the PieWidget."""
+            return round(
+                0.065 * Krita.screen_size
+                * Config.PIE_GLOBAL_SCALE.read())
+
+        def desired_pie_label_radius() -> int:
+            """Return max radius of LabelWidget in the PieWidget"""
+            return round(
+                0.020 * Krita.screen_size
+                * Config.PIE_ICON_GLOBAL_SCALE.read())
+
         active_color = QColor(110, 160, 255)
         background_color = QColor(150, 150, 255)
         self._pie_style = PieWidgetStyle(
+            pie_radius_callback=pie_widget_radius,
+            desired_icon_radius_callback=desired_pie_label_radius,
             active_color_callback=lambda: active_color,
             background_color_callback=lambda: background_color,
             background_opacity_callback=lambda: 35)
         self._label_style = LabelWidgetStyle(
+            icon_radius_callback=desired_pie_label_radius,
             active_color_callback=lambda: active_color,
             background_color_callback=lambda: background_color)
         self._small_label_style = LabelWidgetStyle(
@@ -128,6 +144,13 @@ class MaSettings(QDialog):
             widget.draggable = not self._config.GROUP_MODE.read()
         self._config.GROUP_MODE.register_callback(set_draggable_in_manual_mode)
         set_draggable_in_manual_mode()
+
+        def reset_size() -> None:
+            self.hide()
+            widget.reset_size()
+
+        Config.PIE_GLOBAL_SCALE.register_callback(reset_size)
+        Config.PIE_ICON_GLOBAL_SCALE.register_callback(reset_size)
 
         return widget
 
