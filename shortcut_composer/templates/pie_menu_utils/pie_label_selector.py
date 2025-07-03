@@ -31,12 +31,16 @@ class PieLabelSelector:
         - internally remember label over which cursor hovers
         - start animation when mouse hovers over a new label
         - if something unexpected happens, call `stop_tracking()`
-    3. call `stop_tracking()`
-        - stop the timer which calls `_handle_cursor()`
-        - remove mark from label at which `PieDeadzoneStrategy` points
-    4. call `select()`:
+    3. call `select()`:
         - return the last label over which cursor was hovering
         - if there was none, use `PieDeadzoneStrategy` to return a label
+    4. call `stop_tracking()`
+        - stop the timer which calls `_handle_cursor()`
+        - remove mark from label at which `PieDeadzoneStrategy` points
+        - forget the last label over which cursor was hovering
+
+    select() must be called before stop_tracking(), as the latter clears
+    the state of the selector.
 
     Public attribute `strategy` can be overwritten to change what label
     is selected with `select()` when cursor was hovering over deadzone.
@@ -71,6 +75,7 @@ class PieLabelSelector:
         """Stop the mouse tracking loop."""
         self._timer.stop()
         self._unmark_all_widgets()
+        self._update_hovered(None)
 
     def select(self) -> PieLabel | None:
         """Return previously hovered label. Use strategy when None."""
@@ -141,7 +146,6 @@ class PieLabelSelector:
         """Clear any forced colors and ongoing animations of labels."""
         for widget in self._pie_widget.order_handler.widgets:
             widget.forced = False
-            widget.label.activation_progress.reset()
 
 
 class _LabelAnimator:

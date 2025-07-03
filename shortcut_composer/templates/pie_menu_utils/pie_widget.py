@@ -202,3 +202,9 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         """Perform callback if changes in values are not restricted."""
         if not self.only_order_change:
             callback(*args, **kwargs)
+
+    def hide(self):
+        """Make sure all label animations are reset when hiding."""
+        super().hide()
+        for label in self.order_handler:
+            label.activation_progress.reset()
