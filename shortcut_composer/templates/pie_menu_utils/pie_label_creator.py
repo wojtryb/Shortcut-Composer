@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Generic, TypeVar, Iterable
+from collections.abc import Hashable
+from copy import copy
 
 from core_components import Controller
 from composer_utils import GroupOrderHolder
@@ -20,11 +22,16 @@ class PieLabelCreator(Generic[T]):
     - stores known labels in cache to avoid creating them many times
     - allows to fetch list of value groups that can be later used to
       create PieLabels
+
+    In `_known_labels` dictionary, labels must be copied before storing
+    and fetching. This way icons and images are not created multiple
+    times, but every user can modify fetched labels without affecting
+    other users.
     """
 
-    known_labels: dict[T, PieLabel[T]] = {}
-    """Dictionary of known preset labels mapped to their names."""
-    invalid_values: list[T] = []
+    _known_labels: dict[T, PieLabel[T]] = {}
+    """Dictionary of known labels mapped to their names."""
+    _invalid_values: list[T] = []
     """List of values, that are known to result in invalid labels."""
 
     def __init__(self, controller: Controller[T]) -> None:
@@ -41,17 +48,21 @@ class PieLabelCreator(Generic[T]):
         if value is None:
             return None
 
-        if value in self.known_labels:
-            return self.known_labels[value]
+        if not isinstance(value, Hashable):
+            return PieLabel.from_value(value, self._controller)
 
-        if value in self.invalid_values:
+        if value in self._known_labels:
+            return copy(self._known_labels[value])
+
+        if value in self._invalid_values:
             return None
 
         label = PieLabel.from_value(value, self._controller)
         if label is None:
-            self.invalid_values.append(value)
+            self._invalid_values.append(value)
             return None
 
+        self._known_labels[value] = copy(label)
         return label
 
     def labels_from_values(
