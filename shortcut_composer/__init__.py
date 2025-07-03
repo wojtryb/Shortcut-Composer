@@ -31,10 +31,11 @@ def main() -> None:
         warning_box.setTextFormat(Qt.TextFormat.RichText)
         link = "https://github.com/wojtryb/Shortcut-Composer"
         warning_box.setText(
-            "Shortcut Composer will not load.<br><br>"
-            "If krita 6 was already released, check for plugin updates:<br>"
+            "Shortcut Composer cannot load on this krita version.<br>"
+            "Plugin relies on Qt5, while krita 6 switched to Qt6.<br><br>"
+            "If krita 6 was officially released, check for plugin updates:<br>"
             f"<a href='{link}'>{link}</a><br><br>"
-            "Otherwise, use the qt6 port for testing:<br>"
+            "Otherwise, use the unofficial qt6 port for testing:<br>"
             f"<a href='{link}/tree/qt6-port'>{link}/tree/qt6-port</a>"
         )
         warning_box.setStandardButtons(QMessageBox.StandardButton.Ok)
