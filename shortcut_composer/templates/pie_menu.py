@@ -192,10 +192,7 @@ class PieMenu(RawInstructions, Generic[T]):
             controller=self._controller,
             order_handler=self._pie_widget.order_handler)
 
-        def reset_size():
-            settings.hide()
-            settings.reset_size()
-        self._register_callback_to_size_change(reset_size)
+        self._register_callback_to_size_change(settings.hide)
         return settings
 
     @cached_property

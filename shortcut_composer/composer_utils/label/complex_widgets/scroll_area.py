@@ -14,6 +14,7 @@ from PyQt5.QtWidgets import (
     QWidget,
     QLabel)
 
+from ...global_config import Config
 from ..label_widget import LabelWidget, WidgetInstructions
 from ..label_widget_style import LabelWidgetStyle
 from ..label_widget_impl import dispatch_label_widget
@@ -88,13 +89,15 @@ class ScrollArea(QWidget, Generic[T]):
     def _init_value_label(self) -> QLabel:
         """Return a label displaying hovered label."""
         label = QLabel(self)
-        # NOTE: this label must have a fixed size due to issue in Qt5
-        #
-        # On windows the whole settings widget freezes most likely
-        # because LabelWidgets are modifying size of their parent.
-        label.setFixedWidth(self._label_style.icon_radius*4)
-        label.setFixedHeight(label.sizeHint().height()*2)
         label.setWordWrap(True)
+
+        def reset_size() -> None:
+            # NOTE: Size is fixed due to issue in Qt5 under Windows 10
+            label.setFixedWidth(self._label_style.icon_radius*4)
+            label.setFixedHeight(label.sizeHint().height()*2)
+        Config.PIE_ICON_GLOBAL_SCALE.register_callback(reset_size)
+        reset_size()
+
         return label
 
     def _init_scroll_area(self) -> QScrollArea:
@@ -106,13 +109,19 @@ class ScrollArea(QWidget, Generic[T]):
         area.setHorizontalScrollBarPolicy(
             Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
-        radius = self._label_style.icon_radius
-        area.setMinimumWidth(round(radius*self._columns*2.3))
         area.setWidgetResizable(True)
         area.setWidget(internal)
         QScroller.grabGesture(
             area.viewport(),
             QScroller.ScrollerGestureType.MiddleMouseButtonGesture)
+
+        def reset_size() -> None:
+            # NOTE: Height is fixed due to issue in Qt5 under Windows 10
+            radius = self._label_style.icon_radius
+            area.setMinimumWidth(round(radius*self._columns*2.3))
+            area.setFixedHeight(round(radius*9.2))
+        Config.PIE_ICON_GLOBAL_SCALE.register_callback(reset_size)
+        reset_size()
 
         return area
 
