@@ -159,6 +159,9 @@ class PieMenu(RawInstructions, Generic[T]):
         def raise_flag():
             self._force_reload = True
         self._register_callback_to_size_change(raise_flag)
+        self._config.MAX_SIGNS_AMOUNT.register_callback(raise_flag)
+        self._config.MAX_LINES_AMOUNT.register_callback(raise_flag)
+        self._config.ABBREVIATE_WITH_DOT.register_callback(raise_flag)
 
     @cached_property
     def _pie_widget(self) -> PieWidget:
