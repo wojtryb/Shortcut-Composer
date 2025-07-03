@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import os.path
@@ -66,7 +66,7 @@ class Database:
             FROM tags t
             WHERE
                 t.active = 1
-                AND t.resource_type_id = 5
+                AND (t.resource_type_id = 5 OR t.resource_type_id = 6)
         '''
         presets = self._single_column_query(sql_query, "tag")
         return sorted(presets, key=str.lower)

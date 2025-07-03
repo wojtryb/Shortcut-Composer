@@ -1,7 +1,7 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Generic, TypeVar, Type, Protocol
+from typing import Generic, TypeVar, Protocol
 from enum import Enum
 
 from PyQt5.QtGui import QColor
@@ -42,7 +42,7 @@ class Parser(Generic[T], Protocol):
 class BasicParser(Parser[Basic]):
     """Parses from string to basic type and vice-versa."""
 
-    def __init__(self, type: Type[Basic]) -> None:
+    def __init__(self, type: type[Basic]) -> None:
         self.type = type
 
     def parse_to(self, value: str) -> Basic:
@@ -73,7 +73,7 @@ class BoolParser(Parser[bool]):
 class EnumParser(Parser[EnumT]):
     """Parses from string to enum and vice-versa."""
 
-    def __init__(self, type: Type[EnumT]) -> None:
+    def __init__(self, type: type[EnumT]) -> None:
         self.type = type
 
     def parse_to(self, value: str) -> EnumT:

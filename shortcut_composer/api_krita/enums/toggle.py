@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from enum import Enum
@@ -7,11 +7,7 @@ from krita import Krita as Api
 
 
 class Toggle(Enum):
-    """
-    Contains all known actions that toggle (can be activated and deactivated).
-
-    Example usage: `Toggle.ERASER`
-    """
+    """Contains all known actions that toggle (can be (de)activated)."""
 
     ERASER = "erase_action"
     PRESERVE_ALPHA = "preserve_alpha"

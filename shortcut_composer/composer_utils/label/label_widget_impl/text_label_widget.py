@@ -1,13 +1,12 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import TypeVar
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont, QColor, QFontDatabase
+from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QLabel, QWidget
 
-from api_krita import Krita
 from ..label_text import LabelText
 from ..label_widget import LabelWidget
 from ..label_interface import LabelInterface
@@ -35,47 +34,25 @@ class TextLabelWidget(LabelWidget[T]):
         if not isinstance(to_display, LabelText):
             raise TypeError("Label supposed to be text.")
 
-        height = round(self.icon_radius*0.75)
+        height = round(self.icon_radius*1.5)
+        trimmed_text = self._label_widget_style.split_text_to_lines(
+            to_display.value)
 
         label = QLabel(self)
-        label.setText(to_display.value)
-        label.setAlignment(Qt.AlignCenter)
-        label.resize(round(height*2), round(height))
-        label.setFont(self._font)
-        label.move(self.center.x()-height,
+        label.setText("\n".join(trimmed_text))
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        label.resize(height, height)
+        font = self._label_widget_style.get_font(height, trimmed_text)
+        label.setFont(font)
+        label.move(self.center.x()-height//2,
                    self.center.y()-height//2)
         label.setStyleSheet(f'''
-            background-color:rgba({self._color_to_str(
-            Krita.get_main_color_from_theme())});
+            background-color:rgba(0, 0, 0, 0);
             color:rgba({self._color_to_str(to_display.color)});
         ''')
 
         label.show()
         return label
-
-    @property
-    def _font(self) -> QFont:
-        """Return font to use in pyqt label."""
-        font = QFontDatabase.systemFont(QFontDatabase.TitleFont)
-        font.setPointSize(round(
-            self._label_widget_style.font_multiplier
-            * self.width()
-            * self._sign_amount_multiplier))
-        font.setBold(True)
-        return font
-
-    @property
-    def _sign_amount_multiplier(self) -> float:
-        """Return multiplier (0-1) getting smaller the more signs are there."""
-        to_display = self.label.display_value
-
-        if not isinstance(to_display, LabelText):
-            raise TypeError("Label supposed to be text.")
-
-        signs_amount = len(to_display.value)
-        if signs_amount <= 4:
-            return 1
-        return 4/(signs_amount)
 
     @staticmethod
     def _color_to_str(color: QColor) -> str: return f'''

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from abc import ABC, abstractmethod
@@ -47,7 +47,7 @@ class ConfigBasedWidget(ABC, Generic[T]):
         ...
 
     def reset(self) -> None:
-        """Replace the value of the widget with the default one."""
+        """Replace the value of the widget with the value in config."""
         self.set(self.config_field.read())
 
     def save(self) -> None:

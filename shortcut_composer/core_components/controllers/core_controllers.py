@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import NoReturn
@@ -22,6 +22,7 @@ class ToolController(Controller[Tool]):
     """
 
     TYPE = Tool
+    REQUIRES_TEXT_SETTINGS = False
     DEFAULT_VALUE: Tool = Tool.FREEHAND_BRUSH
 
     @staticmethod
@@ -52,6 +53,8 @@ class ActionController(Controller[Action]):
     """
 
     TYPE = Action
+    REQUIRES_TEXT_SETTINGS = True
+    DEFAULT_VALUE = Action.UNDO
 
     @staticmethod
     def get_value() -> NoReturn:
@@ -64,12 +67,12 @@ class ActionController(Controller[Action]):
         value.activate()
 
     def get_label(self, value: Tool) -> QIcon | LabelText:
-        """Forward the tools' icon."""
+        """Forward the action icon."""
         icon = value.icon
         if not icon.isNull():
             return value.icon
         return LabelText(
-            value=value.name[:3],
+            value=value.name,
             color=LabelTextColorizer.action())
 
     def get_pretty_name(self, value: Action) -> str:
@@ -86,6 +89,7 @@ class TransformModeController(Controller[TransformMode]):
     """
 
     TYPE = TransformMode
+    REQUIRES_TEXT_SETTINGS = False
     DEFAULT_VALUE: TransformMode = TransformMode.FREE
 
     def __init__(self) -> None:
@@ -124,6 +128,7 @@ class ToggleController(Controller[bool]):
 
     toggle: Toggle
     TYPE = bool
+    REQUIRES_TEXT_SETTINGS = False
     DEFAULT_VALUE = False
 
     def get_value(self) -> bool:
@@ -152,6 +157,7 @@ class UndoController(NumericController):
     """
 
     TYPE = float
+    REQUIRES_TEXT_SETTINGS = False
     DEFAULT_VALUE = 0
     MIN_VALUE = 0
     MAX_VALUE = 10_000

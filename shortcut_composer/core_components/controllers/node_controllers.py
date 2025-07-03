@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from api_krita import Krita
@@ -32,6 +32,7 @@ class LayerOpacityController(NodeBasedController, NumericController):
     """
 
     TYPE = int
+    REQUIRES_TEXT_SETTINGS = False
     DEFAULT_VALUE = 100
     MIN_VALUE = 0
     MAX_VALUE = 100
@@ -70,6 +71,7 @@ class LayerBlendingModeController(NodeBasedController,
     """
 
     TYPE = BlendingMode
+    REQUIRES_TEXT_SETTINGS = True
     DEFAULT_VALUE = BlendingMode.NORMAL
 
     def get_value(self) -> BlendingMode:
@@ -102,6 +104,7 @@ class LayerVisibilityController(NodeBasedController, Controller[bool]):
     """
 
     TYPE = bool
+    REQUIRES_TEXT_SETTINGS = False
     DEFAULT_VALUE = True
 
     def get_value(self) -> bool:
@@ -120,6 +123,7 @@ class CreateLayerWithBlendingController(NodeBasedController,
     """Creates Paint Layer with set Blending Mode."""
 
     TYPE = BlendingMode
+    REQUIRES_TEXT_SETTINGS = True
     DEFAULT_VALUE = BlendingMode.NORMAL
 
     def get_value(self) -> BlendingMode:
@@ -136,9 +140,9 @@ class CreateLayerWithBlendingController(NodeBasedController,
         parent.add_child_node(layer, self.active_node)
 
     def get_label(self, value: BlendingMode) -> LabelText:
-        """Return Label of 3 first letters of mode name in correct color."""
+        """Return Label of full name with '+' sign prefix."""
         return LabelText(
-            value="+" + value.name[:3],
+            value="+" + value.name,
             color=LabelTextColorizer.blending_mode(value))
 
     def get_pretty_name(self, value: BlendingMode) -> str:

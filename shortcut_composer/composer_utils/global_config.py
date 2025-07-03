@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from PyQt5.QtGui import QColor
@@ -46,6 +46,9 @@ class GlobalConfig(FieldGroup):
         self.PIE_ANIMATION_TIME = self.field(
             name="Pie animation time",
             default=0.2)
+        self.TEXT_LABEL_GLOBAL_SCALE = self.field(
+            name="Text label global scale",
+            default=1.0)
 
         self.OVERRIDE_BACKGROUND_THEME_COLOR = self.field(
             name="Override background theme color",

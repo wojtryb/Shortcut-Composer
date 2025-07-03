@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import TypeVar, Generic
@@ -50,7 +50,7 @@ class ListField(FieldBase, Generic[T]):
         """
         raw = self.location.read(self.config_group, self.name)
         if raw is None:
-            return self.default
+            return self.default.copy()
 
         if raw == "":
             return []

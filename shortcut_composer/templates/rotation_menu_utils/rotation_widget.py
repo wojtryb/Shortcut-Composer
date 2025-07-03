@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import TypeVar, Generic
@@ -16,7 +16,7 @@ T = TypeVar('T')
 
 
 class RotationWidget(AnimatedWidget, BaseWidget, Generic[T]):
-    """PyQt5 widget for selecting an angle."""
+    """PyQt widget for selecting an angle."""
 
     def __init__(
         self,
@@ -24,24 +24,28 @@ class RotationWidget(AnimatedWidget, BaseWidget, Generic[T]):
         style: RotationStyle,
         parent=None
     ) -> None:
+        AnimatedWidget.__init__(
+            self,
+            animation_time_s=Config.PIE_ANIMATION_TIME.read(),
+            fps_limit=Config.FPS_LIMIT.read(),
+            parent=parent)
+
         self._config = config
         self._style = style
 
         self.state = WidgetState()
-
-        AnimatedWidget.__init__(self, parent, Config.PIE_ANIMATION_TIME.read())
 
         self._config.register_callback(self._resize)
         self._resize()
 
         self.setAcceptDrops(True)
         self.setWindowFlags((
-            self.windowFlags() |  # type: ignore
-            Qt.Tool |
-            Qt.FramelessWindowHint |
-            Qt.WindowStaysOnTopHint |
-            Qt.NoDropShadowWindowHint))
-        self.setAttribute(Qt.WA_TranslucentBackground)
+            self.windowFlags() |
+            Qt.WindowType.Tool |
+            Qt.WindowType.FramelessWindowHint |
+            Qt.WindowType.WindowStaysOnTopHint |
+            Qt.WindowType.NoDropShadowWindowHint))
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setStyleSheet("background: transparent;")
 
         self._rotation_painter = RotationPainter(style=self._style)

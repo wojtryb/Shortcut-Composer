@@ -1,8 +1,8 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from enum import Enum
-from typing import Final, TypeVar, Generic, Protocol, Type
+from typing import Final, TypeVar, Generic, Protocol
 
 from PyQt5.QtWidgets import (
     QWidget,
@@ -44,11 +44,13 @@ class SpinBox(ConfigBasedWidget[F]):
         pretty_name: str | None = None,
         tooltip: str | None = None,
         step: F = 1,
+        min_value: F = 0,
         max_value: F = 100,
     ) -> None:
         super().__init__(config_field, parent, pretty_name, tooltip)
         self._step = step
         self._max_value = max_value
+        self._min_value = min_value
         self._spin_box = self._init_spin_box()
         self.widget: Final[SpinBoxInterface[F]] = self._spin_box
         self.reset()
@@ -68,8 +70,8 @@ class SpinBox(ConfigBasedWidget[F]):
 
         spin_box.setMinimumWidth(90)
         spin_box.setObjectName(self.config_field.name)
-        spin_box.setMinimum(0)
         spin_box.setSingleStep(self._step)
+        spin_box.setMinimum(self._min_value)
         spin_box.setMaximum(self._max_value)
         if self.tooltip is not None:
             spin_box.setToolTip(self.tooltip)
@@ -126,7 +128,7 @@ class EnumComboBox(ConfigBasedWidget[E]):
     def __init__(
         self,
         config_field: Field[E],
-        enum_type: Type[E],
+        enum_type: type[E],
         parent: QWidget | None = None,
         pretty_name: str | None = None,
         tooltip: str | None = None,

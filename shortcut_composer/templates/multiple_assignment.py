@@ -1,13 +1,13 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Iterator, TypeVar, Generic
-from itertools import cycle
+from typing import TypeVar, Generic
 
 from core_components import Controller, Instruction
-from config_system import Field
+from data_components import Group
+from composer_utils.group_manager_impl import dispatch_group_manager
 from .raw_instructions import RawInstructions
-from .multiple_assignment_utils import SettingsHandler
+from .multiple_assignment_utils import MaSettingsHandler, MaConfig
 
 T = TypeVar('T')
 
@@ -22,6 +22,9 @@ class MultipleAssignment(RawInstructions, Generic[T]):
     - when the list is exhausted, start from beginning
     - end of long press ensures `default value`
 
+    Holding a key for enough time shows a button which can be used to
+    access the action settings.
+
     ### Arguments:
 
     - `name`          -- unique name of action. Must match the
@@ -33,15 +36,13 @@ class MultipleAssignment(RawInstructions, Generic[T]):
                          given, taken from a controller.
     - `instructions`  -- (optional) list of additional instructions to
                          perform on key press and release.
-    - `short_vs_long_press_time` -- (optional) time [s] that specifies
-                                    if key press is short or long.
 
     *some controllers don't have a default value. Then providing it
      becomes required.
 
-    ### Action implementation example:
+    ### Action usage example:
 
-    Action is meant to cycle brush sizes: 5px, 10px, 20px, 50px. by
+    Example action is meant to is meant to cycle brush sizes by
     constantly short pressing a key. Using `BrushSizeController` which
     is one of the available `controllers` tells krita, that requested
     values relate to brush size.
@@ -55,7 +56,6 @@ class MultipleAssignment(RawInstructions, Generic[T]):
         controller=controllers.BrushSizeController(),
         default_value=100,
         values=[5, 10, 20, 50],
-        short_vs_long_press_time=0.3
     )
     ```
     """
@@ -64,65 +64,67 @@ class MultipleAssignment(RawInstructions, Generic[T]):
         self, *,
         name: str,
         controller: Controller[T],
-        values: list[T],
+        values: list[T] | Group,
         default_value: T | None = None,
         instructions: list[Instruction] | None = None,
-        short_vs_long_press_time: float | None = None
     ) -> None:
-        super().__init__(name, instructions, short_vs_long_press_time)
+        super().__init__(name, instructions)
 
         self._controller = controller
+        self._group_manager = dispatch_group_manager(controller.TYPE)
 
-        self._config = Field(
-            config_group=f"ShortcutComposer: {self.name}",
-            name="Values",
-            default=values)
-        self._config.register_callback(self._reset)
+        self._config = MaConfig(
+            name=f"ShortcutComposer: {name}",
+            value_type=self._controller.TYPE,
+            values=values,
+            default_value=self._read_default_value(default_value))
 
-        self._settings = SettingsHandler(
-            self.name,
-            self._config,
-            self._instructions)
-
-        self._default_value = self._read_default_value(default_value)
-        self._values_to_cycle = self._config.read()
-        self._iterator = self._reset_iterator()
-        self._last_value: T | None = None
+        self._instructions.append(MaSettingsHandler(
+            name,
+            controller,
+            self._config))
 
     def on_key_press(self) -> None:
-        """Switch to the next value when values are being cycled."""
+        """Switch to the next value or start over when value is not in list."""
         super().on_key_press()
 
-        # NOTE: When there are no values to cycle, iterator is invalid
-        if not self._values_to_cycle:
+        values = self._reset_values_to_cycle()
+        if not values:
             return
 
         self._controller.refresh()
-        if self._controller.get_value() != self._last_value:
-            self._iterator = self._reset_iterator()
+        current = self._controller.get_value()
 
-        self._set_value(next(self._iterator))
+        if current in values:
+            id = values.index(current) + 1
+            self._controller.set_value(values[id])
+        else:
+            self._controller.set_value(values[0])
 
     def on_long_key_release(self) -> None:
         """Set default value."""
         super().on_long_key_release()
-        self._set_value(self._default_value)
-        self._iterator = self._reset_iterator()
+        self._controller.refresh()
+        self._controller.set_value(self._config.DEFAULT_VALUE.read())
 
-    def _set_value(self, value: T) -> None:
-        """Set the value using the controller, and remember it."""
-        self._last_value = value
-        self._controller.set_value(value)
+    def _reset_values_to_cycle(self) -> list[T]:
+        """Reload values from config and validate them."""
+        if not self._config.GROUP_MODE.read():
+            values = self._config.VALUES.read()
+        else:
+            group = self._config.GROUP_NAME.read()
+            values = self._group_manager.values_from_group(group)
 
-    def _reset(self) -> None:
-        """Reload values from config and start cycling from beginning."""
-        self._values_to_cycle = self._config.read()
-        self._iterator = self._reset_iterator()
+        if len(set(values)) != len(values):
+            raise ValueError("Values to cycle does not support duplicates.")
 
-    def _reset_iterator(self) -> Iterator[T]:
-        """Return a new cyclic iterator for values to cycle."""
-        return cycle(self._values_to_cycle)
+        # Duplicate first value at the end, to allow cycling
+        if values:
+            values.append(values[0])
 
+        return values
+
+    # TODO: this could be handled by config, if no defualt value is allowed
     def _read_default_value(self, value: T | None) -> T:
         """Read value from controller if it was not given."""
         if (default := self._controller.DEFAULT_VALUE) is None:

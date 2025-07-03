@@ -1,15 +1,11 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from .helpers import EnumGroup, Group
 
 
 class BlendingMode(EnumGroup):
-    """
-    Contains all known blending modes in krita.
-
-    Example usage: `BlendingMode.NORMAL`
-    """
+    """Contains all known blending modes in krita."""
 
     _arithmetic = Group("Arithmetic")
     ADD = "add"

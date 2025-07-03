@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Callable, Literal
@@ -31,7 +31,7 @@ class ReleaseKeyEventFilter(QMdiArea):
         Always return False to let the event reach its desired
         destination.
         """
-        if event.type() == QEvent.KeyRelease:
+        if event.type() == QEvent.Type.KeyRelease:
             for callback in self._release_callbacks:
                 callback(event)
 

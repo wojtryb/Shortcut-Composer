@@ -1,13 +1,21 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from dataclasses import dataclass
 from typing import Protocol
 from functools import cached_property
 
-from krita import Krita as Api
+from PyQt5.QtGui import QColor
 
+from krita import Krita as Api, ManagedColor
+from .canvas import KritaCanvas
 from ..enums import BlendingMode
+
+
+class _ManagedColor(Protocol):
+
+    def colorForCanvas(self, canvas: KritaCanvas) -> QColor: ...
+    def fromQColor(self, color: QColor, canvas: KritaCanvas) -> None: ...
 
 
 class _KritaPreset(Protocol):
@@ -19,18 +27,21 @@ class _KritaPreset(Protocol):
 class KritaView(Protocol):
     """Krita `View` object API."""
 
+    def canvas(self) -> KritaCanvas: ...
     def currentBrushPreset(self) -> _KritaPreset: ...
     def currentBlendingMode(self) -> str: ...
     def paintingOpacity(self) -> float: ...
     def paintingFlow(self) -> float: ...
     def brushSize(self) -> float: ...
     def brushRotation(self) -> float: ...
+    def foregroundColor(self) -> _ManagedColor: ...
     def setCurrentBrushPreset(self, preset: _KritaPreset) -> None: ...
     def setCurrentBlendingMode(self, blending_mode: str) -> None: ...
     def setPaintingOpacity(self, opacity: float) -> None: ...
     def setPaintingFlow(self, flow: float) -> None: ...
     def setBrushSize(self, size: float) -> None: ...
     def setBrushRotation(self, rotation: float) -> None: ...
+    def setForeGroundColor(self, color: _ManagedColor) -> None: ...
 
 
 @dataclass
@@ -104,3 +115,14 @@ class View:
     def brush_rotation(self, rotation: float) -> None:
         """Set brush rotation with float representing angle in degrees."""
         self.view.setBrushRotation(rotation % 360)
+
+    @property
+    def foreground_color(self) -> QColor:
+        """Get foreground color as QColor."""
+        return self.view.foregroundColor().colorForCanvas(self.view.canvas())
+
+    @foreground_color.setter
+    def foreground_color(self, color: QColor) -> None:
+        """Set foreground color with QColor."""
+        canvas = self.view.canvas()
+        self.view.setForeGroundColor(ManagedColor.fromQColor(color, canvas))

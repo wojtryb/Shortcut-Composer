@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import math
@@ -47,6 +47,8 @@ class CirclePoints:
 
     def iterate_over_circle(self, amount: int) -> Iterable[Tuple[int, QPoint]]:
         """Iterate over points, when the circle is divided into even parts."""
+        if not amount:
+            return
         for angle in self._float_range(0, 360, 360/amount):
             yield round(angle), self.point_from_angle(angle)
 

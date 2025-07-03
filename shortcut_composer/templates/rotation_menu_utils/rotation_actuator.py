@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from PyQt5.QtGui import QCursor
@@ -72,7 +72,6 @@ class RotationActuator:
             case _:
                 raise RuntimeError(
                     f"{self._deadzone_strategy} not recognized.")
-
 
     def _modifier(self, value: int) -> int:
         """Transforms angle to value considering sign and offset."""

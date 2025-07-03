@@ -1,9 +1,10 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtGui import QPixmap, QImage, QColor
 from api_krita import Krita
 from api_krita.enums import BlendingMode
+from api_krita.pyqt import PixmapTransform
 from composer_utils.label import LabelText, LabelTextColorizer
 from ..controller_base import Controller, NumericController
 
@@ -27,6 +28,8 @@ class PresetController(ViewBasedController, Controller[str]):
     """
 
     TYPE = str
+    REQUIRES_TEXT_SETTINGS = False
+    DEFAULT_VALUE = "e) Marker Details"
 
     def get_value(self) -> str:
         """Get currently active preset."""
@@ -43,7 +46,8 @@ class PresetController(ViewBasedController, Controller[str]):
         except KeyError:
             return None
         else:
-            return QPixmap.fromImage(image)
+            pixmap = QPixmap.fromImage(image)
+            return PixmapTransform.make_pixmap_round(pixmap)
 
 
 class BrushSizeController(ViewBasedController, NumericController):
@@ -55,6 +59,7 @@ class BrushSizeController(ViewBasedController, NumericController):
     """
 
     TYPE = int
+    REQUIRES_TEXT_SETTINGS = False
     DEFAULT_VALUE: int = 100
     MIN_VALUE = 1
     MAX_VALUE = 10_000
@@ -89,6 +94,7 @@ class BrushRotationController(ViewBasedController, NumericController):
     """
 
     TYPE = int
+    REQUIRES_TEXT_SETTINGS = False
     DEFAULT_VALUE = 0
     MIN_VALUE = 0
     MAX_VALUE = 360
@@ -122,6 +128,7 @@ class BlendingModeController(ViewBasedController, Controller[BlendingMode]):
     """
 
     TYPE = BlendingMode
+    REQUIRES_TEXT_SETTINGS = True
     DEFAULT_VALUE = BlendingMode.NORMAL
 
     def get_value(self) -> BlendingMode:
@@ -135,7 +142,7 @@ class BlendingModeController(ViewBasedController, Controller[BlendingMode]):
     def get_label(self, value: BlendingMode) -> LabelText:
         """Return Label of 3 first letters of mode name in correct color."""
         return LabelText(
-            value=value.name[:3],
+            value=value.name,
             color=LabelTextColorizer.blending_mode(value))
 
     def get_pretty_name(self, value: BlendingMode) -> str:
@@ -152,6 +159,7 @@ class OpacityController(ViewBasedController, NumericController):
     """
 
     TYPE = int
+    REQUIRES_TEXT_SETTINGS = False
     DEFAULT_VALUE: int = 100
     MIN_VALUE = 0
     MAX_VALUE = 100
@@ -187,6 +195,7 @@ class FlowController(ViewBasedController, NumericController):
     """
 
     TYPE = int
+    REQUIRES_TEXT_SETTINGS = False
     DEFAULT_VALUE: int = 100
     MIN_VALUE = 0
     MAX_VALUE = 100
@@ -211,3 +220,32 @@ class FlowController(ViewBasedController, NumericController):
     def get_pretty_name(self, value: float) -> str:
         """Format the flow like: `100%`"""
         return f"{value}%"
+
+
+class ForegroundColorController(ViewBasedController, Controller[QColor]):
+    """
+    Gives access ForeGround painting color.
+
+    - Operates on `QColor` class.
+    - Defaults to black.
+    """
+
+    TYPE = QColor
+    REQUIRES_TEXT_SETTINGS = False
+    DEFAULT_VALUE: QColor = QColor(0, 0, 0, 255)
+
+    def get_value(self) -> QColor:
+        """Get current foreground color."""
+        return self.view.foreground_color
+
+    def set_value(self, value: QColor) -> None:
+        """Set passed foreground color."""
+        self.view.foreground_color = value
+
+    def get_label(self, value: QColor) -> QColor:
+        """Return the color itself, as QColor is a supported label."""
+        return value
+
+    def get_pretty_name(self, value: QColor) -> str:
+        """Format the color like 'RGB(0, 0, 0)'."""
+        return f"RGB({value.red()}, {value.green()}, {value.blue()})"

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import NamedTuple
@@ -6,7 +6,7 @@ from typing import NamedTuple
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QGridLayout
 
-from composer_utils.label import LabelWidget
+from ...label_widget import LabelWidget
 
 
 class GridPosition(NamedTuple):
@@ -39,7 +39,7 @@ class OffsetGridLayout(QGridLayout):
         self._items_in_group = 2*max_columns - 1
         self._owner = owner
 
-        self.setAlignment(Qt.AlignTop)  # type: ignore
+        self.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.setVerticalSpacing(5)
         self.setHorizontalSpacing(5)
 

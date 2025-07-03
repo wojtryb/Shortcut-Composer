@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 """
@@ -15,19 +15,20 @@ from PyQt5.QtGui import QColor
 
 from api_krita.enums import Action, Tool, Toggle, BlendingMode, TransformMode
 from core_components import instructions, controllers
+from input_adapter import ComplexActionInterface
 from data_components import (
     RotationDeadzoneStrategy,
     PieDeadzoneStrategy,
     CurrentLayerStack,
-    PickStrategy,
+    PickLayerStrategy,
     Slider,
     Range,
-    Tag)
+    Group)
 
 INFINITY = float("inf")
 
 
-def create_actions() -> list[templates.RawInstructions]: return [
+def create_actions() -> list[ComplexActionInterface]: return [
     # Switch between FREEHAND BRUSH and the MOVE tool
     templates.TemporaryKey(
         name="Temporary move tool",
@@ -76,7 +77,7 @@ def create_actions() -> list[templates.RawInstructions]: return [
         instructions=[instructions.ToggleVisibilityAbove()],
     ),
 
-    # Cycle between painting opacity values from values_to_cycle list
+    # Cycle between painting opacity values from values list
     # After a long key press, go back to opacity of 100%
     templates.MultipleAssignment(
         name="Cycle painting opacity",
@@ -86,7 +87,7 @@ def create_actions() -> list[templates.RawInstructions]: return [
         values=[70, 50, 30, 100],
     ),
 
-    # Cycle between selection tools from values_to_cycle list.
+    # Cycle between selection tools from values list.
     # After a long key press, go back to the FREEHAND BRUSH tool
     templates.MultipleAssignment(
         name="Cycle selection tools",
@@ -97,6 +98,15 @@ def create_actions() -> list[templates.RawInstructions]: return [
             Tool.RECTANGULAR_SELECTION,
             Tool.CONTIGUOUS_SELECTION,
         ],
+    ),
+
+    # Cycle between brush presets values list.
+    # After a long key press, go back to the "e) Marker Details" preset
+    templates.MultipleAssignment(
+        name="Cycle brush presets",
+        controller=controllers.PresetController(),
+        default_value="e) Marker Details",
+        values=Group("Erasers"),
     ),
 
     # Control undo and redo actions by sliding the cursor horizontally
@@ -119,7 +129,7 @@ def create_actions() -> list[templates.RawInstructions]: return [
         instructions=[instructions.TemporaryOn(Toggle.ISOLATE_LAYER)],
         vertical_slider=Slider(
             controller=controllers.ActiveLayerController(),
-            values=CurrentLayerStack(PickStrategy.ALL),
+            values=CurrentLayerStack(PickLayerStrategy.ALL),
         ),
     ),
 
@@ -136,25 +146,20 @@ def create_actions() -> list[templates.RawInstructions]: return [
         ),
         vertical_slider=Slider(
             controller=controllers.ActiveLayerController(),
-            values=CurrentLayerStack(PickStrategy.PINNED),
+            values=CurrentLayerStack(PickLayerStrategy.PINNED),
         ),
     ),
 
     # Scroll brush sizes by sliding the cursor horizontally or
     # brush opacity layers by sliding it vertically
     #
-    # Opacity is contiguous from 10% to 100%, sizes come from a list
+    # Opacity is contiguous from 10% to 100%
     # Switch 1% of opacity every 5 px (instead of default 50 px)
     templates.CursorTracker(
         name="Scroll brush size or opacity",
         horizontal_slider=Slider(
             controller=controllers.BrushSizeController(),
-            values=[
-                1, 2, 3, 4, 5, 6, 7, 8, 9,
-                10, 12, 14, 16, 20, 25, 30, 35, 40, 50, 60, 70, 80,
-                100, 120, 160, 200, 250, 300, 350, 400, 450,
-                500, 600, 700, 800, 900, 1000
-            ],
+            values=Range(1, INFINITY, exponent=2),
             sensitivity_scale=2,
         ),
         vertical_slider=Slider(
@@ -175,8 +180,8 @@ def create_actions() -> list[templates.RawInstructions]: return [
         ),
         vertical_slider=Slider(
             controller=controllers.CanvasZoomController(),
-            values=Range(0, INFINITY),
-            sensitivity_scale=10,
+            values=Range(0, INFINITY, exponent=3),
+            sensitivity_scale=0.7,
         ),
     ),
 
@@ -223,6 +228,9 @@ def create_actions() -> list[templates.RawInstructions]: return [
         ],
         background_color=QColor(65, 95, 65, 190),
         active_color=QColor(70, 200, 70),
+        max_lines_amount=2,
+        max_signs_amount=8,
+        abbreviate_with_dot=True,
     ),
 
     # Use pie menu to pick one of the actions
@@ -238,6 +246,9 @@ def create_actions() -> list[templates.RawInstructions]: return [
         ],
         background_color=QColor(70, 70, 105, 190),
         active_color=QColor(110, 160, 235),
+        max_lines_amount=2,
+        max_signs_amount=8,
+        abbreviate_with_dot=True,
     ),
 
     # Use pie menu to pick one of the brush blending modes.
@@ -257,6 +268,9 @@ def create_actions() -> list[templates.RawInstructions]: return [
             BlendingMode.DARKEN,
             BlendingMode.LIGHTEN,
         ],
+        max_lines_amount=1,
+        max_signs_amount=3,
+        abbreviate_with_dot=False,
     ),
 
     # Use pie menu to create painting layer with selected blending mode.
@@ -274,6 +288,9 @@ def create_actions() -> list[templates.RawInstructions]: return [
             BlendingMode.DARKEN,
             BlendingMode.LIGHTEN,
         ],
+        max_lines_amount=1,
+        max_signs_amount=4,
+        abbreviate_with_dot=False,
     ),
 
     # Pick one of the transform tool modes.
@@ -298,7 +315,7 @@ def create_actions() -> list[templates.RawInstructions]: return [
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
         deadzone_strategy=PieDeadzoneStrategy.PICK_PREVIOUS,
-        values=Tag("★ My Favorites"),
+        values=Group("★ My Favorites"),
         background_color=QColor(95, 65, 65, 190),
         active_color=QColor(200, 70, 70),
     ),
@@ -310,7 +327,7 @@ def create_actions() -> list[templates.RawInstructions]: return [
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
         deadzone_strategy=PieDeadzoneStrategy.PICK_PREVIOUS,
-        values=Tag("RGBA"),
+        values=Group("RGBA"),
         background_color=QColor(65, 95, 65, 190),
         active_color=QColor(70, 200, 70),
     ),
@@ -322,7 +339,7 @@ def create_actions() -> list[templates.RawInstructions]: return [
         controller=controllers.PresetController(),
         instructions=[instructions.SetBrushOnNonPaintable()],
         deadzone_strategy=PieDeadzoneStrategy.PICK_PREVIOUS,
-        values=Tag("Erasers"),
+        values=Group("Erasers"),
         background_color=QColor(70, 70, 105, 190),
         active_color=QColor(110, 160, 235),
     ),
@@ -338,6 +355,17 @@ def create_actions() -> list[templates.RawInstructions]: return [
         values=[],
         save_local=True,
         active_color=QColor(234, 172, 0),
+    ),
+
+    # Use pie menu to pick a previously added color.
+    # By default, colors are stored in .kra document.
+    templates.PieMenu(
+        name="Pick foreground color",
+        controller=controllers.ForegroundColorController(),
+        instructions=[],
+        deadzone_strategy=PieDeadzoneStrategy.DO_NOTHING,
+        values=[],
+        save_local=True,
     ),
 
     # Use rotation widget to rotate the canvas.

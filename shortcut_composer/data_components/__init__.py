@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 """
@@ -9,18 +9,20 @@ They can perform simple operations in krita, but shouldn't hold any
 complex logic.
 """
 
-from .deadzone_strategy import PieDeadzoneStrategy, RotationDeadzoneStrategy
+from .strategies import (
+    RotationDeadzoneStrategy,
+    PieDeadzoneStrategy,
+    PickLayerStrategy)
 from .current_layer_stack import CurrentLayerStack
-from .pick_strategy import PickStrategy
 from .slider import Slider
 from .range import Range
-from .tag import Tag
+from .group import Group
 
 __all__ = [
     "RotationDeadzoneStrategy",
     "PieDeadzoneStrategy",
+    "PickLayerStrategy",
     "CurrentLayerStack",
-    "PickStrategy",
     "Slider",
     "Range",
-    "Tag"]
+    "Group"]

@@ -1,7 +1,7 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Generic, TypeVar, Type
+from typing import Generic, TypeVar
 
 from PyQt5.QtGui import QPixmap, QIcon
 
@@ -13,7 +13,8 @@ T = TypeVar("T")
 class Controller(Generic[T]):
     """Component that allows to get and set a specific property of krita."""
 
-    TYPE: Type[T]
+    TYPE: type[T]
+    REQUIRES_TEXT_SETTINGS: bool = False
     DEFAULT_VALUE: T | None = None
 
     def refresh(self) -> None:
@@ -39,6 +40,7 @@ class Controller(Generic[T]):
 
 class NumericController(Controller[int]):
     TYPE = int
+    REQUIRES_TEXT_SETTINGS: bool = False
 
     DEFAULT_VALUE: int
     MIN_VALUE: int

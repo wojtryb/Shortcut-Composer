@@ -52,6 +52,11 @@
         <icon>selectionMask</icon>
         </Action>
 
+        <Action name="Cycle brush presets">
+        <activationFlags>1</activationFlags>
+        <icon>krita_tool_freehand</icon>
+        </Action>
+
     </Actions>
     <Actions category="Scripts">
         <text>Shortcut Composer: Mouse Trackers</text>
@@ -131,6 +136,11 @@
         </Action>
 
         <Action name="Pick local brush presets">
+        <activationFlags>1</activationFlags>
+        <icon>config-popup-palette</icon>
+        </Action>
+
+        <Action name="Pick foreground color">
         <activationFlags>1</activationFlags>
         <icon>config-popup-palette</icon>
         </Action>

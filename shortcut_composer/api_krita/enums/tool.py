@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from krita import Krita as Api
@@ -8,6 +8,7 @@ from .helpers import EnumGroup, Group
 
 
 class Tool(EnumGroup):
+    """Contains all known tools from krita toolbox."""
 
     _vectors = Group("Vectors")
     SHAPE_SELECT = "InteractionTool"

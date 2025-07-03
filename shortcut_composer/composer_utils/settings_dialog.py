@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from PyQt5.QtWidgets import QVBoxLayout, QDialog
@@ -18,9 +18,9 @@ class SettingsDialog(QDialog):
     def __init__(self) -> None:
         super().__init__()
         self.setWindowFlags(
-            self.windowFlags() | Qt.WindowStaysOnTopHint)  # type: ignore
+            self.windowFlags() |
+            Qt.WindowType.WindowStaysOnTopHint)
 
-        self.setMinimumSize(QSize(300, 200))
         self.setWindowTitle("Configure Shortcut Composer")
 
         self._general_tab = ConfigFormWidget([
@@ -30,6 +30,7 @@ class SettingsDialog(QDialog):
                 parent=self,
                 pretty_name="Short vs long press time",
                 step=0.05,
+                min_value=0,
                 max_value=4,
                 tooltip="Time after which the key press is considered long."),
             SpinBox(
@@ -37,7 +38,8 @@ class SettingsDialog(QDialog):
                 parent=self,
                 pretty_name="FPS limit",
                 step=5,
-                max_value=50,
+                min_value=5,
+                max_value=200,
                 tooltip="Maximal amount of widget repaints in one second."),
 
             "Cursor trackers",
@@ -46,14 +48,16 @@ class SettingsDialog(QDialog):
                 parent=self,
                 pretty_name="Tracker sensitivity scale",
                 step=0.05,
-                max_value=400,
+                min_value=0.05,
+                max_value=100,
                 tooltip="Higher values make the trackers more sensitive."),
             SpinBox(
                 config_field=Config.TRACKER_DEADZONE,
                 parent=self,
                 pretty_name="Tracker deadzone",
                 step=1,
-                max_value=20,
+                min_value=0,
+                max_value=100,
                 tooltip=""
                 "Amount of pixels that the cursor needs to be moved\n"
                 "for a tracker to snap to horizontal or vertical axis.\n\n"
@@ -65,6 +69,7 @@ class SettingsDialog(QDialog):
                 parent=self,
                 pretty_name="Pie global scale",
                 step=0.05,
+                min_value=0.25,
                 max_value=4,
                 tooltip=""
                 "Scale applied to every pie menu on top of local scale."),
@@ -73,6 +78,7 @@ class SettingsDialog(QDialog):
                 parent=self,
                 pretty_name="Pie icon global scale",
                 step=0.05,
+                min_value=0.25,
                 max_value=4,
                 tooltip=""
                 "Scale applied to every pie icons on top of local scale."),
@@ -81,8 +87,18 @@ class SettingsDialog(QDialog):
                 parent=self,
                 pretty_name="Pie deadzone global scale",
                 step=0.05,
+                min_value=0,
                 max_value=4,
                 tooltip="Scale of deadzone of all the pie menus."),
+            SpinBox(
+                config_field=Config.TEXT_LABEL_GLOBAL_SCALE,
+                parent=self,
+                pretty_name="Text label global scale",
+                step=0.05,
+                min_value=0.25,
+                max_value=4,
+                tooltip=""
+                "Scale applied to every text label on top of local scale."),
 
             "Pie menu style",
             bg_checkbox := Checkbox(
@@ -110,6 +126,7 @@ class SettingsDialog(QDialog):
                 parent=self,
                 pretty_name="Default pie opacity",
                 step=1,
+                min_value=0,
                 max_value=100,
                 tooltip="Default opacity of the pie background."),
             SpinBox(
@@ -117,6 +134,7 @@ class SettingsDialog(QDialog):
                 parent=self,
                 pretty_name="Pie animation time",
                 step=0.01,
+                min_value=0,
                 max_value=1,
                 tooltip="Time of the pie opening animation."),
 
@@ -136,11 +154,10 @@ class SettingsDialog(QDialog):
         full_layout = QVBoxLayout(self)
         full_layout.addWidget(self._general_tab)
         full_layout.addLayout(ButtonsLayout(
-            ok_callback=self.ok,
-            apply_callback=self.apply,
             reset_callback=self.reset,
             cancel_callback=self.hide,
-        ))
+            apply_callback=self.apply,
+            ok_callback=self.ok))
         self.setLayout(full_layout)
 
     def show(self) -> None:
@@ -148,6 +165,12 @@ class SettingsDialog(QDialog):
         self.refresh()
         self.move(QCursor.pos())
         return super().show()
+
+    def reset(self) -> None:
+        """Reset all config values to defaults in krita and elements."""
+        Config.reset_default()
+        self.refresh()
+        Krita.trigger_action("Reload Shortcut Composer")
 
     def apply(self) -> None:
         """Ask all dialog zones to apply themselves."""
@@ -158,12 +181,6 @@ class SettingsDialog(QDialog):
         """Hide the dialog after applying the changes"""
         self.apply()
         self.hide()
-
-    def reset(self) -> None:
-        """Reset all config values to defaults in krita and elements."""
-        Config.reset_default()
-        self.refresh()
-        Krita.trigger_action("Reload Shortcut Composer")
 
     def refresh(self) -> None:
         self._general_tab.refresh()

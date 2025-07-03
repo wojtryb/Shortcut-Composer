@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from PyQt5.QtWidgets import QDialog
@@ -22,9 +22,9 @@ class RotationSettings(QDialog):
     def __init__(self, config: RotationConfig) -> None:
         super().__init__(None)
         self.setWindowFlags(
-            self.windowFlags() | Qt.WindowStaysOnTopHint)  # type: ignore
+            self.windowFlags() |
+            Qt.WindowType.WindowStaysOnTopHint)
 
-        self.setMinimumSize(QSize(300, 200))
         self.setWindowTitle(f"Settings: {config.name}")
 
         self._config = config
@@ -60,6 +60,7 @@ class RotationSettings(QDialog):
                 parent=self,
                 pretty_name="Divisions",
                 step=1,
+                min_value=1,
                 max_value=360,
                 tooltip="Amount of steps in intervallic zone."),
 
@@ -69,6 +70,7 @@ class RotationSettings(QDialog):
                 parent=self,
                 pretty_name="Deadzone scale",
                 step=0.05,
+                min_value=0,
                 max_value=4,
                 tooltip="Scale of the deadzone radius. 0 turns it off."),
             SpinBox(
@@ -76,6 +78,7 @@ class RotationSettings(QDialog):
                 parent=self,
                 pretty_name="Inner zone scale",
                 step=0.05,
+                min_value=0,
                 max_value=4,
                 tooltip="Scale of the inner zone radius. 0 turns it off."),
 
@@ -90,6 +93,7 @@ class RotationSettings(QDialog):
                 parent=self,
                 pretty_name="Outline opacity",
                 step=1,
+                min_value=0,
                 max_value=100,
                 tooltip="Opacity [%] of the widget outline."),
 
@@ -104,6 +108,7 @@ class RotationSettings(QDialog):
                 parent=self,
                 pretty_name="Offset",
                 step=1,
+                min_value=0,
                 max_value=360,
                 tooltip=""
                 "Position of 0°, counting clockwise from the top.\n\n"
@@ -116,17 +121,21 @@ class RotationSettings(QDialog):
         full_layout = QVBoxLayout(self)
         full_layout.addWidget(self._general_tab)
         full_layout.addLayout(ButtonsLayout(
-            ok_callback=self.ok,
-            apply_callback=self.apply,
             reset_callback=self.reset,
             cancel_callback=self.hide,
-        ))
+            apply_callback=self.apply,
+            ok_callback=self.ok))
         self.setLayout(full_layout)
 
     def show(self) -> None:
         """Show the dialog after refreshing all its elements."""
         self.refresh()
         return super().show()
+
+    def reset(self) -> None:
+        """Reset all config values to defaults in krita and elements."""
+        self._config.reset_default()
+        self.refresh()
 
     def apply(self) -> None:
         """Ask all dialog zones to apply themselves."""
@@ -136,11 +145,6 @@ class RotationSettings(QDialog):
         """Hide the dialog after applying the changes"""
         self.apply()
         self.hide()
-
-    def reset(self) -> None:
-        """Reset all config values to defaults in krita and elements."""
-        self._config.reset_default()
-        self.refresh()
 
     def refresh(self) -> None:
         """Update boxes with configured values."""

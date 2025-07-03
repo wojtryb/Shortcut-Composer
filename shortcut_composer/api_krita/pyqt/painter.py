@@ -1,10 +1,10 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import math
 
 from PyQt5.QtGui import QPainter, QPainterPath, QColor, QPixmap, QPaintEvent
-from PyQt5.QtCore import QPoint, QRectF
+from PyQt5.QtCore import QPoint, QRectF, QPointF
 from PyQt5.QtWidgets import QWidget
 
 
@@ -23,7 +23,7 @@ class Painter:
     def __init__(self, widget: QWidget, event: QPaintEvent) -> None:
         self._painter = QPainter(widget)
         self._painter.eraseRect(event.rect())
-        self._painter.setRenderHints(QPainter.Antialiasing)
+        self._painter.setRenderHints(QPainter.RenderHint.Antialiasing)
 
     def paint_wheel(
         self,
@@ -38,10 +38,11 @@ class Painter:
         Not providing thickness results in fully filled circle.
         """
         path = QPainterPath()
-        path.addEllipse(center, outer_radius, outer_radius)
+        center_f = QPointF(center.x(), center.y())
+        path.addEllipse(center_f, outer_radius, outer_radius)
         if thickness:
             inner_radius = outer_radius - thickness
-            path.addEllipse(center, inner_radius, inner_radius)
+            path.addEllipse(center_f, inner_radius, inner_radius)
         self._painter.fillPath(path, color)
 
     def paint_pie(
@@ -56,7 +57,7 @@ class Painter:
         """Paint part of wheel a, that spans left and right by span/2."""
         angle = -angle + 90
         path = QPainterPath()
-        path.moveTo(center)
+        path.moveTo(center.x(), center.y())
         outer_rectangle = self._square(center, outer_radius*2)
         path.arcTo(outer_rectangle, angle-math.floor(span/2), span)
 

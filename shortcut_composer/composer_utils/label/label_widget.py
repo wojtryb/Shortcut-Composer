@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Protocol, TypeVar, Generic
@@ -39,8 +39,8 @@ class LabelWidget(BaseWidget, Generic[T]):
         self.label = label
         self._label_widget_style = label_widget_style
 
-        self.resize(self.icon_radius*2, self.icon_radius*2)
-        self.setCursor(Qt.ArrowCursor)
+        self.setFixedSize(self.icon_radius*2, self.icon_radius*2)
+        self.setCursor(Qt.CursorShape.ArrowCursor)
 
         self._draggable = True
         self._enabled = True
@@ -111,8 +111,8 @@ class LabelWidget(BaseWidget, Generic[T]):
             return
         self._draggable = value
         if value:
-            return self.setCursor(Qt.ArrowCursor)
-        self.setCursor(Qt.CrossCursor)
+            return self.setCursor(Qt.CursorShape.ArrowCursor)
+        self.setCursor(Qt.CursorShape.CrossCursor)
 
     @property
     def enabled(self) -> bool:
@@ -144,7 +144,7 @@ class LabelWidget(BaseWidget, Generic[T]):
 
     def mousePressEvent(self, e: QMouseEvent) -> None:
         """Initiate a drag loop for this Widget, so Widgets can be swapped."""
-        if e.buttons() != Qt.LeftButton or not self._draggable:
+        if e.buttons() != Qt.MouseButton.LeftButton or not self._draggable:
             return
 
         drag = QDrag(self)
@@ -154,11 +154,11 @@ class LabelWidget(BaseWidget, Generic[T]):
         self.render(pixmap)
         drag.setPixmap(PixmapTransform.make_pixmap_round(pixmap))
 
-        drag.exec_(Qt.MoveAction)
+        drag.exec(Qt.DropAction.MoveAction)
 
     def enterEvent(self, e: QEvent) -> None:
-        super().enterEvent(e)
         """Notice that mouse moved over the widget."""
+        super().enterEvent(e)
         self._hovered = True
         for instruction in self._instructions:
             instruction.on_enter(self.label)

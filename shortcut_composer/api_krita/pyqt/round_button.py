@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Callable
@@ -23,7 +23,7 @@ class RoundButton(QPushButton, BaseWidget):
         parent: QWidget | None = None,
     ) -> None:
         QPushButton.__init__(self, icon, "", parent)
-        self.setCursor(Qt.ArrowCursor)
+        self.setCursor(Qt.CursorShape.ArrowCursor)
 
         self._radius_callback = radius_callback
         self._icon_scale = icon_scale
@@ -32,11 +32,11 @@ class RoundButton(QPushButton, BaseWidget):
 
         if parent is None:
             self.setWindowFlags((
-                self.windowFlags() |  # type: ignore
-                Qt.Tool |
-                Qt.FramelessWindowHint |
-                Qt.NoDropShadowWindowHint))
-            self.setAttribute(Qt.WA_TranslucentBackground)
+                self.windowFlags() |
+                Qt.WindowType.Tool |
+                Qt.WindowType.FramelessWindowHint |
+                Qt.WindowType.NoDropShadowWindowHint))
+            self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
             self.setStyleSheet("background: transparent;")
 
         self.show()

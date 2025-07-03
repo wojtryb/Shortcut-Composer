@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Generic, TypeVar, Final
@@ -19,13 +19,13 @@ class PieLabel(LabelInterface, Generic[T]):
     """
     Data representing a single value in PieWidget.
 
-    - `value` -- Value to set using the controller
+    - `value`         -- value to set using the controller
     - `display_value` -- `value` representation to display. Can be
-                         either a colored text or an image
-    - `pretty_name` -- String to use when displaying the label to user
-    - `center -- Label position in widget coordinates
-    - `angle` -- Angle in degrees in relation to widget center. Angles are
-                 counted clockwise with 0 being the top of widget
+                         a colored text, image or an icon
+    - `pretty_name`   -- full name of value
+    - `center         -- position of center in PieWidget coordinates
+    - `angle`         -- Angle [°] in relation to widget center. Angles
+                         are counted clockwise with 0 being widget top
     - `activation_progress` -- state of animation in range <0-1>
     """
 
@@ -34,20 +34,13 @@ class PieLabel(LabelInterface, Generic[T]):
     pretty_name: str = ""
     center: QPoint = field(default_factory=QPoint)
     angle: int = 0
-
-    def __post_init__(self) -> None:
-        self.activation_progress = AnimationProgress(speed_scale=1, steep=1)
-
-    def swap_locations(self, other: 'PieLabel[T]') -> None:
-        """Change position data with information Label."""
-        self.angle, other.angle = other.angle, self.angle
-        self.center, other.center = other.center, self.center
+    activation_progress: AnimationProgress = field(
+        default_factory=AnimationProgress)
 
     def __eq__(self, other: T) -> bool:
-        """Consider two labels with the same value and position - equal."""
+        """Consider two labels with the same value equal."""
         if not isinstance(other, PieLabel):
             return False
-
         return self.value == other.value
 
     def __hash__(self) -> int:
@@ -55,9 +48,8 @@ class PieLabel(LabelInterface, Generic[T]):
         return hash(self.value)
 
     @staticmethod
-    def from_value(value: T, controller: Controller)\
-            -> 'PieLabel[T] | None':
-        """Use provided controller to create a label holding passed value."""
+    def from_value(value: T, controller: Controller) -> 'PieLabel[T] | None':
+        """Use controller to create a label holding passed value."""
         label = controller.get_label(value)
         if label is None:
             return None

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from functools import cached_property
@@ -49,10 +49,8 @@ class RotationSelector(RawInstructions):
     - `deadzone strategy` -- (optional) default strategy what to do,
                               when mouse does not leave deadzone
     - `outline_opacity`   -- (optional) default opacity in %
-    - `short_vs_long_press_time` -- (optional) time [s] that specifies
-                                    if key press is short or long.
 
-    ### Action implementation example:
+    ### Action usage example:
 
     Example action is meant to open a widget for rotating a brush.
 
@@ -85,9 +83,8 @@ class RotationSelector(RawInstructions):
         active_color: QColor | None = None,
         deadzone_strategy=RotationDeadzoneStrategy.KEEP_CHANGE,
         outline_opacity: int = 75,
-        short_vs_long_press_time: float | None = None,
     ) -> None:
-        super().__init__(name, instructions, short_vs_long_press_time)
+        super().__init__(name, instructions)
         self._controller = controller
 
         self._config = RotationConfig(
@@ -146,10 +143,12 @@ class RotationSelector(RawInstructions):
 
     @cached_property
     def _settings_button(self) -> RoundButton:
+        """Create a settings button inside the widget."""
         return self._create_settings_button(self._rotation_widget)
 
     @cached_property
     def _global_settings_button(self) -> RoundButton:
+        """Create a settings button on canvas, for when widget is hidden."""
         return self._create_settings_button(None)  # type: ignore
 
     @cached_property

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from api_krita import Krita
@@ -28,6 +28,7 @@ class ActiveLayerController(DocumentBasedController, Controller[Node]):
     """
 
     TYPE = Node
+    REQUIRES_TEXT_SETTINGS = False
 
     def get_value(self) -> Node | None:
         """Get current node."""
@@ -51,6 +52,7 @@ class TimeController(DocumentBasedController, NumericController):
     """
 
     TYPE = int
+    REQUIRES_TEXT_SETTINGS = False
     DEFAULT_VALUE = 0
     MIN_VALUE = 0
     MAX_VALUE = 10_000

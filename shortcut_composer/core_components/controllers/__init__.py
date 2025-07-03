@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2024 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 """Components that allow to get and set a specific property of krita."""
@@ -12,6 +12,7 @@ from .canvas_controllers import (
     CanvasZoomController)
 
 from .view_controllers import (
+    ForegroundColorController,
     BrushRotationController,
     BlendingModeController,
     BrushSizeController,
@@ -36,6 +37,7 @@ __all__ = [
     "CreateLayerWithBlendingController",
     "LayerBlendingModeController",
     "LayerVisibilityController",
+    "ForegroundColorController",
     "CanvasRotationController",
     "TransformModeController",
     "BrushRotationController",
