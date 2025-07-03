@@ -62,6 +62,11 @@ class MaSettings(QDialog):
                 0.020 * Krita.screen_size
                 * Config.PIE_ICON_GLOBAL_SCALE.read())
 
+        def small_label_radius() -> int:
+            return round(
+                0.012 * Krita.screen_size
+                * Config.PIE_GLOBAL_SCALE.read())
+
         active_color = QColor(110, 160, 255)
         background_color = QColor(150, 150, 255)
         self._pie_style = PieWidgetStyle(
@@ -75,7 +80,7 @@ class MaSettings(QDialog):
             active_color_callback=lambda: active_color,
             background_color_callback=lambda: background_color)
         self._small_label_style = LabelWidgetStyle(
-            icon_radius_callback=lambda: round(Krita.screen_size*0.012),
+            icon_radius_callback=small_label_radius,
             active_color_callback=lambda: active_color,
             background_color_callback=lambda: background_color)
 
@@ -190,10 +195,15 @@ class MaSettings(QDialog):
         value_holder.setAcceptDrops(False)
 
         # Correct position of the holder is at bottom left
-        pie_size = 2*self._pie_style.widget_radius
-        button_size = 2*self._small_label_style.icon_radius
-        position = pie_size-button_size
-        value_holder.move(QPoint(position, position))
+        def move_to_bottom_left():
+            value_holder.reset_size()
+            pie_size = 2*self._pie_style.widget_radius
+            button_size = 2*self._small_label_style.icon_radius
+            position = pie_size-button_size
+            value_holder.move(QPoint(position, position))
+        Config.PIE_GLOBAL_SCALE.register_callback(move_to_bottom_left)
+        Config.PIE_ICON_GLOBAL_SCALE.register_callback(move_to_bottom_left)
+        move_to_bottom_left()
 
         # Holder must be disabled, when its value is already in pie_widget
         def set_enabled():
