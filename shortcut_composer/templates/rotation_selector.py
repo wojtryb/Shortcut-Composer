@@ -3,9 +3,14 @@
 
 from functools import cached_property
 
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore import QPoint
-from PyQt5.QtGui import QColor
+try:
+    from PyQt5.QtWidgets import QWidget
+    from PyQt5.QtCore import QPoint
+    from PyQt5.QtGui import QColor
+except ModuleNotFoundError:
+    from PyQt6.QtWidgets import QWidget
+    from PyQt6.QtCore import QPoint
+    from PyQt6.QtGui import QColor
 
 from api_krita import Krita
 from api_krita.pyqt import RoundButton
@@ -171,8 +176,12 @@ class RotationSelector(RawInstructions):
                 and not self._rotation_settings.isVisible()):
             self._global_settings_button.show()
             mdiArea = Krita.get_active_mdi_area()
-            self._global_settings_button.move(
-                mdiArea.mapToGlobal(mdiArea.pos()))
+            try:
+                self._global_settings_button.move(
+                    mdiArea.mapToGlobal(mdiArea.pos()))
+            except AttributeError:
+                self._global_settings_button.move(
+                    mdiArea.mapToGlobal(mdiArea.position()))
 
     def on_every_key_release(self) -> None:
         """Handle the key release event."""

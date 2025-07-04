@@ -4,15 +4,26 @@
 import re
 from typing import Sequence, TypeVar, Generic
 
-from PyQt5.QtCore import Qt, QTimer, QEvent, pyqtSignal
-from PyQt5.QtWidgets import (
-    QScrollArea,
-    QVBoxLayout,
-    QHBoxLayout,
-    QScroller,
-    QLineEdit,
-    QWidget,
-    QLabel)
+try:
+    from PyQt5.QtCore import Qt, QTimer, QEvent, pyqtSignal
+    from PyQt5.QtWidgets import (
+        QScrollArea,
+        QVBoxLayout,
+        QHBoxLayout,
+        QScroller,
+        QLineEdit,
+        QWidget,
+        QLabel)
+except ModuleNotFoundError:
+    from PyQt6.QtCore import Qt, QTimer, QEvent, pyqtSignal
+    from PyQt6.QtWidgets import (
+        QScrollArea,
+        QVBoxLayout,
+        QHBoxLayout,
+        QScroller,
+        QLineEdit,
+        QWidget,
+        QLabel)
 
 from ...global_config import Config
 from ..label_widget import LabelWidget, WidgetInstructions

@@ -1,7 +1,10 @@
 # SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from PyQt5.QtWidgets import QVBoxLayout, QWidget
+try:
+    from PyQt5.QtWidgets import QVBoxLayout, QWidget
+except ModuleNotFoundError:
+    from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 from api_krita import Krita
 from api_krita.pyqt import SafeConfirmButton

@@ -5,7 +5,10 @@ from dataclasses import dataclass
 from typing import Protocol
 from functools import cached_property
 
-from PyQt5.QtGui import QColor
+try:
+    from PyQt5.QtGui import QColor
+except ModuleNotFoundError:
+    from PyQt6.QtGui import QColor
 
 from krita import Krita as Api, ManagedColor
 from .canvas import KritaCanvas

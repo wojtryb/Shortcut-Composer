@@ -4,7 +4,10 @@
 from typing import Generic, TypeVar, Protocol
 from enum import Enum
 
-from PyQt5.QtGui import QColor
+try:
+    from PyQt5.QtGui import QColor
+except ModuleNotFoundError:
+    from PyQt6.QtGui import QColor
 
 T = TypeVar("T")
 Basic = TypeVar("Basic", str, int, float)

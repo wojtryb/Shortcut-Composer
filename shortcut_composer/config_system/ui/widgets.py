@@ -4,15 +4,26 @@
 from enum import Enum
 from typing import Final, TypeVar, Generic, Protocol
 
-from PyQt5.QtWidgets import (
-    QWidget,
-    QSpinBox,
-    QComboBox,
-    QCheckBox,
-    QPushButton,
-    QColorDialog,
-    QDoubleSpinBox)
-from PyQt5.QtGui import QColor
+try:
+    from PyQt5.QtWidgets import (
+        QWidget,
+        QSpinBox,
+        QComboBox,
+        QCheckBox,
+        QPushButton,
+        QColorDialog,
+        QDoubleSpinBox)
+    from PyQt5.QtGui import QColor
+except ModuleNotFoundError:
+    from PyQt6.QtWidgets import (
+        QWidget,
+        QSpinBox,
+        QComboBox,
+        QCheckBox,
+        QPushButton,
+        QColorDialog,
+        QDoubleSpinBox)
+    from PyQt6.QtGui import QColor
 
 from ..field import Field
 from .config_based_widget import ConfigBasedWidget

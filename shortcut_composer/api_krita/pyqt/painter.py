@@ -3,9 +3,24 @@
 
 import math
 
-from PyQt5.QtGui import QPainter, QPainterPath, QColor, QPixmap, QPaintEvent
-from PyQt5.QtCore import QPoint, QRectF, QPointF
-from PyQt5.QtWidgets import QWidget
+try:
+    from PyQt5.QtGui import (
+        QPainterPath,
+        QPaintEvent,
+        QPainter,
+        QPixmap,
+        QColor)
+    from PyQt5.QtCore import QPoint, QRectF, QPointF
+    from PyQt5.QtWidgets import QWidget
+except ModuleNotFoundError:
+    from PyQt6.QtGui import (
+        QPainterPath,
+        QPaintEvent,
+        QPainter,
+        QPixmap,
+        QColor)
+    from PyQt6.QtCore import QPoint, QRectF, QPointF
+    from PyQt6.QtWidgets import QWidget
 
 
 class Painter:

@@ -3,9 +3,14 @@
 
 from typing import Protocol, TypeVar, Generic
 
-from PyQt5.QtCore import Qt, QMimeData, QEvent
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtGui import QDrag, QPixmap, QMouseEvent, QPaintEvent
+try:
+    from PyQt5.QtCore import Qt, QMimeData, QEvent
+    from PyQt5.QtWidgets import QWidget
+    from PyQt5.QtGui import QDrag, QPixmap, QMouseEvent, QPaintEvent
+except ModuleNotFoundError:
+    from PyQt6.QtCore import Qt, QMimeData, QEvent
+    from PyQt6.QtWidgets import QWidget
+    from PyQt6.QtGui import QDrag, QPixmap, QMouseEvent, QPaintEvent
 
 from api_krita import Krita
 from api_krita.pyqt import Painter, PixmapTransform, BaseWidget

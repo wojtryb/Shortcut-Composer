@@ -1,8 +1,12 @@
 # SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QVBoxLayout, QTabWidget
+try:
+    from PyQt5.QtCore import Qt
+    from PyQt5.QtWidgets import QVBoxLayout, QTabWidget
+except ModuleNotFoundError:
+    from PyQt6.QtCore import Qt
+    from PyQt6.QtWidgets import QVBoxLayout, QTabWidget
 
 from api_krita.pyqt import AnimatedWidget, BaseWidget
 from api_krita.enums.helpers import EnumGroup

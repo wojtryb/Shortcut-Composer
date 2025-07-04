@@ -1,7 +1,10 @@
 # SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from PyQt5.QtGui import QCursor
+try:
+    from PyQt5.QtGui import QCursor
+except ModuleNotFoundError:
+    from PyQt6.QtGui import QCursor
 
 from api_krita.pyqt import Timer
 from composer_utils import CirclePoints, Config
@@ -34,10 +37,16 @@ class RotationManager:
     def start(self) -> None:
         """Show widget under the mouse and start the mouse tracking loop."""
         if not self._config.IS_WIDGET_HIDDEN.read():
-            self._rotation_widget.move_center(QCursor().pos())
+            try:
+                self._rotation_widget.move_center(QCursor().pos())
+            except AttributeError:
+                self._rotation_widget.move_center(QCursor().position())
             self._rotation_widget.show()
 
-        self._center_global = QCursor().pos()
+        try:
+            self._center_global = QCursor().pos()
+        except AttributeError:
+            self._center_global = QCursor().pos()
         self._rotation_widget.state.reset()
 
         self._timer.start()
@@ -50,7 +59,10 @@ class RotationManager:
 
     def _handle_cursor(self) -> None:
         """Calculate zone and angle of the cursor."""
-        cursor = QCursor().pos()
+        try:
+            cursor = QCursor().pos()
+        except AttributeError:
+            cursor = QCursor().position()
         circle = CirclePoints(self._center_global, 0)
 
         is_inverse = self._config.INVERSE_ZONES.read()

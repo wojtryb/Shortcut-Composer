@@ -4,7 +4,10 @@
 import re
 from typing import Callable
 
-from PyQt5.QtGui import QFont, QColor, QFontDatabase
+try:
+    from PyQt5.QtGui import QFont, QColor, QFontDatabase
+except ModuleNotFoundError:
+    from PyQt6.QtGui import QFont, QColor, QFontDatabase
 
 from api_krita import Krita
 from composer_utils import Config

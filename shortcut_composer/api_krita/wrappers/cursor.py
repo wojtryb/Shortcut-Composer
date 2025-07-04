@@ -2,7 +2,11 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from dataclasses import dataclass
-from PyQt5.QtWidgets import QMainWindow
+
+try:
+    from PyQt5.QtWidgets import QMainWindow
+except ModuleNotFoundError:
+    from PyQt6.QtWidgets import QMainWindow
 
 
 @dataclass
@@ -13,8 +17,14 @@ class Cursor:
 
     def x(self) -> int:
         """Return x axis of cursor in pixels in relation to screen."""
-        return self.q_win.cursor().pos().x()
+        try:
+            return self.q_win.cursor().pos().x()
+        except AttributeError:
+            return self.q_win.cursor().position().x()
 
     def y(self) -> int:
         """Return y axis of cursor in pixels in relation to screen."""
-        return self.q_win.cursor().pos().y()
+        try:
+            return self.q_win.cursor().pos().y()
+        except AttributeError:
+            return self.q_win.cursor().position().y()

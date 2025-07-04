@@ -1,9 +1,14 @@
 # SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import pyqtSignal, QEvent
-from PyQt5.QtWidgets import QWidget, QPushButton
+try:
+    from PyQt5.QtGui import QIcon
+    from PyQt5.QtCore import pyqtSignal, QEvent
+    from PyQt5.QtWidgets import QWidget, QPushButton
+except ModuleNotFoundError:
+    from PyQt6.QtGui import QIcon
+    from PyQt6.QtCore import pyqtSignal, QEvent
+    from PyQt6.QtWidgets import QWidget, QPushButton
 
 
 class SafeConfirmButton(QPushButton):

@@ -6,8 +6,12 @@
 from krita import Krita as Api
 from typing import Callable, Protocol
 
-from PyQt5.QtWidgets import QWidgetAction
-from PyQt5.QtGui import QKeySequence
+try:
+    from PyQt5.QtWidgets import QWidgetAction
+    from PyQt5.QtGui import QKeySequence
+except ModuleNotFoundError:
+    from PyQt6.QtWidgets import QWidgetAction
+    from PyQt6.QtGui import QKeySequence
 
 
 class KritaWindow(Protocol):

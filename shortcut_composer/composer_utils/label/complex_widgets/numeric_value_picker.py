@@ -3,15 +3,26 @@
 
 from typing import Callable, TypeVar, Generic
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (
-    QAbstractSpinBox,
-    QHBoxLayout,
-    QVBoxLayout,
-    QScrollArea,
-    QSpinBox,
-    QWidget,
-    QLabel)
+try:
+    from PyQt5.QtCore import Qt
+    from PyQt5.QtWidgets import (
+        QAbstractSpinBox,
+        QHBoxLayout,
+        QVBoxLayout,
+        QScrollArea,
+        QSpinBox,
+        QWidget,
+        QLabel)
+except ModuleNotFoundError:
+    from PyQt6.QtCore import Qt
+    from PyQt6.QtWidgets import (
+        QAbstractSpinBox,
+        QHBoxLayout,
+        QVBoxLayout,
+        QScrollArea,
+        QSpinBox,
+        QWidget,
+        QLabel)
 
 from ..label_widget import LabelWidget
 from ..label_widget_style import LabelWidgetStyle

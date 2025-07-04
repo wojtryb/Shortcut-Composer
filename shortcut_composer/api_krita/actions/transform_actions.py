@@ -3,12 +3,20 @@
 
 from functools import partial, partialmethod
 
-from PyQt5.QtCore import QTimer
-from PyQt5.QtWidgets import (
-    QWidgetAction,
-    QToolButton,
-    QPushButton,
-    QWidget)
+try:
+    from PyQt5.QtCore import QTimer
+    from PyQt5.QtWidgets import (
+        QWidgetAction,
+        QToolButton,
+        QPushButton,
+        QWidget)
+except ModuleNotFoundError:
+    from PyQt6.QtCore import QTimer
+    from PyQt6.QtWidgets import (
+        QWidgetAction,
+        QToolButton,
+        QPushButton,
+        QWidget)
 
 from ..enums import Tool, TransformMode
 from ..core_api import KritaInstance

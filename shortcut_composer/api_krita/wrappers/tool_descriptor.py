@@ -2,7 +2,11 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from krita import Krita as Api
-from PyQt5.QtWidgets import QWidget, QToolButton
+
+try:
+    from PyQt5.QtWidgets import QWidget, QToolButton
+except ModuleNotFoundError:
+    from PyQt6.QtWidgets import QWidget, QToolButton
 
 from ..enums import Tool
 

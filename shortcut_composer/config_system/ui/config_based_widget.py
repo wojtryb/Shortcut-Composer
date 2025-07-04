@@ -4,7 +4,10 @@
 from abc import ABC, abstractmethod
 from typing import Final, TypeVar, Generic
 
-from PyQt5.QtWidgets import QWidget
+try:
+    from PyQt5.QtWidgets import QWidget
+except ModuleNotFoundError:
+    from PyQt6.QtWidgets import QWidget
 
 from ..field import Field
 

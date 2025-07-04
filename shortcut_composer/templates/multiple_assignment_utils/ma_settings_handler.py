@@ -3,8 +3,12 @@
 
 from functools import cached_property
 
-from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QWidget
+try:
+    from PyQt5.QtGui import QColor
+    from PyQt5.QtWidgets import QWidget
+except ModuleNotFoundError:
+    from PyQt6.QtGui import QColor
+    from PyQt6.QtWidgets import QWidget
 
 from api_krita import Krita
 from api_krita.pyqt import RoundButton, Timer
@@ -62,7 +66,10 @@ class MaSettingsHandler(Instruction):
     def _timer_callback(self) -> None:
         """Show a button in top left corner of painting area."""
         mdiArea = Krita.get_active_mdi_area()
-        self._button.move(mdiArea.mapToGlobal(mdiArea.pos()))
+        try:
+            self._button.move(mdiArea.mapToGlobal(mdiArea.pos()))
+        except AttributeError:
+            self._button.move(mdiArea.mapToGlobal(mdiArea.position()))
         self._button.show()
         self._timer.stop()
 

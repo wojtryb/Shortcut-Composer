@@ -3,7 +3,10 @@
 
 from dataclasses import dataclass
 
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QSizePolicy
+try:
+    from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QSizePolicy
+except ModuleNotFoundError:
+    from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QSizePolicy
 
 from api_krita import Krita
 from api_krita.pyqt import SafeConfirmButton

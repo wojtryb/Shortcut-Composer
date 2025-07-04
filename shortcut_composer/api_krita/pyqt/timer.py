@@ -3,7 +3,10 @@
 
 from typing import Callable
 
-from PyQt5.QtCore import QTimer
+try:
+    from PyQt5.QtCore import QTimer
+except ModuleNotFoundError:
+    from PyQt6.QtCore import QTimer
 
 EmptyCallback = Callable[[], None]
 

@@ -3,7 +3,10 @@
 
 from dataclasses import dataclass, field
 
-from PyQt5.QtGui import QColor
+try:
+    from PyQt5.QtGui import QColor
+except ModuleNotFoundError:
+    from PyQt6.QtGui import QColor
 
 
 @dataclass

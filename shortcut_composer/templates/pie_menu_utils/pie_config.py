@@ -2,7 +2,11 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Generic, TypeVar
-from PyQt5.QtGui import QColor
+try:
+    from PyQt5.QtGui import QColor
+except ModuleNotFoundError:
+    from PyQt6.QtGui import QColor
+
 from api_krita import Krita
 from core_components import Controller
 from config_system import FieldGroup

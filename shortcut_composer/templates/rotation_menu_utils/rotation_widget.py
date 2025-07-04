@@ -3,8 +3,12 @@
 
 from typing import TypeVar, Generic
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPaintEvent
+try:
+    from PyQt5.QtCore import Qt
+    from PyQt5.QtGui import QPaintEvent
+except ModuleNotFoundError:
+    from PyQt6.QtCore import Qt
+    from PyQt6.QtGui import QPaintEvent
 
 from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
 from composer_utils import Config

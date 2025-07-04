@@ -1,8 +1,12 @@
 # SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore import QPoint
+try:
+    from PyQt5.QtWidgets import QWidget
+    from PyQt5.QtCore import QPoint
+except ModuleNotFoundError:
+    from PyQt6.QtWidgets import QWidget
+    from PyQt6.QtCore import QPoint
 
 from .timer import Timer
 
@@ -21,7 +25,10 @@ class BaseWidget(QWidget):
     @property
     def center_global(self) -> QPoint:
         """Return point with center widget's point in screen coordinates."""
-        return self.pos() + self.center
+        try:
+            return self.pos() + self.center
+        except AttributeError:
+            return self.position() + self.center
 
     def move_center(self, new_center: QPoint) -> None:
         """Move the widget by providing a new center point."""

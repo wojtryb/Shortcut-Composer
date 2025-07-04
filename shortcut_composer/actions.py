@@ -11,7 +11,10 @@ will not be visible in `keyboard shortcuts` menu in krita settings.
 
 import templates
 
-from PyQt5.QtGui import QColor
+try:
+    from PyQt5.QtGui import QColor
+except ModuleNotFoundError:
+    from PyQt6.QtGui import QColor
 
 from api_krita.enums import Action, Tool, Toggle, BlendingMode, TransformMode
 from core_components import instructions, controllers

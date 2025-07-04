@@ -3,7 +3,10 @@
 
 from typing import Callable
 
-from PyQt5.QtGui import QCursor
+try:
+    from PyQt5.QtGui import QCursor
+except ModuleNotFoundError:
+    from PyQt6.QtGui import QCursor
 
 from api_krita.pyqt import Timer
 from composer_utils import CirclePoints, Config
@@ -67,7 +70,11 @@ class PieLabelSelector:
         """Show widget under the mouse and start mouse tracking loop."""
         self._mark_suggested_widget()
         self._pie_widget.draggable = False
-        self._pie_widget.move_center(QCursor().pos())
+        try:
+            self._pie_widget.move_center(QCursor().pos())
+        except AttributeError:
+            self._pie_widget.move_center(QCursor().position())
+
         self._pie_widget.show()
         self._timer.start()
 
@@ -115,7 +122,10 @@ class PieLabelSelector:
         if not self._pie_widget.order_handler:
             return
 
-        cursor = QCursor().pos()
+        try:
+            cursor = QCursor().pos()
+        except AttributeError:
+            cursor = QCursor().position()
         circle = CirclePoints(self._pie_widget.center_global, 0)
         if circle.distance(cursor) < self._pie_widget.deadzone:
             return self._update_hovered(None)

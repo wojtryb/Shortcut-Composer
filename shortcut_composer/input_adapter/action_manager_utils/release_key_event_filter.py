@@ -3,8 +3,12 @@
 
 from typing import Callable, Literal
 
-from PyQt5.QtCore import QEvent
-from PyQt5.QtWidgets import QMdiArea
+try:
+    from PyQt5.QtCore import QEvent
+    from PyQt5.QtWidgets import QMdiArea
+except ModuleNotFoundError:
+    from PyQt6.QtCore import QEvent
+    from PyQt6.QtWidgets import QMdiArea
 
 EventCallback = Callable[[QEvent], None]
 

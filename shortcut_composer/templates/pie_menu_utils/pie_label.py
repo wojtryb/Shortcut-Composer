@@ -4,8 +4,12 @@
 from typing import Generic, TypeVar, Final
 from dataclasses import dataclass, field
 
-from PyQt5.QtCore import QPoint
-from PyQt5.QtGui import QPixmap, QIcon
+try:
+    from PyQt5.QtCore import QPoint
+    from PyQt5.QtGui import QPixmap, QIcon
+except ModuleNotFoundError:
+    from PyQt6.QtCore import QPoint
+    from PyQt6.QtGui import QPixmap, QIcon
 
 from composer_utils import AnimationProgress
 from composer_utils.label import LabelInterface, LabelText

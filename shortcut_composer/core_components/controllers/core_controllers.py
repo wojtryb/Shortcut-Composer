@@ -4,7 +4,10 @@
 from typing import NoReturn
 from dataclasses import dataclass
 
-from PyQt5.QtGui import QIcon
+try:
+    from PyQt5.QtGui import QIcon
+except ModuleNotFoundError:
+    from PyQt6.QtGui import QIcon
 
 from api_krita import Krita
 from api_krita.enums import Action, Tool, Toggle, TransformMode

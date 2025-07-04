@@ -4,7 +4,10 @@
 import math
 from typing import Iterable, Tuple
 
-from PyQt5.QtCore import QPoint
+try:
+    from PyQt5.QtCore import QPoint
+except ModuleNotFoundError:
+    from PyQt6.QtCore import QPoint
 
 
 class CirclePoints:

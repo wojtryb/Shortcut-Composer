@@ -1,9 +1,14 @@
 # SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QDialog, QLabel
-from PyQt5.QtCore import Qt, QPoint
-from PyQt5.QtGui import QColor
+try:
+    from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QDialog, QLabel
+    from PyQt5.QtCore import Qt, QPoint
+    from PyQt5.QtGui import QColor
+except ModuleNotFoundError:
+    from PyQt6.QtWidgets import QVBoxLayout, QHBoxLayout, QDialog, QLabel
+    from PyQt6.QtCore import Qt, QPoint
+    from PyQt6.QtGui import QColor
 
 from api_krita import Krita
 from api_krita.enums.helpers import EnumGroup

@@ -3,8 +3,12 @@
 
 from typing import TypeVar
 
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtGui import QColor
+try:
+    from PyQt5.QtWidgets import QWidget
+    from PyQt5.QtGui import QColor
+except ModuleNotFoundError:
+    from PyQt6.QtWidgets import QWidget
+    from PyQt6.QtGui import QColor
 
 from api_krita.pyqt import Painter
 from ..label_widget_style import LabelWidgetStyle

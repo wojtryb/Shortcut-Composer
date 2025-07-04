@@ -5,13 +5,32 @@ import re
 from typing import Callable, Protocol, Any
 
 from krita import Krita as Api, Extension
-from PyQt5.QtWidgets import (
-    QWidgetAction,
-    QApplication,
-    QMainWindow,
-    QMdiArea)
-from PyQt5.QtGui import QKeySequence, QColor, QIcon, QPalette, QGuiApplication
-from PyQt5.QtCore import QTimer
+try:
+    from PyQt5.QtWidgets import (
+        QWidgetAction,
+        QApplication,
+        QMainWindow,
+        QMdiArea)
+    from PyQt5.QtGui import (
+        QGuiApplication,
+        QKeySequence,
+        QPalette,
+        QColor,
+        QIcon)
+    from PyQt5.QtCore import QTimer
+except ModuleNotFoundError:
+    from PyQt6.QtWidgets import (
+        QWidgetAction,
+        QApplication,
+        QMainWindow,
+        QMdiArea)
+    from PyQt6.QtGui import (
+        QGuiApplication,
+        QKeySequence,
+        QPalette,
+        QColor,
+        QIcon)
+    from PyQt6.QtCore import QTimer
 
 from .wrappers import (
     ToolDescriptor,

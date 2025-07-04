@@ -3,12 +3,20 @@
 
 from typing import TypeVar, Generic, Callable
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import (
-    QDragEnterEvent,
-    QDragLeaveEvent,
-    QDragMoveEvent,
-    QPaintEvent)
+try:
+    from PyQt5.QtCore import Qt
+    from PyQt5.QtGui import (
+        QDragEnterEvent,
+        QDragLeaveEvent,
+        QDragMoveEvent,
+        QPaintEvent)
+except ModuleNotFoundError:
+    from PyQt6.QtCore import Qt
+    from PyQt6.QtGui import (
+        QDragEnterEvent,
+        QDragLeaveEvent,
+        QDragMoveEvent,
+        QPaintEvent)
 
 from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
 from composer_utils import CirclePoints, Config
@@ -148,7 +156,10 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         circle_points = CirclePoints(
             center=self.center,
             radius=self._style.pie_radius)
-        distance = circle_points.distance(e.pos())
+        try:
+            distance = circle_points.distance(e.pos())
+        except AttributeError:
+            distance = circle_points.distance(e.position())
 
         if not isinstance(label.value, self._allowed_types):
             # Label type does not match the type of pie menu
@@ -172,7 +183,10 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             # Do nothing in deadzone
             return
 
-        angle = circle_points.angle_from_point(e.pos())
+        try:
+            angle = circle_points.angle_from_point(e.pos())
+        except AttributeError:
+            angle = circle_points.angle_from_point(e.position())
         label_under_cursor = self.order_handler.label_on_angle(angle)
 
         if label not in self.order_handler:

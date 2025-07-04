@@ -4,7 +4,10 @@
 from dataclasses import dataclass
 from typing import Protocol
 
-from PyQt5.QtCore import QByteArray
+try:
+    from PyQt5.QtCore import QByteArray
+except ModuleNotFoundError:
+    from PyQt6.QtCore import QByteArray
 
 from ..enums import NodeType
 from .node import Node, KritaNode

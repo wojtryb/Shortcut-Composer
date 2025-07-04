@@ -3,8 +3,12 @@
 
 from typing import TypeVar
 
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QWidget
+try:
+    from PyQt5.QtGui import QPixmap
+    from PyQt5.QtWidgets import QWidget
+except ModuleNotFoundError:
+    from PyQt6.QtGui import QPixmap
+    from PyQt6.QtWidgets import QWidget
 
 from api_krita.pyqt import Painter, PixmapTransform
 from ..label_widget_style import LabelWidgetStyle

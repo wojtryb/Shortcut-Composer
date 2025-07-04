@@ -3,7 +3,10 @@
 
 from typing import Callable
 
-from PyQt5.QtGui import QColor
+try:
+    from PyQt5.QtGui import QColor
+except ModuleNotFoundError:
+    from PyQt6.QtGui import QColor
 
 from api_krita import Krita
 

@@ -3,7 +3,10 @@
 
 from typing import Generic, TypeVar, Protocol
 
-from PyQt5.QtGui import QPixmap, QIcon, QColor
+try:
+    from PyQt5.QtGui import QPixmap, QIcon, QColor
+except ModuleNotFoundError:
+    from PyQt6.QtGui import QPixmap, QIcon, QColor
 
 from .label_text import LabelText
 

@@ -3,7 +3,10 @@
 
 from time import time
 
-from PyQt5.QtGui import QKeyEvent
+try:
+    from PyQt5.QtGui import QKeyEvent
+except ModuleNotFoundError:
+    from PyQt6.QtGui import QKeyEvent
 
 from ..complex_action_interface import ComplexActionInterface
 

@@ -3,9 +3,14 @@
 
 from typing import Callable
 
-from PyQt5.QtWidgets import QWidget, QPushButton
-from PyQt5.QtGui import QColor, QIcon
-from PyQt5.QtCore import Qt
+try:
+    from PyQt5.QtWidgets import QWidget, QPushButton
+    from PyQt5.QtGui import QColor, QIcon
+    from PyQt5.QtCore import Qt
+except ModuleNotFoundError:
+    from PyQt6.QtWidgets import QWidget, QPushButton
+    from PyQt6.QtGui import QColor, QIcon
+    from PyQt6.QtCore import Qt
 
 from .custom_widgets import BaseWidget
 

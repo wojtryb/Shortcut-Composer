@@ -3,9 +3,14 @@
 
 from typing import TypeVar
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QLabel, QWidget
+try:
+    from PyQt5.QtCore import Qt
+    from PyQt5.QtGui import QColor
+    from PyQt5.QtWidgets import QLabel, QWidget
+except ModuleNotFoundError:
+    from PyQt6.QtCore import Qt
+    from PyQt6.QtGui import QColor
+    from PyQt6.QtWidgets import QLabel, QWidget
 
 from ..label_text import LabelText
 from ..label_widget import LabelWidget
