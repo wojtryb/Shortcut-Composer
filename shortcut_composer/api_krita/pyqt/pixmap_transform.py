@@ -30,12 +30,3 @@ class PixmapTransform:
         painter.end()
 
         return QPixmap.fromImage(out_img)
-
-    @staticmethod
-    def scale_pixmap(pixmap: QPixmap, size_px: int) -> QPixmap:
-        """Scale a square pixmap to new size."""
-        return pixmap.scaled(
-            size_px,
-            size_px,
-            Qt.AspectRatioMode.KeepAspectRatio,
-            Qt.TransformationMode.SmoothTransformation)
