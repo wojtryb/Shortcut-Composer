@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2026 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from PyQt5.QtCore import Qt
@@ -30,12 +30,3 @@ class PixmapTransform:
         painter.end()
 
         return QPixmap.fromImage(out_img)
-
-    @staticmethod
-    def scale_pixmap(pixmap: QPixmap, size_px: int) -> QPixmap:
-        """Scale a square pixmap to new size."""
-        return pixmap.scaled(
-            size_px,
-            size_px,
-            Qt.AspectRatioMode.KeepAspectRatio,
-            Qt.TransformationMode.SmoothTransformation)

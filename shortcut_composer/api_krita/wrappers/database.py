@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2026 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import os.path
@@ -50,7 +50,7 @@ class Database:
             SELECT DISTINCT r.name AS preset
             FROM tags t
                 JOIN resource_tags rt
-                    ON t.id=rt.tag_id
+                    ON t.id = rt.tag_id
                 JOIN resources r
                     ON r.id = rt.resource_id
             WHERE
@@ -62,11 +62,13 @@ class Database:
     def get_brush_tags(self) -> list[str]:
         "Return list of all tag names."
         sql_query = '''
-            SELECT DISTINCT t.name AS tag
+            SELECT DISTINCT t.name AS tag 
             FROM tags t
+                JOIN resource_types rt
+                    ON t.resource_type_id = rt.id
             WHERE
                 t.active = 1
-                AND (t.resource_type_id = 5 OR t.resource_type_id = 6)
+                AND rt.name = "paintoppresets"
         '''
         presets = self._single_column_query(sql_query, "tag")
         return sorted(presets, key=str.lower)

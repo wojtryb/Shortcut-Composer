@@ -1,6 +1,7 @@
-# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2026 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+import os
 from PyQt5.QtGui import QColor
 
 from api_krita import Krita
@@ -24,7 +25,11 @@ class PieStyleHolder:
 
     def __init__(self, config: PieConfig) -> None:
         self._config = config
-        self._base_size = Krita.screen_size/2560
+        try:
+            qt_scale = int(os.environ["QT_SCALE_FACTOR"])
+        except Exception:
+            qt_scale = 1
+        self._base_size = Krita.screen_size*qt_scale/2560
 
         self.pie_widget_style = PieWidgetStyle(
             pie_radius_callback=self._pie_widget_radius,

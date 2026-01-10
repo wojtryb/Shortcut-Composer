@@ -1,6 +1,7 @@
-# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2026 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+import os
 from typing import Callable
 
 from PyQt5.QtGui import QColor
@@ -31,7 +32,11 @@ class RotationStyle:
         self._active_color_callback = active_color_callback
         self._outline_opacity_callback = outline_opacity_callback
 
-        self._base_size = Krita.screen_size/2560
+        try:
+            qt_scale = int(os.environ["QT_SCALE_FACTOR"])
+        except Exception:
+            qt_scale = 1
+        self._base_size = Krita.screen_size*qt_scale/2560
 
     @property
     def deadzone_radius(self) -> int:

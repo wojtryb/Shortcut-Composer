@@ -1,12 +1,13 @@
-# SPDX-FileCopyrightText: © 2022-2025 Wojciech Trybus <wojtryb@gmail.com>
+# SPDX-FileCopyrightText: © 2022-2026 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import TypeVar
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QLabel
 
-from api_krita.pyqt import Painter, PixmapTransform
+from api_krita.pyqt import PixmapTransform
 from ..label_widget_style import LabelWidgetStyle
 from ..label_widget import LabelWidget
 from ..label_interface import LabelInterface
@@ -24,22 +25,25 @@ class ImageLabelWidget(LabelWidget[T]):
         parent: QWidget,
     ) -> None:
         super().__init__(label, label_widget_style, parent)
-        self.ready_image = self._prepare_image()
+        self._pyqt_label = self._create_pyqt_label()
 
-    def paint(self, painter: Painter) -> None:
-        super().paint(painter)
-        painter.paint_pixmap(self.center, self.ready_image)
-
-    def _prepare_image(self) -> QPixmap:
-        """Return image after scaling and reshaping it to circle."""
+    def _create_pyqt_label(self) -> QLabel:
+        """Create and show a new Qt5 label. Does not need redrawing."""
         to_display = self.label.display_value
 
         if not isinstance(to_display, QPixmap):
             raise TypeError("Label supposed to be QPixmap.")
 
-        return PixmapTransform.scale_pixmap(
-            pixmap=to_display,
-            size_px=round((
-                self.icon_radius
-                - self._label_widget_style.border_thickness
-                - self._active_indicator_thickness)*2))
+        size = round((
+            self.icon_radius
+            - self._label_widget_style.border_thickness
+            - self._active_indicator_thickness)*2)
+
+        label = QLabel(self)
+        label.setScaledContents(True)
+        label.setPixmap(PixmapTransform.make_pixmap_round(to_display))
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        label.resize(size, size)
+        label.move(self.center.x()-size//2, self.center.y()-size//2)
+        label.show()
+        return label
