@@ -6,7 +6,6 @@ from PyQt5.QtWidgets import QWidgetAction
 
 from krita import Extension
 from api_krita import Krita
-from api_krita.actions import TransformModeActions
 from actions import create_actions
 from composer_utils import SettingsDialog
 from input_adapter import ActionManager
@@ -16,8 +15,6 @@ from input_adapter import ActionManager
 class GarbageProtector:
     """Stores plugin objects, to protect them from garbage collector."""
 
-    transform_modes: TransformModeActions
-    """Creates and stores actions for transform modes."""
     settings_dialog: SettingsDialog
     """QDialog with plugin settings."""
     settings_action: QWidgetAction
@@ -50,7 +47,6 @@ class ShortcutComposer(Extension):
     def createActions(self, window) -> None:
         """Create window components. Called by krita for each new window."""
         self._protectors.append(GarbageProtector(
-            transform_modes=TransformModeActions(window),
             settings_dialog=(settings := SettingsDialog()),
             settings_action=self._create_settings_action(window, settings),
             action_manager=ActionManager(window),

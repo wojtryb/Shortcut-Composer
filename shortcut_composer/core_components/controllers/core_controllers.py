@@ -7,8 +7,7 @@ from dataclasses import dataclass
 from PyQt5.QtGui import QIcon
 
 from api_krita import Krita
-from api_krita.enums import Action, Tool, Toggle, TransformMode
-from api_krita.actions import TransformModeFinder
+from api_krita.enums import Action, Tool, Toggle
 from composer_utils.label import LabelText, LabelTextColorizer
 from ..controller_base import Controller, NumericController
 
@@ -76,42 +75,6 @@ class ActionController(Controller[Action]):
             color=LabelTextColorizer.action())
 
     def get_pretty_name(self, value: Action) -> str:
-        """Forward enums' pretty name."""
-        return value.pretty_name
-
-
-class TransformModeController(Controller[TransformMode]):
-    """
-    Gives access to tools from toolbox.
-
-    - Operates on `TransformMode`
-    - Defaults to `TransformMode.FREE`
-    """
-
-    TYPE = TransformMode
-    REQUIRES_TEXT_SETTINGS = False
-    DEFAULT_VALUE: TransformMode = TransformMode.FREE
-
-    def __init__(self) -> None:
-        self.button_finder = TransformModeFinder()
-
-    def get_value(self) -> TransformMode | None:
-        """Get currently active tool."""
-        for mode in TransformMode._member_map_.values():
-            self.button_finder.ensure_initialized(mode)  # type: ignore
-        return self.button_finder.get_active_mode()
-
-    @staticmethod
-    def set_value(value: TransformMode | None) -> None:
-        """Set a passed tool."""
-        if value is not None:
-            value.activate()
-
-    def get_label(self, value: Tool) -> QIcon:
-        """Forward the transform mode icon."""
-        return value.icon
-
-    def get_pretty_name(self, value: Tool) -> str:
         """Forward enums' pretty name."""
         return value.pretty_name
 

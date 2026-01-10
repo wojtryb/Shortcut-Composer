@@ -27,7 +27,6 @@ from .node_controllers import (
     LayerOpacityController)
 
 from .core_controllers import (
-    TransformModeController,
     ToggleController,
     ActionController,
     ToolController,
@@ -39,7 +38,6 @@ __all__ = [
     "LayerVisibilityController",
     "ForegroundColorController",
     "CanvasRotationController",
-    "TransformModeController",
     "BrushRotationController",
     "BlendingModeController",
     "LayerOpacityController",
