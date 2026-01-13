@@ -96,6 +96,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setStyleSheet("background: transparent;")
         self.setCursor(Qt.CursorShape.CrossCursor)
+        self.setWindowTitle("Pie Widget")
 
         self._style = style
         self._allowed_types = allowed_types
