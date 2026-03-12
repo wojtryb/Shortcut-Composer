@@ -15,6 +15,7 @@ class Tool(EnumGroup):
     TEXT = "SvgTextTool"
     EDIT_SHAPES = "PathTool"
     CALLIGRAPHY = "KarbonCalligraphyTool"
+    KNIFE = "KritaShape/KisToolKnife"
 
     _painting = Group("Painting")
     FREEHAND_BRUSH = "KritaShape/KisToolBrush"
@@ -82,6 +83,7 @@ class Tool(EnumGroup):
 PRETTY_NAMES = {
     Tool.SHAPE_SELECT: "Select Shapes Tool",
     Tool.CALLIGRAPHY: "Calligraphy",
+    Tool.KNIFE: "Comic Panel Editing Tool",
     Tool.COLOR_SAMPLER: "Color Sampler",
     Tool.ENCLOSE_AND_FILL: "Enclose and Fill Tool",
     Tool.ASSISTANTS: "Assistant Tool",
