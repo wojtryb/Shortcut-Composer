@@ -38,6 +38,8 @@ class RoundButton(QPushButton, BaseWidget):
                 Qt.WindowType.NoDropShadowWindowHint))
             self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
             self.setStyleSheet("background: transparent;")
+            # Name can be used by window compositor although the bar is hidden
+            self.setWindowTitle("Round Button")
 
         self.show()
 

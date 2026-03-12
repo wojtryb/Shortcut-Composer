@@ -47,6 +47,7 @@ class RotationWidget(AnimatedWidget, BaseWidget, Generic[T]):
             Qt.WindowType.NoDropShadowWindowHint))
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setStyleSheet("background: transparent;")
+        # Name can be used by window compositor although the bar is hidden
         self.setWindowTitle("Rotation Widget")
 
         self._rotation_painter = RotationPainter(style=self._style)

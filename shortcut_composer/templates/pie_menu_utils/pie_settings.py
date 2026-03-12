@@ -49,6 +49,8 @@ class PieSettings(AnimatedWidget, BaseWidget):
             Qt.WindowType.WindowStaysOnTopHint |
             Qt.WindowType.FramelessWindowHint))
         self.setCursor(Qt.CursorShape.ArrowCursor)
+        # Name can be used by window compositor although the bar is hidden
+        self.setWindowTitle("Pie Settings")
 
         self._style_holder = style_holder
         self._tab_holder = QTabWidget()
