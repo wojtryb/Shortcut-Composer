@@ -5,10 +5,10 @@
 
 from api_krita.wrappers import Version
 
-__version__ = Version(1, 6, 1)
+__version__ = Version(1, 7, 0, "dev")
 """Version of the Shortcut Composer plugin."""
 
-__required_krita_version__ = Version(5, 2, 2)
+__required_krita_version__ = Version(5, 3, 0)
 """Version of krita required by the plugin to work."""
 
 __author__ = "Wojciech Trybus"
