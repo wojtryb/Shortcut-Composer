@@ -3,8 +3,8 @@
 
 from typing import TypeVar
 
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtGui import QColor
+from PyQt.QtWidgets import QWidget
+from PyQt.QtGui import QColor
 
 from api_krita.pyqt import Painter
 from ..label_widget_style import LabelWidgetStyle

@@ -15,32 +15,8 @@ sys.path.append(directory := os.path.dirname(__file__))
 
 
 def main() -> None:
-    # Failing to import PyQt5 package most likely means krita 6 is used.
-    # Krita 6 uses PyQt6 which is not supported in this version.
-    #
-    # In that case, display a message and abort plugin start.
-    try:
-        from PyQt5.QtWidgets import QMessageBox
-        from PyQt5.QtCore import Qt
-    except ModuleNotFoundError:
-        from PyQt6.QtWidgets import QMessageBox
-        from PyQt6.QtCore import Qt
-        warning_box = QMessageBox()
-        warning_box.setIcon(QMessageBox.Icon.Warning)
-        warning_box.setWindowTitle("Shortcut composer version mismatch")
-        warning_box.setTextFormat(Qt.TextFormat.RichText)
-        link = "https://github.com/wojtryb/Shortcut-Composer"
-        warning_box.setText(
-            "Shortcut Composer cannot load on this krita version.<br>"
-            "Plugin relies on Qt5, while krita 6 switched to Qt6.<br><br>"
-            "If krita 6 was officially released, check for plugin updates:<br>"
-            f"<a href='{link}'>{link}</a><br><br>"
-            "Otherwise, use the unofficial qt6 port for testing:<br>"
-            f"<a href='{link}/tree/qt6-port'>{link}/tree/qt6-port</a>"
-        )
-        warning_box.setStandardButtons(QMessageBox.StandardButton.Ok)
-        warning_box.exec()
-        return
+    from PyQt.QtWidgets import QMessageBox
+    from PyQt.QtCore import Qt
 
     from .INFO import __version__, __required_krita_version__
     from .api_krita import Krita

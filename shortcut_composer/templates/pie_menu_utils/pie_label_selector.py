@@ -3,7 +3,7 @@
 
 from typing import Callable
 
-from PyQt5.QtGui import QCursor
+from PyQt.QtGui import QCursor
 
 from api_krita.pyqt import Timer
 from composer_utils import CirclePoints, Config

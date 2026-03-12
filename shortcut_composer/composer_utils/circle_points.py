@@ -4,7 +4,7 @@
 import math
 from typing import Iterable, Tuple
 
-from PyQt5.QtCore import QPoint
+from PyQt.QtCore import QPoint
 
 
 class CirclePoints:

@@ -3,9 +3,9 @@
 
 from typing import Protocol, TypeVar, Generic
 
-from PyQt5.QtCore import Qt, QMimeData, QEvent
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtGui import QDrag, QPixmap, QMouseEvent, QPaintEvent
+from PyQt.QtCore import Qt, QMimeData, QEvent
+from PyQt.QtWidgets import QWidget
+from PyQt.QtGui import QDrag, QPixmap, QMouseEvent, QPaintEvent
 
 from api_krita import Krita
 from api_krita.pyqt import Painter, PixmapTransform, BaseWidget

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from krita import Krita as Api
-from PyQt5.QtGui import QIcon
+from PyQt.QtGui import QIcon
 
 from .helpers import EnumGroup, Group
 

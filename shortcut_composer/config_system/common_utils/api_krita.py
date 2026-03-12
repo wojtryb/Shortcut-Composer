@@ -7,7 +7,7 @@ from typing import Any, Protocol
 from dataclasses import dataclass
 
 from krita import Krita as Api
-from PyQt5.QtCore import QByteArray
+from PyQt.QtCore import QByteArray
 
 
 class KritaInstance:

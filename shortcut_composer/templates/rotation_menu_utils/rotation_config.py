@@ -4,7 +4,7 @@
 
 from typing import Generic, TypeVar
 
-from PyQt5.QtGui import QColor
+from PyQt.QtGui import QColor
 
 from api_krita import Krita
 from config_system import FieldGroup

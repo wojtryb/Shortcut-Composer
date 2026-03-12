@@ -11,7 +11,7 @@ will not be visible in `keyboard shortcuts` menu in krita settings.
 
 import templates
 
-from PyQt5.QtGui import QColor
+from PyQt.QtGui import QColor
 
 from api_krita.enums import Action, Tool, Toggle, BlendingMode
 from core_components import instructions, controllers

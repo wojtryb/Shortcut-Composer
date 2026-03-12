@@ -4,7 +4,7 @@
 from typing import Callable
 from math import pi
 
-from PyQt5.QtGui import QColor
+from PyQt.QtGui import QColor
 
 from api_krita import Krita
 from composer_utils.label import LabelWidgetStyle

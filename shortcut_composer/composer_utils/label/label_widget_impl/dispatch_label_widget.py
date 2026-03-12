@@ -3,7 +3,7 @@
 
 from typing import TypeVar
 
-from PyQt5.QtGui import QPixmap, QIcon, QColor
+from PyQt.QtGui import QPixmap, QIcon, QColor
 
 from ..label_text import LabelText
 from ..label_widget import LabelWidget

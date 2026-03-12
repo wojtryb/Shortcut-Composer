@@ -3,7 +3,7 @@
 
 from dataclasses import dataclass, field
 
-from PyQt5.QtGui import QColor
+from PyQt.QtGui import QColor
 
 
 @dataclass

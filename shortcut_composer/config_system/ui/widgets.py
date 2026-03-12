@@ -4,13 +4,13 @@
 from enum import Enum
 from typing import Final, TypeVar, Generic, Protocol
 
-from PyQt5.QtWidgets import (
+from PyQt.QtWidgets import (
     QWidget,
     QComboBox,
     QCheckBox,
     QPushButton,
     QColorDialog)
-from PyQt5.QtGui import QColor
+from PyQt.QtGui import QColor
 from PyKrita.krita import DoubleSliderSpinBox, SliderSpinBox
 
 from ..field import Field

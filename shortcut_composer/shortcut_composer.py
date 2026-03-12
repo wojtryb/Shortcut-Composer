@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from dataclasses import dataclass
-from PyQt5.QtWidgets import QWidgetAction
+from PyQt.QtWidgets import QWidgetAction
 
 from krita import Extension
 from api_krita import Krita

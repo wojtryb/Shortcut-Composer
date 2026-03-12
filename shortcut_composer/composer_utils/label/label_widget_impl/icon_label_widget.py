@@ -4,9 +4,9 @@
 
 from typing import TypeVar
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QWidget, QLabel
+from PyQt.QtCore import Qt
+from PyQt.QtGui import QIcon
+from PyQt.QtWidgets import QWidget, QLabel
 
 from ..label_widget_style import LabelWidgetStyle
 from ..label_widget import LabelWidget

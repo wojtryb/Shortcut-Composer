@@ -3,8 +3,8 @@
 
 from typing import NamedTuple
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QGridLayout
+from PyQt.QtCore import Qt
+from PyQt.QtWidgets import QWidget, QGridLayout
 
 from ...label_widget import LabelWidget
 

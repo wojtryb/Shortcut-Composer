@@ -8,7 +8,7 @@ key_release events.
 
 from dataclasses import dataclass
 
-from PyQt5.QtWidgets import QWidgetAction
+from PyQt.QtWidgets import QWidgetAction
 
 from .action_manager_utils import Krita, ReleaseKeyEventFilter, ShortcutAdapter
 from .complex_action_interface import ComplexActionInterface

@@ -3,8 +3,8 @@
 
 from typing import TypeVar, Generic, Callable
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import (
+from PyQt.QtCore import Qt
+from PyQt.QtGui import (
     QDragEnterEvent,
     QDragLeaveEvent,
     QDragMoveEvent,
@@ -56,7 +56,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
     ```python
     import random
-    from PyQt5.QtGui import QColor
+    from PyQt.QtGui import QColor
     from composer_utils.label import LabelText
     from .pie_label import PieLabel
     from .pie_widget import PieWidget

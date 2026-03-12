@@ -5,13 +5,13 @@ import re
 from typing import Callable, Protocol, Any
 
 from krita import Krita as Api, Extension
-from PyQt5.QtWidgets import (
+from PyQt.QtWidgets import (
     QWidgetAction,
     QApplication,
     QMainWindow,
     QMdiArea)
-from PyQt5.QtGui import QKeySequence, QColor, QIcon, QPalette, QGuiApplication
-from PyQt5.QtCore import QTimer
+from PyQt.QtGui import QKeySequence, QColor, QIcon, QPalette, QGuiApplication
+from PyQt.QtCore import QTimer
 
 from .wrappers import (
     ToolDescriptor,

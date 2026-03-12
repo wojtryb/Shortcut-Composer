@@ -5,7 +5,7 @@ import os.path
 from typing import Any
 
 from krita import Krita as Api
-from PyQt5.QtSql import QSqlDatabase, QSqlQuery
+from PyQt.QtSql import QSqlDatabase, QSqlQuery
 
 
 class Database:

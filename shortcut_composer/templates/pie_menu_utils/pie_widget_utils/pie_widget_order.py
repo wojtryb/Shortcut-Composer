@@ -4,7 +4,7 @@
 from typing import Iterator, Callable, Any
 from itertools import zip_longest
 
-from PyQt5.QtCore import QPoint
+from PyQt.QtCore import QPoint
 
 from api_krita.pyqt import BaseWidget
 from composer_utils import CirclePoints

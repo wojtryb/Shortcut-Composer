@@ -4,7 +4,7 @@
 from typing import NoReturn
 from dataclasses import dataclass
 
-from PyQt5.QtGui import QIcon
+from PyQt.QtGui import QIcon
 
 from api_krita import Krita
 from api_krita.enums import Action, Tool, Toggle

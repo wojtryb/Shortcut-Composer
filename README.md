@@ -69,7 +69,7 @@ Installation steps are THE SAME for installing the plugin for the first time and
 ## For krita plugin programmers
 Some parts of plugin code solve general problems, which can apply outside of Shortcut Composer. Those solutions were placed in separate packages that can be copy-pasted into any other plugin and reused there.
 
-They depend only on original [Krita API](https://api.kde.org/krita/html/classKrita.html) and PyQt5 with which krita is shipped.
+They depend only on original [Krita API](https://api.kde.org/krita/html/classKrita.html) and PyQt with which krita is shipped.
 
 - [Custom keyboard shortcut interface](./shortcut_composer/input_adapter/)
 - [Config system](./shortcut_composer/config_system/)

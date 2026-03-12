@@ -3,8 +3,8 @@
 
 from functools import cached_property
 
-from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QWidget
+from PyQt.QtGui import QColor
+from PyQt.QtWidgets import QWidget
 
 from api_krita import Krita
 from api_krita.pyqt import RoundButton, Timer

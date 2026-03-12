@@ -4,7 +4,7 @@
 import re
 from typing import Callable
 
-from PyQt5.QtGui import QFont, QColor, QFontDatabase
+from PyQt.QtGui import QFont, QColor, QFontDatabase
 
 from api_krita import Krita
 from composer_utils import Config
