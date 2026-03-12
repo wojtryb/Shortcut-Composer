@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from PyQt5.QtWidgets import QVBoxLayout, QDialog
-from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor
 
 from api_krita import Krita
