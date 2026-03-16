@@ -45,8 +45,8 @@ The plugin adds new shortcuts of the following types:
 
 OS support state:
 - [x] Windows (10, 11)
-- [x] Linux (Ubuntu 20.04, 22.04)
-- [ ] MacOS (Known bug of canvas losing focus after using PieMenu)
+- [x] Linux (Gnome, KDE Plasma)
+- [ ] MacOS (Plugin does not work properly on some OS versions)
 - [ ] Android (Does not support python plugins yet)
 
 > **Note**
