@@ -142,7 +142,7 @@ class LabelWidgetStyle:
 
     def get_font(self, widget_width: int, text_to_display: list[str]) -> QFont:
         """Return font to use in pyqt label."""
-        font = QFontDatabase.systemFont(QFontDatabase.TitleFont)
+        font = QFontDatabase.systemFont(QFontDatabase.SystemFont.TitleFont)
         font.setPointSize(round(
             0.175
             * widget_width
