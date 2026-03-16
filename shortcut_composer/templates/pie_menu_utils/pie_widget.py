@@ -150,7 +150,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         circle_points = CirclePoints(
             center=self.center,
             radius=self._style.pie_radius)
-        distance = circle_points.distance(e.pos())
+        distance = circle_points.distance(e.position().toPoint())
 
         if not isinstance(label.value, self._allowed_types):
             # Label type does not match the type of pie menu
@@ -174,7 +174,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             # Do nothing in deadzone
             return
 
-        angle = circle_points.angle_from_point(e.pos())
+        angle = circle_points.angle_from_point(e.position().toPoint())
         label_under_cursor = self.order_handler.label_on_angle(angle)
 
         if label not in self.order_handler:
