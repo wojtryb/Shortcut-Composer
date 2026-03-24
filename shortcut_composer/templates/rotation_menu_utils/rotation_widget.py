@@ -3,8 +3,8 @@
 
 from typing import TypeVar, Generic
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPaintEvent
+from PyQt.QtCore import Qt
+from PyQt.QtGui import QPaintEvent
 
 from api_krita.pyqt import Painter, AnimatedWidget, BaseWidget
 from composer_utils import Config
@@ -47,6 +47,8 @@ class RotationWidget(AnimatedWidget, BaseWidget, Generic[T]):
             Qt.WindowType.NoDropShadowWindowHint))
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setStyleSheet("background: transparent;")
+        # Name can be used by window compositor although the bar is hidden
+        self.setWindowTitle("Rotation Widget")
 
         self._rotation_painter = RotationPainter(style=self._style)
 

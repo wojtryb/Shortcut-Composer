@@ -11,9 +11,9 @@ will not be visible in `keyboard shortcuts` menu in krita settings.
 
 import templates
 
-from PyQt5.QtGui import QColor
+from PyQt.QtGui import QColor
 
-from api_krita.enums import Action, Tool, Toggle, BlendingMode, TransformMode
+from api_krita.enums import Action, Tool, Toggle, BlendingMode
 from core_components import instructions, controllers
 from input_adapter import ComplexActionInterface
 from data_components import (
@@ -296,15 +296,15 @@ def create_actions() -> list[ComplexActionInterface]: return [
     # Pick one of the transform tool modes.
     templates.PieMenu(
         name="Pick transform tool modes",
-        controller=controllers.TransformModeController(),
+        controller=controllers.ActionController(),
         deadzone_strategy=PieDeadzoneStrategy.PICK_TOP,
         values=[
-            TransformMode.FREE,
-            TransformMode.PERSPECTIVE,
-            TransformMode.WARP,
-            TransformMode.CAGE,
-            TransformMode.LIQUIFY,
-            TransformMode.MESH,
+            Action.FREE,
+            Action.PERSPECTIVE,
+            Action.WARP,
+            Action.CAGE,
+            Action.LIQUIFY,
+            Action.MESH,
         ]
     ),
 

@@ -4,8 +4,8 @@
 from typing import TypeVar, Generic, Callable
 from functools import cached_property
 
-from PyQt5.QtCore import QPoint
-from PyQt5.QtGui import QColor
+from PyQt.QtCore import QPoint
+from PyQt.QtGui import QColor
 
 from api_krita import Krita
 from api_krita.pyqt import RoundButton

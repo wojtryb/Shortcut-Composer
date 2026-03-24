@@ -4,8 +4,8 @@
 import re
 from typing import Sequence, TypeVar, Generic
 
-from PyQt5.QtCore import Qt, QTimer, QEvent, pyqtSignal
-from PyQt5.QtWidgets import (
+from PyQt.QtCore import Qt, QTimer, QEvent, pyqtSignal
+from PyQt.QtWidgets import (
     QScrollArea,
     QVBoxLayout,
     QHBoxLayout,

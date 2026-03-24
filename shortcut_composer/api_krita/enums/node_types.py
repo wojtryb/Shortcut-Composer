@@ -4,7 +4,7 @@
 from enum import Enum
 
 from krita import Krita as Api
-from PyQt5.QtGui import QIcon
+from PyQt.QtGui import QIcon
 
 
 class NodeType(Enum):

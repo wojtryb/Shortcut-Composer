@@ -4,7 +4,7 @@
 import os
 from typing import Callable
 
-from PyQt5.QtGui import QColor
+from PyQt.QtGui import QColor
 
 from api_krita import Krita
 

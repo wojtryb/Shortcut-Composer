@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2022-2026 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from PyQt5.QtGui import QCursor
+from PyQt.QtGui import QCursor
 
 from api_krita.pyqt import Timer
 from composer_utils import CirclePoints, Config

@@ -1,8 +1,8 @@
 # SPDX-FileCopyrightText: © 2022-2026 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtGui import QDragEnterEvent, QDragLeaveEvent
+from PyQt.QtWidgets import QWidget
+from PyQt.QtGui import QDragEnterEvent, QDragLeaveEvent
 
 from ..label_widget import LabelWidget
 from ..label_widget_style import LabelWidgetStyle

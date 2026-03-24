@@ -3,9 +3,9 @@
 
 from typing import TypeVar
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QWidget, QLabel
+from PyQt.QtCore import Qt
+from PyQt.QtGui import QPixmap
+from PyQt.QtWidgets import QWidget, QLabel
 
 from api_krita.pyqt import PixmapTransform
 from ..label_widget_style import LabelWidgetStyle

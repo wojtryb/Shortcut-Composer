@@ -173,41 +173,5 @@
         <icon>configure</icon>
         </Action>
 
-        <Action name="Transform tool: free">
-        <activationFlags>1</activationFlags>
-        <activationConditions>1</activationConditions>
-        <icon>krita_tool_transform</icon>
-        </Action>
-
-        <Action name="Transform tool: perspective">
-        <activationFlags>1</activationFlags>
-        <activationConditions>1</activationConditions>
-        <icon>transform_icons_perspective</icon>
-        </Action>
-
-        <Action name="Transform tool: warp">
-        <activationFlags>1</activationFlags>
-        <activationConditions>1</activationConditions>
-        <icon>transform_icons_warp</icon>
-        </Action>
-
-        <Action name="Transform tool: cage">
-        <activationFlags>1</activationFlags>
-        <activationConditions>1</activationConditions>
-        <icon>transform_icons_cage</icon>
-        </Action>
-
-        <Action name="Transform tool: liquify">
-        <activationFlags>1</activationFlags>
-        <activationConditions>1</activationConditions>
-        <icon>transform_icons_liquify_main</icon>
-        </Action>
-
-        <Action name="Transform tool: mesh">
-        <activationFlags>1</activationFlags>
-        <activationConditions>1</activationConditions>
-        <icon>transform_icons_mesh</icon>
-        </Action>
-
     </Actions>
 </ActionCollection>

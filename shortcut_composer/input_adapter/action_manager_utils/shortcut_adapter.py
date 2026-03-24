@@ -3,7 +3,7 @@
 
 from time import time
 
-from PyQt5.QtGui import QKeyEvent
+from PyQt.QtGui import QKeyEvent
 
 from ..complex_action_interface import ComplexActionInterface
 

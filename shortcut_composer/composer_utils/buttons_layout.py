@@ -4,7 +4,7 @@
 from typing import Callable
 from dataclasses import dataclass
 
-from PyQt5.QtWidgets import QPushButton, QHBoxLayout
+from PyQt.QtWidgets import QPushButton, QHBoxLayout
 
 from api_krita.pyqt import SafeConfirmButton
 

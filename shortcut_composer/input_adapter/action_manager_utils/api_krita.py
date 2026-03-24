@@ -6,8 +6,8 @@
 from krita import Krita as Api
 from typing import Callable, Protocol
 
-from PyQt5.QtWidgets import QWidgetAction
-from PyQt5.QtGui import QKeySequence
+from PyQt.QtWidgets import QWidgetAction
+from PyQt.QtGui import QKeySequence
 
 
 class KritaWindow(Protocol):

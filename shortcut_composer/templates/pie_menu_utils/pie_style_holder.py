@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import os
-from PyQt5.QtGui import QColor
+from PyQt.QtGui import QColor
 
 from api_krita import Krita
 from composer_utils import Config

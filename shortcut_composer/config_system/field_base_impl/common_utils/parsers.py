@@ -4,7 +4,7 @@
 from typing import Generic, TypeVar, Protocol
 from enum import Enum
 
-from PyQt5.QtGui import QColor
+from PyQt.QtGui import QColor
 
 T = TypeVar("T")
 Basic = TypeVar("Basic", str, int, float)

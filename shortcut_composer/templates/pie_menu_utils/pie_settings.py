@@ -1,8 +1,8 @@
 # SPDX-FileCopyrightText: © 2022-2026 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QVBoxLayout, QTabWidget
+from PyQt.QtCore import Qt
+from PyQt.QtWidgets import QVBoxLayout, QTabWidget
 
 from api_krita.pyqt import AnimatedWidget, BaseWidget
 from api_krita.enums.helpers import EnumGroup
@@ -49,6 +49,8 @@ class PieSettings(AnimatedWidget, BaseWidget):
             Qt.WindowType.WindowStaysOnTopHint |
             Qt.WindowType.FramelessWindowHint))
         self.setCursor(Qt.CursorShape.ArrowCursor)
+        # Name can be used by window compositor although the bar is hidden
+        self.setWindowTitle("Pie Settings")
 
         self._style_holder = style_holder
         self._tab_holder = QTabWidget()

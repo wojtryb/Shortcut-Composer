@@ -9,7 +9,7 @@
 
 <body>
 
-    <h1 id="shortcut-composer-v1-6-1-">Shortcut composer <strong>v1.6.1</strong></h1>
+    <h1 id="shortcut-composer-v1-7-0-">Shortcut composer <strong>v1.7.0</strong></h1>
     <hr>
     <p><strong><code>Extension</code></strong> for painting application <strong><code>Krita</code></strong>, which allows to create custom, complex <strong><code>keyboard shortcuts</code></strong>.</p>
     <p>The plugin adds new shortcuts of the following types:</p>
@@ -23,14 +23,14 @@
     </ul>
     <h2 id="requirements">Requirements</h2>
     <ul>
-    <li>Version of krita on plugin release: <strong>5.2.9</strong></li>
-    <li>Required version of krita: <strong>5.2.2</strong> or later</li>
+    <li>Version of krita on plugin release: <strong>5.3.0</strong></li>
+    <li>Required version of krita: <strong>5.3.0</strong> or later</li>
     </ul>
     <p>OS support state:</p>
     <ul>
     <li>[x] Windows (10, 11)</li>
-    <li>[x] Linux (Ubuntu 20.04, 22.04)</li>
-    <li>[ ] MacOS (Known bug of canvas losing focus after using PieMenu)</li>
+    <li>[x] Linux (Gnome, KDE Plasma)</li>
+    <li>[ ] MacOS (Plugin does not work properly on some OS versions)</li>
     <li>[ ] Android (Does not support python plugins yet)</li>
     </ul>
     <blockquote>
@@ -55,7 +55,7 @@
     </blockquote>
     <h2 id="for-krita-plugin-programmers">For krita plugin programmers</h2>
     <p>Some parts of plugin code solve general problems, which can apply outside of Shortcut Composer. Those solutions were placed in separate packages that can be copy-pasted into any other plugin and reused there.</p>
-    <p>They depend only on original Krita API and PyQt5 with which krita is shipped.</p>
+    <p>They depend only on original Krita API and PyQt with which krita is shipped.</p>
     <ul>
     <li>Custom keyboard shortcut interface</li>
     <li>Config system</li>

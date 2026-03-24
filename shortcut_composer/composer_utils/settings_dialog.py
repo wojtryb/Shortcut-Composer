@@ -1,9 +1,9 @@
 # SPDX-FileCopyrightText: © 2022-2026 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from PyQt5.QtWidgets import QVBoxLayout, QDialog
-from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QCursor
+from PyQt.QtWidgets import QVBoxLayout, QDialog
+from PyQt.QtCore import Qt
+from PyQt.QtGui import QCursor
 
 from api_krita import Krita
 from INFO import __version__, __author__, __license__

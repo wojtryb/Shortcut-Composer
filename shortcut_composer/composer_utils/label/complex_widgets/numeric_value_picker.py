@@ -3,8 +3,8 @@
 
 from typing import Callable, TypeVar, Generic
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (
+from PyQt.QtCore import Qt
+from PyQt.QtWidgets import (
     QAbstractSpinBox,
     QHBoxLayout,
     QVBoxLayout,

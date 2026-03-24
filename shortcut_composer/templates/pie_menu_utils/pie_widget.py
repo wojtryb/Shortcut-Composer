@@ -3,8 +3,8 @@
 
 from typing import TypeVar, Generic, Callable
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import (
+from PyQt.QtCore import Qt
+from PyQt.QtGui import (
     QDragEnterEvent,
     QDragLeaveEvent,
     QDragMoveEvent,
@@ -56,7 +56,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
 
     ```python
     import random
-    from PyQt5.QtGui import QColor
+    from PyQt.QtGui import QColor
     from composer_utils.label import LabelText
     from .pie_label import PieLabel
     from .pie_widget import PieWidget
@@ -96,6 +96,8 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setStyleSheet("background: transparent;")
         self.setCursor(Qt.CursorShape.CrossCursor)
+        # Name can be used by window compositor although the bar is hidden
+        self.setWindowTitle("Pie Widget")
 
         self._style = style
         self._allowed_types = allowed_types
@@ -148,7 +150,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
         circle_points = CirclePoints(
             center=self.center,
             radius=self._style.pie_radius)
-        distance = circle_points.distance(e.pos())
+        distance = circle_points.distance(e.position().toPoint())
 
         if not isinstance(label.value, self._allowed_types):
             # Label type does not match the type of pie menu
@@ -172,7 +174,7 @@ class PieWidget(AnimatedWidget, BaseWidget, Generic[T]):
             # Do nothing in deadzone
             return
 
-        angle = circle_points.angle_from_point(e.pos())
+        angle = circle_points.angle_from_point(e.position().toPoint())
         label_under_cursor = self.order_handler.label_on_angle(angle)
 
         if label not in self.order_handler:

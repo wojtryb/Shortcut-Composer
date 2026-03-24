@@ -1,4 +1,4 @@
-# Shortcut composer **v1.6.1**
+# Shortcut composer **v1.7.0**
 
 [![python](https://img.shields.io/badge/Python-3.10-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
 [![Code style: black](https://img.shields.io/badge/code%20style-autopep8-333333.svg)](https://pypi.org/project/autopep8/)
@@ -40,13 +40,13 @@ The plugin adds new shortcuts of the following types:
 [![PIE MENUS - release video](https://github-production-user-asset-6210df.s3.amazonaws.com/51094047/238179887-87c00d86-0e65-46c2-94c4-52bb02c99501.png)](https://youtu.be/hrjBycVYFZM "PIE MENUS - introducing Shortcut Composer")
 
 ## Requirements
-- Version of krita on plugin release: **5.2.14**
-- Required version of krita: **5.2.2** or later
+- Version of krita on plugin release: **5.3.0**
+- Required version of krita: **5.3.0** or later
 
 OS support state:
 - [x] Windows (10, 11)
-- [x] Linux (Ubuntu 20.04, 22.04)
-- [ ] MacOS (Known bug of canvas losing focus after using PieMenu)
+- [x] Linux (Gnome, KDE Plasma)
+- [ ] MacOS (Plugin does not work properly on some OS versions)
 - [ ] Android (Does not support python plugins yet)
 
 > **Note**
@@ -69,7 +69,7 @@ Installation steps are THE SAME for installing the plugin for the first time and
 ## For krita plugin programmers
 Some parts of plugin code solve general problems, which can apply outside of Shortcut Composer. Those solutions were placed in separate packages that can be copy-pasted into any other plugin and reused there.
 
-They depend only on original [Krita API](https://api.kde.org/krita/html/classKrita.html) and PyQt5 with which krita is shipped.
+They depend only on original [Krita API](https://api.kde.org/krita/html/classKrita.html) and PyQt with which krita is shipped.
 
 - [Custom keyboard shortcut interface](./shortcut_composer/input_adapter/)
 - [Config system](./shortcut_composer/config_system/)

@@ -3,7 +3,7 @@
 
 from dataclasses import dataclass
 
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QSizePolicy
+from PyQt.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QSizePolicy
 
 from api_krita import Krita
 from api_krita.pyqt import SafeConfirmButton

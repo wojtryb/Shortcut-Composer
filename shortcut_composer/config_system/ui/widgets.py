@@ -4,15 +4,14 @@
 from enum import Enum
 from typing import Final, TypeVar, Generic, Protocol
 
-from PyQt5.QtWidgets import (
+from PyQt.QtWidgets import (
     QWidget,
-    QSpinBox,
     QComboBox,
     QCheckBox,
     QPushButton,
-    QColorDialog,
-    QDoubleSpinBox)
-from PyQt5.QtGui import QColor
+    QColorDialog)
+from PyQt.QtGui import QColor
+from PyKrita.krita import DoubleSliderSpinBox, SliderSpinBox
 
 from ..field import Field
 from .config_based_widget import ConfigBasedWidget
@@ -21,12 +20,16 @@ F = TypeVar("F", bound=float)
 E = TypeVar("E", bound=Enum)
 
 
+class WidgetInterface(Protocol, Generic[F]):
+    def value(self) -> F: ...
+    def setEnabled(self, a0: bool) -> None: ...
+
+
 class SpinBoxInterface(Protocol, Generic[F]):
     """Representation of both Qt spin_boxes as one generic class."""
 
-    def value(self) -> F: ...
     def setValue(self, val: F) -> None: ...
-    def setEnabled(self, a0: bool) -> None: ...
+    def widget(self) -> WidgetInterface[F]: ...
 
 
 class SpinBox(ConfigBasedWidget[F]):
@@ -52,12 +55,12 @@ class SpinBox(ConfigBasedWidget[F]):
         self._max_value = max_value
         self._min_value = min_value
         self._spin_box = self._init_spin_box()
-        self.widget: Final[SpinBoxInterface[F]] = self._spin_box
+        self.widget: Final[WidgetInterface[F]] = self._spin_box.widget()
         self.reset()
 
     def read(self) -> F:
         """Return the current value of the spinbox widget."""
-        return self._spin_box.value()
+        return self._spin_box.widget().value()
 
     def set(self, value: F) -> None:
         """Replace the value of the spinbox widget with passed one."""
@@ -65,16 +68,18 @@ class SpinBox(ConfigBasedWidget[F]):
 
     def _init_spin_box(self) -> SpinBoxInterface:
         """Return the spinbox widget of type based on config field type."""
-        spin_box: QDoubleSpinBox = {int: QSpinBox, float: QDoubleSpinBox}[
-            type(self.config_field.default)]()
+        spin_box = {
+            int: SliderSpinBox,
+            float: DoubleSliderSpinBox
+        }[type(self.config_field.default)]()
 
-        spin_box.setMinimumWidth(90)
+        spin_box.widget().setMinimumWidth(150)  # TODO: based on monitor?
         spin_box.setObjectName(self.config_field.name)
-        spin_box.setSingleStep(self._step)
+        spin_box.widget().setSingleStep(self._step)
         spin_box.setMinimum(self._min_value)
         spin_box.setMaximum(self._max_value)
         if self.tooltip is not None:
-            spin_box.setToolTip(self.tooltip)
+            spin_box.widget().setToolTip(self.tooltip)
         return spin_box
 
 

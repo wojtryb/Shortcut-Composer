@@ -3,9 +3,9 @@
 
 from typing import Callable
 
-from PyQt5.QtWidgets import QWidget, QPushButton
-from PyQt5.QtGui import QColor, QIcon
-from PyQt5.QtCore import Qt
+from PyQt.QtWidgets import QWidget, QPushButton
+from PyQt.QtGui import QColor, QIcon
+from PyQt.QtCore import Qt
 
 from .custom_widgets import BaseWidget
 
@@ -38,6 +38,8 @@ class RoundButton(QPushButton, BaseWidget):
                 Qt.WindowType.NoDropShadowWindowHint))
             self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
             self.setStyleSheet("background: transparent;")
+            # Name can be used by window compositor although the bar is hidden
+            self.setWindowTitle("Round Button")
 
         self.show()
 

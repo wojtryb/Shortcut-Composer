@@ -3,9 +3,9 @@
 
 import math
 
-from PyQt5.QtGui import QPainter, QPainterPath, QColor, QPixmap, QPaintEvent
-from PyQt5.QtCore import QPoint, QRectF, QPointF
-from PyQt5.QtWidgets import QWidget
+from PyQt.QtGui import QPainter, QPainterPath, QColor, QPixmap, QPaintEvent
+from PyQt.QtCore import QPoint, QRectF, QPointF
+from PyQt.QtWidgets import QWidget
 
 
 class Painter:

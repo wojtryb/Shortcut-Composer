@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from krita import Krita as Api
-from PyQt5.QtGui import QIcon
+from PyQt.QtGui import QIcon
 
 from .helpers import EnumGroup, Group
 
@@ -523,6 +523,14 @@ class Action(EnumGroup):
     SNAP_ASSISTANT = "toggle_assistant"
     SNAP_TO_GRID = "view_snap_to_grid"
 
+    _transform_modes = Group("Transform modes")
+    FREE = "KisToolTransformFree"
+    PERSPECTIVE = "KisToolTransformPerspective"
+    WARP = "KisToolTransformWarp"
+    CAGE = "KisToolTransformCage"
+    LIQUIFY = "KisToolTransformLiquify"
+    MESH = "KisToolTransformMesh"
+
     _other = Group("Other")
     CONVERT_IMAGE_COLOUR_SPACE = "imagecolorspaceconversion"
     CONVERT_LAYER_COLOUR_SPACE = "layercolorspaceconversion"
@@ -554,7 +562,7 @@ class Action(EnumGroup):
         try:
             Api.instance().action(self.value).trigger()
         except AttributeError:
-            print(self.value)
+            print(f"Called non-existing action: {self.value}")
 
     @property
     def icon(self) -> QIcon:

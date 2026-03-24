@@ -1,9 +1,9 @@
 # SPDX-FileCopyrightText: © 2022-2026 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import pyqtSignal, QEvent
-from PyQt5.QtWidgets import QWidget, QPushButton
+from PyQt.QtGui import QIcon
+from PyQt.QtCore import pyqtSignal, QEvent
+from PyQt.QtWidgets import QWidget, QPushButton
 
 
 class SafeConfirmButton(QPushButton):

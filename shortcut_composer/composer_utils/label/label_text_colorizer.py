@@ -4,7 +4,7 @@
 from collections import defaultdict
 from enum import Enum
 
-from PyQt5.QtGui import QColor
+from PyQt.QtGui import QColor
 
 from api_krita import Krita
 from api_krita.enums import BlendingMode
