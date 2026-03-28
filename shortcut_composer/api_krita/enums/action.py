@@ -82,6 +82,7 @@ class Action(EnumGroup):
     EMBOSS_HORIZONTAL_ONLY = "krita_filter_emboss horizontal only"
     EMBOSS_LAPLACIAN = "krita_filter_emboss laplascian"
     EMBOSS_VERTICAL_ONLY = "krita_filter_emboss vertical only"
+    FAST_COLOR_OVERLAY = "krita_filter_fastcoloroverlay"
     GAUSSIAN_BLUR = "krita_filter_gaussian blur"
     GAUSSIAN_HIGH_PASS = "krita_filter_gaussianhighpass"
     GAUSSIAN_NOISE_REDUCTION = "krita_filter_gaussiannoisereducer"
@@ -105,6 +106,7 @@ class Action(EnumGroup):
     PHONG_BUMPMAP = "krita_filter_phongbumpmap"
     PIXELISE = "krita_filter_pixelize"
     POSTERISE = "krita_filter_posterize"
+    PROPAGATE_COLORS = "krita_filter_propagatecolors"
     RAINDROPS = "krita_filter_raindrops"
     RANDOM_PICK = "krita_filter_randompick"
     ROUND_CORNERS = "krita_filter_roundcorners"
@@ -130,6 +132,8 @@ class Action(EnumGroup):
     FLATTEN_IMAGE = "flatten_image"
     MERGE_WITH_LAYER_BELOW = "merge_layer"
     FLATTEN_LAYER = "flatten_layer"
+    REFERENCE_FROM_ACTIVE_LAYER = "create_reference_image_from_active_layer"
+    REFERENCE_FROM_CANVAS = "create_reference_image_from_visible_canvas"
 
     _filling = Group("Filling")
     FILL_WITH_FOREGROUND_COLOUR = "fill_selection_foreground_color"
@@ -226,6 +230,7 @@ class Action(EnumGroup):
     ADD_FILE_LAYER = "add_new_file_layer"
     ADD_TRANSPARENCY_MASK = "add_new_transparency_mask"
     ADD_FILTER_MASK = "add_new_filter_mask"
+    ADD_FAST_COLOR_OVERLAY_MASK = "add_new_fast_color_overlay_mask"
     ADD_COLOURISE_MASK = "add_new_colorize_mask"
     ADD_TRANSFORM_MASK = "add_new_transform_mask"
     ADD_LOCAL_SELECTION = "add_new_selection_mask"
@@ -280,6 +285,7 @@ class Action(EnumGroup):
     BRUSH_SMOOTHING_BASIC = "set_simple_brush_smoothing"
     BRUSH_SMOOTHING_WEIGHTED = "set_weighted_brush_smoothing"
     BRUSH_SMOOTHING_STABILISER = "set_stabilizer_brush_smoothing"
+    BRUSH_SMOOTHING_PIXEL_PERFECT = "set_pixel_perfect_smoothing"
 
     _opening_menus = Group("Opening menus")
     CONFIGURE_KRITA = "options_configure"
@@ -317,6 +323,7 @@ class Action(EnumGroup):
     BRUSH_OPTION_SLIDER_2 = "brushslider2"
     BRUSH_OPTION_SLIDER_3 = "brushslider3"
     BRUSH_OPTION_SLIDER_4 = "brushslider4"
+    BRUSH_OPTION_SLIDER_5 = "brushslider5"
     SHOW_GLOBAL_SELECTION_MASK = "show-global-selection-mask"
     WRAP_AROUND_MODE = "wrap_around_mode"
     MIRROR = "mirror_actions"
@@ -324,6 +331,7 @@ class Action(EnumGroup):
     USE_PEN_PRESSURE = "disable_pressure"
     OPEN_FOREGROUND_COLOUR_SELECTOR = "chooseForegroundColor"
     OPEN_BACKGROUND_COLOUR_SELECTOR = "chooseBackgroundColor"
+    DOCKER_BOX = "docker_box"
     SWAP_FOREGROUND_AND_BACKGROUND_COLOURS = "toggle_fg_bg"
     SET_FOREGROUND_AND_BACKGROUND_COLOURS_TO_BLACK_AND_WHITE = "reset_fg_bg"
 
@@ -498,6 +506,9 @@ class Action(EnumGroup):
     EXPORT_TIMELAPSE = "recorder_export"
     HIDE_FILE_TOOLBAR = "mainToolBar"
     HIDE_BRUSHES_AND_STUFF_TOOLBAR = "BrushesAndStuff"
+    LOCK_TOOLBARS = "lock_toolbars"
+    CUSTOM_TOOL_BAR_1 = "customToolBar1"
+    CUSTOM_TOOL_BAR_2 = "customToolBar2"
     ZOOM = "view_zoom"
     SHOW_COLOUR_SELECTOR = "show_color_selector"
     SHOW_MY_PAINT_SHADE_SELECTOR = "show_mypaint_shade_selector"
@@ -510,10 +521,14 @@ class Action(EnumGroup):
 
     _toggles = Group("Toggles")
     ERASER = "erase_action"
+    ERASER_PRESET = "eraser_preset_action"
+    ERASER_SELECT_PRESET = "eraser_select_preset_action"
+    BRUSH_SELECT_PRESET = "brush_select_preset_action"
     PRESERVE_ALPHA = "preserve_alpha"
     MIRROR_CANVAS = "mirror_canvas"
     SOFT_PROOFING = "softProof"
     ISOLATE_LAYER = "isolate_active_layer"
+    FORCE_PALETTE_COLORS = "force_palette_colors"
     VIEW_REFERENCE_IMAGES = "view_toggle_reference_images"
     VIEW_ASSISTANTS = "view_toggle_painting_assistants"
     VIEW_ASSISTANTS_PREVIEWS = "view_toggle_assistant_previews"
@@ -556,6 +571,7 @@ class Action(EnumGroup):
     COPY_COLUMNS = "copy_columns_to_clipboard"
     CUT_COLUMNS = "cut_columns_to_clipboard"
     PASTE_COLUMNS = "paste_columns_from_clipboard"
+    PURGE_UNUSED_IMAGE_DATA = "purge_unused_image_data"
 
     def activate(self) -> None:
         """Activate the action."""
