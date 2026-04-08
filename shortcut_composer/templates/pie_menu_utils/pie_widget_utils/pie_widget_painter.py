@@ -82,7 +82,7 @@ class PieWidgetPainter:
     def _paint_active_pie(self) -> None:
         """Paint a pie behind a label which is active or during animation."""
         for label in self._labels:
-            if not label.activation_progress.value:
+            if label.activation_progress.value <= 0:
                 continue
 
             thickness_addition = round(

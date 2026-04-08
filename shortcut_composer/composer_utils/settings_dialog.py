@@ -38,9 +38,11 @@ class SettingsDialog(QDialog):
                 parent=self,
                 pretty_name="FPS limit",
                 step=5,
-                min_value=5,
+                min_value=0,
                 max_value=200,
-                tooltip="Maximal amount of widget repaints in one second."),
+                tooltip=""
+                "Maximal amount of widget repaints in one second.\n"
+                "0 lifts the FPS limit."),
 
             "Cursor trackers",
             SpinBox(

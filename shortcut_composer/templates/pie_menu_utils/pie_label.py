@@ -7,12 +7,16 @@ from dataclasses import dataclass, field
 from PyQt.QtCore import QPoint
 from PyQt.QtGui import QPixmap, QIcon
 
-from composer_utils import AnimationProgress
+from api_krita.pyqt.custom_widgets import Animation  # TODO: Fix this link
+from composer_utils.global_config import Config
 from composer_utils.label import LabelInterface, LabelText
 from core_components import Controller
 
 T = TypeVar("T")
 
+
+def _create_animation():
+    return Animation(lambda _: None, Config.PIE_ANIMATION_TIME.read)
 
 @dataclass
 class PieLabel(LabelInterface, Generic[T]):
@@ -34,8 +38,7 @@ class PieLabel(LabelInterface, Generic[T]):
     pretty_name: str = ""
     center: QPoint = field(default_factory=QPoint)
     angle: int = 0
-    activation_progress: AnimationProgress = field(
-        default_factory=AnimationProgress)
+    activation_progress: Animation = field(default_factory=_create_animation)
 
     def __eq__(self, other: T) -> bool:
         """Consider two labels with the same value equal."""
