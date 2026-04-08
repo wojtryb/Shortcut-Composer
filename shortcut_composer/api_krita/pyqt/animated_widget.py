@@ -44,6 +44,17 @@ class AnimatedWidget(QWidget):
 
 
 class AnimationProcessor:
+    """
+    Handles multiple animations with a single timer.
+
+    Call `add()` to start an animation, which will be updated at fixed
+    intervals (`fps_limit`). The timer is stopped when all added
+    animations were finished.
+
+    It is recommended to add related QWidget's `paint` method as
+    `repaint_callback`, so that it is called every time the animations
+    are updated.
+    """
 
     def __init__(self, fps_limit: int = 60) -> None:
         self._animations: list[Animation] = []
@@ -52,6 +63,7 @@ class AnimationProcessor:
         self.repaint_callback = lambda: None
 
     def add(self, animation: 'Animation', is_ascending: bool) -> None:
+        """Start new animation from its current state towards 1 or 0."""
         animation.start(is_ascending)
 
         if animation not in self._animations:
@@ -60,11 +72,13 @@ class AnimationProcessor:
         self._timer.start()
 
     def purge(self) -> None:
+        """Reset all running animation to 0 and stop them."""
         for animation in self._animations:
             animation.reset()
         self._animations.clear()
 
     def _tick(self):
+        """Update all running animations, run repaint_callbaak afterwards."""
         if not self._animations:
             self._timer.stop()
 
@@ -77,6 +91,24 @@ class AnimationProcessor:
 
 
 class Animation:
+    """
+    Manages animation of a single component/property.
+
+    Call `start(is_ascending=True)` to start a animation. Then, calling
+    `update()` will modify the internal state of the animation based on
+    elapsed time.
+
+    Getting the `value` property afterwards returns current state of the
+    animation (being 0 at start and 1 at the end). Calling
+    `start(is_ascending=True)` will cause the animation to run in
+    reverse order towards 0. If the animation was still running at that
+    time, it will start going down from its current state. 
+
+    update() returns True when the animation is finished.
+
+    It is possible to register a callback performing some operation on
+    current `value` when `update()` is called. 
+    """
 
     def __init__(
         self,
@@ -97,6 +129,7 @@ class Animation:
         self._is_running = False
 
     def start(self, is_ascending: bool) -> None:
+        """Start animation from current state towards 1 (is_ascending) or 0."""
         self._start_time_ms = 0.000_001 * time_ns()
         self._initial_value = self._value
         self._duration_ms = 1000 * self._duration_s_cb()
@@ -104,6 +137,11 @@ class Animation:
         self._is_running = True
 
     def update(self) -> bool:
+        """
+        Update animation state based on time elapsed from last start call.
+
+        Returns True when the animation is finished.
+        """
         if not self._is_running:
             return True
 
@@ -126,9 +164,11 @@ class Animation:
         return False
 
     def reset(self) -> None:
+        """Reset Animation to the initial state of 0."""
         self._value = 0
         self._is_running = False
 
     @property
     def value(self) -> float:
+        """Return current value of animation. Needs a update call()."""
         return self._value

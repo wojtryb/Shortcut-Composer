@@ -28,14 +28,10 @@ class WidgetState:
     selected_zone: Zone = Zone.DEADZONE
 
     def __post_init__(self) -> None:
-        self.current_animation = Animation(
-            lambda _: None,
-            Config.PIE_LABEL_ANIMATION_TIME.read)
-        """TODO"""
+        self.current_animation = self._create_animation()
+        """Animation of the intervallic pie under the cursor."""
 
-        self.animations_in_progress = defaultdict(lambda: Animation(
-            lambda _: None,
-            Config.PIE_LABEL_ANIMATION_TIME.read))
+        self.animations_in_progress = defaultdict(self._create_animation)
         """State of animations for each intervallic pie."""
 
     def reset(self) -> None:
@@ -43,3 +39,10 @@ class WidgetState:
         self.selected_angle = 0
         self.selected_zone = Zone.DEADZONE
         self.animations_in_progress.clear()
+
+    @staticmethod
+    def _create_animation() -> Animation:
+        """Return new animation of the intervallic pie."""
+        return Animation(
+            lambda _: None,
+            Config.PIE_LABEL_ANIMATION_TIME.read)
