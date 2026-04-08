@@ -134,11 +134,19 @@ class SettingsDialog(QDialog):
             SpinBox(
                 config_field=Config.PIE_ANIMATION_TIME,
                 parent=self,
-                pretty_name="Pie animation time",
+                pretty_name="Pie fade-in animation duration",
                 step=0.01,
                 min_value=0,
                 max_value=1,
-                tooltip="Time of the pie opening animation."),
+                tooltip="Duration of the pie fade-in animation [s]."),
+            SpinBox(
+                config_field=Config.PIE_LABEL_ANIMATION_TIME,
+                parent=self,
+                pretty_name="Pie label animation duration",
+                step=0.01,
+                min_value=0,
+                max_value=1,
+                tooltip="Duration of the label activation animation [s]."),
 
             f"Shortcut Composer v{__version__}\n"
             f"Maintainer: {__author__}\n"

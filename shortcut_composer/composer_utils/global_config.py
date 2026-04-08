@@ -46,6 +46,9 @@ class GlobalConfig(FieldGroup):
         self.PIE_ANIMATION_TIME = self.field(
             name="Pie animation time",
             default=0.2)
+        self.PIE_LABEL_ANIMATION_TIME = self.field(
+            name="Pie label animation time",
+            default=0.2)
         self.TEXT_LABEL_GLOBAL_SCALE = self.field(
             name="Text label global scale",
             default=1.0)

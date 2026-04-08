@@ -16,7 +16,9 @@ T = TypeVar("T")
 
 
 def _create_animation():
-    return Animation(lambda _: None, Config.PIE_ANIMATION_TIME.read)
+    return Animation(
+        update_callback=lambda _: None,
+        duration_s_callback=Config.PIE_LABEL_ANIMATION_TIME.read)
 
 
 @dataclass
