@@ -5,9 +5,42 @@ from typing import Callable
 from time import time_ns
 
 from PyQt.QtWidgets import QWidget
-from PyQt.QtCore import QPoint
 
 from .timer import Timer
+
+
+class AnimatedWidget(QWidget):
+    """Adds the fade-in animation when the widget is shown."""
+
+    def __init__(
+        self,
+        animation_time_s: float = 0,
+        fps_limit: int = 60,
+        parent: QWidget | None = None,
+    ) -> None:
+        super().__init__(parent)
+        self.animation_processor = AnimationProcessor(fps_limit)
+        self.animation_processor.repaint_callback = self.repaint
+        self._fade_in_animation = Animation(
+            update_callback=self._update_opacity,
+            duration_s_callback=lambda: animation_time_s)
+
+    def _update_opacity(self, opacity: float):
+        self.setWindowOpacity(opacity)
+        self.repaint()
+
+    def show(self) -> None:
+        """Decrease opacity to 0, and start a timer which animates it."""
+        self.setWindowOpacity(0)
+        self._fade_in_animation.reset()
+        self.animation_processor.add(
+            animation=self._fade_in_animation,
+            is_ascending=True)
+        super().show()
+
+    def hide(self) -> None:
+        self.animation_processor.purge()
+        super().hide()
 
 
 class AnimationProcessor:
@@ -99,58 +132,3 @@ class Animation:
     @property
     def value(self) -> float:
         return self._value
-
-
-class BaseWidget(QWidget):
-    """Adds base convenience methods to the widget."""
-
-    def __init__(self, parent, *args, **kwargs) -> None:
-        super().__init__(parent)
-
-    @property
-    def center(self) -> QPoint:
-        """Return point with center widget's point in its coordinates."""
-        return QPoint(self.size().width()//2, self.size().height()//2)
-
-    @property
-    def center_global(self) -> QPoint:
-        """Return point with center widget's point in screen coordinates."""
-        return self.pos() + self.center
-
-    def move_center(self, new_center: QPoint) -> None:
-        """Move the widget by providing a new center point."""
-        self.move(new_center-self.center)
-
-
-class AnimatedWidget(QWidget):
-    """Adds the fade-in animation when the widget is shown."""
-
-    def __init__(
-        self,
-        animation_time_s: float = 0,
-        fps_limit: int = 60,
-        parent: QWidget | None = None,
-    ) -> None:
-        super().__init__(parent)
-        self.animation_processor = AnimationProcessor(fps_limit)
-        self.animation_processor.repaint_callback = self.repaint
-        self._fade_in_animation = Animation(
-            update_callback=self._update_opacity,
-            duration_s_callback=lambda: animation_time_s)
-
-    def _update_opacity(self, opacity: float):
-        self.setWindowOpacity(opacity)
-        self.repaint()
-
-    def show(self) -> None:
-        """Decrease opacity to 0, and start a timer which animates it."""
-        self.setWindowOpacity(0)
-        self._fade_in_animation.reset()
-        self.animation_processor.add(
-            animation=self._fade_in_animation,
-            is_ascending=True)
-        super().show()
-
-    def hide(self) -> None:
-        self.animation_processor.purge()
-        super().hide()

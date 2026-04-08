@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from PyQt.QtCore import QPoint
 from PyQt.QtGui import QPixmap, QIcon
 
-from api_krita.pyqt.custom_widgets import Animation  # TODO: Fix this link
+from api_krita.pyqt import Animation
 from composer_utils.global_config import Config
 from composer_utils.label import LabelInterface, LabelText
 from core_components import Controller
@@ -17,6 +17,7 @@ T = TypeVar("T")
 
 def _create_animation():
     return Animation(lambda _: None, Config.PIE_ANIMATION_TIME.read)
+
 
 @dataclass
 class PieLabel(LabelInterface, Generic[T]):
