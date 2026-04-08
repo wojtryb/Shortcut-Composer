@@ -1,8 +1,6 @@
 # SPDX-FileCopyrightText: © 2022-2026 Wojciech Trybus <wojtryb@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Callable
-
 from PyQt.QtGui import QCursor
 
 from api_krita.pyqt import Timer
@@ -59,9 +57,6 @@ class PieLabelSelector:
 
         self._hovered_label: PieLabel | None = None
         self._timer = Timer(self._handle_cursor, Config.get_sleep_time())
-        self._animator = _LabelAnimator(
-            pie_widget=pie_widget,
-            hovered_label_callback=lambda: self._hovered_label)
 
     def start_tracking(self) -> None:
         """Show widget under the mouse and start mouse tracking loop."""
@@ -126,9 +121,19 @@ class PieLabelSelector:
 
     def _update_hovered(self, label: PieLabel | None) -> None:
         """Mark label as hovered and start animating the change."""
-        if self._hovered_label != label:
-            self._hovered_label = label
-            self._animator.start()
+        if self._hovered_label == label:
+            return
+
+        if self._hovered_label is not None:
+            self._pie_widget.animation_processor.add(
+                animation=self._hovered_label.activation_progress,
+                is_ascending=False)
+        if label is not None:
+            self._pie_widget.animation_processor.add(
+                animation=label.activation_progress,
+                is_ascending=True)
+
+        self._hovered_label = label
 
     def _mark_suggested_widget(self) -> None:
         """Force color of label at which strategy points."""
@@ -146,38 +151,3 @@ class PieLabelSelector:
         """Clear any forced colors and ongoing animations of labels."""
         for widget in self._pie_widget.order_handler.widgets:
             widget.forced = False
-
-
-class _LabelAnimator:
-    """
-    Controls the animation of background under pie labels.
-
-    Handles the whole widget at once, to prevent unnecessary repaints.
-    """
-
-    def __init__(
-        self,
-        pie_widget: PieWidget,
-        hovered_label_callback: Callable[[], PieLabel | None]
-    ) -> None:
-        self._pie_widget = pie_widget
-        self._hovered_label_callback = hovered_label_callback
-        self._timer = Timer(self._update, Config.get_sleep_time())
-
-    def start(self) -> None:
-        """Start animating. The animation will stop automatically."""
-        self._timer.start()
-
-    def _update(self) -> None:
-        """Move all labels to next animation state."""
-        for label in self._pie_widget.order_handler:
-            if self._hovered_label_callback() == label:
-                label.activation_progress.up()
-            else:
-                label.activation_progress.down()
-
-        self._pie_widget.repaint()
-        for label in self._pie_widget.order_handler:
-            if label.activation_progress.value not in (0, 1):
-                return
-        self._timer.stop()

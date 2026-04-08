@@ -3,17 +3,20 @@
 
 """Wrappers and utilities based on PyQt objects."""
 
-from .custom_widgets import AnimatedWidget, BaseWidget
+from .animated_widget import AnimatedWidget, AnimationProcessor, Animation
 from .safe_confirm_button import SafeConfirmButton
 from .pixmap_transform import PixmapTransform
 from .round_button import RoundButton
+from .base_widget import BaseWidget
 from .painter import Painter
 from .timer import Timer
 
 __all__ = [
+    "AnimationProcessor",
+    "AnimatedWidget",
+    "Animation",
     "SafeConfirmButton",
     "PixmapTransform",
-    "AnimatedWidget",
     "RoundButton",
     "BaseWidget",
     "Painter",

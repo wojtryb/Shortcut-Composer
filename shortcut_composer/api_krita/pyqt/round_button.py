@@ -7,7 +7,7 @@ from PyQt.QtWidgets import QWidget, QPushButton
 from PyQt.QtGui import QColor, QIcon
 from PyQt.QtCore import Qt
 
-from .custom_widgets import BaseWidget
+from .base_widget import BaseWidget
 
 
 class RoundButton(QPushButton, BaseWidget):
