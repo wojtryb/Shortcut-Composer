@@ -5,7 +5,8 @@ from enum import Enum, auto
 from dataclasses import dataclass
 from collections import defaultdict
 
-from composer_utils import AnimationProgress
+from api_krita.pyqt import Animation
+from composer_utils import Config
 
 
 class Zone(Enum):
@@ -27,7 +28,14 @@ class WidgetState:
     selected_zone: Zone = Zone.DEADZONE
 
     def __post_init__(self) -> None:
-        self.animations_in_progress = defaultdict(lambda: AnimationProgress())
+        self.current_animation = Animation(
+            lambda _: None,
+            Config.PIE_LABEL_ANIMATION_TIME.read)
+        """TODO"""
+
+        self.animations_in_progress = defaultdict(lambda: Animation(
+            lambda _: None,
+            Config.PIE_LABEL_ANIMATION_TIME.read))
         """State of animations for each intervallic pie."""
 
     def reset(self) -> None:
@@ -35,13 +43,3 @@ class WidgetState:
         self.selected_angle = 0
         self.selected_zone = Zone.DEADZONE
         self.animations_in_progress.clear()
-
-    def tick_animations(self) -> None:
-        """Update animations of intervallic pies."""
-        current_animation = self.animations_in_progress[self.selected_angle]
-        if self.selected_zone == Zone.INTERVALLIC_ZONE:
-            current_animation.up()
-
-        for animation in self.animations_in_progress.values():
-            if animation != current_animation:
-                animation.down()

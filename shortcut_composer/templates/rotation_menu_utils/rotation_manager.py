@@ -26,6 +26,7 @@ class RotationManager:
         style: RotationStyle,
     ) -> None:
         self._rotation_widget = rotation_widget
+        self._state = rotation_widget.state
         self._config = config
         self._style = style
 
@@ -60,16 +61,26 @@ class RotationManager:
             zone = Zone.PRECISE_ZONE if is_inverse else Zone.INTERVALLIC_ZONE
         else:
             zone = Zone.INTERVALLIC_ZONE if is_inverse else Zone.PRECISE_ZONE
-        self._rotation_widget.state.selected_zone = zone
+        self._state.selected_zone = zone
 
         angle = round(circle.angle_from_point(cursor))
         if zone == Zone.INTERVALLIC_ZONE:
             angle = self._snap_degree(
                 value=angle,
                 step_size=self._style.intervallic_pie_span)
-        self._rotation_widget.state.selected_angle = angle
 
-        self._rotation_widget.state.tick_animations()
+        if self._state.selected_angle != angle:
+            self._state.selected_angle = angle
+
+            current_animation = self._state.animations_in_progress[self._state.selected_angle]
+            if self._state.selected_zone == Zone.INTERVALLIC_ZONE:
+                self._rotation_widget.animation_processor.add(
+                    current_animation, True)
+
+            self._rotation_widget.animation_processor.add(
+                self._state.current_animation, False)
+            self._state.current_animation = current_animation
+
         self._rotation_widget.repaint()
 
     @staticmethod
